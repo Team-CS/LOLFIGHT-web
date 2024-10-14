@@ -53,7 +53,10 @@ const JudgmentBox = (props: Props) => {
           <span className="text-gray-300">|</span>
           <p>조회수: {props.judgment.judgmentView}</p>
           <span className="text-gray-300">|</span>
-          <p>추천수: {props.judgment.judgmentLike}</p>
+          <p>
+            투표수:
+            {props.judgment.judgmentLeftLike + props.judgment.judgmentRightLike}
+          </p>
           <span className="text-gray-300">|</span>
           <div className="flex items-end gap-1">
             작성자:

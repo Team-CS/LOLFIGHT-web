@@ -7,7 +7,7 @@ import { JudgmentDTO } from "@/src/common/DTOs/judgment/judgment.dto";
 import Image from "next/image";
 import JudgmentDataCard from "./JudgmentDataCard";
 import constant from "@/src/common/constant/constant";
-import { voteFactionJudgment } from "@/src/api/judgment.api";
+import { getVoteFaction, voteFactionJudgment } from "@/src/api/judgment.api";
 
 interface JudgmentBodyComponentProp {
   judgment: JudgmentDTO;
@@ -17,43 +17,26 @@ const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
   const router = useRouter();
   const [commentContent, setCommentContent] = useState("");
   const [commentBoxKey, setCommentBoxKey] = useState(0); // State for key prop
-  const [like, setLike] = useState(0);
+  const [like, setLike] = useState<string>("none");
 
   useEffect(() => {
     const storedId = sessionStorage.getItem("id")?.toString();
 
     if (storedId) {
       if (props.judgment) {
-        // getLike(props.data, storedId).then((res) => {
-        //   if (res.data.data) {
-        //     setLike(1);
-        //   } else {
-        //     setLike(0);
-        //   }
-        // });
+        getVoteFaction(props.judgment.id, storedId)
+          .then((response) => {
+            setLike(response.data.data);
+          })
+          .catch((error) => {
+            // console.log(error)
+          });
       }
     }
   }, [props.judgment]);
 
   const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCommentContent(e.target.value);
-  };
-
-  const handleOnClick = () => {
-    const storedId = sessionStorage.getItem("id")?.toString();
-    if (storedId) {
-      // @todo judgment 추천
-      //   likePost(props.data, storedId).then((res) => {
-      //     router.refresh();
-      //     if (like === 0) {
-      //       setLike(1);
-      //     } else {
-      //       setLike(0);
-      //     }
-      //   });
-    } else {
-      CustomAlert("info", "추천", "로그인이 필요합니다");
-    }
   };
 
   const handleSaveCommentClick = () => {
@@ -79,23 +62,29 @@ const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
       CustomAlert("info", "투표", "로그인이 필요합니다");
     } else {
       if (side === "left") {
-        voteFactionJudgment("left", props.judgment.id)
+        voteFactionJudgment("left", props.judgment.id, storedId)
           .then((response) => {
-            console.log(response);
+            // console.log(response);
+            CustomAlert("success", "투표", "투표가 완료되었습니다.");
+            setLike("none");
+            window.location.reload();
           })
           .catch((error) => {
-            console.log(error);
+            // console.log(error);
+            CustomAlert("error", "투표", "에러");
           });
-        CustomAlert("success", "투표", "투표가 완료되었습니다.");
       } else {
-        voteFactionJudgment("right", props.judgment.id)
+        voteFactionJudgment("right", props.judgment.id, storedId)
           .then((response) => {
-            console.log(response);
+            // console.log(response);
+            CustomAlert("success", "투표", "투표가 완료되었습니다.");
+            setLike("none");
+            window.location.reload();
           })
           .catch((error) => {
-            console.log(error);
+            // console.log(error);
+            CustomAlert("error", "투표", "에러");
           });
-        CustomAlert("success", "투표", "투표가 완료되었습니다.");
       }
     }
   };
@@ -134,40 +123,38 @@ const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
 
         <div className="flex justify-between gap-4">
           <button
-            className="w-1/2 p-4 text-white font-semibold rounded-lg bg-blue-500 hover:bg-blue-600 transition duration-300"
+            className={`w-1/2 p-2 text-[22px] font-extrabold rounded-lg transition duration-300 ${
+              like === "none"
+                ? "bg-blue-500 hover:bg-blue-600 text-white "
+                : like === "left"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-500 text-white"
+            }`}
             onClick={() => handleFactionVoteClick("left")}
+            disabled={like === "right"}
           >
-            무죄
+            {like === "left" ? "투표 취소" : "투표"}
           </button>
 
           <button
-            className="w-1/2 p-4 text-white font-semibold rounded-lg bg-red-500 hover:bg-red-600 transition duration-300"
+            className={`w-1/2 p-2 text-[22px] font-extrabold rounded-lg transition duration-300 ${
+              like === "none"
+                ? "bg-red-500 hover:bg-red-600 text-white"
+                : like === "right"
+                ? "bg-red-600 text-white"
+                : "bg-gray-500 text-white" // 기본 상태 또는 "left"인 경우
+            }`}
             onClick={() => handleFactionVoteClick("right")}
+            disabled={like === "left"}
           >
-            무죄
+            {like === "right" ? "투표 취소" : "투표"}
           </button>
         </div>
       </div>
 
-      <div className="m-auto">
-        {like === 0 ? (
-          <button
-            className="border border-gray-400 h-10 text-gray-400 rounded transition hover:bg-brandcolor hover:text-white w-20 m-1"
-            onClick={handleOnClick}
-          >
-            <span className="">추천</span>
-          </button>
-        ) : (
-          <button
-            className="border border-gray-400 h-10 text-white rounded bg-brandcolor transition hover:bg-white hover:text-gray-400 w-20 m-1 dark:border-gray-700"
-            onClick={handleOnClick}
-          >
-            <span className="">추천</span>
-          </button>
-        )}
-      </div>
       <div className="border-b w-full mt-4 dark:border-gray-700"></div>
-      <div className="my-8">댓글 </div>
+      {/* @todo 댓글  */}
+      {/* <div className="my-8">댓글 </div> */}
       {/* <CommentBoxComponent
           key={commentBoxKey}
           data={props.data}

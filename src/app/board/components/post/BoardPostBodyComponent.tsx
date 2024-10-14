@@ -35,7 +35,6 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
 
   useEffect(() => {
     const storedId = sessionStorage.getItem("id")?.toString();
-
     if (storedId) {
       if (props.data) {
         getLike(props.data, storedId).then((res) => {

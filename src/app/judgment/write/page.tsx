@@ -22,11 +22,10 @@ export default function Page() {
   const router = useRouter();
 
   const [judgment, setJudgment] = useState<JudgmentDTO>({
-    id: "",
+    id: 0,
     judgmentWriter: "",
     judgmentTitle: "",
     judgmentDesc: "",
-    judgmentLike: 0,
     judgmentView: 0,
     judgmentLeftChampion: "1",
     judgmentLeftName: "",
@@ -133,7 +132,6 @@ export default function Page() {
       ...prevJudgment,
       judgmentWriter: storedMemberName,
     }));
-    console.log(judgment);
 
     if (!judgment.judgmentTitle || !judgment.judgmentDesc) {
       CustomAlert(
@@ -161,8 +159,6 @@ export default function Page() {
         "해당 논쟁의 영상을 업로드 해주세요 (최대 5분)"
       );
     } else {
-      console.log(judgment, videoFile);
-
       createJudgment(judgment, videoFile)
         .then((response) => {
           CustomAlert(

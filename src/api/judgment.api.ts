@@ -83,16 +83,43 @@ export const increaseJudgment = async (
   return await axios.patch(url, Judgment);
 };
 
-// @todo 추천수 증가와 같이 한번씩만 누를 수 있도록 변경
+/**
+ * Judgment 투표
+ * @param faction
+ * @param judgmentId
+ * @param memberId
+ * @returns
+ */
 export const voteFactionJudgment = async (
   faction: string,
-  judgmentId: number
+  judgmentId: number,
+  memberId: string
 ): Promise<AxiosResponse<ResponseDTO<boolean>>> => {
   let url = `${baseUrl}/vote`;
   const data = {
     faction: faction,
     judgmentId: judgmentId,
+    memberId: memberId,
   };
 
   return await api.patch(url, data);
+};
+
+/**
+ * Judgment 투표여부 조회
+ * @param judgmentId
+ * @param memberId
+ * @returns
+ */
+export const getVoteFaction = async (
+  judgmentId: number,
+  memberId: string
+): Promise<AxiosResponse<ResponseDTO<string>>> => {
+  let url = `${baseUrl}/getvote`;
+  const data = {
+    judgmentId: judgmentId,
+    memberId: memberId,
+  };
+
+  return await axios.post(url, data);
 };
