@@ -110,7 +110,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     <div className="comment_box">
       {commentList.map((comment) => (
         <div
-          className="my-4 p-2 flex"
+          className="my-4 p-2 flex border-b dark:border-gray-700"
           key={comment.id}
           style={getMargin(comment.depth)}
         >
@@ -118,22 +118,24 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
             <div className="border-b-2 border-l-2 border-brandcolor w-2 h-2 mr-4 dark:border-white" />
           )}
           <div className="w-full">
-            <div className="flex">
-              <Image
-                className="rounded-full mr-[5px]"
-                width={25}
-                height={25}
-                src={
-                  isImageError[comment.id as string] // 타입 단언을 사용하여 오류 방지
-                    ? `${constant.SERVER_URL}/public/default.png`
-                    : `${constant.SERVER_URL}/public/member/${comment.writer}.png`
-                }
-                alt="memberIcon"
-                onError={() => handleImageError(comment.id as string)}
-                unoptimized
-              />
+            <div className="flex items-center mb-1">
+              <div className="w-[30px] h-[30px] mr-[5px] my-auto">
+                <Image
+                  className="w-full h-full rounded-full"
+                  width={35}
+                  height={35}
+                  src={
+                    isImageError[comment.id as string] // 타입 단언을 사용하여 오류 방지
+                      ? `${constant.SERVER_URL}/public/default.png`
+                      : `${constant.SERVER_URL}/public/member/${comment.writer}.png`
+                  }
+                  alt="memberIcon"
+                  onError={() => handleImageError(comment.id as string)}
+                  unoptimized
+                />
+              </div>
               <span className="font-bold">{comment.writer}</span>
-              <span className="text-gray-600 pl-4 font-normal">
+              <span className="text-gray-400 pl-3 font-normal text-xs">
                 {getDate(comment.commentDate)}
               </span>
             </div>

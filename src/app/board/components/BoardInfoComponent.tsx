@@ -104,13 +104,11 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
             </svg>
           </div>
         )}
-        <div className="notice-info__title flex items-center">
-          <a className="hover:underline cursor-pointer" onClick={handleOnClick}>
+        <div className="flex items-center hover:underline cursor-pointer">
+          <a className="notice-info__title" onClick={handleOnClick}>
             {props.data.postTitle}
           </a>
-        </div>
-        <div className="notice-info__comment flex items-center text-gray-400">
-          <a className="hover:underline" href="">
+          <a className="notice-info__comment flex items-center text-gray-400">
             [{props.data.postComments}]
           </a>
         </div>

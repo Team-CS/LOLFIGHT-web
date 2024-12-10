@@ -492,19 +492,21 @@ const Header = () => {
               {memberName ? (
                 <div className="w-[400px] h-[150px] flex flex-col justify-between items-centerborder dark:border-branddark">
                   <div className="flex w-full items-center p-4">
-                    <Image
-                      className="rounded-full mr-[20px]"
-                      width={70}
-                      height={70}
-                      src={
-                        isImageError
-                          ? `${constant.SERVER_URL}/public/default.png`
-                          : `${constant.SERVER_URL}/public/member/${memberName}.png`
-                      }
-                      alt={"memberIcon"}
-                      onError={(e) => setIsImageError(true)}
-                      unoptimized
-                    />
+                    <div className="w-[70px] h-[70px] my-auto mr-[20px]">
+                      <Image
+                        className="w-full h-full rounded-full"
+                        width={70}
+                        height={70}
+                        src={
+                          isImageError
+                            ? `${constant.SERVER_URL}/public/default.png`
+                            : `${constant.SERVER_URL}/public/member/${memberName}.png`
+                        }
+                        alt={"memberIcon"}
+                        onError={(e) => setIsImageError(true)}
+                        unoptimized
+                      />
+                    </div>
                     <div className="flex flex-col flex-grow">
                       <p className="font-extrabold text-lg">{memberName} 님</p>
                       <p className="font-light text-base">{memberId}</p>

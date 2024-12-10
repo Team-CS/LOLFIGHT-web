@@ -57,21 +57,23 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
         <span className="text-3xl font-bold">{props.post?.postTitle}</span>
       </div>
       <div className="text-sm board-post-head__status mt-8 flex justify-between">
-        <div className="flex">
-          <Image
-            className="rounded-full mr-[5px]"
-            width={20}
-            height={20}
-            src={
-              isImageError[props.post?.postWriter] // 작성자 이름으로 이미지 오류 체크
-                ? `${constant.SERVER_URL}/public/default.png`
-                : `${constant.SERVER_URL}/public/member/${props.post?.postWriter}.png`
-            }
-            alt="memberIcon"
-            onError={handleImageError} // 오류 발생 시 핸들러 호출
-            unoptimized
-          />
-          <span className="text-black dark:text-gray-100">
+        <div className="flex items-center">
+          <div className="w-[30px] h-[30px] mr-[5px] my-auto">
+            <Image
+              className="w-full h-full rounded-full"
+              width={35}
+              height={35}
+              src={
+                isImageError[props.post?.postWriter] // 작성자 이름으로 이미지 오류 체크
+                  ? `${constant.SERVER_URL}/public/default.png`
+                  : `${constant.SERVER_URL}/public/member/${props.post?.postWriter}.png`
+              }
+              alt="memberIcon"
+              onError={handleImageError} // 오류 발생 시 핸들러 호출
+              unoptimized
+            />
+          </div>
+          <span className="text-black dark:text-gray-100 font-bold">
             {props.post?.postWriter}
           </span>
           {/* <span className="h-4 w-1px mx-1 bg-gray-700"></span> */}
