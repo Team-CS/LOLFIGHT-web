@@ -69,10 +69,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
                   : `${constant.SERVER_URL}/public/member/${props.post?.postWriter}.png`
               }
               alt="memberIcon"
-              onError={(event) => {
-                event.preventDefault();
-                handleImageError;
-              }} // 오류 발생 시 핸들러 호출
+              onError={handleImageError} // 오류 발생 시 핸들러 호출
               unoptimized
             />
           </div>

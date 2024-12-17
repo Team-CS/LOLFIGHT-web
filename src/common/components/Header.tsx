@@ -503,10 +503,7 @@ const Header = () => {
                             : `${constant.SERVER_URL}/public/member/${memberName}.png`
                         }
                         alt={"memberIcon"}
-                        onError={(event) => {
-                          event.preventDefault();
-                          setIsImageError(true);
-                        }}
+                        onError={(e) => setIsImageError(true)}
                         unoptimized
                       />
                     </div>
