@@ -88,7 +88,10 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
                 : `${constant.SERVER_URL}/public/member/${props.judgment?.judgmentWriter}.png`
             }
             alt="memberIcon"
-            onError={handleImageError} // 오류 발생 시 핸들러 호출
+            onError={(event) => {
+              event.preventDefault();
+              handleImageError;
+            }} // 오류 발생 시 핸들러 호출
             unoptimized
           />
           <span className="text-black dark:text-gray-100">

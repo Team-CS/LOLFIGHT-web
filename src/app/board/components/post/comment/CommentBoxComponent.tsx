@@ -130,7 +130,10 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                       : `${constant.SERVER_URL}/public/member/${comment.writer}.png`
                   }
                   alt="memberIcon"
-                  onError={() => handleImageError(comment.id as string)}
+                  onError={(event) => {
+                    event.preventDefault();
+                    handleImageError(comment.id as string);
+                  }}
                   unoptimized
                 />
               </div>
