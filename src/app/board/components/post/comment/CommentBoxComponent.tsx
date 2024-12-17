@@ -20,7 +20,6 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   const [replyCommentContent, setReplyCommentContent] = useState("");
   const [refresh, setRefresh] = useState(1);
   // const [commentBoxKey, setCommentBoxKey] = useState(0);
-  const [isImageError, setIsImageError] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (props.data && props.data.id) {
@@ -102,10 +101,6 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     };
   };
 
-  const handleImageError = (id: string) => {
-    setIsImageError((prev) => ({ ...prev, [id]: true }));
-  };
-
   return (
     <div className="comment_box">
       {commentList.map((comment) => (
@@ -124,17 +119,12 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                   className="w-full h-full rounded-full"
                   width={35}
                   height={35}
-                  src={
-                    isImageError[comment.id as string] // 타입 단언을 사용하여 오류 방지
-                      ? `${constant.SERVER_URL}/public/default.png`
-                      : `${constant.SERVER_URL}/public/member/${comment.writer}.png`
-                  }
+                  src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
                   alt="memberIcon"
-                  onError={() => handleImageError(comment.id as string)}
                   unoptimized
                 />
               </div>
-              <span className="font-bold">{comment.writer}</span>
+              <span className="font-bold">{comment.writer.memberName}</span>
               <span className="text-gray-400 pl-3 font-normal text-xs">
                 {getDate(comment.commentDate)}
               </span>

@@ -22,7 +22,7 @@ export default function Page() {
     judgment.judgmentTitle.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const paginatedGuilds = filteredJudgments.slice(
+  const paginatedJudgments = filteredJudgments.slice(
     (currentPage - 1) * judgmentPerPage,
     currentPage * judgmentPerPage
   );
@@ -46,6 +46,7 @@ export default function Page() {
   useEffect(() => {
     getJudgmentList().then((response) => {
       setJudgmentList(response.data.data);
+      console.log(response);
       setTotalPages(Math.ceil(response.data.data.length / judgmentPerPage));
     });
   }, []);
@@ -84,7 +85,7 @@ export default function Page() {
 
           <div className="w-full h-[10px] text-sm flex border-t border-b border-slate-500 dark:bg-branddark" />
           <div className="flex flex-col w-full h-full p-[20px] gap-5">
-            {paginatedGuilds.map((judgment) => (
+            {paginatedJudgments.map((judgment) => (
               <JudgmentBox key={judgment.id} judgment={judgment} />
             ))}
           </div>
