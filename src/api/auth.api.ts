@@ -22,17 +22,6 @@ export const authLogin = async (id: string, pw: string) => {
 };
 
 /**
- * 로그아웃
- * @returns
- */
-export const authLogout = async () => {
-  let url = `${baseUrl}/logout`;
-
-  // 로그아웃 요청을 서버로 보냄 (쿠키에서 refresh token 제거)
-  return await axios.post(url, {}, { withCredentials: true });
-};
-
-/**
  * member 회원가입
  * @param memberDTO
  * @returns

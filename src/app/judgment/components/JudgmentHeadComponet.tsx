@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import constant from "@/src/common/constant/constant";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { JudgmentDTO } from "@/src/common/DTOs/judgment/judgment.dto";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 interface JudgmentHeadComponetProps {
   judgment: JudgmentDTO;
@@ -12,6 +13,7 @@ interface JudgmentHeadComponetProps {
 const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
   const [isMine, setIsMine] = useState(false);
   const [isImageError, setIsImageError] = useState<Record<string, boolean>>({});
+  const { member } = useMemberStore();
   const router = useRouter();
   const getDate = (date: Date | undefined) => {
     const today = new Date();
@@ -36,10 +38,8 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
   };
 
   useEffect(() => {
-    const storedName = sessionStorage.getItem("memberName")?.toString();
-
-    if (storedName) {
-      if (props.judgment?.judgmentWriter === storedName) {
+    if (member) {
+      if (props.judgment?.judgmentWriter === member.memberName) {
         setIsMine(true);
       }
     }
@@ -51,7 +51,7 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
       //   deletePost(props.post).then((res) => {
       //     CustomAlert("success", "게시글 삭제", "게시글을 삭제했습니다.");
       //   });
-      router.replace("/board/free");
+      router.push("/board/free");
     };
 
     ButtonAlert(

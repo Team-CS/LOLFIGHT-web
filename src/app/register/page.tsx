@@ -1,17 +1,17 @@
 "use client";
-import { findMember } from "@/src/api/member.api";
+import { findMember, getMemberData } from "@/src/api/member.api";
 import Link from "@/src/common/components/Link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import CustomAlert from "../../common/components/alert/CustomAlert";
 import { authLogin } from "@/src/api/auth.api";
-import { useMember } from "@/src/common/zustand/member.zustand";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 export default function Page() {
   const router = useRouter();
   const [memberId, setMemberId] = useState("");
   const [memberPw, setMemberPw] = useState("");
-  const { member, setMember } = useMember();
+  const { member, setMember } = useMemberStore();
   const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMemberId(e.target.value);
   };
@@ -27,22 +27,23 @@ export default function Page() {
   };
 
   const handleLoginClick = () => {
+    console.log("눌렀잖아");
     authLogin(memberId, memberPw)
       .then((response) => {
-        localStorage.setItem("accessToken", response.data);
-        findMember(memberId)
-          .then((response) => {
-            setMember(response.data.data);
-            CustomAlert("success", "로그인", "로그인 성공.");
-            sessionStorage.setItem("id", response.data.data.id);
-            sessionStorage.setItem("memberId", response.data.data.memberId);
-            sessionStorage.setItem("memberName", response.data.data.memberName);
-            router.replace("/");
-          })
-          .catch((error) => {
-            console.log(error);
-            CustomAlert("warning", "로그인", "아이디 비밀번호를 확인해주세요.");
-          });
+        console.log("왜대답이없어", response.data.redirectUrl);
+        if (response.data.ok) {
+          window.location.href = response.data.redirectUrl;
+        }
+        // findMember(memberId)
+        //   .then((response) => {
+        //     setMember(response.data.data);
+        //     CustomAlert("success", "로그인", "로그인 성공.");
+        //     router.push("/");
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //     CustomAlert("warning", "로그인", "아이디 비밀번호를 확인해주세요.");
+        //   });
       })
       .catch((error) => {
         CustomAlert("warning", "로그인", "아이디 비밀번호를 확인해주세요.");
@@ -57,10 +58,6 @@ export default function Page() {
         우리와 함께하세요
       </span>
       <div className="w-full">
-        {/* <button className="flex font-medium bg-yellow-400 h-10 items-center justify-center rounded-md cursor-pointer w-full my-2">카카오톡으로 로그인</button>
-                            <button className="flex font-medium bg-green-400 h-10 items-center justify-center rounded-md cursor-pointer w-full my-2">구글로 로그인</button>
-                            <button className="flex font-medium text-white bg-black h-10 items-center justify-center rounded-md cursor-pointer w-full my-2">애플로 로그인</button> */}
-        {/* <div className="border-b w-full"></div> */}
         <div className="border border-gray-200 rounded-md my-4 dark:border-gray-700">
           <input
             className="w-full h-12 rounded-md px-2 bg-gray-100 dark:bg-gray-900"

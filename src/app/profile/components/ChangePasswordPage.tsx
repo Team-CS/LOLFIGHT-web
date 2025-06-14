@@ -4,14 +4,14 @@ import CustomAlert from "../../../common/components/alert/CustomAlert";
 import { update } from "@/src/api/member.api";
 import { authLogin } from "@/src/api/auth.api";
 import { useRouter } from "next/navigation";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
-interface Props {
-  member: MemberDTO;
-}
-const ChangePasswordPage = (props: Props) => {
+const ChangePasswordPage = () => {
   const router = useRouter();
   const [currentPassword, setCurrentPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
+  const { member, setMember } = useMemberStore();
+
   const handleCurrentPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentPassword(e.target.value);
   };
@@ -20,7 +20,7 @@ const ChangePasswordPage = (props: Props) => {
   };
   const handleChangeButton = () => {
     if (currentPassword && newPassword) {
-      authLogin(props.member.memberId, currentPassword)
+      authLogin(member!.memberId, currentPassword)
         .then((response) => {
           if (newPassword.length < 8) {
             CustomAlert(
@@ -30,15 +30,15 @@ const ChangePasswordPage = (props: Props) => {
             );
             return;
           } else {
-            const member: MemberDTO = props.member;
-            member.memberPw = newPassword;
+            const updateMember: MemberDTO = member!;
+            updateMember.memberPw = newPassword;
             update(
-              member.id,
-              member.memberId,
-              member.memberPw,
-              member.memberName,
-              member.memberGuild,
-              member.memberGame
+              updateMember.id,
+              updateMember.memberId,
+              updateMember.memberPw,
+              updateMember.memberName,
+              updateMember.memberGuild,
+              updateMember.memberGame
             )
               .then((response) => {
                 CustomAlert(
@@ -47,7 +47,7 @@ const ChangePasswordPage = (props: Props) => {
                   "성공적으로 비밀번호를 변경했습니다."
                 );
                 sessionStorage.clear();
-                router.replace("/register");
+                router.push("/register");
               })
               .catch((error) => {
                 CustomAlert("error", "비밀번호 변경", "에러2");

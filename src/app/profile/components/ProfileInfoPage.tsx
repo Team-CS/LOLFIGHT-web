@@ -4,15 +4,13 @@ import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
 import { updateMemberIcon } from "@/src/api/member.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
-interface Props {
-  member: MemberDTO;
-}
-
-const ProfileInfoPage = (props: Props) => {
+const ProfileInfoPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>("");
+  const { member } = useMemberStore();
 
   const handleChangeIconClick = () => {
     setIsModalOpen(true);
@@ -38,7 +36,7 @@ const ProfileInfoPage = (props: Props) => {
 
   const handleSubmit = () => {
     if (selectedImage) {
-      updateMemberIcon(props.member, selectedImage)
+      updateMemberIcon(member!, selectedImage)
         .then((response) => {
           CustomAlert("success", "프로필 사진 변경", "변경이 완료되었습니다");
           setSelectedImage(null);
@@ -75,7 +73,7 @@ const ProfileInfoPage = (props: Props) => {
             className="w-full h-full rounded-full mr-[20px]"
             width={70}
             height={70}
-            src={`${constant.SERVER_URL}/${props.member.memberIcon}`}
+            src={`${constant.SERVER_URL}/${member!.memberIcon}`}
             alt={"memberIcon"}
             unoptimized
           />
@@ -83,15 +81,15 @@ const ProfileInfoPage = (props: Props) => {
         <div className="info-container flex-col ml-8">
           <div className="flex items-center">
             <p className="font-bold py-2 pr-8">이메일</p>
-            <p>{props.member.memberId}</p>
+            <p>{member!.memberId}</p>
           </div>
           <div className="flex items-center">
             <p className="font-bold py-2 pr-8">닉네임</p>
-            {props.member.memberName}
+            {member!.memberName}
           </div>
           <div className="flex items-center">
             <p className="font-bold py-2 pr-8">가입일</p>
-            {props.member.createdAt?.toString().split("T")[0]}
+            {member!.createdAt?.toString().split("T")[0]}
           </div>
         </div>
       </div>
@@ -103,11 +101,11 @@ const ProfileInfoPage = (props: Props) => {
         <div className="flex flex-col">
           <div className="flex items-center">
             <p className="font-bold py-2 pr-8">인게임 닉네임</p>
-            {props.member.memberGame?.gameName}
+            {member!.memberGame?.gameName}
           </div>
           <div className="flex items-center">
             <p className="font-bold py-2 pr-24">티어</p>
-            {props.member.memberGame?.gameTier}
+            {member!.memberGame?.gameTier}
           </div>
         </div>
       </div>

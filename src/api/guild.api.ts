@@ -1,10 +1,9 @@
 import constant from "../common/constant/constant";
-import axios, { Axios, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { ResponseDTO } from "../common/DTOs/response.dto";
-import { GuildDTO } from "../common/DTOs/guild/guild.dto";
+import { CreateGuildDTO, GuildDTO } from "../common/DTOs/guild/guild.dto";
 import { MemberDTO } from "../common/DTOs/member/member.dto";
 import { GuildInviteDTO } from "../common/DTOs/guild/guild_invite.dto";
-import { GuildInviteSendDTO } from "../common/DTOs/guild/guild_invite_send.dto";
 
 const baseUrl = `${constant.SERVER_URL}/guild`;
 
@@ -14,19 +13,21 @@ const baseUrl = `${constant.SERVER_URL}/guild`;
  * @returns
  */
 export const createGuild = async (
-  guildDTO: GuildDTO,
+  createGuildDTO: CreateGuildDTO,
   guildImage?: File | null
 ): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
   let url = `${baseUrl}`;
 
   const formData = new FormData();
 
-  formData.append("guildMaster", guildDTO.guildMaster);
-  formData.append("guildName", guildDTO.guildName);
-  formData.append("guildDescription", guildDTO.guildDescription);
+  formData.append("guildMaster", createGuildDTO.guildMaster);
+  formData.append("guildName", createGuildDTO.guildName);
+  formData.append("guildDescription", createGuildDTO.guildDescription);
   if (guildImage) {
     formData.append("guildImage", guildImage);
   }
+
+  console.log("formdata", formData);
 
   return await axios.post(url, formData, {
     headers: {
@@ -58,22 +59,6 @@ export const getGuildInfo = async (
 
   const queryParams = `?name=${guildName}`;
   url += queryParams;
-  return await axios.get(url);
-};
-
-/**
- * Guild 길드원 리스트
- * @param guildName
- * @returns
- */
-export const getGuildMemberList = async (
-  guildName: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO[]>>> => {
-  let url = `${baseUrl}/guildMember`;
-
-  const queryParams = `?name=${guildName}`;
-  url += queryParams;
-
   return await axios.get(url);
 };
 

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { createJudgment } from "@/src/api/judgment.api";
 import { JudgmentDTO } from "@/src/common/DTOs/judgment/judgment.dto";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 interface ChampionsMap {
   [key: string]: string;
@@ -20,6 +21,7 @@ interface Summoner {
 }
 export default function Page() {
   const router = useRouter();
+  const { member } = useMemberStore();
 
   const [judgment, setJudgment] = useState<JudgmentDTO>({
     id: 0,
@@ -127,11 +129,12 @@ export default function Page() {
   };
 
   const handleSaveClick = () => {
-    const storedMemberName = sessionStorage.getItem("memberName")!.toString();
-    setJudgment((prevJudgment) => ({
-      ...prevJudgment,
-      judgmentWriter: storedMemberName,
-    }));
+    if (member) {
+      setJudgment((prevJudgment) => ({
+        ...prevJudgment,
+        judgmentWriter: member.memberName,
+      }));
+    }
 
     if (!judgment.judgmentTitle || !judgment.judgmentDesc) {
       CustomAlert(
@@ -166,7 +169,7 @@ export default function Page() {
             "롤로세움",
             "롤로세움 투기장 작성이 완료되었습니다"
           );
-          router.replace("/judgment");
+          router.push("/judgment");
           console.log(response);
         })
         .catch((error) => {
@@ -176,7 +179,7 @@ export default function Page() {
   };
 
   const handleCancelClick = () => {
-    router.replace("/");
+    router.push("/");
   };
 
   // 왼쪽 이미지 클릭 핸들러

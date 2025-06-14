@@ -214,7 +214,7 @@ const SignUpComponent = () => {
               "회원가입",
               "성공적으로 회원가입을 완료했습니다."
             );
-            router.replace("/register");
+            router.push("/register");
           })
           .catch((error) => {
             CustomAlert(
@@ -222,7 +222,7 @@ const SignUpComponent = () => {
               "회원가입",
               "동일한 이메일이 존재하거나, 동일한 닉네임이 존재합니다"
             );
-            router.replace("/register");
+            router.push("/register");
           }); //회원가입 API
       } else {
         CustomAlert("warning", "회원가입", "비밀번호를 확인해주세요.");

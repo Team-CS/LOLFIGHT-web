@@ -7,6 +7,7 @@ import ButtonAlert from "../../../../common/components/alert/ButtonAlert";
 import CustomAlert from "../../../../common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
 import { findMember } from "@/src/api/member.api";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 interface BoardPostHeadComponentProps {
   post: PostDTO;
@@ -15,6 +16,7 @@ interface BoardPostHeadComponentProps {
 const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
   const [isMine, setIsMine] = useState(false);
   const [isImageError, setIsImageError] = useState<Record<string, boolean>>({});
+  const { member } = useMemberStore();
   const router = useRouter();
   const postDateTime = new Date(props.post?.postDate);
   const year = postDateTime.getFullYear();
@@ -22,10 +24,8 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
   const day = postDateTime.getDate().toString().padStart(2, "0");
 
   useEffect(() => {
-    const storedName = sessionStorage.getItem("memberName")?.toString();
-
-    if (storedName) {
-      if (props.post?.postWriter === storedName) {
+    if (member?.memberName) {
+      if (props.post?.postWriter === member.memberName) {
         setIsMine(true);
       }
     }
@@ -36,7 +36,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
       deletePost(props.post).then((res) => {
         CustomAlert("success", "게시글 삭제", "게시글을 삭제했습니다.");
       });
-      router.replace("/board/free");
+      router.push("/board/free");
     };
 
     ButtonAlert(

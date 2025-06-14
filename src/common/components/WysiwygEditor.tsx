@@ -65,7 +65,7 @@ const WysiwygEditor = () => {
   const handleSaveClick = async () => {
     const link = "";
     const editorIns = editorRef.current?.getInstance().getHTML() || "";
-    const strippedHTML = editorIns.replace(/<[^>]*>/g, ""); // HTML 태그 제거
+    const strippedHTML = editorIns.push(/<[^>]*>/g, ""); // HTML 태그 제거
     const storedMemberName = sessionStorage.getItem("memberName")?.toString();
     if (title && strippedHTML) {
       writePost(title, editorIns, storedMemberName!, category).then(
@@ -74,7 +74,7 @@ const WysiwygEditor = () => {
             .filter((link) => link.href !== "/")
             .map((link) => {
               if (link.title === category) {
-                router.replace(link.href + "/" + response.data.data.id);
+                router.push(link.href + "/" + response.data.data.id);
               }
             });
           return;

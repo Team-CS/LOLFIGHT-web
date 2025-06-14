@@ -9,6 +9,7 @@ import { getJudgmentList } from "@/src/api/judgment.api";
 import { JudgmentDTO } from "@/src/common/DTOs/judgment/judgment.dto";
 import JudgmentBox from "./components/JudgmentBox";
 import Pagination from "@mui/material/Pagination";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 export default function Page() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const { member } = useMemberStore();
   const judgmentPerPage = 5;
 
   const filteredJudgments = judgmentList.filter((judgment) =>
@@ -28,9 +30,8 @@ export default function Page() {
   );
 
   const handleWriteClick = () => {
-    const storedId = sessionStorage.getItem("id")?.toString();
-    if (storedId) {
-      router.replace(`/judgment//write`);
+    if (member) {
+      router.push(`/judgment//write`);
     } else {
       CustomAlert("info", "글쓰기", "로그인이 필요합니다");
     }

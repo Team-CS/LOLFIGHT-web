@@ -6,7 +6,7 @@ import { writeReplyComment } from "@/src/api/comment.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
 import Image from "next/image";
-import { useMember } from "@/src/common/zustand/member.zustand";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { findMemberByName } from "@/src/api/member.api";
 
 interface CommentBoxComponentProps {
@@ -19,6 +19,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   const [openCommentId, setOpenCommentId] = useState<string>("");
   const [replyCommentContent, setReplyCommentContent] = useState("");
   const [refresh, setRefresh] = useState(1);
+  const { member } = useMemberStore();
   // const [commentBoxKey, setCommentBoxKey] = useState(0);
 
   useEffect(() => {
@@ -39,15 +40,14 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   };
 
   const handleSaveReplyButtonClick = () => {
-    const storedId = sessionStorage.getItem("id")?.toString();
-    if (!storedId) {
+    if (!member?.id) {
       CustomAlert("info", "답글", "로그인이 필요합니다.");
     } else if (!replyCommentContent || replyCommentContent.trim() === "") {
       CustomAlert("info", "답글", "답글을 작성해주세요");
     } else {
       writeReplyComment(
         props.data,
-        storedId,
+        member.id,
         replyCommentContent,
         openCommentId
       ).then((res) => {

@@ -7,7 +7,6 @@ import CustomAlert from "../../../common/components/alert/CustomAlert";
 import {
   destroyGuild,
   getGuildInfo,
-  getGuildMemberList,
   getInviteGuildList,
   inviteAccept,
   inviteReject,
@@ -16,23 +15,20 @@ import GuildMemberBox from "./GuildMemberBox";
 import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
 import { GuildInviteDTO } from "@/src/common/DTOs/guild/guild_invite.dto";
 import { leaveMember } from "@/src/api/member.api";
-import Image from "next/image";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
-interface Props {
-  member: MemberDTO;
-}
-const GuildManagePage = (props: Props) => {
-  const [guildMembers, setGuildMembers] = useState<MemberDTO[]>([]);
+const GuildManagePage = () => {
   const [inviteMembers, setInviteMembers] = useState<GuildInviteDTO[]>([]);
   const [guild, setGuild] = useState<GuildDTO>();
   const [currentTab, setCurrentTab] = useState("description");
   const [checked, setChecked] = useState(false);
   const [memberChecked, setMemberChecked] = useState(false);
+  const { member } = useMemberStore();
 
   const router = useRouter();
   const handleCreateGuild = () => {
-    // if (props.member.memberGame) {
-    router.replace("/league/guild/create");
+    // if (member!.memberGame) {
+    router.push("/league/guild/create");
     // } else {
     //   CustomAlert(
     //     "warning",
@@ -55,9 +51,9 @@ const GuildManagePage = (props: Props) => {
   const deleteGuild = () => {
     //길드마스터 길드해체
     if (checked) {
-      destroyGuild(props.member.memberGuild!.guildName).then((response) => {
+      destroyGuild(member!.memberGuild!.guildName).then((response) => {
         CustomAlert("success", "길드해체", "성공적으로 길드가 해체되었습니다.");
-        router.replace("/");
+        router.push("/");
       });
     } else {
       CustomAlert(
@@ -70,9 +66,9 @@ const GuildManagePage = (props: Props) => {
   const leaveGuild = () => {
     //길드원 길드탈퇴
     if (memberChecked) {
-      leaveMember(props.member.memberId).then((response) => {
+      leaveMember(member!.memberId).then((response) => {
         CustomAlert("success", "길드탈퇴", "성공적으로 길드를 탈퇴했습니다.");
-        router.replace("/");
+        router.push("/");
       });
     } else {
       CustomAlert(
@@ -108,23 +104,14 @@ const GuildManagePage = (props: Props) => {
   };
 
   useEffect(() => {
-    if (
-      !(
-        props.member.memberGuild === null ||
-        props.member.memberGuild === undefined
-      )
-    ) {
-      getGuildMemberList(props.member.memberGuild!.guildName)
+    if (!(member!.memberGuild === null || member!.memberGuild === undefined)) {
+      getGuildInfo(member!.memberGuild.guildName)
         .then((response) => {
-          setGuildMembers(response.data.data);
-        })
-        .catch((error) => {});
-      getGuildInfo(props.member.memberGuild.guildName)
-        .then((response) => {
+          console.log(response.data.data);
           setGuild(response.data.data);
         })
         .catch((error) => {});
-      getInviteGuildList(props.member.memberGuild.guildName)
+      getInviteGuildList(member!.memberGuild.guildName)
         .then((response) => {
           setInviteMembers(response.data.data);
         })
@@ -136,8 +123,7 @@ const GuildManagePage = (props: Props) => {
 
   return (
     <div className="w-1200px h-full mx-auto pt-4">
-      {props.member.memberGuild === null ||
-      props.member.memberGuild === undefined ? (
+      {member!.memberGuild === null || member!.memberGuild === undefined ? (
         <div className="flex w-full py-10">
           <div className="flex flex-col w-full border-2 border-black rounded-lg p-7">
             <div className="mb-10">
@@ -198,7 +184,7 @@ const GuildManagePage = (props: Props) => {
         <div className="pt-4">
           {/* <div className=" w-full h-80 left-0 top-32 z-1">
             <img
-              src={`${constant.SERVER_URL}/${props.member.memberGuild?.guildIcon}`}
+              src={`${constant.SERVER_URL}/${member!.memberGuild?.guildIcon}`}
               alt="GuildBanner"
               className="object-cover object-center w-full h-full"
             />
@@ -207,21 +193,19 @@ const GuildManagePage = (props: Props) => {
             <div className="flex items-center">
               <div className="rounded p-2 w-32 h-32 z-10">
                 <img
-                  src={`${constant.SERVER_URL}/${props.member.memberGuild?.guildIcon}`}
+                  src={`${constant.SERVER_URL}/${guild?.guildIcon}`}
                   alt="GuildIcon"
                   className="object-cover w-full h-full"
                 />
               </div>
               <div className="grid mx-2 h-28 text-center items-end">
-                <h3 className="text-3xl font-bold mx-4">
-                  {props.member.memberGuild.guildName}
-                </h3>
+                <h3 className="text-3xl font-bold mx-4">{guild?.guildName}</h3>
               </div>
             </div>
             <div className="guildinfo-container ml-5">
               <div className="flex items-center w-210px">
                 <p className="font-bold py-2 pr-8">길드마스터</p>
-                <p>{props.member.memberGuild.guildMaster}</p>
+                <p>{guild?.guildMaster}</p>
               </div>
               <div className="flex gap-12">
                 <div className="flex items-center w-210px">
@@ -230,13 +214,13 @@ const GuildManagePage = (props: Props) => {
                 </div>
                 <div className="flex items-center w-210px">
                   <p className="font-bold py-2 pr-8">길드인원</p>
-                  <p>{props.member.memberGuild.guildMembers}</p>
+                  <p>{guild?.guildMembers.length}</p>
                 </div>
               </div>
               <div className="flex gap-12">
                 <div className="flex items-center w-210px">
                   <p className="font-bold py-2 pr-8"> 길드티어</p>
-                  <p> {props.member.memberGuild.guildTier}</p>
+                  <p> {guild?.guildTier}</p>
                 </div>
                 <div className="flex items-center w-210px">
                   <p className="font-bold py-2 pr-8">래더점수</p>
@@ -281,8 +265,7 @@ const GuildManagePage = (props: Props) => {
                 >
                   길드원
                 </button>
-                {props.member.memberName !==
-                props.member.memberGuild.guildMaster ? (
+                {member!.memberName !== member!.memberGuild.guildMaster ? (
                   <button
                     className="font-semi px-8 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     onClick={() => changeTab("leave")}
@@ -290,8 +273,7 @@ const GuildManagePage = (props: Props) => {
                     길드탈퇴
                   </button>
                 ) : null}
-                {props.member.memberName ===
-                props.member.memberGuild.guildMaster ? (
+                {member!.memberName === member!.memberGuild.guildMaster ? (
                   <button
                     className="font-semi px-8 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     onClick={() => changeTab("applicants")}
@@ -299,8 +281,7 @@ const GuildManagePage = (props: Props) => {
                     가입신청자
                   </button>
                 ) : null}
-                {props.member.memberName ===
-                props.member.memberGuild.guildMaster ? (
+                {member!.memberName === member!.memberGuild.guildMaster ? (
                   <button
                     className="font-semi px-8 py-3 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                     onClick={() => changeTab("delete")}
@@ -312,27 +293,21 @@ const GuildManagePage = (props: Props) => {
               <div className="mt-8 ">
                 {currentTab === "description" && (
                   <div className="font-bold text-xl p-8 border border-gray-700 rounded-lg dark:bg-gray-900 dark:text-white">
-                    {props.member.memberGuild.guildDescription}
+                    {member!.memberGuild.guildDescription}
                   </div>
                 )}
                 {currentTab === "members" && (
                   <div>
-                    <div className="flex w-full ">
-                      {/* <p className="w-250px text-light text-sm ml-12">
-                          닉네임
-                        </p>
-                        <p className="w-250px text-light text-sm">소환사명</p>
-                        <p className="w-250px text-light text-sm">티어</p> */}
-                      <h3 className="text-2xl font-bold"></h3>
-                    </div>
                     <div className="font-bold text-xl">
-                      {guildMembers.map((member) => (
+                      {guild?.guildMembers.map((member) => (
                         <GuildMemberBox
                           key={member.id}
-                          guildIcon={`${constant.SERVER_URL}/${props.member.memberGuild?.guildIcon}`}
+                          guildIcon={`${constant.SERVER_URL}/${
+                            member!.memberGuild?.guildIcon
+                          }`}
                           guildMember={member}
                           guild={guild!}
-                          user={props.member.memberName}
+                          user={member!.memberName}
                         />
                       ))}
                     </div>

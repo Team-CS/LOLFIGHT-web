@@ -5,13 +5,12 @@ import { useState } from "react";
 import CustomAlert from "../../../common/components/alert/CustomAlert";
 import { deleteMember } from "@/src/api/member.api";
 import { useRouter } from "next/navigation";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
-interface Props {
-  member: MemberDTO;
-}
-const WithdrawalPage = (props: Props) => {
+const WithdrawalPage = () => {
   const router = useRouter();
   const [checked, setChecked] = useState(false);
+  const { member } = useMemberStore();
 
   const handleCheckboxChange = () => {
     setChecked(!checked);
@@ -19,10 +18,10 @@ const WithdrawalPage = (props: Props) => {
 
   const handleWithdrawal = () => {
     if (checked) {
-      deleteMember(props.member.memberId)
+      deleteMember(member!.memberId)
         .then((response) => {
           sessionStorage.clear();
-          router.replace("/register");
+          router.push("/register");
           CustomAlert(
             "success",
             "회원탈퇴",

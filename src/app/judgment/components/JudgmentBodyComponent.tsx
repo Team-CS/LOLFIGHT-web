@@ -8,6 +8,7 @@ import Image from "next/image";
 import JudgmentDataCard from "./JudgmentDataCard";
 import constant from "@/src/common/constant/constant";
 import { getVoteFaction, voteFactionJudgment } from "@/src/api/judgment.api";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 interface JudgmentBodyComponentProp {
   judgment: JudgmentDTO;
@@ -18,13 +19,12 @@ const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
   const [commentContent, setCommentContent] = useState("");
   const [commentBoxKey, setCommentBoxKey] = useState(0); // State for key prop
   const [like, setLike] = useState<string>("none");
+  const { member } = useMemberStore();
 
   useEffect(() => {
-    const storedId = sessionStorage.getItem("id")?.toString();
-
-    if (storedId) {
+    if (member?.id) {
       if (props.judgment) {
-        getVoteFaction(props.judgment.id, storedId)
+        getVoteFaction(props.judgment.id, member.id)
           .then((response) => {
             setLike(response.data.data);
           })
@@ -40,8 +40,7 @@ const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
   };
 
   const handleSaveCommentClick = () => {
-    const storedId = sessionStorage.getItem("id")?.toString();
-    if (!storedId) {
+    if (!member) {
       CustomAlert("info", "댓글", "로그인이 필요합니다");
     } else if (!commentContent || commentContent.trim() === "") {
       CustomAlert("info", "댓글", "댓글을 작성해주세요");
@@ -57,12 +56,11 @@ const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
   };
 
   const handleFactionVoteClick = (side: string) => {
-    const storedId = sessionStorage.getItem("id")?.toString();
-    if (!storedId) {
+    if (!member) {
       CustomAlert("info", "투표", "로그인이 필요합니다");
     } else {
       if (side === "left") {
-        voteFactionJudgment("left", props.judgment.id, storedId)
+        voteFactionJudgment("left", props.judgment.id, member.id)
           .then((response) => {
             // console.log(response);
             CustomAlert("success", "투표", "투표가 완료되었습니다.");
@@ -74,7 +72,7 @@ const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
             CustomAlert("error", "투표", "에러");
           });
       } else {
-        voteFactionJudgment("right", props.judgment.id, storedId)
+        voteFactionJudgment("right", props.judgment.id, member.id)
           .then((response) => {
             // console.log(response);
             CustomAlert("success", "투표", "투표가 완료되었습니다.");

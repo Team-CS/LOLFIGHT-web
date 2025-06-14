@@ -1,10 +1,9 @@
 "use client";
-// 버튼쓸거면 놔두고 버튼 안쓸거면 지우기
 import { FaSearch } from "react-icons/fa";
-import { getPostList } from "@/src/api/post.api";
 import boardNavLinks from "@/src/data/boardNavLinks";
 import { useRouter } from "next/navigation";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 interface BoardHeadComponentProps {
   head: {
@@ -20,11 +19,11 @@ function getTitleFromSlug(slug: string) {
 
 const BoardHeadComponent = (props: BoardHeadComponentProps) => {
   const router = useRouter();
+  const { member } = useMemberStore();
 
   const handleWriteClick = () => {
-    const storedId = sessionStorage.getItem("id")?.toString();
-    if (storedId) {
-      router.replace(`/board/${props.head.slug}/write`);
+    if (member) {
+      router.push(`/board/${props.head.slug}/write`);
     } else {
       CustomAlert("info", "글쓰기", "로그인이 필요합니다");
     }

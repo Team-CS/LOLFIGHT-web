@@ -2,34 +2,26 @@
 import React, { useEffect, useState } from "react";
 import ProfileInfoPage from "../profile/components/ProfileInfoPage";
 import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
-import { findMember } from "@/src/api/member.api";
+import { findMember, getMemberData } from "@/src/api/member.api";
 import ChangePasswordPage from "./components/ChangePasswordPage";
 import WithdrawalPage from "./components/WithdrawalPage";
 import { useRouter } from "next/navigation";
 import CustomAlert from "../../common/components/alert/CustomAlert";
 import GuildManagePage from "./components/GuildManagePage";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 export default function Page() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState("profile"); // 초기 페이지: 프로필 페이지
-  const [member, setMember] = useState<MemberDTO>({
-    id: "",
-    memberId: "",
-    memberPw: "",
-    memberName: "",
-    memberIcon: "",
-    memberGuild: null,
-    memberGame: null,
-  });
+  const { member, setMember } = useMemberStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedMemberId = sessionStorage.getItem("memberId")?.toString();
-      if (!storedMemberId) {
-        router.replace("/");
+      if (!member) {
+        router.push("/");
         CustomAlert("warning", "프로필", "로그인후 이용하실 수 있습니다.");
       } else {
-        findMember(storedMemberId).then((response) => {
+        getMemberData().then((response) => {
           const memberData: MemberDTO = response.data.data;
           setMember(memberData);
         });
@@ -75,12 +67,16 @@ export default function Page() {
           <button onClick={() => changePage("announcement")}>공지사항</button> */}
         </div>
         {/* <div className="w-full h-48 bg-black text-white">여기 커버 사진</div> */}
-        <div className="w-full h-full rounded bg-white dark:bg-dark">
-          {currentPage === "profile" && <ProfileInfoPage member={member} />}
-          {currentPage === "password" && <ChangePasswordPage member={member} />}
-          {currentPage === "withdrawal" && <WithdrawalPage member={member} />}
-          {currentPage === "guild" && <GuildManagePage member={member} />}
-        </div>
+        {member ? (
+          <div className="w-full h-full rounded bg-white dark:bg-dark">
+            {currentPage === "profile" && <ProfileInfoPage />}
+            {currentPage === "password" && <ChangePasswordPage />}
+            {currentPage === "withdrawal" && <WithdrawalPage />}
+            {currentPage === "guild" && <GuildManagePage />}
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </>
   );

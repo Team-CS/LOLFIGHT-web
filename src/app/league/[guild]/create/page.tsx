@@ -2,23 +2,22 @@
 import React, { useEffect, useState } from "react";
 import CutsomAlert from "../../../../common/components/alert/CustomAlert";
 import { createGuild } from "@/src/api/guild.api";
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { CreateGuildDTO, GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
 import { useRouter } from "next/navigation";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 export default function Page() {
   const router = useRouter();
+  const { member } = useMemberStore();
   const [guildImage, setGuildImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>("");
-  const [guild, setGuild] = useState<GuildDTO>({
-    id: "",
-    guildMaster: "",
-    guildName: "",
-    guildMembers: 1,
-    guildDescription: "",
-    guildTier: "",
-    guildIcon: "",
-    guildRecord: null,
-  });
+  const [guildName, setGuildName] = useState<string>();
+  const [guildDescription, setGuildDescription] = useState<string>();
+  const [guildIcon, setGuildIcon] = useState<string>();
+
+  useEffect(() => {
+    console.log(member);
+  }, []);
 
   //====================================================================//
   //Valid Check
@@ -60,16 +59,6 @@ export default function Page() {
   };
   //====================================================================//
 
-  const handleGuildNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGuild({ ...guild, guildName: e.target.value });
-  };
-
-  const handleGuildDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setGuild({ ...guild, guildDescription: e.target.value });
-  };
-
   const handleImgUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setGuildImage(e.target.files[0]);
@@ -83,36 +72,34 @@ export default function Page() {
   };
 
   const handleCreateGuild = () => {
-    if (guild.guildName !== "") {
-      if (
-        isGuildNameValid(guild.guildName) &&
-        isGuildImageValid(guildImage!) &&
-        isGuildDescriptionVaild(guild.guildDescription)
-      ) {
-        createGuild(guild, guildImage)
-          .then((response) => {
-            CutsomAlert("success", "길드생성", "길드생성이 완료되었습니다.");
-            router.replace("/");
-          })
-          .catch((error) => {
-            CutsomAlert(
-              "warning",
-              "길드생성",
-              "동일한 길드명이 존재하거나, 길드에 속해있습니다."
-            );
-          });
-      }
-    } else {
-      CutsomAlert("warning", "길드생성", "길드명을 입력해주세요.");
+    if (
+      isGuildNameValid(guildName!) &&
+      isGuildImageValid(guildImage!) &&
+      isGuildDescriptionVaild(guildDescription!)
+    ) {
+      const guildData: CreateGuildDTO = {
+        guildMaster: member!.memberName,
+        guildName: guildName!,
+        guildDescription: guildDescription!,
+        guildIcon: guildIcon!,
+      };
+
+      console.log("data", guildData);
+
+      createGuild(guildData, guildImage)
+        .then((response) => {
+          CutsomAlert("success", "길드생성", "길드생성이 완료되었습니다.");
+          router.push("/");
+        })
+        .catch((error) => {
+          CutsomAlert(
+            "warning",
+            "길드생성",
+            "동일한 길드명이 존재하거나, 길드에 속해있습니다."
+          );
+        });
     }
   };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedMemberName = sessionStorage.getItem("memberName");
-      setGuild({ ...guild, guildMaster: storedMemberName! });
-    }
-  }, []);
 
   return (
     <div className="w-full h-full">
@@ -147,7 +134,7 @@ export default function Page() {
                   className="w-1/2 h-12 rounded-md px-2 bg-gray-50 border border-black-200 dark:text-gray-100 dark:bg-black dark:border-gray-700"
                   type="text"
                   placeholder="길드명 (최대 12글자)"
-                  onChange={handleGuildNameChange}
+                  onChange={(e) => setGuildName(e.target.value)}
                 />
               </div>
             </div>
@@ -157,7 +144,7 @@ export default function Page() {
                 <textarea
                   className="w-1/2 max-h-32 rounded-md px-2 bg-gray-50 border border-black-200  dark:text-gray-100 dark:bg-black dark:border-gray-700"
                   placeholder="길드 소개글을 입력해주세요 (최대 40글자)"
-                  onChange={handleGuildDescriptionChange}
+                  onChange={(e) => setGuildDescription(e.target.value)}
                 />
               </div>
             </div>

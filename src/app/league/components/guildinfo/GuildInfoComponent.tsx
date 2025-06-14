@@ -13,7 +13,7 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
 
   const handleGuildInfo = () => {
     const encodedGuildName = encodeURIComponent(props.guild.guildName);
-    router.replace(`/league/${encodedGuildName}`);
+    router.push(`/league/${encodedGuildName}`);
   };
 
   return (
@@ -49,7 +49,7 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
         {props.guild.guildDescription}
       </div>
       <div className="guild-info__members w-1/12 text-center">
-        {props.guild.guildMembers}
+        {props.guild.guildMembers.length}
       </div>
       <div className="guild-info__win w-1/12 text-center">
         {props.guild.guildRecord!.recordVictory}승

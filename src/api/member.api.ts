@@ -1,49 +1,20 @@
 import constant from "../common/constant/constant";
 import { MemberDTO } from "../common/DTOs/member/member.dto";
-import { TokenDTO } from "../common/DTOs/member/token.dto";
-import axios, { Axios, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { ResponseDTO } from "../common/DTOs/response.dto";
 import { GuildDTO } from "../common/DTOs/guild/guild.dto";
 import { MemberGameDTO } from "../common/DTOs/member/member_game.dto";
-import api from "./interceptors/axiosInstance";
+import { deleteData, getData, patchData } from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/member`;
 
-// /**
-//  * member 회원가입
-//  * @param memberDTO
-//  * @returns
-//  */
-// export const signUp = async (
-//   memberDTO: MemberDTO
-// ): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
-//   let url = `${baseUrl}`;
-//   const body = {
-//     memberId: memberDTO.memberId,
-//     memberPw: memberDTO.memberPw,
-//     memberName: memberDTO.memberName,
-//   };
+export const getMemberData = (): Promise<
+  AxiosResponse<ResponseDTO<MemberDTO>>
+> => {
+  let url = `${baseUrl}/find`;
 
-//   return await axios.post(url, body);
-// };
-
-// /**
-//  * member 로그인
-//  * @param id
-//  * @param pw
-//  * @returns
-//  */
-// export const login = async (
-//   id: string,
-//   pw: string
-// ): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
-//   let url = `${baseUrl}/login`;
-
-//   let queryParams = `?id=${id}&pw=${pw}`;
-//   url += queryParams;
-
-//   return await axios.get(url);
-// };
+  return getData(url);
+};
 
 /**
  * member 정보변경
@@ -69,7 +40,7 @@ export const update = async (
     memberGame: memberGame,
   };
 
-  return await api.patch(url, body);
+  return await patchData(url, body);
 };
 
 /**
@@ -86,7 +57,7 @@ export const leaveMember = async (
 
   url += queryParams;
 
-  return api.patch(url);
+  return patchData(url);
 };
 
 /**
@@ -101,7 +72,7 @@ export const findMember = async (
 
   let queryParams = `?id=${id}`;
   url += queryParams;
-  return await api.get(url);
+  return await getData(url);
 };
 
 /**
@@ -116,7 +87,7 @@ export const findMemberByName = async (
 
   let queryParams = `?name=${name}`;
   url += queryParams;
-  return await api.get(url);
+  return await getData(url);
 };
 
 /**
@@ -131,7 +102,7 @@ export const deleteMember = async (
 
   let queryParams = `?id=${id}`;
   url += queryParams;
-  return await api.delete(url);
+  return await deleteData(url);
 };
 
 /**
@@ -153,7 +124,7 @@ export const updateMemberIcon = async (
   if (memberIcon) {
     formData.append("memberIcon", memberIcon);
   }
-  return await api.patch(url, formData, {
+  return await patchData(url, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

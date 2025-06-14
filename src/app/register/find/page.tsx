@@ -192,7 +192,7 @@ export default function Page() {
               "비밀번호 변경",
               "성공적으로 비밀번호 변경을 완료했습니다."
             );
-            router.replace("/register");
+            router.push("/register");
           })
           .catch((error) => {
             CustomAlert(
@@ -200,7 +200,7 @@ export default function Page() {
               "비밀번호 변경",
               "동일한 이메일이 존재합니다."
             );
-            router.replace("/register");
+            router.push("/register");
           }); //비밀번호 변경 API
       } else {
         CustomAlert("warning", "비밀번호 변경", "비밀번호를 확인해주세요.");

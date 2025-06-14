@@ -8,31 +8,40 @@ import LeagueHeaderComponent from "./league/components/LeagueHeaderComponent";
 import { GuildDTO } from "../common/DTOs/guild/guild.dto";
 import { getGuildList } from "@/src/api/guild.api";
 import { useState, useEffect } from "react";
+import { getCookie } from "../utils/cookie/cookie";
 
 export default function Page() {
   const [guildList, setGuildList] = useState<GuildDTO[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getGuildList()
-      .then((response) => {
-        const sortedGuilds = response.data.data.sort(
-          (a: GuildDTO, b: GuildDTO) => {
-            const rankA =
-              a.guildRecord?.recordRanking !== "기록없음"
-                ? parseInt(a.guildRecord!.recordRanking, 10)
-                : Infinity;
-            const rankB =
-              b.guildRecord?.recordRanking !== "기록없음"
-                ? parseInt(b.guildRecord!.recordRanking, 10)
-                : Infinity;
-            return rankA - rankB;
-          }
-        );
-        setGuildList(sortedGuilds);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    try {
+      setIsLoading(true);
+      getGuildList()
+        .then((response) => {
+          const sortedGuilds = response.data.data.sort(
+            (a: GuildDTO, b: GuildDTO) => {
+              const rankA =
+                a.guildRecord?.recordRanking !== "기록없음"
+                  ? parseInt(a.guildRecord!.recordRanking, 10)
+                  : Infinity;
+              const rankB =
+                b.guildRecord?.recordRanking !== "기록없음"
+                  ? parseInt(b.guildRecord!.recordRanking, 10)
+                  : Infinity;
+              return rankA - rankB;
+            }
+          );
+          setGuildList(sortedGuilds);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log("Guild fetch error");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   return (
@@ -42,9 +51,17 @@ export default function Page() {
       <div className="w-1200px mx-auto mb-16">
         <LeagueHeaderComponent guildLength={guildList.length} />
         <div className="flex flex-col">
-          {guildList.map((guild) => (
-            <GuildInfoComponent key={guild.id} guild={guild} />
-          ))}
+          {isLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <p>로딩 중...</p>
+            </div>
+          ) : (
+            <>
+              {guildList.map((guild) => (
+                <GuildInfoComponent key={guild.id} guild={guild} />
+              ))}
+            </>
+          )}
         </div>
       </div>
     </>

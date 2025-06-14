@@ -17,6 +17,7 @@ import remarkGfm from "remark-gfm";
 import CommentBoxComponent from "./comment/CommentBoxComponent";
 import { useRouter } from "next/navigation";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 interface BoardPostBodyComponentProps {
   data: PostDTO;
@@ -28,16 +29,16 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
   const [commentContent, setCommentContent] = useState("");
   const [commentBoxKey, setCommentBoxKey] = useState(0); // State for key prop
   const [like, setLike] = useState(0);
+  const { member } = useMemberStore();
 
   useEffect(() => {
     setContent(props.data?.postContent);
   }, [props.data]);
 
   useEffect(() => {
-    const storedId = sessionStorage.getItem("id")?.toString();
-    if (storedId) {
+    if (member) {
       if (props.data) {
-        getLike(props.data, storedId).then((res) => {
+        getLike(props.data, member.id).then((res) => {
           if (res.data.data) {
             setLike(1);
           } else {
@@ -53,9 +54,8 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
   };
 
   const handleOnClick = () => {
-    const storedId = sessionStorage.getItem("id")?.toString();
-    if (storedId) {
-      likePost(props.data, storedId).then((res) => {
+    if (member) {
+      likePost(props.data, member.id).then((res) => {
         router.refresh();
         if (like === 0) {
           setLike(1);
@@ -69,13 +69,12 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
   };
 
   const handleSaveCommentClick = () => {
-    const storedId = sessionStorage.getItem("id")?.toString();
-    if (!storedId) {
+    if (!member) {
       CustomAlert("info", "댓글", "로그인이 필요합니다");
     } else if (!commentContent || commentContent.trim() === "") {
       CustomAlert("info", "댓글", "댓글을 작성해주세요");
     } else {
-      writeComment(props.data, storedId, commentContent).then((res) => {
+      writeComment(props.data, member.id, commentContent).then((res) => {
         router.refresh();
         setCommentBoxKey((prevKey) => prevKey + 1);
         setCommentContent("");
