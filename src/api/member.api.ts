@@ -16,28 +16,27 @@ export const getMemberData = (): Promise<
   return getData(url);
 };
 
-/**
- * member 정보변경
- * @param memberDTO
- * @returns
- */
-export const update = async (
-  id?: string,
-  memberId?: string,
-  memberPw?: string,
-  memberName?: string,
-  memberGuild?: GuildDTO | null,
-  memberGame?: MemberGameDTO | null
+export const updatePassword = async (
+  currentPassword: string,
+  newPassword: string
 ): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
-  let url = `${baseUrl}`;
+  let url = `${baseUrl}/password`;
 
   const body = {
-    id: id,
-    memberId: memberId,
-    memberPw: memberPw,
-    memberName: memberName,
-    memberGuild: memberGuild,
-    memberGame: memberGame,
+    currentPassword: currentPassword,
+    newPassword: newPassword,
+  };
+
+  return await patchData(url, body);
+};
+
+export const updateNickname = async (
+  nickname: string
+): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+  let url = `${baseUrl}/nickname`;
+
+  const body = {
+    nickname: nickname,
   };
 
   return await patchData(url, body);
@@ -112,15 +111,11 @@ export const deleteMember = async (
  * @returns
  */
 export const updateMemberIcon = async (
-  memberDTO: MemberDTO,
   memberIcon?: File | null
 ): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
   let url = `${baseUrl}/icon`;
 
   const formData = new FormData();
-
-  formData.append("memberId", memberDTO.memberId);
-  formData.append("memberName", memberDTO.memberName);
   if (memberIcon) {
     formData.append("memberIcon", memberIcon);
   }

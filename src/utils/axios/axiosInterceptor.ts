@@ -75,7 +75,7 @@ export const onErrorResponse = async (error: AxiosError) => {
         console.log("토큰 재발급 시도 중...", isRefreshing);
 
         const refreshTokenResponse = await axiosInstance.post(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/refresh`,
+          `${process.env.NEXT_PUBLIC_SERVER_HOST}/auth/refresh`,
           {},
           {
             headers: { Authorization: `Bearer ${refreshToken}` },
@@ -115,6 +115,7 @@ export const onErrorResponse = async (error: AxiosError) => {
         alert("토큰 재발급에 실패했습니다.");
         isRefreshing = false;
         window.location.href = "/register";
+        setMember(null);
         return Promise.reject(e);
       } finally {
         isRefreshing = false;

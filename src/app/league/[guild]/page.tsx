@@ -149,7 +149,6 @@ export default function GuildPage() {
                         guildIcon={`${constant.SERVER_URL}/${guild?.guildIcon}`}
                         guildMember={member}
                         guild={guild!}
-                        user={member.memberName}
                       />
                     ))}
                   </div>

@@ -15,10 +15,6 @@ export default function Page() {
   const [guildDescription, setGuildDescription] = useState<string>();
   const [guildIcon, setGuildIcon] = useState<string>();
 
-  useEffect(() => {
-    console.log(member);
-  }, []);
-
   //====================================================================//
   //Valid Check
   //====================================================================//
@@ -47,11 +43,11 @@ export default function Page() {
   };
 
   const isGuildDescriptionVaild = (guildDescription: string) => {
-    if (guildDescription.length > 40) {
+    if (guildDescription.length >= 80) {
       CutsomAlert(
         "warning",
         "길드생성",
-        "길드소개글은 40글자 이내로 작성해주세요."
+        "길드소개글은 80글자 이내로 작성해주세요."
       );
       return false;
     }
@@ -84,8 +80,6 @@ export default function Page() {
         guildIcon: guildIcon!,
       };
 
-      console.log("data", guildData);
-
       createGuild(guildData, guildImage)
         .then((response) => {
           CutsomAlert("success", "길드생성", "길드생성이 완료되었습니다.");
@@ -111,7 +105,7 @@ export default function Page() {
               <div className="flex flex-col p-3 items-center border border-brandcolor gap-3 dark:border-gray-700">
                 {guildImage === null ? (
                   <div>
-                    <img src="http://via.placeholder.com/50x50" alt="" />
+                    <img src="https://placehold.co/50x50" alt="" />
                   </div>
                 ) : (
                   <div>

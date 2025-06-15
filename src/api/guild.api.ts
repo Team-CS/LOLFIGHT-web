@@ -27,8 +27,6 @@ export const createGuild = async (
     formData.append("guildImage", guildImage);
   }
 
-  console.log("formdata", formData);
-
   return await axios.post(url, formData, {
     headers: {
       "Content-Type": "multipart/form-data",

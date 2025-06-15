@@ -1,6 +1,7 @@
 import { MailDTO } from "../common/DTOs/mail/mail.dto";
 import axios, { AxiosResponse } from "axios";
 import constant from "../common/constant/constant";
+import { getData, patchData, postData } from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/mail`;
 
@@ -18,7 +19,7 @@ export const giveMailCode = async (
     mailAddr: mailDTO.mailAddr,
   };
 
-  return await axios.post(url, body);
+  return await postData(url, body);
 };
 
 /**
@@ -36,5 +37,15 @@ export const sendMailAuth = async (
     mailCode: mailDTO.mailCode,
   };
 
-  return await axios.get(url, { params });
+  return await getData(url, { params });
+};
+
+export const resetPassword = async (mailDTO: MailDTO): Promise<void> => {
+  let url = `${baseUrl}/password-reset`;
+
+  const body = {
+    mailAddr: mailDTO.mailAddr,
+  };
+
+  await postData(url, body);
 };

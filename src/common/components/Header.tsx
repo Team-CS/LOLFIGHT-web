@@ -37,7 +37,6 @@ const Header = () => {
   const eventBoardId = 4;
 
   useEffect(() => {
-    console.log();
     getRecentPostList(freeBoardId).then((response) => {
       setFreePostList(response.data.data);
     });

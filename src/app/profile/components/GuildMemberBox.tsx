@@ -4,18 +4,20 @@ import ButtonAlert from "../../../common/components/alert/ButtonAlert";
 import CustomAlert from "../../../common/components/alert/CustomAlert";
 import { changeGuildMaster, expulsionGuildMember } from "@/src/api/guild.api";
 import constant from "@/src/common/constant/constant";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 interface Props {
   guildIcon: string;
   guildMember: MemberDTO;
   guild: GuildDTO;
-  user: string;
 }
 
 const GuildMemberBox = (props: Props) => {
+  const { guildIcon, guildMember, guild } = props;
+  const { member } = useMemberStore();
   const expulsionMember = (member: MemberDTO) => {
     const expulsion = () => {
-      expulsionGuildMember(member.memberName, props.guild.guildName)
+      expulsionGuildMember(member.memberName, guild.guildName)
         .then((response) => {
           CustomAlert(
             "success",
@@ -61,54 +63,53 @@ const GuildMemberBox = (props: Props) => {
   };
 
   return (
-    <div className="flex w-full p-2 dark:bg-dark border-b border-gray-700">
-      <div className="flex w-250px items-center text-16px font-medium pl-2">
-        {props.guildMember.memberName}
-      </div>
-      <div className="flex w-250px items-center text-16px font-medium pl-2">
-        {props.guildMember.memberGame?.gameName}
-      </div>
-      <div className="flex w-250px items-center text-16px font-medium pl-2">
-        {props.guildMember.memberGame ? (
-          <>
-            <img
-              src={`${constant.SERVER_URL}/public/rank/${
-                props.guildMember.memberGame?.gameTier.split(" ")[0]
-              }.png`}
-              alt="Champion"
-              width={30}
-              height={30}
-            />
-            {props.guildMember.memberGame?.gameTier}
-          </>
-        ) : null}
-      </div>
-      <div>
-        {props.guildMember.memberName !== props.guild.guildMaster &&
-        props.guild.guildMaster === props.user ? (
-          <button
-            className="font-extrabold text-base hover:text-red-500 "
-            onClick={() => expulsionMember(props.guildMember)}
-          >
-            추방
-          </button>
-        ) : null}
-      </div>
-      <div className="pl-2 ">
-        {props.guildMember.memberName !== props.guild.guildMaster &&
-        props.guild.guildMaster === props.user ? (
-          <button
-            className="font-extrabold text-base hover:text-green-500 "
-            onClick={() =>
-              transferGuildMaste(
-                props.guildMember.memberName,
-                props.guild.guildName
-              )
-            }
-          >
-            길드 마스터 변경
-          </button>
-        ) : null}
+    <div className="flex flex-col p-[8px] gap-[12px] border border-[#CDCDCD] rounded-[8px] bg-[#EEEEEE] dark:bg-branddark">
+      <div className="grid grid-cols-3 gap-x-[8px]">
+        <div className="flex items-center text-16px font-medium">
+          {guildMember.memberName}
+        </div>
+        <div className="flex items-center text-16px font-medium">
+          {guildMember.memberGame?.gameName}
+        </div>
+        <div className="flex items-center text-16px font-medium">
+          {guildMember.memberGame ? (
+            <div className="flex gap-[8px]">
+              <img
+                src={`${constant.SERVER_URL}/public/rank/${
+                  guildMember.memberGame?.gameTier.split(" ")[0]
+                }.png`}
+                alt="Champion"
+                width={25}
+                height={25}
+              />
+              {guildMember.memberGame?.gameTier}
+            </div>
+          ) : null}
+        </div>
+        <div>
+          {guildMember.memberName !== guild.guildMaster &&
+          guild.guildMaster === member?.memberName ? (
+            <button
+              className="font-extrabold text-base hover:text-red-500 "
+              onClick={() => expulsionMember(guildMember)}
+            >
+              추방
+            </button>
+          ) : null}
+        </div>
+        <div className="pl-2 ">
+          {guildMember.memberName !== guild.guildMaster &&
+          guild.guildMaster === member?.memberName ? (
+            <button
+              className="font-extrabold text-base hover:text-green-500 "
+              onClick={() =>
+                transferGuildMaste(guildMember.memberName, guild.guildName)
+              }
+            >
+              길드 마스터 변경
+            </button>
+          ) : null}
+        </div>
       </div>
     </div>
   );

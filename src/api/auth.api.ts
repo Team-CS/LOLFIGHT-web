@@ -38,10 +38,3 @@ export const signUp = async (
 
   return await axios.post(url, body);
 };
-
-export const findPassword = async (email: string) => {
-  let url = `${baseUrl}/forgot-password`;
-  const body = { email: email };
-
-  return await axios.post(url, body, { withCredentials: true });
-};
