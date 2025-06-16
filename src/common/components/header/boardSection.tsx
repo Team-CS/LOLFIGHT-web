@@ -27,12 +27,12 @@ export default function BoardSection({
   containsImage,
 }: BoardSectionProps) {
   return (
-    <div className="w-1/2 h-full bg-brandbgcolor dark:bg-branddark">
-      <div className="w-full flex items-center justify-between mb-4">
+    <div className="flex flex-col w-full h-full gap-[12px] bg-brandbgcolor dark:bg-branddark">
+      <div className="flex w-full items-center justify-between">
         {tabTitles.map((title) => (
           <button
             key={title}
-            className={`w-1/2 px-8 py-3 ${
+            className={`w-full p-[12px] ${
               activeTab === title
                 ? "font-bold text-brandcolor dark:text-white"
                 : "bg-[#e4eefb] dark:bg-brandgray text-gray-500"
@@ -44,27 +44,25 @@ export default function BoardSection({
         ))}
       </div>
 
-      <div className="px-4 py-2">
-        <div className="space-y-2">
-          {postLists[activeTab] && postLists[activeTab].length > 0 ? (
-            postLists[activeTab].map((post) => (
-              <div key={post.id} className="flex gap-1">
-                {containsImage(post.postContent) ? <ImageIcon /> : <TextIcon />}
-                <p
-                  className="w-fit hover:underline hover:decoration-gray-400 hover:decoration-opacity-50 cursor-pointer"
-                  onClick={() => onPostClick(post.id)}
-                >
-                  {post.postTitle}
-                  <span className="text-red-400 text-xs pl-1">
-                    [{post.postComments}]
-                  </span>
-                </p>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">게시글이 없습니다.</p>
-          )}
-        </div>
+      <div className="flex flex-col px-[12px] py-[4px] gap-[8px]">
+        {postLists[activeTab] && postLists[activeTab].length > 0 ? (
+          postLists[activeTab].map((post) => (
+            <div key={post.id} className="flex gap-[4px] items-center">
+              {containsImage(post.postContent) ? <ImageIcon /> : <TextIcon />}
+              <p
+                className="max-w-[300px] hover:underline hover:decoration-gray-400 hover:decoration-opacity-50 cursor-pointer truncate"
+                onClick={() => onPostClick(post.id)}
+              >
+                {post.postTitle}
+              </p>
+              <span className="text-red-400 text-xs">
+                [{post.postComments}]
+              </span>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500">게시글이 없습니다.</p>
+        )}
       </div>
     </div>
   );

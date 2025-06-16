@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
-import { Nanum_Gothic } from "next/font/google";
 import "../css/tailwind.css";
 import BaseLayout from "./../layouts/BaseLayout";
+import localFont from "next/font/local";
 
 export const metadata: Metadata = {
   title: "LOL.FIGHT",
@@ -34,6 +33,12 @@ export const metadata: Metadata = {
   },
 };
 
+const pretendard = localFont({
+  src: "../fonts/PretendardVariable.ttf",
+  display: "swap",
+  variable: "--font-pretendard",
+});
+
 export const viewport: Viewport = {
   width: "1280",
   initialScale: 1.0,
@@ -47,7 +52,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="font-['Pretendard'] bg-brandbgcolor h-screen"
+      className={`bg-brandbgcolor h-screen ${pretendard.className}`}
       suppressHydrationWarning
     >
       <body className={`bg-[#FCFCFC] dark:bg-black`}>

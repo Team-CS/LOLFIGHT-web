@@ -236,7 +236,7 @@ const GuildManagePage = () => {
                 onClick={() => changeTab("members")}
               />
               {member &&
-                member.memberName === member.memberGuild.guildMaster && (
+                member.memberName !== member.memberGuild.guildMaster && (
                   <ProfileHeader
                     title="길드탈퇴"
                     onClick={() => changeTab("leave")}
@@ -265,7 +265,7 @@ const GuildManagePage = () => {
                     <p>소환사명</p>
                     <p>티어</p>
                   </div>
-                  <div className="flex flex-col gap-[12px] overflow-y-auto">
+                  <div className="flex flex-col gap-[4px] overflow-y-auto">
                     {guild?.guildMembers.map((member) => (
                       <GuildMemberBox
                         key={member.id}

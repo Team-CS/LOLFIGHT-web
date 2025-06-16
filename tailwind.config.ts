@@ -38,9 +38,6 @@ const config: Config = {
       // => @media (min-width: 1400px) { ... }
     },
     extend: {
-      fontFamily: {
-        sans: ["var(--font-pretendard)"],
-      },
       height: {
         "screen-1/2": "50vh",
         "screen-1/3": "33.333333vh",
