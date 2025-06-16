@@ -29,7 +29,6 @@ export default function GuildPage() {
 
     getGuildInfo(guildName)
       .then((response) => {
-        console.log(response);
         setGuild(response.data.data);
       })
       .catch((error) => {

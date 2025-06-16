@@ -4,6 +4,6 @@ import { GuildDTO } from "./guild.dto";
 
 export interface GuildInviteDTO extends BaseDTO {
   id: string;
-  memberId: MemberDTO | null;
-  guildId: GuildDTO | null;
+  member: MemberDTO | null;
+  guild: GuildDTO | null;
 }

@@ -9,12 +9,12 @@ import { getMemberData } from "@/src/api/member.api";
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
-const subscribeTokenRefresh = (callback: (token: string) => void) => {
+const subscribeTokenRefresh = (callback: () => void) => {
   refreshSubscribers.push(callback);
 };
 
-const onTokenRefreshed = (newToken: string) => {
-  refreshSubscribers.forEach((callback) => callback(newToken));
+const onTokenRefreshed = (token: string) => {
+  refreshSubscribers.forEach((callback) => callback(token));
   refreshSubscribers = [];
 };
 //========================================================================//
@@ -45,7 +45,6 @@ export const onErrorResponse = async (error: AxiosError) => {
   if (
     error.response?.status === 401 &&
     originalRequest &&
-    // originalRequest.url !== "/api/auth/refresh"
     !originalRequest.url?.includes("/auth/refresh")
   ) {
     const refreshToken = getCookie("refreshToken");
@@ -86,26 +85,13 @@ export const onErrorResponse = async (error: AxiosError) => {
         console.log("refreshToken 재발급 응답:", refreshTokenResponse);
 
         if (refreshTokenResponse.data.ok) {
-          const accessToken = refreshTokenResponse.data.data.accessToken;
-          const newRefreshToken = refreshTokenResponse.data.data.refreshToken;
+          // const accessToken = refreshTokenResponse.data.data.accessToken;
+          // const newRefreshToken = refreshTokenResponse.data.data.refreshToken;
 
-          removeCookie("accessToken");
-          removeCookie("refreshToken");
+          const accessToken = getCookie("accessToken");
+          const newRefreshToken = getCookie("refreshToken");
 
-          setCookie("accessToken", accessToken, {
-            path: "/",
-            secure: process.env.REACT_APP_MODE === "production",
-            httpOnly: false,
-          });
-          setCookie("refreshToken", newRefreshToken, {
-            path: "/",
-            secure: process.env.REACT_APP_MODE === "production",
-            httpOnly: false,
-          });
-
-          onTokenRefreshed(accessToken); // 대기 중 요청 처리
-          const userData = await getMemberData();
-          setMember(userData.data.data);
+          onTokenRefreshed(accessToken!); // 대기 중 요청 처리
 
           // ✅ 최초 요청도 수동으로 재시도해서 반환
           originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
@@ -125,7 +111,8 @@ export const onErrorResponse = async (error: AxiosError) => {
 
     // ✅ isRefreshing 중이면 대기 -> 이후 재시도
     return new Promise((resolve) => {
-      subscribeTokenRefresh((newToken) => {
+      subscribeTokenRefresh(() => {
+        const newToken = getCookie("accessToken");
         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
         console.log("재시도하는 요청", originalRequest);
         resolve(axiosInstance.request(originalRequest));

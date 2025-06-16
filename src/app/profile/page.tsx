@@ -21,8 +21,6 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState<ProfileSection>("profile");
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
     const fetchMember = async () => {
       try {
         const response = await getMemberData();

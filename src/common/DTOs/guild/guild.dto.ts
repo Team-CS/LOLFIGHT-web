@@ -7,6 +7,7 @@ export interface GuildDTO extends BaseDTO {
   guildMaster: string;
   guildName: string;
   guildMembers: MemberDTO[];
+  memberCount: number;
   guildDescription: string;
   guildTier: string;
   guildIcon: string;

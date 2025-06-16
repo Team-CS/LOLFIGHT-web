@@ -69,7 +69,7 @@ export const getGuildInfo = async (
 export const expulsionGuildMember = async (
   memberName: string,
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
   let url = `${baseUrl}/expulsion`;
 
   const queryParams = `?member_name=${memberName}&guild_name=${guildName}`;
