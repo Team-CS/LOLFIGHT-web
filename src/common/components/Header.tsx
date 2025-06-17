@@ -110,7 +110,7 @@ export const Header = () => {
   return (
     <header className="flex flex-col w-full top-0 gap-[12px]">
       <section className="w-[1200px] mx-auto flex items-center py-[8px] gap-[12px]">
-        <img
+        {/* <img
           className="hidden dark:block h-[80px] object-contain cursor-pointer"
           onClick={() => router.push("/")}
           src={lightlogo.src}
@@ -121,6 +121,13 @@ export const Header = () => {
           onClick={() => router.push("/")}
           src={darklogo.src}
           alt="dark logo"
+        /> */}
+        <img
+          onClick={() => router.push("/")}
+          width={80}
+          height={80}
+          src={"/LOLFIGHT.png"}
+          alt="light logo"
         />
         <div className="flex items-center pl-[10px] gap-2">
           <span className="text-red-400 font-bold">[공지]</span>

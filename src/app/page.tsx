@@ -1,9 +1,8 @@
 "use client";
-import Main from "./Main";
 import Search from "../common/components/Search";
 import Slider from "../common/components/Slider";
 // import { useState, useEffect } from "react";
-import GuildInfoComponent from "./league/components/guildinfo/GuildInfoComponent";
+import GuildInfoComponent from "./league/components/GuildInfoComponent";
 import LeagueHeaderComponent from "./league/components/LeagueHeaderComponent";
 import { GuildDTO } from "../common/DTOs/guild/guild.dto";
 import { getGuildList } from "@/src/api/guild.api";
@@ -46,8 +45,7 @@ export default function Page() {
 
   return (
     <>
-      {/* <Main /> */}
-      {/* <Slider></Slider> */}
+      <Slider></Slider>
       <div className="flex flex-col max-w-[1200px] mx-auto py-[28px]">
         <LeagueHeaderComponent guildLength={guildList.length} />
         <div className="flex flex-col">

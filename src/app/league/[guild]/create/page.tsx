@@ -44,6 +44,7 @@ export default function Page() {
 
   const isGuildDescriptionVaild = (guildDescription: string) => {
     if (guildDescription.length >= 80) {
+      console.log(guildDescription.length);
       CutsomAlert(
         "warning",
         "길드생성",
@@ -137,7 +138,7 @@ export default function Page() {
               <div className="flex flex-col p-3 items-center border border-brandcolor gap-3  dark:border-gray-700">
                 <textarea
                   className="w-1/2 max-h-32 rounded-md px-2 bg-gray-50 border border-black-200  dark:text-gray-100 dark:bg-black dark:border-gray-700"
-                  placeholder="길드 소개글을 입력해주세요 (최대 40글자)"
+                  placeholder="길드 소개글을 입력해주세요 (최대 80글자)"
                   onChange={(e) => setGuildDescription(e.target.value)}
                 />
               </div>

@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import GuildInfoComponent from "../league/components/guildinfo/GuildInfoComponent";
+import GuildInfoComponent from "./components/GuildInfoComponent";
 import LeagueHeaderComponent from "./components/LeagueHeaderComponent";
 import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
 import { getGuildList } from "@/src/api/guild.api";
 import Pagination from "@mui/material/Pagination";
+import LeaguePodium from "./components/LeaguePodium";
 
 export default function Page() {
   const [guildList, setGuildList] = useState<GuildDTO[]>([]);
@@ -55,44 +56,57 @@ export default function Page() {
   );
 
   return (
-    <>
-      <div className="w-full h-full h-96 mt-16 mb-14">
-        <div className="w-1200px h-full mx-auto">
-          <LeagueHeaderComponent
-            guildLength={guildList.length}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
-          <div className="flex flex-col">
-            {paginatedGuilds.map((guild) => (
-              <GuildInfoComponent key={guild.id} guild={guild} />
-            ))}
-          </div>
-          <div className="notice__pagination w-full flex justify-center mt-1 p-3">
-            <Pagination
-              count={totalPages}
-              shape="rounded"
-              boundaryCount={2}
-              onChange={(event, page) => handlePageClick(event, page)}
-              sx={{
-                ".dark & .Mui-selected": {
-                  backgroundColor: "#4C4C4C",
-                  color: "#CACACA", // 텍스트 색상
-                  "&:hover": {
-                    backgroundColor: "#707070", // 호버 시 색상
-                  },
-                },
-                ".dark & .MuiPaginationItem-root": {
-                  color: "#EEEEEE", // 선택되지 않은 아이템의 기본 텍스트 색상
-                },
-                ".dark & .MuiPaginationItem-icon": {
-                  color: "#EEEEEE", // 텍스트 색상
-                },
-              }}
-            />
-          </div>
+    <div className="max-w-[1200px] mx-auto flex flex-col gap-[12px] py-[28px]">
+      <LeaguePodium
+        first={guildList[0]}
+        second={guildList[1]}
+        third={guildList[2]}
+      />
+      <LeagueHeaderComponent
+        guildLength={guildList.length}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
+      <div className="flex flex-col">
+        <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[4px] w-full whitespace-nowrap">
+          <div className="flex-[0.25] text-center px-[8px]">순위</div>
+          <div className="flex-[1] text-center px-[8px]">길드이름</div>
+          <div className="flex-[2] text-center px-[8px]">길드소개</div>
+          <div className="flex-[0.25] text-center px-[8px]">길드원</div>
+          <div className="flex-[0.25] text-center px-[8px]">승</div>
+          <div className="flex-[0.25] text-center px-[8px]">패</div>
+          <div className="flex-[0.5] text-center px-[8px]">티어</div>
+          <div className="flex-[1] text-center px-[8px]">길드장</div>
+        </div>
+        <div className="flex flex-col">
+          {paginatedGuilds.map((guild) => (
+            <GuildInfoComponent key={guild.id} guild={guild} />
+          ))}
         </div>
       </div>
-    </>
+      <div className="notice__pagination w-full flex justify-center mt-1 p-3">
+        <Pagination
+          count={totalPages}
+          shape="rounded"
+          boundaryCount={2}
+          onChange={(event, page) => handlePageClick(event, page)}
+          sx={{
+            ".dark & .Mui-selected": {
+              backgroundColor: "#4C4C4C",
+              color: "#CACACA", // 텍스트 색상
+              "&:hover": {
+                backgroundColor: "#707070", // 호버 시 색상
+              },
+            },
+            ".dark & .MuiPaginationItem-root": {
+              color: "#EEEEEE", // 선택되지 않은 아이템의 기본 텍스트 색상
+            },
+            ".dark & .MuiPaginationItem-icon": {
+              color: "#EEEEEE", // 텍스트 색상
+            },
+          }}
+        />
+      </div>
+    </div>
   );
 }

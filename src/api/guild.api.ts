@@ -4,6 +4,12 @@ import { ResponseDTO } from "../common/DTOs/response.dto";
 import { CreateGuildDTO, GuildDTO } from "../common/DTOs/guild/guild.dto";
 import { MemberDTO } from "../common/DTOs/member/member.dto";
 import { GuildInviteDTO } from "../common/DTOs/guild/guild_invite.dto";
+import {
+  deleteData,
+  getData,
+  patchData,
+  postData,
+} from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/guild`;
 
@@ -27,7 +33,7 @@ export const createGuild = async (
     formData.append("guildImage", guildImage);
   }
 
-  return await axios.post(url, formData, {
+  return await postData(url, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -42,7 +48,7 @@ export const getGuildList = async (): Promise<
   AxiosResponse<ResponseDTO<GuildDTO[]>>
 > => {
   let url = `${baseUrl}/list`;
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /**
@@ -57,7 +63,7 @@ export const getGuildInfo = async (
 
   const queryParams = `?name=${guildName}`;
   url += queryParams;
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /**
@@ -76,7 +82,7 @@ export const expulsionGuildMember = async (
 
   url += queryParams;
 
-  return await axios.patch(url);
+  return await patchData(url);
 };
 
 /**
@@ -91,7 +97,7 @@ export const destroyGuild = async (
 
   const queryParams = `?name=${guildName}`;
   url += queryParams;
-  return await axios.delete(url);
+  return await deleteData(url);
 };
 
 /**
@@ -110,7 +116,7 @@ export const inviteGuild = async (
     guildId: guildId,
   };
 
-  return await axios.post(url, body);
+  return await postData(url, body);
 };
 
 /**
@@ -126,7 +132,7 @@ export const getInviteGuildList = async (
   const queryParams = `?name=${guildName}`;
   url += queryParams;
 
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /**
@@ -144,7 +150,7 @@ export const inviteAccept = async (
   const queryParams = `?memberId=${memberId}&guildId=${guildId}`;
   url += queryParams;
 
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /**
@@ -162,7 +168,7 @@ export const inviteReject = async (
   const queryParams = `?memberId=${memberId}&guildId=${guildId}`;
   url += queryParams;
 
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /**
@@ -180,5 +186,5 @@ export const changeGuildMaster = async (
   const queryParams = `?memberName=${memberName}&guildName=${guildName}`;
   url += queryParams;
 
-  return await axios.get(url);
+  return await getData(url);
 };
