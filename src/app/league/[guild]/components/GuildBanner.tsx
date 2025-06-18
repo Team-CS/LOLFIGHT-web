@@ -37,51 +37,41 @@ const GuildBanner = (props: Props) => {
 
   return (
     <div className="w-full bg-brandcolor dark:bg-branddark">
-      <section className="w-1200px mx-auto h-44 flex justify-between items-center ">
-        {/* Left */}
-        <div className="w-1200px flex flex-col justify-center">
-          <div className="flex flex-row pb-[8px]">
-            <img
-              className="h-[50px] w-[50px] object-cover"
-              src={`${constant.SERVER_URL}/${guildDto.guildIcon}`}
-              alt="GuildIcon"
-            />
-            <div className="flex flex-col ml-3">
-              <div className="font-extra text-white text-12px mt-1">
-                롤파이트 공식리그 - 1부리그 -
-                {guildDto.guildRecord?.recordRanking}위
-              </div>
-              <div className="font-extrabold text-white text-24px">
+      <div className="max-w-[1200px] mx-auto py-[24px] flex justify-between items-center gap-6">
+        <div className="flex items-center gap-4">
+          <img
+            className="h-[75px] w-[75px] object-cover rounded-md"
+            src={`${constant.SERVER_URL}/${guildDto.guildIcon}`}
+            alt="GuildIcon"
+          />
+          <div className="flex flex-col gap-[4px]">
+            <p className="text-white text-sm font-medium">
+              롤파이트 공식리그 - 1부리그 -{guildDto.guildRecord?.recordRanking}
+              위
+            </p>
+            <div className="flex items-center gap-[12px]">
+              <h2 className="text-white text-2xl font-extrabold">
                 {guildDto.guildName}
-              </div>
+              </h2>
+              <button
+                aria-label="길드가입"
+                onClick={handleClickInviteGuild}
+                className="px-[12px] py-[4px] bg-white text-sm font-semibold text-brandcolor rounded hover:bg-gray-100 transition"
+              >
+                길드가입
+              </button>
             </div>
-          </div>
-          <div className="flex gap-3">
-            <button
-              aria-label="길드가입"
-              className="flex text-black bg-white w-24 h-10 items-center justify-center cursor-pointer rounded hover:bg-gray-200"
-              onClick={handleClickInviteGuild}
-            >
-              길드가입
-            </button>
           </div>
         </div>
-        {/* Right */}
-        <div className="w-350px h-full flex flex-col justify-end pb-4">
-          <div className="flex mt-3">
-            <div className=" text-white text-14px">
-              길드 마스터: {guildDto.guildMaster}
-            </div>
-            <p className="text-white font-thin ml-2 mr-2"> | </p>
-            <div className="text-white text-14px">
-              클랜원: {guildDto.guildMembers.length} 명
-            </div>
-          </div>
-          <div className="text-white text-14px mt-3  mb-5">
+
+        <div className="flex flex-col gap-[4px] text-white text-sm">
+          <p className="font-medium">길드 마스터: {guildDto.guildMaster}</p>
+          <p className="font-medium">클랜원:{guildDto.guildMembers.length}명</p>
+          <p className="font-medium">
             길드 설립일: {guildDto.createdAt?.toString()?.split("T")[0]}
-          </div>
+          </p>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

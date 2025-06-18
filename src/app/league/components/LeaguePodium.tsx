@@ -15,7 +15,7 @@ const LeaguePodium = (props: LeaguePodiumProps) => {
     return (
       <div className="flex flex-col items-center h-full p-[12px] gap-[4px]">
         <img
-          className={`object-cover w-[150px] h-[150px] rounded-md border-[2px] ${color} shadow`}
+          className={`object-cover w-[150px] h-[150px] rounded-[12px] border-[2px] ${color} shadow`}
           src={`${constant.SERVER_URL}/${guild.guildIcon}`}
           alt="길드 아이콘"
         />
@@ -46,21 +46,18 @@ const LeaguePodium = (props: LeaguePodiumProps) => {
 
   return (
     <div className="flex justify-center items-end gap-[12px] h-[300px]">
-      {/* 2등 */}
       {second && (
         <div className="self-end">
           {renderGuildBox(second, "border-[#BBC6C9]", "🥈")}
         </div>
       )}
 
-      {/* 1등 (위로 살짝 튀어나오게) */}
       {first && (
         <div className="self-start">
           {renderGuildBox(first, "border-[#FFD700]", "🥇")}
         </div>
       )}
 
-      {/* 3등 */}
       {third && (
         <div className="self-end">
           {renderGuildBox(third, "border-[#B08D57]", "🥉")}

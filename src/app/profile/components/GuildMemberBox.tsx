@@ -41,9 +41,8 @@ const GuildMemberBox = (props: Props) => {
                 src={`${constant.SERVER_URL}/public/rank/${
                   guildMember.memberGame?.gameTier.split(" ")[0]
                 }.png`}
-                alt="Champion"
-                width={25}
-                height={25}
+                alt="rank"
+                className="w-[25px] h-[25px]"
               />
               {guildMember.memberGame?.gameTier}
             </div>

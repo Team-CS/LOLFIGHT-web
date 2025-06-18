@@ -193,7 +193,7 @@ const GuildManagePage = () => {
             <img
               src={`${constant.SERVER_URL}/${guild?.guildIcon}`}
               alt="GuildIcon"
-              className="object-cover w-[100px] h-[100px]"
+              className="object-cover w-[100px] h-[100px] rounded-[12px]"
             />
             <div className="flex flex-col items-between">
               <h2 className="text-[28px] font-bold">{guild?.guildName}</h2>
@@ -258,6 +258,7 @@ const GuildManagePage = () => {
             </div>
 
             <div className="py-[12px]">
+              {/* @todo 누르면 팝업창 뜨면서 추방, 직위변경, 라인변경 이런거 할수있게해야함 */}
               {currentTab === "members" && (
                 <div className="flex flex-col gap-[4px] max-h-[300px]">
                   <div className="grid grid-cols-4 bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">
