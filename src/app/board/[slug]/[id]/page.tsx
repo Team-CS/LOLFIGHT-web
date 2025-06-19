@@ -45,11 +45,9 @@ export default function Page({ params }: { params: PageProps }) {
 
   return (
     <>
-      <div className="w-full my-16">
-        <div className="w-1200px mx-auto flex">
-          <BoardNavComponent></BoardNavComponent>
-          <BoardPostComponent data={post as PostDTO}></BoardPostComponent>
-        </div>
+      <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px]">
+        <BoardNavComponent></BoardNavComponent>
+        <BoardPostComponent data={post as PostDTO}></BoardPostComponent>
       </div>
     </>
   );

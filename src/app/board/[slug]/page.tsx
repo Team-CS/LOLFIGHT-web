@@ -8,15 +8,11 @@ type PageProps = {
 };
 
 export default function Page({ params }: { params: PageProps }) {
-  // const title = getTitleFromSlug(params.slug);
-
   return (
     <>
-      <div className="w-full my-16">
-        <div className="w-1200px h-full mx-auto flex">
-          <BoardNavComponent></BoardNavComponent>
-          <BoardComponent slug={params.slug}></BoardComponent>
-        </div>
+      <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px]">
+        <BoardNavComponent></BoardNavComponent>
+        <BoardComponent slug={params.slug}></BoardComponent>
       </div>
     </>
   );

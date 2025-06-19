@@ -67,8 +67,8 @@ export default function Page() {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
       />
-      <div className="flex flex-col">
-        <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[4px] w-full whitespace-nowrap">
+      <div className="flex flex-col border rounded-t-[12px] dark:border-branddark">
+        <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[12px] w-full whitespace-nowrap">
           <div className="flex-[0.25] text-center px-[8px]">순위</div>
           <div className="flex-[1] text-center px-[8px]">길드이름</div>
           <div className="flex-[2] text-center px-[8px]">길드소개</div>

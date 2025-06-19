@@ -108,9 +108,11 @@ const config: Config = {
         brandcolor: "#7b92e0",
         brandhover: "#cedef7",
         brandbgcolor: "#f0f6fd",
+        brandborder: "#cbd5e1",
 
         branddark: "#262f40",
         brandgray: "#344057",
+        branddarkborder: "#475569",
         // brandcolor: "#11235A",
         // brandbgcolor: "#FAFAFA",
         current: "currentColor",

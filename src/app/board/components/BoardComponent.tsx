@@ -52,25 +52,25 @@ const BoardComponent = (props: BoardComponentProps) => {
   );
 
   return (
-    <div className="notice w-full bg-white dark:bg-dark ml-8 shadow-md">
-      <div className="notice__head">
-        <BoardHeadComponent
-          head={{
-            slug: props.slug,
-          }}
-          setSearchTerm={setSearchTerm}
-        ></BoardHeadComponent>
+    <div className="w-full bg-white dark:bg-dark rounded-[12px] shadow-md">
+      <BoardHeadComponent
+        head={{
+          slug: props.slug,
+        }}
+        setSearchTerm={setSearchTerm}
+      ></BoardHeadComponent>
+      <div className="flex flex-col gap-[2px] py-[8px]">
+        {paginatedPosts.length > 0 ? (
+          paginatedPosts.map((post) => (
+            <BoardInfoComponent key={post.id} data={post} slug={props.slug} />
+          ))
+        ) : (
+          <div className="w-full text-center text-gray-400 py-[20px] text-[14px]">
+            해당 글이 존재하지 않습니다 😅
+          </div>
+        )}
       </div>
-      <div className="notice__content">
-        {paginatedPosts.map((post) => (
-          <BoardInfoComponent
-            key={post.id}
-            data={post}
-            slug={props.slug}
-          ></BoardInfoComponent>
-        ))}
-      </div>
-      <div className="notice__pagination w-full flex justify-center mt-3 p-3 border-t-2 border-brandcolor">
+      <div className="w-full flex justify-center py-[12px] border-t border-brandborder dark:border-branddarkborder">
         <Pagination
           count={totalPages}
           shape="rounded"

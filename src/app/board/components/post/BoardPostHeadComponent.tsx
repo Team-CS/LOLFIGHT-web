@@ -52,49 +52,39 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
   };
 
   return (
-    <div className="board-post-head flex flex-col m-12">
-      <div className="board-post-head__title flex justify-between">
-        <span className="text-3xl font-bold">{props.post?.postTitle}</span>
-      </div>
-      <div className="text-sm board-post-head__status mt-8 flex justify-between">
-        <div className="flex items-center">
-          <div className="w-[30px] h-[30px] mr-[5px] my-auto">
-            <Image
-              className="w-full h-full rounded-full"
-              width={35}
-              height={35}
-              src={
-                isImageError[props.post?.postWriter] // 작성자 이름으로 이미지 오류 체크
-                  ? `${constant.SERVER_URL}/public/default.png`
-                  : `${constant.SERVER_URL}/public/member/${props.post?.postWriter}.png`
-              }
-              alt="memberIcon"
-              onError={handleImageError} // 오류 발생 시 핸들러 호출
-              unoptimized
-            />
-          </div>
-          <span className="text-black dark:text-gray-100 font-bold">
+    <div className="flex flex-col p-[24px] gap-[12px]">
+      <p className="text-[24px] font-bold">{props.post?.postTitle}</p>
+      <div className="flex justify-between pb-[12px] border-b dark:border-gray-700">
+        <div className="flex items-center gap-[8px]">
+          <img
+            className="w-[30px] h-[30px] rounded-[12px]"
+            src={
+              isImageError[props.post?.postWriter] // 작성자 이름으로 이미지 오류 체크
+                ? `${constant.SERVER_URL}/public/default.png`
+                : `${constant.SERVER_URL}/public/member/${props.post?.postWriter}.png`
+            }
+            alt="memberIcon"
+            onError={handleImageError} // 오류 발생 시 핸들러 호출
+          />
+          <p className="text-[16px] font-bold dark:text-gray-100">
             {props.post?.postWriter}
-          </span>
-          {/* <span className="h-4 w-1px mx-1 bg-gray-700"></span> */}
-          <span className="mx-1"></span>
-          <span className="text-gray-400">{`${year}.${month}.${day}`}</span>
-          {/* <span className="h-4 w-1px mx-1 bg-gray-700"></span> */}
-          <span className="mx-1"></span>
-
-          <span className="text-gray-400">
+          </p>
+          <p className="text-[12px] text-gray-400">{`${year}.${month}.${day}`}</p>
+          <p className="text-[12px] text-gray-400">
             조회수 : {props.post?.postViews}
-          </span>
+          </p>
         </div>
         {isMine && (
           <div className="head_btn content-center">
-            <button className="text-gray-400" onClick={handleDeleteButtonClick}>
-              <span className="p-1">삭제</span>
+            <button
+              className="text-[14px] text-gray-400"
+              onClick={handleDeleteButtonClick}
+            >
+              삭제
             </button>
           </div>
         )}
       </div>
-      <div className="border-b w-full mt-4 dark:border-gray-700"></div>
     </div>
   );
 };

@@ -62,6 +62,8 @@ export const Header = () => {
     };
 
     fetchPosts();
+
+    console.log(member?.memberIcon);
   }, []);
 
   const handleLogoutClick = async () => {
@@ -169,7 +171,7 @@ export const Header = () => {
                   <div className="flex w-full items-center p-[12px] gap-[14px]">
                     <div className="w-[70px] h-[70px] my-auto">
                       <img
-                        className="w-full h-full rounded-full"
+                        className="w-full h-full rounded-[12px]"
                         src={`${constant.SERVER_URL}/${member?.memberIcon}`}
                       />
                     </div>

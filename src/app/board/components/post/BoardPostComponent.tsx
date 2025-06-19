@@ -1,6 +1,7 @@
 import BoardPostHeadComponent from "./BoardPostHeadComponent";
 import BoardPostBodyComponent from "./BoardPostBodyComponent";
 import { PostDTO } from "@/src/common/DTOs/board/post.dto";
+import BoardPostCommentComponent from "./BoardPostCommentComponent";
 
 interface PostProps {
   data: PostDTO;
@@ -8,14 +9,13 @@ interface PostProps {
 
 const BoardPostComponent = (props: PostProps) => {
   return (
-    <div className="w-full bg-white ml-8 shadow-md dark:bg-dark">
-      <div className="">
-        <div className="head">
-          <BoardPostHeadComponent post={props.data}></BoardPostHeadComponent>
-        </div>
-        <div className="body">
-          <BoardPostBodyComponent data={props.data} />
-        </div>
+    <div className="flex flex-col w-full gap-[12px]">
+      <div className="bg-white rounded-[12px] shadow-md dark:bg-dark">
+        <BoardPostHeadComponent post={props.data}></BoardPostHeadComponent>
+        <BoardPostBodyComponent data={props.data} />
+      </div>
+      <div className="bg-white rounded-[12px] shadow-md dark:bg-dark">
+        <BoardPostCommentComponent data={props.data} />
       </div>
     </div>
   );

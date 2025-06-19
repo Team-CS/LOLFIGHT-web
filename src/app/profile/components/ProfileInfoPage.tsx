@@ -126,7 +126,7 @@ const ProfileInfoPage = () => {
 
       <div className="flex gap-[24px] items-center">
         <img
-          className="flex w-[150px] h-[150px] rounded-full"
+          className="flex w-[150px] h-[150px] rounded-[12px]"
           src={`${constant.SERVER_URL}/${member!.memberIcon}`}
           alt={"memberIcon"}
         />
