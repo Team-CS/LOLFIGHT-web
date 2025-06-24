@@ -3,26 +3,44 @@
 import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
-// import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
+import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import boardNavLinks from "@/src/data/boardNavLinks";
 import { useEffect, useRef } from "react";
 import { writePost } from "@/src/api/post.api";
 import constant from "@/src/common/constant/constant";
 import { useState } from "react";
-import { PostDTO } from "@/src/common/DTOs/board/post.dto";
+import { PostCreateDto, PostDto } from "@/src/common/DTOs/board/post.dto";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import CustomAlert from "./alert/CustomAlert";
 import { jwtDecode } from "jwt-decode";
+import { useMemberStore } from "../zustand/member.zustand";
+import { getCookie } from "@/src/utils/cookie/cookie";
 
+interface HeadingNode {
+  level: number;
+}
+
+interface RenderContext {
+  entering: boolean;
+}
+
+interface CodeBlockNode {
+  info: string;
+}
 const WysiwygEditor = () => {
   const router = useRouter();
+  const { member } = useMemberStore();
+  const { theme } = useTheme();
+  const [isAdminUser, setIsAdminUser] = useState<boolean>(false);
+  const editorRef = useRef<Editor>(null);
+  const [editorKey, setEditorKey] = useState(0);
   const [title, setTitle] = useState<string>();
   const [category, setCategory] = useState("자유");
   const [image, setImage] = useState<string>();
-  const editorRef = useRef<Editor>(null);
+  const [editorHtml, setEditorHtml] = useState(""); // 현재 작성 내용 저장
   const toolbarItems = [
     ["heading", "bold", "italic", "strike"],
     ["hr"],
@@ -32,8 +50,15 @@ const WysiwygEditor = () => {
     ["code"],
     ["scrollSync"],
   ];
-  const { theme } = useTheme();
-  const [isAdminUser, setIsAdminUser] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (editorRef.current) {
+      const currentHtml = editorRef.current.getInstance().getHTML();
+      setEditorHtml(currentHtml); // 변경 전 내용 저장
+    }
+
+    setEditorKey((prev) => prev + 1); // Editor 리렌더링
+  }, [theme]);
 
   useEffect(() => {
     if (editorRef.current) {
@@ -65,27 +90,31 @@ const WysiwygEditor = () => {
   const handleSaveClick = async () => {
     const link = "";
     const editorIns = editorRef.current?.getInstance().getHTML() || "";
-    const strippedHTML = editorIns.push(/<[^>]*>/g, ""); // HTML 태그 제거
-    const storedMemberName = sessionStorage.getItem("memberName")?.toString();
+    const strippedHTML = editorIns.replace(/<[^>]*>/g, ""); // HTML 태그 제거
     if (title && strippedHTML) {
-      writePost(title, editorIns, storedMemberName!, category).then(
-        (response) => {
-          boardNavLinks
-            .filter((link) => link.href !== "/")
-            .map((link) => {
-              if (link.title === category) {
-                router.push(link.href + "/" + response.data.data.id);
-              }
-            });
-          return;
-        }
-      );
+      const postData: PostCreateDto = {
+        postTitle: title,
+        postContent: editorIns,
+        postWriter: member!.memberName,
+        postBoard: category,
+      };
+      writePost(postData).then((response) => {
+        boardNavLinks
+          .filter((link) => link.href !== "/")
+          .map((link) => {
+            if (link.title === category) {
+              router.push(link.href + "/" + response.data.data.id);
+            }
+          });
+        return;
+      });
     } else {
       CustomAlert("warning", "글쓰기", "제목과 내용을 작성해주세요.");
     }
   };
 
   const onUploadImage = async (blob: any, callback: any) => {
+    const token = getCookie("accessToken");
     const formData = new FormData();
     formData.append("file", blob);
     try {
@@ -95,6 +124,7 @@ const WysiwygEditor = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -107,18 +137,12 @@ const WysiwygEditor = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full px-[20px] py-[24px] gap-[12px]">
+      {/* 카테고리 선택 */}
       <select
-        className="w-32 h-10 border rounded-md mb-4 dark:border-gray-700"
+        className="w-[160px] h-[40px] px-[10px] border border-brandborder rounded-md text-[14px] bg-white dark:bg-branddark dark:border-branddarkborder dark:text-white"
         onChange={handleCategoryChange}
       >
-        {/* {boardNavLinks
-          .filter((link) => link.href !== "/" && link.title !== "전체")
-          .map((link) => (
-            <option key={link.title} value={link.title}>
-              {link.title}
-            </option>
-          ))} */}
         {boardNavLinks
           .filter((link) => {
             if (!isAdminUser) {
@@ -132,34 +156,69 @@ const WysiwygEditor = () => {
             </option>
           ))}
       </select>
+
+      {/* 제목 입력 */}
       <input
-        className="w-full h-10 mb-4 border rounded-md px-2 bg-gray-100 dark:bg-black dark:border-gray-700"
+        className="w-full h-[40px] px-[12px] border border-brandborder rounded-md text-[14px] bg-gray-100 dark:bg-branddark dark:border-branddarkborder dark:text-white"
         type="text"
         placeholder="제목을 입력하세요"
         onChange={handleChange}
-      ></input>
-      <div className="w-full overflow-hidden overflow-y-scroll">
+      />
+
+      {/* 에디터 */}
+      <div className="w-full border border-brandborder rounded-md overflow-hidden dark:border-branddarkborder">
         <Editor
+          key={editorKey}
           ref={editorRef}
-          initialValue=" "
+          initialValue={editorHtml || " "}
           placeholder="글을 작성해주세요"
           initialEditType="wysiwyg"
           previewStyle="tab"
-          height="60rem"
+          height="800px"
           plugins={[colorSyntax]}
           toolbarItems={toolbarItems}
           hooks={{ addImageBlobHook: onUploadImage }}
-          className="bg-red-500"
-          // 현재 글 작성 도중 테마를 변경하면 렌더링이 되지 않는 상황이 발생함
           theme={theme === "dark" ? "dark" : "light"}
+          customHTMLRenderer={{
+            heading(node: HeadingNode, { entering }: RenderContext) {
+              const level = node.level;
+              const style = `font-size: ${
+                24 - (level - 1) * 2
+              }px; font-weight: bold; margin: 1em 0;`;
+              return {
+                type: entering ? "openTag" : "closeTag",
+                tagName: `h${level}`,
+                attributes: { style },
+              };
+            },
+            codeBlock(node: CodeBlockNode, { entering }: RenderContext) {
+              const info = node.info || "";
+              const style =
+                "background-color: #f8f9fa; padding: 1em; border-radius: 4px; font-family: monospace; white-space: pre; overflow-x: auto;";
+              return {
+                type: entering ? "openTag" : "closeTag",
+                tagName: "pre",
+                attributes: { style },
+                children: [
+                  {
+                    type: entering ? "openTag" : "closeTag",
+                    tagName: "code",
+                    attributes: { class: `language-${info}` },
+                  },
+                ],
+              };
+            },
+          }}
         />
       </div>
-      <div className="w-full flex justify-between">
-        <button className="w-16 h-10 flex font-medium border items-center justify-center rounded-md cursor-pointer my-4 dark:border-gray-700 dark:text-gray-100">
+
+      {/* 하단 버튼 */}
+      <div className="w-full flex justify-between mt-[16px]">
+        <button className="w-[80px] h-[40px] text-[14px] font-medium border border-brandborder rounded-md text-brandgray hover:bg-brandhover dark:border-branddarkborder dark:text-white dark:hover:bg-gray-600 transition">
           취소
         </button>
         <button
-          className="w-32 h-10 flex font-medium bg-brandcolor text-white items-center justify-center rounded-md cursor-pointer my-4"
+          className="w-[120px] h-[40px] text-[14px] font-medium bg-brandcolor text-white rounded-md hover:bg-brandhover transition"
           onClick={handleSaveClick}
         >
           작성하기

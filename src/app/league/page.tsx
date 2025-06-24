@@ -55,13 +55,29 @@ export default function Page() {
     currentPage * guildsPerPage
   );
 
+  const topGuilds = [0, 1, 2]
+    .map((i) => guildList[i])
+    .filter(
+      (guild) =>
+        guild &&
+        guild.guildRecord &&
+        guild.guildRecord.recordRanking !== "기록없음"
+    );
+
   return (
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[12px] py-[28px]">
-      <LeaguePodium
-        first={guildList[0]}
-        second={guildList[1]}
-        third={guildList[2]}
-      />
+      {topGuilds.length === 0 ? (
+        <div className="w-full text-center text-gray-400 py-[20px] text-[14px]">
+          순위 기록이 없습니다 😅
+        </div>
+      ) : (
+        <LeaguePodium
+          first={topGuilds[0]}
+          second={topGuilds[1]}
+          third={topGuilds[2]}
+        />
+      )}
+
       <LeagueHeaderComponent
         guildLength={guildList.length}
         searchTerm={searchTerm}

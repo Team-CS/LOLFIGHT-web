@@ -1,6 +1,6 @@
 "use client";
 
-import { PostDTO } from "@/src/common/DTOs/board/post.dto";
+import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import CommentBoxComponent from "./comment/CommentBoxComponent";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { writeComment } from "@/src/api/comment.api";
@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface BoardPostCommentComponentProps {
-  data: PostDTO;
+  data: PostDto;
 }
 
 const BoardPostCommentComponent = (props: BoardPostCommentComponentProps) => {

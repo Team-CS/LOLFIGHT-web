@@ -1,7 +1,7 @@
 import { deletePost } from "@/src/api/post.api";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { PostDTO } from "@/src/common/DTOs/board/post.dto";
+import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import { useRouter } from "next/navigation";
 import ButtonAlert from "../../../../common/components/alert/ButtonAlert";
 import CustomAlert from "../../../../common/components/alert/CustomAlert";
@@ -10,7 +10,7 @@ import { findMember } from "@/src/api/member.api";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 interface BoardPostHeadComponentProps {
-  post: PostDTO;
+  post: PostDto;
 }
 
 const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {

@@ -1,7 +1,6 @@
 const baseRef = "/board";
 
 const boardNavLinks = [
-  //base주솔르 따로빼서 관리 해야할 듯
   { href: `${baseRef}/all`, title: "전체", slug: "all" },
   { href: `${baseRef}/notice`, title: "공지사항", slug: "notice" },
   { href: `${baseRef}/free`, title: "자유", slug: "free" },

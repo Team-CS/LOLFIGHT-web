@@ -6,7 +6,7 @@ import boardNavLinks from "@/src/data/boardNavLinks";
 import Pagination from "@mui/material/Pagination";
 import BoardInfoComponent from "./BoardInfoComponent";
 import BoardHeadComponent from "./BoardHeadComponent";
-import { PostDTO } from "@/src/common/DTOs/board/post.dto";
+import { PostDto } from "@/src/common/DTOs/board/post.dto";
 
 interface BoardComponentProps {
   slug: string;
@@ -18,11 +18,11 @@ function getTitleFromSlug(slug: string) {
 }
 
 const BoardComponent = (props: BoardComponentProps) => {
-  const [postList, setPostList] = useState<PostDTO[]>([]);
+  const [postList, setPostList] = useState<PostDto[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0); // 총 페이지 수
   const [searchTerm, setSearchTerm] = useState<string>(""); // 검색어
-  const postsPerPage = 15;
+  const postsPerPage = 20;
 
   useEffect(() => {
     getPostList(`${getTitleFromSlug(props.slug)}`).then((res) => {

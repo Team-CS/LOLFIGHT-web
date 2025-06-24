@@ -8,7 +8,7 @@ import Navigation from "./Navigation";
 import ThemeToggler from "../components/Desktop/ThemeToggler";
 import Search from "./Search";
 import constant from "@/src/common/constant/constant";
-import { PostDTO } from "../DTOs/board/post.dto";
+import { PostDto } from "../DTOs/board/post.dto";
 import { getRecentPostList } from "@/src/api/post.api";
 import { useMemberStore } from "../zustand/member.zustand";
 import { removeCookie } from "@/src/utils/cookie/cookie";
@@ -28,10 +28,10 @@ export const Header = () => {
 
   const { member, setMember } = useMemberStore();
 
-  const [noticePostList, setNoticePostList] = useState<PostDTO[]>([]);
-  const [eventPostList, setEventPostList] = useState<PostDTO[]>([]);
-  const [freePostList, setFreePostList] = useState<PostDTO[]>([]);
-  const [joinPostList, setJoinPostList] = useState<PostDTO[]>([]);
+  const [noticePostList, setNoticePostList] = useState<PostDto[]>([]);
+  const [eventPostList, setEventPostList] = useState<PostDto[]>([]);
+  const [freePostList, setFreePostList] = useState<PostDto[]>([]);
+  const [joinPostList, setJoinPostList] = useState<PostDto[]>([]);
 
   const [activeTabLeft, setActiveTabLeft] = useState("공지사항");
   const [activeTabRight, setActiveTabRight] = useState("자유게시판");
@@ -51,10 +51,11 @@ export const Header = () => {
           getRecentPostList(eventBoardId),
         ]);
 
-        setFreePostList(freeRes.data.data);
-        setJoinPostList(rgmRes.data.data);
-        setNoticePostList(noticeRes.data.data);
-        setEventPostList(eventRes.data.data);
+        // 데이터 유효성 검사 및 fallback 처리
+        setFreePostList(freeRes?.data?.data ?? []);
+        setJoinPostList(rgmRes?.data?.data ?? []);
+        setNoticePostList(noticeRes?.data?.data ?? []);
+        setEventPostList(eventRes?.data?.data ?? []);
       } catch (error) {
         console.error("게시판 목록 로드 실패:", error);
         // 필요 시 에러 상태 설정 or 사용자 알림
@@ -62,8 +63,6 @@ export const Header = () => {
     };
 
     fetchPosts();
-
-    console.log(member?.memberIcon);
   }, []);
 
   const handleLogoutClick = async () => {
@@ -104,9 +103,9 @@ export const Header = () => {
   const containsImage = (content: string) => {
     return /<img\s+[^>]*src=/.test(content);
   };
-
+  // sticky z-50 top-0
   return (
-    <header className="sticky z-50 flex flex-col w-full top-0 gap-[12px] bg-white dark:bg-black">
+    <header className="flex flex-col w-full gap-[12px] bg-white dark:bg-black">
       <section className={`w-full bg-brandcolor dark:bg-dark`}>
         <div className="max-w-[1200px] mx-auto flex justify-between items-center py-[4px] gap-[32px]">
           <div className={`flex items-center gap-[32px]`}>
@@ -134,9 +133,7 @@ export const Header = () => {
         </div>
       </section>
 
-      {!(
-        pathname.startsWith("/profile") || pathname.startsWith("/league/")
-      ) && (
+      {!(pathname.startsWith("/profile") || pathname.endsWith("/league/")) && (
         <section className="max-w-[1200px] mx-auto flex gap-[4px]">
           <div className="flex gap-[4px] w-[800px] h-[200px]">
             <BoardSection
@@ -167,7 +164,7 @@ export const Header = () => {
           <div className="flex-col">
             <div className="bg-brandbgcolor dark:bg-branddark">
               {member ? (
-                <div className="w-[400px] h-[150px] flex flex-col items-center border dark:border-black">
+                <div className="w-[400px] h-[150px] flex flex-col items-center border dark:border-branddarkborder">
                   <div className="flex w-full items-center p-[12px] gap-[14px]">
                     <div className="w-[70px] h-[70px] my-auto">
                       <img

@@ -6,11 +6,12 @@ import CustomAlert from "../../../common/components/alert/CustomAlert";
 import { deleteMember } from "@/src/api/member.api";
 import { useRouter } from "next/navigation";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
+import { removeCookie } from "@/src/utils/cookie/cookie";
 
 const WithdrawalPage = () => {
   const router = useRouter();
   const [checked, setChecked] = useState(false);
-  const { member } = useMemberStore();
+  const { member, setMember } = useMemberStore();
 
   const handleCheckboxChange = () => {
     setChecked(!checked);
@@ -20,7 +21,9 @@ const WithdrawalPage = () => {
     if (checked) {
       deleteMember(member!.memberId)
         .then((response) => {
-          sessionStorage.clear();
+          setMember(null);
+          removeCookie("accessToken");
+          removeCookie("refreshToken");
           router.push("/register");
           CustomAlert(
             "success",

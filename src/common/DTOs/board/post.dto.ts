@@ -1,6 +1,6 @@
 import { BaseDTO } from "../base.dto";
 
-export interface PostDTO extends BaseDTO {
+export interface PostDto extends BaseDTO {
   id: number;
   postTitle: string;
   postContent: string;
@@ -9,5 +9,12 @@ export interface PostDTO extends BaseDTO {
   postViews: number;
   postLikes: number;
   postComments: number;
+  postBoard: string;
+}
+
+export interface PostCreateDto extends BaseDTO {
+  postTitle: string;
+  postContent: string;
+  postWriter: string;
   postBoard: string;
 }

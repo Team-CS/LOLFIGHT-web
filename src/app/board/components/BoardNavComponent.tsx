@@ -8,7 +8,7 @@ const BoardNavComponent = () => {
   const pathname = usePathname();
 
   return (
-    <div className="sticky top-[300px] shadow-md w-[200px] h-full rounded-[12px] overflow-y-auto bg-white dark:bg-dark">
+    <div className="sticky top-[100px] shadow-md w-[200px] h-full rounded-[12px] overflow-y-auto bg-white dark:bg-dark">
       <nav className="flex flex-col py-[12px]">
         {boardNavLinks
           .filter((link) => link.href !== "/")

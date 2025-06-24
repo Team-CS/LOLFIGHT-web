@@ -1,13 +1,12 @@
 "use client";
 
-import { PostDTO } from "@/src/common/DTOs/board/post.dto";
+import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import { useRouter } from "next/navigation";
 import boardNavLinks from "@/src/data/boardNavLinks";
-import { useState } from "react";
 
 interface BoardInfoComponentProps {
   slug: string;
-  data: PostDTO;
+  data: PostDto;
 }
 
 function getSlugFromTitle(title: string) {
@@ -16,15 +15,13 @@ function getSlugFromTitle(title: string) {
 }
 
 const BoardInfoComponent = (props: BoardInfoComponentProps) => {
+  const { slug, data } = props;
   const router = useRouter();
-  const link = `${props.slug}/${props.data.id}`;
-  // const link = `${props.data.postBoard}/${props.data.id}`;
-  const [postDate, setPostDate] = useState<String>();
+  const link = `${slug}/${data.id}`;
 
   const handleOnClick = () => {
-    if (props.slug == "all") {
-      // router.push(`${props.data.postBoard}/${props.data.id}`);
-      router.push(getSlugFromTitle(props.data.postBoard) + "/" + props.data.id);
+    if (slug == "all") {
+      router.push(getSlugFromTitle(data.postBoard) + "/" + data.id);
     } else {
       router.push(link);
     }
@@ -42,11 +39,7 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
       const hour = postDateTime.getHours().toString().padStart(2, "0");
       const minute = postDateTime.getMinutes().toString().padStart(2, "0");
       return `${hour}:${minute}`;
-      // return `${postDateTime.getHours()}:${postDateTime.getMinutes()}`;
     } else {
-      // const formattedDate = `${postDateTime.getFullYear()}-${
-      //   postDateTime.getMonth() + 1
-      // }-${postDateTime.getDate()}`;
       const year = postDateTime.getFullYear().toString().padStart(2, "0");
       const month = (postDateTime.getMonth() + 1).toString().padStart(2, "0");
       const day = postDateTime.getDate().toString().padStart(2, "0");
@@ -61,13 +54,13 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
   return (
     <div className="notice-info text-sm h-8 flex mt-1">
       <div className="notice-info__number w-1/12 flex items-center justify-center">
-        {props.data.postLikes}
+        {data.postLikes}
       </div>
       <div className="notice-info__type w-1/12 flex items-center justify-center">
-        {props.data.postBoard}
+        {data.postBoard}
       </div>
       <div className="flex w-1/2 pl-4">
-        {containsImage(props.data.postContent) ? (
+        {containsImage(data.postContent) ? (
           <div className="flex items-center justify-center pr-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -106,21 +99,21 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
         )}
         <div className="flex items-center hover:underline cursor-pointer">
           <a className="notice-info__title" onClick={handleOnClick}>
-            {props.data.postTitle}
+            {data.postTitle}
           </a>
           <a className="notice-info__comment flex items-center text-gray-400">
-            [{props.data.postComments}]
+            [{data.postComments}]
           </a>
         </div>
       </div>
       <div className="notice-info__writer w-2/12 flex items-center justify-center">
-        {props.data.postWriter}
+        {data.postWriter}
       </div>
       <div className="notice-info__date w-1/6 flex items-center justify-center">
-        {getDate(props.data.postDate)}
+        {getDate(data.postDate)}
       </div>
       <div className="notice-info__views w-1/12 flex items-center justify-center">
-        {props.data.postViews}
+        {data.postViews}
       </div>
     </div>
   );

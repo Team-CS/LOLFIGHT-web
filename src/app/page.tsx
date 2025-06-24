@@ -18,7 +18,6 @@ export default function Page() {
       setIsLoading(true);
       getGuildList()
         .then((response) => {
-          console.log(response);
           const sortedGuilds = response.data.data.sort(
             (a: GuildDTO, b: GuildDTO) => {
               const rankA =

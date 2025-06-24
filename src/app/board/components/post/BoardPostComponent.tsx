@@ -1,10 +1,10 @@
 import BoardPostHeadComponent from "./BoardPostHeadComponent";
 import BoardPostBodyComponent from "./BoardPostBodyComponent";
-import { PostDTO } from "@/src/common/DTOs/board/post.dto";
+import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import BoardPostCommentComponent from "./BoardPostCommentComponent";
 
 interface PostProps {
-  data: PostDTO;
+  data: PostDto;
 }
 
 const BoardPostComponent = (props: PostProps) => {

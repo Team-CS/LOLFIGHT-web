@@ -27,7 +27,7 @@ export default function BoardSection({
   containsImage,
 }: BoardSectionProps) {
   return (
-    <div className="flex flex-col w-full h-full gap-[12px] bg-brandbgcolor dark:bg-branddark">
+    <div className="flex flex-col w-full h-full gap-[12px] bg-brandbgcolor border dark:border-branddarkborder dark:bg-branddark">
       <div className="flex w-full items-center justify-between">
         {tabTitles.map((title) => (
           <button

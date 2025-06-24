@@ -28,7 +28,7 @@ const Search = () => {
   };
 
   return (
-    <div className="flex w-[400px] h-[46px] border border-gray-200 mt-1 dark:bg-dark dark:border-dark">
+    <div className="flex w-[400px] h-[46px] border border-brandborder mt-1 dark:bg-dark dark:border-branddarkborder">
       <input
         className="w-full px-2 bg-gray-100 focus:outline-none dark:bg-dark"
         type="text"

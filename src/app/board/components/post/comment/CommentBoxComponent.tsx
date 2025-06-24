@@ -1,7 +1,7 @@
-import { PostDTO } from "@/src/common/DTOs/board/post.dto";
+import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import { SetStateAction, useEffect, useState } from "react";
 import { getCommentList } from "@/src/api/comment.api";
-import { CommentDTO } from "@/src/common/DTOs/board/comment.dto";
+import { CommentDto } from "@/src/common/DTOs/board/comment.dto";
 import { writeReplyComment } from "@/src/api/comment.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
@@ -10,11 +10,11 @@ import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { findMemberByName } from "@/src/api/member.api";
 
 interface CommentBoxComponentProps {
-  data: PostDTO;
+  data: PostDto;
 }
 
 const CommentBoxComponent = (props: CommentBoxComponentProps) => {
-  const [commentList, setCommentList] = useState<CommentDTO[]>([]);
+  const [commentList, setCommentList] = useState<CommentDto[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [openCommentId, setOpenCommentId] = useState<string>("");
   const [replyCommentContent, setReplyCommentContent] = useState("");
@@ -30,7 +30,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     }
   }, [props.data, refresh]);
 
-  const handleReplyButtonClick = (comment: CommentDTO) => {
+  const handleReplyButtonClick = (comment: CommentDto) => {
     setIsOpen(!isOpen); // isOpen 상태를 토글합니다.
     setOpenCommentId(comment.id as string);
   };
@@ -123,7 +123,9 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                 {getDate(comment.commentDate)}
               </p>
             </div>
-            <p className="text-[14px] font-normal">{comment.commentContent}</p>
+            <p className="text-[14px] font-normal whitespace-pre-wrap">
+              {comment.commentContent}
+            </p>
             {comment.depth == 0 && (
               <div>
                 <button
