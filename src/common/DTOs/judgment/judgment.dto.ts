@@ -1,6 +1,6 @@
-import { BaseDTO } from "../base.dto";
+import { BaseDto } from "../base.dto";
 
-export interface JudgmentDTO extends BaseDTO {
+export interface JudgmentDTO extends BaseDto {
   id: number;
   judgmentWriter: string;
   judgmentTitle: string;

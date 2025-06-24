@@ -4,21 +4,21 @@ import { inviteGuild } from "@/src/api/guild.api";
 import { useRouter } from "next/navigation";
 import CustomAlert from "../../../../common/components/alert/CustomAlert";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import constant from "@/src/common/constant/constant";
 
 interface Props {
-  guildDto: GuildDTO;
+  GuildDto: GuildDto;
 }
 
 const GuildBanner = (props: Props) => {
-  const { guildDto } = props;
+  const { GuildDto } = props;
   const router = useRouter();
   const { member } = useMemberStore();
 
   const handleClickInviteGuild = () => {
-    if (member && guildDto.id !== null && guildDto.id !== undefined) {
-      inviteGuild(member.id, guildDto.id)
+    if (member && GuildDto.id !== null && GuildDto.id !== undefined) {
+      inviteGuild(member.id, GuildDto.id)
         .then((response) => {
           CustomAlert("success", "길드가입", "길드 가입신청이 완료되었습니다.");
         })
@@ -41,17 +41,17 @@ const GuildBanner = (props: Props) => {
         <div className="flex items-center gap-4">
           <img
             className="h-[75px] w-[75px] object-cover rounded-md"
-            src={`${constant.SERVER_URL}/${guildDto.guildIcon}`}
+            src={`${constant.SERVER_URL}/${GuildDto.guildIcon}`}
             alt="GuildIcon"
           />
           <div className="flex flex-col gap-[4px]">
             <p className="text-white text-sm font-medium">
-              롤파이트 공식리그 - 1부리그 -{guildDto.guildRecord?.recordRanking}
+              롤파이트 공식리그 - 1부리그 -{GuildDto.guildRecord?.recordRanking}
               위
             </p>
             <div className="flex items-center gap-[12px]">
               <h2 className="text-white text-2xl font-extrabold">
-                {guildDto.guildName}
+                {GuildDto.guildName}
               </h2>
               <button
                 aria-label="길드가입"
@@ -65,10 +65,10 @@ const GuildBanner = (props: Props) => {
         </div>
 
         <div className="flex flex-col gap-[4px] text-white text-sm">
-          <p className="font-medium">길드 마스터: {guildDto.guildMaster}</p>
-          <p className="font-medium">클랜원:{guildDto.guildMembers.length}명</p>
+          <p className="font-medium">길드 마스터: {GuildDto.guildMaster}</p>
+          <p className="font-medium">클랜원:{GuildDto.guildMembers.length}명</p>
           <p className="font-medium">
-            길드 설립일: {guildDto.createdAt?.toString()?.split("T")[0]}
+            길드 설립일: {GuildDto.createdAt?.toString()?.split("T")[0]}
           </p>
         </div>
       </div>

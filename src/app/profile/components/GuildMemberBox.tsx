@@ -1,11 +1,11 @@
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
 import constant from "@/src/common/constant/constant";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 interface Props {
   guildMember: MemberDTO;
-  guild: GuildDTO;
+  guild: GuildDto;
   type: string;
   expulsionMember?: (member: MemberDTO) => void;
   transferGuildMaste?: (memberName: string, guildName: string) => void;

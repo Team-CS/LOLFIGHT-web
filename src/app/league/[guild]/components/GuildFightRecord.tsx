@@ -8,7 +8,7 @@ import GuildFightMember from "./GuildFightMember";
 import { BattleDTO } from "@/src/common/DTOs/battle/battle.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { BattlePlayerDTO } from "@/src/common/DTOs/battle/battle_player.dto";
 
 interface Props {
@@ -17,8 +17,8 @@ interface Props {
 const GuildFightRecord = (props: Props) => {
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const result = props.battleData.teamA.isWinning ? "win" : "lose";
-  const [homeGuild, setHomeGuild] = useState<GuildDTO>();
-  const [awayGuild, setawayGuild] = useState<GuildDTO>();
+  const [homeGuild, setHomeGuild] = useState<GuildDto>();
+  const [awayGuild, setawayGuild] = useState<GuildDto>();
 
   useEffect(() => {
     getGuildInfo(props.battleData.teamA.guildName).then((response) => {

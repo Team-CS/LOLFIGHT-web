@@ -6,12 +6,16 @@ interface Props {
   guildLength: number;
   searchTerm?: string;
   setSearchTerm?: React.Dispatch<React.SetStateAction<string>>;
+  onSearch?: () => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const LeagueHeaderComponent = ({
   guildLength,
   searchTerm,
   setSearchTerm,
+  onSearch,
+  onKeyDown,
 }: Props) => {
   const pathName = usePathname();
   const isSearchVisible = pathName === "/";
@@ -29,7 +33,10 @@ const LeagueHeaderComponent = ({
         </div>
         {!isSearchVisible && (
           <div className="flex justify-center ml-auto">
-            <div className="bg-gray-100 p-[12px] flex flex-wrap justify-center content-center dark:bg-dark rounded-l-md">
+            <div
+              className="bg-gray-100 p-[12px] flex flex-wrap justify-center content-center dark:bg-dark rounded-l-md"
+              onClick={onSearch}
+            >
               <FaSearch />
             </div>
             <input
@@ -38,6 +45,7 @@ const LeagueHeaderComponent = ({
               placeholder="길드 이름 검색"
               value={searchTerm}
               onChange={(e) => setSearchTerm!(e.target.value)}
+              onKeyDown={onKeyDown}
             />
           </div>
         )}

@@ -12,7 +12,7 @@ import {
   inviteReject,
 } from "@/src/api/guild.api";
 import GuildMemberBox from "./GuildMemberBox";
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { GuildInviteDTO } from "@/src/common/DTOs/guild/guild_invite.dto";
 import { leaveMember } from "@/src/api/member.api";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
@@ -26,7 +26,7 @@ import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
 
 const GuildManagePage = () => {
   const [inviteMembers, setInviteMembers] = useState<GuildInviteDTO[]>([]);
-  const [guild, setGuild] = useState<GuildDTO>();
+  const [guild, setGuild] = useState<GuildDto>();
   const [currentTab, setCurrentTab] = useState("members");
   const [guildChecked, setGuildChecked] = useState(false);
   const [memberChecked, setMemberChecked] = useState(false);

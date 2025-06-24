@@ -1,13 +1,13 @@
-import { BaseDTO } from "../base.dto";
-import { GuildDTO } from "../guild/guild.dto";
+import { BaseDto } from "../base.dto";
+import { GuildDto } from "../guild/guild.dto";
 import { MemberGameDTO } from "./member_game.dto";
 
-export interface MemberDTO extends BaseDTO {
+export interface MemberDTO extends BaseDto {
   id: string;
   memberId: string;
   memberPw: string;
   memberName: string;
   memberIcon: string;
-  memberGuild: GuildDTO | null;
+  memberGuild: GuildDto | null;
   memberGame: MemberGameDTO | null;
 }

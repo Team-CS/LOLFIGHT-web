@@ -1,6 +1,10 @@
 import constant from "../common/constant/constant";
 import axios, { AxiosResponse } from "axios";
-import { PostCreateDto, PostDto } from "../common/DTOs/board/post.dto";
+import {
+  PostCreateDto,
+  PostDto,
+  PostListResponseDto,
+} from "../common/DTOs/board/post.dto";
 import { ResponseDTO } from "../common/DTOs/response.dto";
 import { LikeDTO } from "../common/DTOs/board/like.dto";
 import { getData, postData } from "../utils/axios/serverHelper";
@@ -26,9 +30,15 @@ export const writePost = async (
  * @returns
  */
 export const getPostList = async (
-  board: string
-): Promise<AxiosResponse<ResponseDTO<PostDto[]>>> => {
-  let url = `${baseUrl}/list` + `?board=${board}`;
+  board: string,
+  page: number,
+  limit: number,
+  keyword?: string | null
+): Promise<AxiosResponse<ResponseDTO<PostListResponseDto>>> => {
+  let url = `${baseUrl}/list` + `?board=${board}&page=${page}&limit=${limit}`;
+  if (keyword) {
+    url += `&keyword=${encodeURIComponent(keyword)}`;
+  }
   return await getData(url);
 };
 

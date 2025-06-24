@@ -1,8 +1,8 @@
-import { BaseDTO } from "../base.dto";
+import { BaseDto } from "../base.dto";
 import { MemberDTO } from "../member/member.dto";
-import { GuildDTO } from "./guild.dto";
+import { GuildDto } from "./guild.dto";
 
-export interface GuildInviteSendDTO extends BaseDTO {
+export interface GuildInviteSendDTO extends BaseDto {
   id: string;
   memberId: string | undefined;
   guildId: string | undefined;

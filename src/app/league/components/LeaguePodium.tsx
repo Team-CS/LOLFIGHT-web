@@ -1,17 +1,17 @@
 import constant from "@/src/common/constant/constant";
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import React from "react";
 
 interface LeaguePodiumProps {
-  first?: GuildDTO;
-  second?: GuildDTO;
-  third?: GuildDTO;
+  first?: GuildDto;
+  second?: GuildDto;
+  third?: GuildDto;
 }
 
 const LeaguePodium = (props: LeaguePodiumProps) => {
   const { first, second, third } = props;
 
-  const renderGuildBox = (guild: GuildDTO, color: string, emoji: string) => {
+  const renderGuildBox = (guild: GuildDto, color: string, emoji: string) => {
     return (
       <div className="flex flex-col items-center h-full p-[12px] gap-[4px]">
         <img

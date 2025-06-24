@@ -10,6 +10,8 @@ interface BoardHeadComponentProps {
     slug: string;
   };
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  onSearch: () => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 function getTitleFromSlug(slug: string) {
@@ -37,14 +39,18 @@ const BoardHeadComponent = (props: BoardHeadComponentProps) => {
         </p>
         <div className="flex gap-[12px] items-center">
           <div className="flex w-[200px] border border-gray-200 rounded-md px-[12px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
-            <div className="flex flex-wrap justify-center content-center dark:bg-black">
+            <div
+              className="flex flex-wrap justify-center content-center dark:bg-black"
+              onClick={props.onSearch}
+            >
               <FaSearch />
             </div>
             <input
               className="w-full rounded-md bg-gray-100 px-[12px] py-[4px] text-[14px] focus:outline-none dark:bg-black font-normal"
               type="text"
-              placeholder="검색"
+              placeholder="검색어 입력 (2자 이상)"
               onChange={(e) => props.setSearchTerm(e.target.value)}
+              onKeyDown={props.onKeyDown}
             />
           </div>
           <button

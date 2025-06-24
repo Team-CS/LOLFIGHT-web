@@ -1,11 +1,11 @@
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import constant from "@/src/common/constant/constant";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 interface GuildInfoComponentProps {
-  guild: GuildDTO;
+  guild: GuildDto;
 }
 
 const GuildInfoComponent = (props: GuildInfoComponentProps) => {

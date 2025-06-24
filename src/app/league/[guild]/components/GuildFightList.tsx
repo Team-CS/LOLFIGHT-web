@@ -3,7 +3,7 @@ import GuildFightBox from "./GuildFightBox";
 import { BattleTeamDTO } from "@/src/common/DTOs/battle/battle_team.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 
 interface Props {
   battleTeamData: BattleTeamDTO;
@@ -12,7 +12,7 @@ interface Props {
 const GuildFightList = (props: Props) => {
   const result = props.battleTeamData.isWinning ? "win" : "lose";
   const highestChampionDamage = findHighestDamagePlayer(props.battleTeamData);
-  const [guildData, setGuildData] = useState<GuildDTO>();
+  const [guildData, setGuildData] = useState<GuildDto>();
   useEffect(() => {
     getGuildInfo(props.battleTeamData.guildName).then((response) => {
       setGuildData(response.data.data);

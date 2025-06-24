@@ -6,7 +6,7 @@ import GuildFightRecord from "./components/GuildFightRecord";
 import GuildSummeryRecord from "./components/GuildSummeryRecord";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { BattleDTO } from "@/src/common/DTOs/battle/battle.dto";
 import { getBattleList } from "@/src/api/battle.api";
 import { BattleTeamDTO } from "@/src/common/DTOs/battle/battle_team.dto";
@@ -16,7 +16,7 @@ import { getTierStyle } from "@/src/utils/string/string.util";
 
 export default function GuildPage() {
   const router = useRouter();
-  const [guild, setGuild] = useState<GuildDTO>();
+  const [guild, setGuild] = useState<GuildDto>();
   const [currentTab, setCurrentTab] = useState("guildInfo");
   const [battleDataList, setBattleDataList] = useState<BattleDTO[]>([]);
   const guildPath = usePathname();
@@ -70,7 +70,7 @@ export default function GuildPage() {
   return (
     <>
       <div className="w-full h-full py-[24px]">
-        {guild && <GuildBanner guildDto={guild} />}
+        {guild && <GuildBanner GuildDto={guild} />}
         <div className="flex flex-col py-[12px] h-full max-w-[1200px] mx-auto gap-[12px]">
           <div className="w-full bg-brandbgcolor border dark:bg-dark dark:border-gray-700">
             <button

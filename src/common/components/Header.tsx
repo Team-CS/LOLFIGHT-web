@@ -133,7 +133,9 @@ export const Header = () => {
         </div>
       </section>
 
-      {!(pathname.startsWith("/profile") || pathname.endsWith("/league/")) && (
+      {!(
+        pathname.startsWith("/profile") || pathname.startsWith("/league/")
+      ) && (
         <section className="max-w-[1200px] mx-auto flex gap-[4px]">
           <div className="flex gap-[4px] w-[800px] h-[200px]">
             <BoardSection

@@ -1,7 +1,11 @@
 import constant from "../common/constant/constant";
 import axios, { AxiosResponse } from "axios";
 import { ResponseDTO } from "../common/DTOs/response.dto";
-import { CreateGuildDTO, GuildDTO } from "../common/DTOs/guild/guild.dto";
+import {
+  CreateGuildDto,
+  GuildDto,
+  GuildListResponseDto,
+} from "../common/DTOs/guild/guild.dto";
 import { MemberDTO } from "../common/DTOs/member/member.dto";
 import { GuildInviteDTO } from "../common/DTOs/guild/guild_invite.dto";
 import {
@@ -15,20 +19,20 @@ const baseUrl = `${constant.SERVER_URL}/guild`;
 
 /**
  * Guild 생성
- * @param guildDTO
+ * @param GuildDto
  * @returns
  */
 export const createGuild = async (
-  createGuildDTO: CreateGuildDTO,
+  CreateGuildDto: CreateGuildDto,
   guildImage?: File | null
-): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
+): Promise<AxiosResponse<ResponseDTO<GuildDto>>> => {
   let url = `${baseUrl}`;
 
   const formData = new FormData();
 
-  formData.append("guildMaster", createGuildDTO.guildMaster);
-  formData.append("guildName", createGuildDTO.guildName);
-  formData.append("guildDescription", createGuildDTO.guildDescription);
+  formData.append("guildMaster", CreateGuildDto.guildMaster);
+  formData.append("guildName", CreateGuildDto.guildName);
+  formData.append("guildDescription", CreateGuildDto.guildDescription);
   if (guildImage) {
     formData.append("guildImage", guildImage);
   }
@@ -44,10 +48,22 @@ export const createGuild = async (
  * Guild 길드 리스트
  * @returns
  */
-export const getGuildList = async (): Promise<
-  AxiosResponse<ResponseDTO<GuildDTO[]>>
+export const getGuildList = async (
+  page: number,
+  limit: number,
+  keyword?: string | null
+): Promise<AxiosResponse<ResponseDTO<GuildListResponseDto>>> => {
+  let url = `${baseUrl}/list` + `?page=${page}&limit=${limit}`;
+  if (keyword) {
+    url += `&keyword=${encodeURIComponent(keyword)}`;
+  }
+  return await getData(url);
+};
+
+export const getTopGuilds = async (): Promise<
+  AxiosResponse<ResponseDTO<GuildListResponseDto>>
 > => {
-  let url = `${baseUrl}/list`;
+  let url = `${baseUrl}/top3`;
   return await getData(url);
 };
 
@@ -58,7 +74,7 @@ export const getGuildList = async (): Promise<
  */
 export const getGuildInfo = async (
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
+): Promise<AxiosResponse<ResponseDTO<GuildDto>>> => {
   let url = `${baseUrl}/info`;
 
   const queryParams = `?name=${guildName}`;
@@ -75,7 +91,7 @@ export const getGuildInfo = async (
 export const expulsionGuildMember = async (
   memberName: string,
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
+): Promise<AxiosResponse<ResponseDTO<GuildDto>>> => {
   let url = `${baseUrl}/expulsion`;
 
   const queryParams = `?member_name=${memberName}&guild_name=${guildName}`;
@@ -92,7 +108,7 @@ export const expulsionGuildMember = async (
  */
 export const destroyGuild = async (
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
+): Promise<AxiosResponse<ResponseDTO<GuildDto>>> => {
   let url = `${baseUrl}`;
 
   const queryParams = `?name=${guildName}`;
@@ -180,7 +196,7 @@ export const inviteReject = async (
 export const changeGuildMaster = async (
   memberName: string,
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
+): Promise<AxiosResponse<ResponseDTO<GuildDto>>> => {
   let url = `${baseUrl}/changeMaster`;
 
   const queryParams = `?memberName=${memberName}&guildName=${guildName}`;

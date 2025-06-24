@@ -1,6 +1,6 @@
-import { BaseDTO } from "../base.dto";
+import { BaseDto } from "../base.dto";
 
-export interface MemberGameDTO extends BaseDTO {
+export interface MemberGameDTO extends BaseDto {
   id: string;
   gameName: string;
   gameTier: string;

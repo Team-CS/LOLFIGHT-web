@@ -2,7 +2,7 @@ import constant from "../common/constant/constant";
 import { MemberDTO } from "../common/DTOs/member/member.dto";
 import { AxiosResponse } from "axios";
 import { ResponseDTO } from "../common/DTOs/response.dto";
-import { GuildDTO } from "../common/DTOs/guild/guild.dto";
+import { GuildDto } from "../common/DTOs/guild/guild.dto";
 import { MemberGameDTO } from "../common/DTOs/member/member_game.dto";
 import { deleteData, getData, patchData } from "../utils/axios/serverHelper";
 

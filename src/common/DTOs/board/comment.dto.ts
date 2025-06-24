@@ -1,8 +1,8 @@
-import { BaseDTO } from "../base.dto";
+import { BaseDto } from "../base.dto";
 import { MemberDTO } from "../member/member.dto";
 import { PostDto } from "./post.dto";
 
-export interface CommentDto extends BaseDTO {
+export interface CommentDto extends BaseDto {
   id?: string;
   commentContent: string;
   depth: number;

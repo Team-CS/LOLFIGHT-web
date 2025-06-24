@@ -1,6 +1,7 @@
-import { BaseDTO } from "../base.dto";
+import { BaseDto } from "../base.dto";
+import { PaginationDto } from "../pagination.dto";
 
-export interface PostDto extends BaseDTO {
+export interface PostDto extends BaseDto {
   id: number;
   postTitle: string;
   postContent: string;
@@ -12,9 +13,14 @@ export interface PostDto extends BaseDTO {
   postBoard: string;
 }
 
-export interface PostCreateDto extends BaseDTO {
+export interface PostCreateDto extends BaseDto {
   postTitle: string;
   postContent: string;
   postWriter: string;
   postBoard: string;
+}
+
+export interface PostListResponseDto extends BaseDto {
+  postList: PostDto[];
+  pagination: PaginationDto;
 }

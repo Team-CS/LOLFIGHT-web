@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import CutsomAlert from "../../../../common/components/alert/CustomAlert";
 import { createGuild } from "@/src/api/guild.api";
-import { CreateGuildDTO, GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { CreateGuildDto, GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { useRouter } from "next/navigation";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
@@ -44,7 +44,6 @@ export default function Page() {
 
   const isGuildDescriptionVaild = (guildDescription: string) => {
     if (guildDescription.length >= 80) {
-      console.log(guildDescription.length);
       CutsomAlert(
         "warning",
         "길드생성",
@@ -74,7 +73,7 @@ export default function Page() {
       isGuildImageValid(guildImage!) &&
       isGuildDescriptionVaild(guildDescription!)
     ) {
-      const guildData: CreateGuildDTO = {
+      const guildData: CreateGuildDto = {
         guildMaster: member!.memberName,
         guildName: guildName!,
         guildDescription: guildDescription!,
