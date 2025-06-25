@@ -1,5 +1,5 @@
 import { BaseDto } from "../base.dto";
-import { MemberDTO } from "../member/member.dto";
+import { MemberDto } from "../member/member.dto";
 import { PostDto } from "./post.dto";
 
 export interface CommentDto extends BaseDto {
@@ -12,6 +12,6 @@ export interface CommentDto extends BaseDto {
   postId: number;
   postBoardId: PostDto;
   commentDate: Date;
-  writer: MemberDTO;
+  writer: MemberDto;
   writerId: string;
 }

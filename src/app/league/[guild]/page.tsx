@@ -155,21 +155,38 @@ export default function GuildPage() {
                       {member.memberGame?.gameName}
                     </div>
                     <div className="flex-[1] flex items-center justify-center gap-[6px]">
-                      <img
-                        src={`${constant.SERVER_URL}/public/rank/${
-                          member.memberGame?.gameTier.split(" ")[0]
-                        }.png`}
-                        alt="rank"
-                        className="w-[25px] h-[25px]"
-                      />
-                      <span
-                        className={getTierStyle(member.memberGame?.gameTier)}
-                      >
-                        {member.memberGame?.gameTier}
-                      </span>
+                      {member.memberGame && (
+                        <>
+                          <img
+                            src={`${constant.SERVER_URL}/public/rank/${
+                              member.memberGame?.gameTier.split(" ")[0]
+                            }.png`}
+                            alt="rank"
+                            className="w-[25px] h-[25px]"
+                          />
+                          <span
+                            className={getTierStyle(
+                              member.memberGame?.gameTier
+                            )}
+                          >
+                            {member.memberGame?.gameTier}
+                          </span>
+                        </>
+                      )}
                     </div>
                     {/* @todo 라인이미지넣고 컬럼도 추가해야할듯 */}
-                    <div className="flex-[1]">라인</div>
+                    <div className="flex-[1] flex items-center gap-[4px] justify-center">
+                      {member.memberGame && (
+                        <>
+                          <img
+                            src={`${constant.SERVER_URL}/public/ranked-positions/${member.memberGame?.line}.png`}
+                            alt="line"
+                            className="w-[25px] h-[25px]"
+                          />
+                          <span>{member.memberGame?.line}</span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

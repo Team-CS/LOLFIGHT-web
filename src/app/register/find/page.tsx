@@ -1,6 +1,6 @@
 "use client";
 import { MailDTO } from "@/src/common/DTOs/mail/mail.dto";
-import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
+import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import CustomAlert from "../../../common/components/alert/CustomAlert";

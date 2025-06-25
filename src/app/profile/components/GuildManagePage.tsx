@@ -14,7 +14,7 @@ import {
 import GuildMemberBox from "./GuildMemberBox";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { GuildInviteDTO } from "@/src/common/DTOs/guild/guild_invite.dto";
-import { leaveMember } from "@/src/api/member.api";
+import { leaveMember, updateMemberGameLine } from "@/src/api/member.api";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { GuildInfoItem } from "./guildInfoItem";
 import { ProfileHeader } from "./profileHeader";
@@ -22,7 +22,7 @@ import { GuildCreateIntro } from "./GuildCreateIntro";
 import GuildLeaveSection from "./GuildLeaveSection";
 import GuildDeleteSection from "./GuildDeleteSection";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
-import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
+import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 
 const GuildManagePage = () => {
   const [inviteMembers, setInviteMembers] = useState<GuildInviteDTO[]>([]);
@@ -104,7 +104,7 @@ const GuildManagePage = () => {
     }
   };
 
-  const expulsionMember = (member: MemberDTO) => {
+  const expulsionMember = (member: MemberDto) => {
     const expulsion = () => {
       if (guild) {
         expulsionGuildMember(member.memberName, guild.guildName)
@@ -181,6 +181,27 @@ const GuildManagePage = () => {
         );
       })
       .catch((error) => {});
+  };
+
+  const handleChangeLine = (memberId: string, newLine: string) => {
+    updateMemberGameLine(memberId, newLine)
+      .then((response) => {
+        const updatedMember: MemberDto = response.data.data;
+
+        if (!guild) return;
+
+        const updatedMembers = guild.guildMembers.map((member) =>
+          member.id === updatedMember.id ? updatedMember : member
+        );
+
+        setGuild({
+          ...guild,
+          guildMembers: updatedMembers,
+        });
+      })
+      .catch((error) => {
+        console.error("라인 변경 실패:", error);
+      });
   };
 
   return (
@@ -261,10 +282,11 @@ const GuildManagePage = () => {
               {/* @todo 누르면 팝업창 뜨면서 추방, 직위변경, 라인변경 이런거 할수있게해야함 */}
               {currentTab === "members" && (
                 <div className="flex flex-col gap-[4px] max-h-[300px]">
-                  <div className="grid grid-cols-4 bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">
-                    <p>닉네임</p>
-                    <p>소환사명</p>
-                    <p>티어</p>
+                  <div className="flex bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">
+                    <div className="flex-[1]">닉네임</div>
+                    <div className="flex-[2]">소환사명</div>
+                    <div className="flex-[1]">티어</div>
+                    <div className="flex-[1]">라인</div>
                   </div>
                   <div className="flex flex-col gap-[4px] overflow-y-auto">
                     {guild?.guildMembers.map((member) => (
@@ -275,6 +297,7 @@ const GuildManagePage = () => {
                         type={"guildMember"}
                         expulsionMember={expulsionMember}
                         transferGuildMaste={transferGuildMaste}
+                        onChangeLine={handleChangeLine}
                       />
                     ))}
                   </div>

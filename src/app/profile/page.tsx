@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { getMemberData } from "@/src/api/member.api";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import CustomAlert from "../../common/components/alert/CustomAlert";
-import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
+import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 
 import ProfileInfoPage from "../profile/components/ProfileInfoPage";
 import WithdrawalPage from "./components/WithdrawalPage";
@@ -24,7 +24,7 @@ export default function Page() {
     const fetchMember = async () => {
       try {
         const response = await getMemberData();
-        const memberData: MemberDTO = response.data.data;
+        const memberData: MemberDto = response.data.data;
         setMember(memberData);
       } catch (error) {
         console.error(error);

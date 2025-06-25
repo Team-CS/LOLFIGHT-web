@@ -1,5 +1,5 @@
-import { MemberDTO } from "../common/DTOs/member/member.dto";
-import { ResponseDTO } from "../common/DTOs/response.dto";
+import { MemberDto } from "../common/DTOs/member/member.dto";
+import { ResponseDto } from "../common/DTOs/response.dto";
 import constant from "../common/constant/constant";
 import axios, { Axios, AxiosResponse } from "axios";
 
@@ -23,17 +23,17 @@ export const authLogin = async (id: string, pw: string) => {
 
 /**
  * member 회원가입
- * @param memberDTO
+ * @param MemberDto
  * @returns
  */
 export const signUp = async (
-  memberDTO: MemberDTO
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+  MemberDto: MemberDto
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}`;
   const body = {
-    memberId: memberDTO.memberId,
-    memberPw: memberDTO.memberPw,
-    memberName: memberDTO.memberName,
+    memberId: MemberDto.memberId,
+    memberPw: MemberDto.memberPw,
+    memberName: MemberDto.memberName,
   };
 
   return await axios.post(url, body);

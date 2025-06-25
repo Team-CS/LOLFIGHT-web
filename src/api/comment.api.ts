@@ -2,7 +2,7 @@ import constant from "../common/constant/constant";
 import axios from "axios";
 import { PostDto } from "../common/DTOs/board/post.dto";
 import { CommentDto } from "../common/DTOs/board/comment.dto";
-import { ResponseDTO } from "../common/DTOs/response.dto";
+import { ResponseDto } from "../common/DTOs/response.dto";
 import { AxiosResponse } from "axios";
 
 const baseUrl = `${constant.SERVER_URL}/comment`;
@@ -16,7 +16,7 @@ export const writeComment = async (
   post: PostDto,
   memberId: string,
   commentContent: string
-): Promise<AxiosResponse<ResponseDTO<CommentDto>>> => {
+): Promise<AxiosResponse<ResponseDto<CommentDto>>> => {
   let url = `${baseUrl}`;
   // let url = `${baseUrl}/${post.postBoard}/${post.id}`;
   // let url = `${baseUrl}/${encodeURIComponent(post.postBoard)}/${post.id}`;
@@ -48,7 +48,7 @@ export const writeReplyComment = async (
   memberId: string,
   commentContent: string,
   parentCommentId: string
-): Promise<AxiosResponse<ResponseDTO<CommentDto>>> => {
+): Promise<AxiosResponse<ResponseDto<CommentDto>>> => {
   let url = `${baseUrl}`;
   const formData = new FormData();
 
@@ -77,7 +77,7 @@ export const writeReplyComment = async (
  */
 export const getCommentList = async (
   post: PostDto
-): Promise<AxiosResponse<ResponseDTO<CommentDto[]>>> => {
+): Promise<AxiosResponse<ResponseDto<CommentDto[]>>> => {
   let url = `${baseUrl}`;
   const queryParams = `?postId=${post.id}&postBoard=${post.postBoard}`;
   url += queryParams;

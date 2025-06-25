@@ -1,5 +1,5 @@
 import { BaseDto } from "../base.dto";
-import { MemberDTO } from "../member/member.dto";
+import { MemberDto } from "../member/member.dto";
 import { PaginationDto } from "../pagination.dto";
 import { GuildRecrodDTO } from "./guild_record.dto";
 
@@ -7,7 +7,7 @@ export interface GuildDto extends BaseDto {
   id: string;
   guildMaster: string;
   guildName: string;
-  guildMembers: MemberDTO[];
+  guildMembers: MemberDto[];
   memberCount: number;
   guildDescription: string;
   guildTier: string;

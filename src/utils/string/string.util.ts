@@ -7,9 +7,9 @@ export const getTierStyle = (tier: string | undefined) => {
     case "BRONZE":
       return "text-[#cd7f32] font-medium"; // 브론즈 (청동)
     case "SILVER":
-      return "text-[#c0c0c0] font-semibold"; // 실버 (은색)
+      return "text-[#A6A9AA] font-semibold"; // 실버 (은색)
     case "GOLD":
-      return "text-[#ffd700] font-semibold"; // 골드 (금색)
+      return "text-[#e3c314] font-semibold"; // 골드 (금색)
     case "PLATINUM":
       return "text-[#40c2ff] font-bold"; // 플래티넘 (청록)
     case "EMERALD":

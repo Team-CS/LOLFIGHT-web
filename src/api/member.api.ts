@@ -1,15 +1,15 @@
 import constant from "../common/constant/constant";
-import { MemberDTO } from "../common/DTOs/member/member.dto";
+import { MemberDto } from "../common/DTOs/member/member.dto";
 import { AxiosResponse } from "axios";
-import { ResponseDTO } from "../common/DTOs/response.dto";
+import { ResponseDto } from "../common/DTOs/response.dto";
 import { GuildDto } from "../common/DTOs/guild/guild.dto";
-import { MemberGameDTO } from "../common/DTOs/member/member_game.dto";
+import { MemberGameDto } from "../common/DTOs/member/member_game.dto";
 import { deleteData, getData, patchData } from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/member`;
 
 export const getMemberData = (): Promise<
-  AxiosResponse<ResponseDTO<MemberDTO>>
+  AxiosResponse<ResponseDto<MemberDto>>
 > => {
   let url = `${baseUrl}/find`;
 
@@ -19,7 +19,7 @@ export const getMemberData = (): Promise<
 export const updatePassword = async (
   currentPassword: string,
   newPassword: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/password`;
 
   const body = {
@@ -32,7 +32,7 @@ export const updatePassword = async (
 
 export const updateNickname = async (
   nickname: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/nickname`;
 
   const body = {
@@ -49,7 +49,7 @@ export const updateNickname = async (
  */
 export const leaveMember = async (
   id: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/leave`;
 
   const queryParams = `?id=${id}`;
@@ -66,7 +66,7 @@ export const leaveMember = async (
  */
 export const findMember = async (
   id: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/find`;
 
   let queryParams = `?id=${id}`;
@@ -81,7 +81,7 @@ export const findMember = async (
  */
 export const findMemberByName = async (
   name: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/findByName`;
 
   let queryParams = `?name=${name}`;
@@ -96,7 +96,7 @@ export const findMemberByName = async (
  */
 export const deleteMember = async (
   id: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}`;
 
   let queryParams = `?id=${id}`;
@@ -106,13 +106,13 @@ export const deleteMember = async (
 
 /**
  * member 아이콘 변경
- * @param memberDTO
+ * @param MemberDto
  * @param memberIcon
  * @returns
  */
 export const updateMemberIcon = async (
   memberIcon?: File | null
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/icon`;
 
   const formData = new FormData();
@@ -124,4 +124,18 @@ export const updateMemberIcon = async (
       "Content-Type": "multipart/form-data",
     },
   });
+};
+
+export const updateMemberGameLine = async (
+  memberId: string,
+  newLine: string
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
+  let url = `${baseUrl}/game-line`;
+
+  const body = {
+    id: memberId,
+    line: newLine,
+  };
+
+  return await patchData(url, body);
 };

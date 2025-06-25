@@ -1,12 +1,12 @@
 import constant from "../common/constant/constant";
 import axios, { AxiosResponse } from "axios";
-import { ResponseDTO } from "../common/DTOs/response.dto";
+import { ResponseDto } from "../common/DTOs/response.dto";
 import {
   CreateGuildDto,
   GuildDto,
   GuildListResponseDto,
 } from "../common/DTOs/guild/guild.dto";
-import { MemberDTO } from "../common/DTOs/member/member.dto";
+import { MemberDto } from "../common/DTOs/member/member.dto";
 import { GuildInviteDTO } from "../common/DTOs/guild/guild_invite.dto";
 import {
   deleteData,
@@ -25,7 +25,7 @@ const baseUrl = `${constant.SERVER_URL}/guild`;
 export const createGuild = async (
   CreateGuildDto: CreateGuildDto,
   guildImage?: File | null
-): Promise<AxiosResponse<ResponseDTO<GuildDto>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
   let url = `${baseUrl}`;
 
   const formData = new FormData();
@@ -52,7 +52,7 @@ export const getGuildList = async (
   page: number,
   limit: number,
   keyword?: string | null
-): Promise<AxiosResponse<ResponseDTO<GuildListResponseDto>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildListResponseDto>>> => {
   let url = `${baseUrl}/list` + `?page=${page}&limit=${limit}`;
   if (keyword) {
     url += `&keyword=${encodeURIComponent(keyword)}`;
@@ -61,7 +61,7 @@ export const getGuildList = async (
 };
 
 export const getTopGuilds = async (): Promise<
-  AxiosResponse<ResponseDTO<GuildListResponseDto>>
+  AxiosResponse<ResponseDto<GuildListResponseDto>>
 > => {
   let url = `${baseUrl}/top3`;
   return await getData(url);
@@ -74,7 +74,7 @@ export const getTopGuilds = async (): Promise<
  */
 export const getGuildInfo = async (
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDto>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
   let url = `${baseUrl}/info`;
 
   const queryParams = `?name=${guildName}`;
@@ -91,7 +91,7 @@ export const getGuildInfo = async (
 export const expulsionGuildMember = async (
   memberName: string,
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDto>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
   let url = `${baseUrl}/expulsion`;
 
   const queryParams = `?member_name=${memberName}&guild_name=${guildName}`;
@@ -108,7 +108,7 @@ export const expulsionGuildMember = async (
  */
 export const destroyGuild = async (
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDto>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
   let url = `${baseUrl}`;
 
   const queryParams = `?name=${guildName}`;
@@ -124,7 +124,7 @@ export const destroyGuild = async (
 export const inviteGuild = async (
   memberId: string,
   guildId: string
-): Promise<AxiosResponse<ResponseDTO<GuildInviteDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildInviteDTO>>> => {
   let url = `${baseUrl}/invite`;
 
   const body = {
@@ -142,7 +142,7 @@ export const inviteGuild = async (
  */
 export const getInviteGuildList = async (
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildInviteDTO[]>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildInviteDTO[]>>> => {
   let url = `${baseUrl}/invite/list`;
 
   const queryParams = `?name=${guildName}`;
@@ -160,7 +160,7 @@ export const getInviteGuildList = async (
 export const inviteAccept = async (
   memberId: string,
   guildId: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/invite/accept`;
 
   const queryParams = `?memberId=${memberId}&guildId=${guildId}`;
@@ -178,7 +178,7 @@ export const inviteAccept = async (
 export const inviteReject = async (
   memberId: string,
   guildId: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/invite/reject`;
 
   const queryParams = `?memberId=${memberId}&guildId=${guildId}`;
@@ -196,7 +196,7 @@ export const inviteReject = async (
 export const changeGuildMaster = async (
   memberName: string,
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDto>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
   let url = `${baseUrl}/changeMaster`;
 
   const queryParams = `?memberName=${memberName}&guildName=${guildName}`;

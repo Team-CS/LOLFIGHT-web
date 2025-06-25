@@ -1,6 +1,6 @@
 import constant from "../common/constant/constant";
 import axios, { Axios, AxiosResponse } from "axios";
-import { ResponseDTO } from "../common/DTOs/response.dto";
+import { ResponseDto } from "../common/DTOs/response.dto";
 import { JudgmentDTO } from "../common/DTOs/judgment/judgment.dto";
 import api from "./interceptors/axiosInstance";
 
@@ -15,7 +15,7 @@ const baseUrl = `${constant.SERVER_URL}/judgment`;
 export const createJudgment = async (
   judgmentDTO: JudgmentDTO,
   judgmentVideo?: File | null
-): Promise<AxiosResponse<ResponseDTO<JudgmentDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<JudgmentDTO>>> => {
   const url = `${baseUrl}`;
   const formData = new FormData();
 
@@ -50,7 +50,7 @@ export const createJudgment = async (
  * @returns
  */
 export const getJudgmentList = async (): Promise<
-  AxiosResponse<ResponseDTO<JudgmentDTO[]>>
+  AxiosResponse<ResponseDto<JudgmentDTO[]>>
 > => {
   const url = `${baseUrl}/list`;
   return await axios.get(url);
@@ -63,7 +63,7 @@ export const getJudgmentList = async (): Promise<
  */
 export const getJudgment = async (
   id: number
-): Promise<AxiosResponse<ResponseDTO<JudgmentDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<JudgmentDTO>>> => {
   let url = `${baseUrl}/post`;
   let queryParams = `?id=${id}`;
 
@@ -78,7 +78,7 @@ export const getJudgment = async (
  */
 export const increaseJudgment = async (
   Judgment: JudgmentDTO
-): Promise<AxiosResponse<ResponseDTO<boolean>>> => {
+): Promise<AxiosResponse<ResponseDto<boolean>>> => {
   let url = `${baseUrl}/view`;
   return await axios.patch(url, Judgment);
 };
@@ -94,7 +94,7 @@ export const voteFactionJudgment = async (
   faction: string,
   judgmentId: number,
   memberId: string
-): Promise<AxiosResponse<ResponseDTO<boolean>>> => {
+): Promise<AxiosResponse<ResponseDto<boolean>>> => {
   let url = `${baseUrl}/vote`;
   const data = {
     faction: faction,
@@ -114,7 +114,7 @@ export const voteFactionJudgment = async (
 export const getVoteFaction = async (
   judgmentId: number,
   memberId: string
-): Promise<AxiosResponse<ResponseDTO<string>>> => {
+): Promise<AxiosResponse<ResponseDto<string>>> => {
   let url = `${baseUrl}/getvote`;
   const data = {
     judgmentId: judgmentId,

@@ -1,5 +1,5 @@
 "use client";
-import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
+import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import { Checkbox } from "@nextui-org/react";
 import { useState } from "react";
 import CustomAlert from "../../../common/components/alert/CustomAlert";

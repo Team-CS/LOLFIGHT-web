@@ -5,7 +5,7 @@ import {
   PostDto,
   PostListResponseDto,
 } from "../common/DTOs/board/post.dto";
-import { ResponseDTO } from "../common/DTOs/response.dto";
+import { ResponseDto } from "../common/DTOs/response.dto";
 import { LikeDTO } from "../common/DTOs/board/like.dto";
 import { getData, postData } from "../utils/axios/serverHelper";
 
@@ -18,7 +18,7 @@ const baseUrl = `${constant.SERVER_URL}/post`;
  */
 export const writePost = async (
   data: PostCreateDto
-): Promise<AxiosResponse<ResponseDTO<PostDto>>> => {
+): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}`;
 
   return await postData(url, data);
@@ -34,7 +34,7 @@ export const getPostList = async (
   page: number,
   limit: number,
   keyword?: string | null
-): Promise<AxiosResponse<ResponseDTO<PostListResponseDto>>> => {
+): Promise<AxiosResponse<ResponseDto<PostListResponseDto>>> => {
   let url = `${baseUrl}/list` + `?board=${board}&page=${page}&limit=${limit}`;
   if (keyword) {
     url += `&keyword=${encodeURIComponent(keyword)}`;
@@ -49,7 +49,7 @@ export const getPostList = async (
  */
 export const getRecentPostList = async (
   boardId: number
-): Promise<AxiosResponse<ResponseDTO<PostDto[]>>> => {
+): Promise<AxiosResponse<ResponseDto<PostDto[]>>> => {
   let url = `${baseUrl}/recentlist` + `?boardId=${boardId}`;
   return await getData(url);
 };
@@ -62,7 +62,7 @@ export const getRecentPostList = async (
 export const getPostContent = async (
   board: string,
   postId: string
-): Promise<AxiosResponse<ResponseDTO<PostDto>>> => {
+): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}/?board=${board}&postId=${postId}`;
 
   return await getData(url);
@@ -76,7 +76,7 @@ export const getPostContent = async (
 export const likePost = async (
   postDto: PostDto,
   memberId: string
-): Promise<AxiosResponse<ResponseDTO<LikeDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<LikeDTO>>> => {
   let url = `${baseUrl}/like`;
 
   const body = {
@@ -95,7 +95,7 @@ export const likePost = async (
 export const getLike = async (
   postDto: PostDto,
   memberId: string
-): Promise<AxiosResponse<ResponseDTO<LikeDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<LikeDTO>>> => {
   let url = `${baseUrl}/getLike`;
 
   const body = {
@@ -113,7 +113,7 @@ export const getLike = async (
  */
 export const deletePost = async (
   postDto: PostDto
-): Promise<AxiosResponse<ResponseDTO<PostDto>>> => {
+): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}/delete`;
 
   const body = {

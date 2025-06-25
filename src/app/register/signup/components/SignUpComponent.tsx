@@ -2,7 +2,7 @@
 import { giveMailCode, sendMailAuth } from "@/src/api/mail.api";
 import { signUp } from "@/src/api/auth.api";
 import { MailDTO } from "@/src/common/DTOs/mail/mail.dto";
-import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
+import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
@@ -34,7 +34,7 @@ const SignUpComponent = () => {
     mailCode: "",
     mailStatus: "",
   });
-  const [member, setMember] = useState<MemberDTO>({
+  const [member, setMember] = useState<MemberDto>({
     id: "",
     memberId: "",
     memberPw: "",

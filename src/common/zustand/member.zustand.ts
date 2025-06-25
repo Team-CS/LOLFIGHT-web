@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { MemberDTO } from "../DTOs/member/member.dto";
+import { MemberDto } from "../DTOs/member/member.dto";
 
 interface MemberState {
-  member: MemberDTO | null;
-  setMember: (member: MemberDTO | null) => void;
-  updateMember: (partial: Partial<MemberDTO>) => void;
+  member: MemberDto | null;
+  setMember: (member: MemberDto | null) => void;
+  updateMember: (partial: Partial<MemberDto>) => void;
 }
 
 export const useMemberStore = create(
