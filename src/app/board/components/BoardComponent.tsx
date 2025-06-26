@@ -7,7 +7,6 @@ import Pagination from "@mui/material/Pagination";
 import BoardInfoComponent from "./BoardInfoComponent";
 import BoardHeadComponent from "./BoardHeadComponent";
 import { PostDto, PostListResponseDto } from "@/src/common/DTOs/board/post.dto";
-import CustomAlert from "@/src/common/components/alert/CustomAlert";
 
 interface BoardComponentProps {
   slug: string;

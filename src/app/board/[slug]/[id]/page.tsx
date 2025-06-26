@@ -6,6 +6,7 @@ import BoardNavComponent from "../../components/BoardNavComponent";
 import BoardPostComponent from "../../components/post/BoardPostComponent";
 import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import boardNavLinks from "@/src/data/boardNavLinks";
+import { notFound } from "next/navigation";
 
 type PageProps = {
   slug: string;
@@ -19,14 +20,23 @@ function getTitleFromSlug(slug: string) {
 
 export default function Page({ params }: { params: PageProps }) {
   const [post, setPost] = useState<PostDto>();
+  const [error, setError] = useState<boolean>();
 
   useEffect(() => {
     if (!post) {
-      getPostContent(getTitleFromSlug(params.slug), params.id).then((res) => {
-        setPost(res.data.data);
-      });
+      getPostContent(getTitleFromSlug(params.slug), params.id)
+        .then((res) => {
+          setPost(res.data.data);
+        })
+        .catch((error) => {
+          setError(error);
+        });
     }
   });
+
+  if (error) {
+    notFound();
+  }
 
   return (
     <>

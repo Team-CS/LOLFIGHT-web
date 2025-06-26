@@ -95,7 +95,7 @@ const WysiwygEditor = () => {
       const postData: PostCreateDto = {
         postTitle: title,
         postContent: editorIns,
-        postWriter: member!.memberName,
+        postWriter: member!,
         postBoard: category,
       };
       writePost(postData).then((response) => {

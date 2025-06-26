@@ -1,44 +1,49 @@
 import constant from "../common/constant/constant";
 import axios, { Axios, AxiosResponse } from "axios";
 import { ResponseDto } from "../common/DTOs/response.dto";
-import { JudgmentDTO } from "../common/DTOs/judgment/judgment.dto";
-import api from "./interceptors/axiosInstance";
+import {
+  JudgmentCreateDto,
+  JudgmentDto,
+  JudgmentListResponseDto,
+} from "../common/DTOs/judgment/judgment.dto";
+import {
+  deleteData,
+  getData,
+  patchData,
+  postData,
+} from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/judgment`;
 
 /**
  * Judgment 생성
- * @param judgmentDTO
+ * @param judgmentDto
  * @param judgmentVideo
  * @returns
  */
 export const createJudgment = async (
-  judgmentDTO: JudgmentDTO,
+  judgmentDto: JudgmentCreateDto,
   judgmentVideo?: File | null
-): Promise<AxiosResponse<ResponseDto<JudgmentDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<JudgmentDto>>> => {
   const url = `${baseUrl}`;
   const formData = new FormData();
 
-  //   formData.append("id", judgmentDTO.id);
-  formData.append("judgmentWriter", judgmentDTO.judgmentWriter);
-  formData.append("judgmentTitle", judgmentDTO.judgmentTitle);
-  formData.append("judgmentDesc", judgmentDTO.judgmentDesc);
-  formData.append("judgmentLeftChampion", judgmentDTO.judgmentLeftChampion);
-  formData.append("judgmentLeftName", judgmentDTO.judgmentLeftName);
-  formData.append("judgmentLeftTier", judgmentDTO.judgmentLeftTier);
-  formData.append("judgmentLeftLine", judgmentDTO.judgmentLeftLine);
-  formData.append("judgmentLeftLike", String(judgmentDTO.judgmentLeftLike));
-  formData.append("judgmentRightChampion", judgmentDTO.judgmentRightChampion);
-  formData.append("judgmentRightName", judgmentDTO.judgmentRightName);
-  formData.append("judgmentRightTier", judgmentDTO.judgmentRightTier);
-  formData.append("judgmentRightLine", judgmentDTO.judgmentRightLine);
-  formData.append("judgmentRightLike", String(judgmentDTO.judgmentRightLike));
+  formData.append("judgmentTitle", judgmentDto.judgmentTitle);
+  formData.append("judgmentDesc", judgmentDto.judgmentDesc);
+  formData.append("judgmentLeftChampion", judgmentDto.judgmentLeftChampion);
+  formData.append("judgmentLeftName", judgmentDto.judgmentLeftName);
+  formData.append("judgmentLeftTier", judgmentDto.judgmentLeftTier);
+  formData.append("judgmentLeftLine", judgmentDto.judgmentLeftLine);
+  formData.append("judgmentRightChampion", judgmentDto.judgmentRightChampion);
+  formData.append("judgmentRightName", judgmentDto.judgmentRightName);
+  formData.append("judgmentRightTier", judgmentDto.judgmentRightTier);
+  formData.append("judgmentRightLine", judgmentDto.judgmentRightLine);
 
   if (judgmentVideo) {
     formData.append("judgmentVideo", judgmentVideo);
   }
 
-  return await api.post(url, formData, {
+  return await postData(url, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -49,11 +54,16 @@ export const createJudgment = async (
  * Judgment 게시글 리스트 조회
  * @returns
  */
-export const getJudgmentList = async (): Promise<
-  AxiosResponse<ResponseDto<JudgmentDTO[]>>
-> => {
-  const url = `${baseUrl}/list`;
-  return await axios.get(url);
+export const getJudgmentList = async (
+  page: number,
+  limit: number,
+  keyword?: string | null
+): Promise<AxiosResponse<ResponseDto<JudgmentListResponseDto>>> => {
+  let url = `${baseUrl}/list` + `?page=${page}&limit=${limit}`;
+  if (keyword) {
+    url += `&keyword=${encodeURIComponent(keyword)}`;
+  }
+  return await getData(url);
 };
 
 /**
@@ -63,24 +73,12 @@ export const getJudgmentList = async (): Promise<
  */
 export const getJudgment = async (
   id: number
-): Promise<AxiosResponse<ResponseDto<JudgmentDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<JudgmentDto>>> => {
   let url = `${baseUrl}/post`;
   let queryParams = `?id=${id}`;
 
   url += queryParams;
-  return await axios.get(url);
-};
-
-/**
- * Judgment 게시글 조회수 증가
- * @param Judgment
- * @returns
- */
-export const increaseJudgment = async (
-  Judgment: JudgmentDTO
-): Promise<AxiosResponse<ResponseDto<boolean>>> => {
-  let url = `${baseUrl}/view`;
-  return await axios.patch(url, Judgment);
+  return await getData(url);
 };
 
 /**
@@ -102,24 +100,12 @@ export const voteFactionJudgment = async (
     memberId: memberId,
   };
 
-  return await api.patch(url, data);
+  return await patchData(url, data);
 };
 
-/**
- * Judgment 투표여부 조회
- * @param judgmentId
- * @param memberId
- * @returns
- */
-export const getVoteFaction = async (
-  judgmentId: number,
-  memberId: string
-): Promise<AxiosResponse<ResponseDto<string>>> => {
-  let url = `${baseUrl}/getvote`;
-  const data = {
-    judgmentId: judgmentId,
-    memberId: memberId,
-  };
-
-  return await axios.post(url, data);
+export const deleteJudgment = async (
+  judgmentId: number
+): Promise<AxiosResponse<void>> => {
+  let url = `${baseUrl}?id=${judgmentId}`;
+  return await deleteData(url);
 };

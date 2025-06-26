@@ -4,7 +4,7 @@ import { FaArrowCircleRight, FaRegQuestionCircle } from "react-icons/fa";
 export const GuildCreateIntro = () => {
   const router = useRouter();
   return (
-    <div className="flex w-full py-10">
+    <div className="flex w-full py-[24px]">
       <div className="flex flex-col w-full border-2 border-black rounded-lg p-7">
         <div className="mb-10">
           <p className="font-extrabold text-4xl">롤파이트에 오신것을</p>

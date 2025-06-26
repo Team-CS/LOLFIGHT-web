@@ -55,6 +55,7 @@ const ProfileInfoPage = () => {
       updateMemberIcon(selectedImage)
         .then((response) => {
           CustomAlert("success", "프로필 사진 변경", "변경이 완료되었습니다");
+          setMember(response.data.data);
           setSelectedImage(null);
           setPreviewImage("");
         })

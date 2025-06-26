@@ -57,7 +57,7 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-10 text-gray-600">
+      <div className="flex justify-center items-center py-[24px] text-gray-600">
         로딩 중...
       </div>
     );
@@ -65,7 +65,7 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
 
   if (!data) {
     return (
-      <div className="flex justify-center items-center py-10 text-gray-600">
+      <div className="flex justify-center items-center py-[24px] text-gray-600">
         게시글을 찾을 수 없습니다.
       </div>
     );

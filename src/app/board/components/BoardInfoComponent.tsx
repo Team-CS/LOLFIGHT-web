@@ -107,7 +107,7 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
         </div>
       </div>
       <div className="notice-info__writer w-2/12 flex items-center justify-center">
-        {data.postWriter}
+        {data.postWriter.memberName}
       </div>
       <div className="notice-info__date w-1/6 flex items-center justify-center">
         {getDate(data.postDate)}

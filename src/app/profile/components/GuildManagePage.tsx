@@ -279,7 +279,6 @@ const GuildManagePage = () => {
             </div>
 
             <div className="py-[12px]">
-              {/* @todo 누르면 팝업창 뜨면서 추방, 직위변경, 라인변경 이런거 할수있게해야함 */}
               {currentTab === "members" && (
                 <div className="flex flex-col gap-[4px] max-h-[300px]">
                   <div className="flex bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">

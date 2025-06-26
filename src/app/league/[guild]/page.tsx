@@ -174,7 +174,6 @@ export default function GuildPage() {
                         </>
                       )}
                     </div>
-                    {/* @todo 라인이미지넣고 컬럼도 추가해야할듯 */}
                     <div className="flex-[1] flex items-center gap-[4px] justify-center">
                       {member.memberGame && (
                         <>

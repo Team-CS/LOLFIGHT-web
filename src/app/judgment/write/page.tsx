@@ -1,31 +1,30 @@
 "use client";
 import constant from "@/src/common/constant/constant";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import championData from "../../../common/constant/champion_id_name_map.json";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createJudgment } from "@/src/api/judgment.api";
-import { JudgmentDTO } from "@/src/common/DTOs/judgment/judgment.dto";
+import {
+  JudgmentCreateDto,
+  JudgmentDto,
+} from "@/src/common/DTOs/judgment/judgment.dto";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
+import { Summoner } from "@/src/common/types/judgment.type";
+import SummonerInputBox from "../../board/components/write/components/SummonerInputBox";
 
 interface ChampionsMap {
   [key: string]: string;
 }
 
-interface Summoner {
-  name: string;
-  line: string;
-  tier: string;
-}
 export default function Page() {
   const router = useRouter();
   const { member } = useMemberStore();
 
-  const [judgment, setJudgment] = useState<JudgmentDTO>({
+  const [judgment, setJudgment] = useState<JudgmentCreateDto>({
     id: 0,
-    judgmentWriter: "",
     judgmentTitle: "",
     judgmentDesc: "",
     judgmentView: 0,
@@ -33,15 +32,14 @@ export default function Page() {
     judgmentLeftName: "",
     judgmentLeftTier: "",
     judgmentLeftLine: "",
-    judgmentLeftLike: 0,
     judgmentRightChampion: "2",
     judgmentRightName: "",
     judgmentRightTier: "",
     judgmentRightLine: "",
-    judgmentRightLike: 0,
     judgmentVideo: "",
+    votes: [],
   });
-
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [champions] = useState<ChampionsMap>(championData);
 
   const [leftShowImages, setLeftShowImages] = useState<boolean>(false);
@@ -118,14 +116,16 @@ export default function Page() {
     const file = e.target.files?.[0];
     if (file) {
       setVideoFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setVideoPreview(previewUrl);
+      setVideoPreview(URL.createObjectURL(file));
     }
   };
 
   const handleVideoRemove = () => {
     setVideoFile(null);
     setVideoPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // 이 줄이 중요!
+    }
   };
 
   const handleSaveClick = () => {
@@ -170,7 +170,6 @@ export default function Page() {
             "롤로세움 투기장 작성이 완료되었습니다"
           );
           router.push("/judgment");
-          console.log(response);
         })
         .catch((error) => {
           console.log(error);
@@ -215,246 +214,57 @@ export default function Page() {
   };
 
   return (
-    <>
-      <div className="w-full my-16">
-        <div className="w-1200px mx-auto flex flex-col bg-white shadow-md dark:bg-dark p-12">
-          <div className="mb-10 text-3xl font-extrabold">롤로세움</div>
+    <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px]">
+      <div className="w-full bg-white rounded-[12px] p-[24px] shadow-md dark:bg-dark">
+        <div className="flex flex-col h-full px-[20px] py-[24px] gap-[24px]">
+          <p className="text-[24px] font-extrabold">롤로세움</p>
           <input
-            className="w-full h-10 mb-4 border rounded-md px-2 bg-gray-100 dark:bg-black dark:border-gray-700"
+            className="w-full h-[40px] px-[12px] border border-brandborder rounded-md text-[14px] bg-brandbgcolor dark:bg-branddark dark:border-branddarkborder dark:text-white"
             type="text"
             placeholder="제목을 입력하세요"
             onChange={handleTitleChange}
           />
           <div className="flex w-full items-center justify-between">
             {/* left */}
-            <div className="flex w-[450px] h-[130px] border dark:border-gray-700 rounded-md px-2 bg-gray-100 dark:bg-black items-center justify-center">
-              <Image
-                width={70}
-                height={70}
-                src={`${constant.SERVER_URL}/public/champions/${selectedLeftChampion}.png`}
-                alt="Champion Icon"
-                className="rounded-full cursor-pointer"
-                onClick={handleLeftImageClick}
-              />
-              <div className="flex flex-col">
-                <div className="flex flex-col w-[300px] justify-center text-sm ml-5">
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="font-semibold text-gray-700 dark:text-gray-400">
-                      소환사명:
-                    </p>
-                    <input
-                      className="text-right border rounded-md px-2 bg-gray-200 dark:bg-black dark:border-gray-700"
-                      placeholder="LOLFIGHT#KR1"
-                      onChange={(e) =>
-                        handleSummonerChange("left", "name", e.target.value)
-                      }
-                    />
-                  </div>
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="font-semibold text-gray-700 dark:text-gray-400">
-                      라인:
-                    </p>
-                    <select
-                      className="text-right border rounded-md px-2 bg-gray-200 dark:bg-black dark:border-gray-700"
-                      onChange={(e) =>
-                        handleSummonerChange("left", "line", e.target.value)
-                      }
-                    >
-                      <option disabled hidden selected>
-                        라인을 선택해주세요
-                      </option>
-                      <option value="탑">탑</option>
-                      <option value="정글">정글</option>
-                      <option value="미드">미드</option>
-                      <option value="원딜">원딜</option>
-                      <option value="서폿">서폿</option>
-                    </select>
-                  </div>
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="font-semibold text-gray-700 dark:text-gray-400">
-                      티어:
-                    </p>
-                    <select
-                      className="text-right border rounded-md px-2 bg-gray-200 dark:bg-black dark:border-gray-700"
-                      onChange={(e) =>
-                        handleSummonerChange("left", "tier", e.target.value)
-                      }
-                    >
-                      <option disabled hidden selected>
-                        해당 티어를 선택해주세요
-                      </option>
-                      {/* BRONZE */}
-                      <option value="BRONZE I">BRONZE I</option>
-                      <option value="BRONZE II">BRONZE II</option>
-                      <option value="BRONZE III">BRONZE III</option>
-                      <option value="BRONZE IV">BRONZE IV</option>
-
-                      {/* SILVER */}
-                      <option value="SILVER I">SILVER I</option>
-                      <option value="SILVER II">SILVER II</option>
-                      <option value="SILVER III">SILVER III</option>
-                      <option value="SILVER IV">SILVER IV</option>
-
-                      {/* GOLD */}
-                      <option value="GOLD I">GOLD I</option>
-                      <option value="GOLD II">GOLD II</option>
-                      <option value="GOLD III">GOLD III</option>
-                      <option value="GOLD IV">GOLD IV</option>
-
-                      {/* PLATINUM */}
-                      <option value="PLATINUM I">PLATINUM I</option>
-                      <option value="PLATINUM II">PLATINUM II</option>
-                      <option value="PLATINUM III">PLATINUM III</option>
-                      <option value="PLATINUM IV">PLATINUM IV</option>
-
-                      {/* EMERALD */}
-                      <option value="EMERALD I">EMERALD I</option>
-                      <option value="EMERALD II">EMERALD II</option>
-                      <option value="EMERALD III">EMERALD III</option>
-                      <option value="EMERALD IV">EMERALD IV</option>
-
-                      {/* DIAMOND */}
-                      <option value="DIAMOND I">DIAMOND I</option>
-                      <option value="DIAMOND II">DIAMOND II</option>
-                      <option value="DIAMOND III">DIAMOND III</option>
-                      <option value="DIAMOND IV">DIAMOND IV</option>
-
-                      {/* MASTER, GRANDMASTER, CHALLENGER */}
-                      <option value="MASTER">MASTER</option>
-                      <option value="GRANDMASTER">GRANDMASTER</option>
-                      <option value="CHALLENGER">CHALLENGER</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+            <SummonerInputBox
+              side="left"
+              selectedChampionId={selectedLeftChampion}
+              onChampionClick={handleLeftImageClick}
+              onChange={(field, value) =>
+                handleSummonerChange("left", field, value)
+              }
+            />
             {/* center */}
             <div className="px-10 text-lg font-bold">VS</div>
 
             {/* right */}
-            <div className="flex w-[450px] h-[130px] border dark:border-gray-700 rounded-md px-2 bg-gray-100 dark:bg-black items-center justify-center">
-              <div className="flex flex-col">
-                <div className="flex flex-col w-[300px] justify-center text-sm mr-5">
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="font-semibold text-gray-700 dark:text-gray-400">
-                      소환사명:
-                    </p>
-                    <input
-                      className="text-right border rounded-md px-2 bg-gray-200 dark:bg-black dark:border-gray-700"
-                      placeholder="LOLFIGHT#KR1"
-                      onChange={(e) =>
-                        handleSummonerChange("right", "name", e.target.value)
-                      }
-                    />
-                  </div>
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="font-semibold text-gray-700 dark:text-gray-400">
-                      라인:
-                    </p>
-                    <select
-                      className="text-right border rounded-md px-2 bg-gray-200 dark:bg-black dark:border-gray-700"
-                      onChange={(e) =>
-                        handleSummonerChange("right", "line", e.target.value)
-                      }
-                    >
-                      <option disabled hidden selected>
-                        라인을 선택해주세요
-                      </option>
-                      <option value="탑">탑</option>
-                      <option value="정글">정글</option>
-                      <option value="미드">미드</option>
-                      <option value="원딜">원딜</option>
-                      <option value="서폿">서폿</option>
-                    </select>
-                  </div>
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="font-semibold text-gray-700 dark:text-gray-400">
-                      티어:
-                    </p>
-                    <select
-                      className="text-right border rounded-md px-2 bg-gray-200 dark:bg-black dark:border-gray-700"
-                      onChange={(e) =>
-                        handleSummonerChange("right", "tier", e.target.value)
-                      }
-                    >
-                      <option disabled hidden selected>
-                        해당 티어를 선택해주세요
-                      </option>
-                      {/* BRONZE */}
-                      <option value="BRONZE I">BRONZE I</option>
-                      <option value="BRONZE II">BRONZE II</option>
-                      <option value="BRONZE III">BRONZE III</option>
-                      <option value="BRONZE IV">BRONZE IV</option>
-
-                      {/* SILVER */}
-                      <option value="SILVER I">SILVER I</option>
-                      <option value="SILVER II">SILVER II</option>
-                      <option value="SILVER III">SILVER III</option>
-                      <option value="SILVER IV">SILVER IV</option>
-
-                      {/* GOLD */}
-                      <option value="GOLD I">GOLD I</option>
-                      <option value="GOLD II">GOLD II</option>
-                      <option value="GOLD III">GOLD III</option>
-                      <option value="GOLD IV">GOLD IV</option>
-
-                      {/* PLATINUM */}
-                      <option value="PLATINUM I">PLATINUM I</option>
-                      <option value="PLATINUM II">PLATINUM II</option>
-                      <option value="PLATINUM III">PLATINUM III</option>
-                      <option value="PLATINUM IV">PLATINUM IV</option>
-
-                      {/* EMERALD */}
-                      <option value="EMERALD I">EMERALD I</option>
-                      <option value="EMERALD II">EMERALD II</option>
-                      <option value="EMERALD III">EMERALD III</option>
-                      <option value="EMERALD IV">EMERALD IV</option>
-
-                      {/* DIAMOND */}
-                      <option value="DIAMOND I">DIAMOND I</option>
-                      <option value="DIAMOND II">DIAMOND II</option>
-                      <option value="DIAMOND III">DIAMOND III</option>
-                      <option value="DIAMOND IV">DIAMOND IV</option>
-
-                      {/* MASTER, GRANDMASTER, CHALLENGER */}
-                      <option value="MASTER">MASTER</option>
-                      <option value="GRANDMASTER">GRANDMASTER</option>
-                      <option value="CHALLENGER">CHALLENGER</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <Image
-                width={70}
-                height={70}
-                src={`${constant.SERVER_URL}/public/champions/${selectedRightChampion}.png`} // 기본 이미지
-                alt="Champion Icon"
-                className="rounded-full cursor-pointer"
-                onClick={handleRightImageClick}
-              />
-            </div>
+            <SummonerInputBox
+              side="right"
+              selectedChampionId={selectedRightChampion}
+              onChampionClick={handleRightImageClick}
+              onChange={(field, value) =>
+                handleSummonerChange("right", field, value)
+              }
+            />
           </div>
 
           {/* 이미지 선택창 */}
           {(leftShowImages || rightShowImages) && (
-            <div className="w-full h-auto p-4 bg-white dark:bg-gray-900 border rounded-md mt-4">
+            <div className="flex flex-col w-full h-auto p-[12px] bg-white dark:bg-gray-900 border rounded-md gap-[12px]">
               <input
-                className="w-full h-10 mb-4 border rounded-md px-2 bg-gray-100 dark:bg-black dark:border-gray-700"
+                className="w-full h-[40px] border rounded-md px-2 bg-gray-100 dark:bg-black dark:border-gray-700"
                 type="text"
                 placeholder="챔피언 검색"
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <div className="grid grid-cols-12 gap-2">
+              <div className="grid grid-cols-12 gap-[4px]">
                 {filteredChampions.map(([id, name]) => (
                   <div className="flex flex-col justify-center items-center">
-                    <Image
+                    <img
                       key={id}
-                      width={70}
-                      height={70}
                       src={`${constant.SERVER_URL}/public/champions/${id}.png`}
                       alt={name}
-                      className="cursor-pointer"
+                      className="cursor-pointer w-[70px] h-[70px] rounded-[12px]"
                       onClick={() => handleChampionSelect(id, leftShowImages)}
                     />
                     <p className="font-light text-[10px]">{name}</p>
@@ -465,21 +275,20 @@ export default function Page() {
           )}
 
           <textarea
-            className="w-full h-[100px] my-4 border rounded-md px-2 bg-gray-100 dark:bg-black dark:border-gray-700"
+            className="w-full h-[100px] border rounded-md p-[12px] text-[14px] bg-brandbgcolor dark:bg-branddark dark:border-gray-700"
             placeholder="상황에 대한 설명을 작성해주세요"
             onChange={handleDescChange}
           />
 
           {/* 영상 업로드 부분 */}
-          <div className="w-full my-4">
-            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
-              영상 업로드
-            </label>
+          <div className="flex flex-col w-full gap-[4px] ">
+            <label className="font-medium text-[14px]">영상 업로드</label>
             <input
+              ref={fileInputRef}
               type="file"
               accept="video/*"
               onChange={handleVideoChange}
-              className="mb-2 border rounded-md px-2 py-1 bg-gray-100 dark:bg-black dark:border-gray-700"
+              className="border rounded-md px-[8px] py-[4px] bg-brandbgcolor dark:bg-branddark dark:border-gray-700"
             />
             {videoPreview && (
               <div className="relative w-full h-full">
@@ -500,13 +309,13 @@ export default function Page() {
 
           <div className="w-full flex justify-between">
             <button
-              className="w-16 h-10 flex font-medium border items-center justify-center rounded-md cursor-pointer my-4 dark:border-gray-700 dark:text-gray-100"
+              className="w-[60px] h-[40px] flex font-medium border items-center justify-center rounded-md cursor-pointer dark:border-gray-700"
               onClick={handleCancelClick}
             >
               취소
             </button>
             <button
-              className="w-32 h-10 flex font-medium bg-brandcolor text-white items-center justify-center rounded-md cursor-pointer my-4"
+              className="w-[120px] h-[40px] flex font-medium bg-brandcolor text-white items-center justify-center rounded-md cursor-pointer"
               onClick={handleSaveClick}
             >
               작성하기
@@ -514,6 +323,6 @@ export default function Page() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

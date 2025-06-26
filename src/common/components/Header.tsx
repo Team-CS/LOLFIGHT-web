@@ -103,7 +103,6 @@ export const Header = () => {
   const containsImage = (content: string) => {
     return /<img\s+[^>]*src=/.test(content);
   };
-  // sticky z-50 top-0
   return (
     <header className="flex flex-col w-full gap-[12px] bg-white dark:bg-black">
       <section className={`w-full bg-brandcolor dark:bg-dark`}>
@@ -171,7 +170,7 @@ export const Header = () => {
                     <div className="w-[70px] h-[70px] my-auto">
                       <img
                         className="w-full h-full rounded-[12px]"
-                        src={`${constant.SERVER_URL}/${member?.memberIcon}`}
+                        src={`${constant.SERVER_URL}/${member.memberIcon}`}
                       />
                     </div>
                     <div className="flex flex-col">
