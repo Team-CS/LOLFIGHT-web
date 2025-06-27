@@ -1,43 +1,42 @@
 import constant from "../common/constant/constant";
-import { MemberDTO } from "../common/DTOs/member/member.dto";
+import { MemberDto } from "../common/DTOs/member/member.dto";
 import { AxiosResponse } from "axios";
-import { ResponseDTO } from "../common/DTOs/response.dto";
-import { GuildDTO } from "../common/DTOs/guild/guild.dto";
-import { MemberGameDTO } from "../common/DTOs/member/member_game.dto";
+import { ResponseDto } from "../common/DTOs/response.dto";
+import { GuildDto } from "../common/DTOs/guild/guild.dto";
+import { MemberGameDto } from "../common/DTOs/member/member_game.dto";
 import { deleteData, getData, patchData } from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/member`;
 
 export const getMemberData = (): Promise<
-  AxiosResponse<ResponseDTO<MemberDTO>>
+  AxiosResponse<ResponseDto<MemberDto>>
 > => {
   let url = `${baseUrl}/find`;
 
   return getData(url);
 };
 
-/**
- * member 정보변경
- * @param memberDTO
- * @returns
- */
-export const update = async (
-  id?: string,
-  memberId?: string,
-  memberPw?: string,
-  memberName?: string,
-  memberGuild?: GuildDTO | null,
-  memberGame?: MemberGameDTO | null
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
-  let url = `${baseUrl}`;
+export const updatePassword = async (
+  currentPassword: string,
+  newPassword: string
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
+  let url = `${baseUrl}/password`;
 
   const body = {
-    id: id,
-    memberId: memberId,
-    memberPw: memberPw,
-    memberName: memberName,
-    memberGuild: memberGuild,
-    memberGame: memberGame,
+    currentPassword: currentPassword,
+    newPassword: newPassword,
+  };
+
+  return await patchData(url, body);
+};
+
+export const updateNickname = async (
+  nickname: string
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
+  let url = `${baseUrl}/nickname`;
+
+  const body = {
+    nickname: nickname,
   };
 
   return await patchData(url, body);
@@ -50,7 +49,7 @@ export const update = async (
  */
 export const leaveMember = async (
   id: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/leave`;
 
   const queryParams = `?id=${id}`;
@@ -67,7 +66,7 @@ export const leaveMember = async (
  */
 export const findMember = async (
   id: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/find`;
 
   let queryParams = `?id=${id}`;
@@ -82,7 +81,7 @@ export const findMember = async (
  */
 export const findMemberByName = async (
   name: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/findByName`;
 
   let queryParams = `?name=${name}`;
@@ -97,7 +96,7 @@ export const findMemberByName = async (
  */
 export const deleteMember = async (
   id: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}`;
 
   let queryParams = `?id=${id}`;
@@ -107,20 +106,16 @@ export const deleteMember = async (
 
 /**
  * member 아이콘 변경
- * @param memberDTO
+ * @param MemberDto
  * @param memberIcon
  * @returns
  */
 export const updateMemberIcon = async (
-  memberDTO: MemberDTO,
   memberIcon?: File | null
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/icon`;
 
   const formData = new FormData();
-
-  formData.append("memberId", memberDTO.memberId);
-  formData.append("memberName", memberDTO.memberName);
   if (memberIcon) {
     formData.append("memberIcon", memberIcon);
   }
@@ -129,4 +124,18 @@ export const updateMemberIcon = async (
       "Content-Type": "multipart/form-data",
     },
   });
+};
+
+export const updateMemberGameLine = async (
+  memberId: string,
+  newLine: string
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
+  let url = `${baseUrl}/game-line`;
+
+  const body = {
+    id: memberId,
+    line: newLine,
+  };
+
+  return await patchData(url, body);
 };

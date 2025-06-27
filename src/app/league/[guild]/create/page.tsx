@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import CutsomAlert from "../../../../common/components/alert/CustomAlert";
 import { createGuild } from "@/src/api/guild.api";
-import { CreateGuildDTO, GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { CreateGuildDto, GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { useRouter } from "next/navigation";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
@@ -14,10 +14,6 @@ export default function Page() {
   const [guildName, setGuildName] = useState<string>();
   const [guildDescription, setGuildDescription] = useState<string>();
   const [guildIcon, setGuildIcon] = useState<string>();
-
-  useEffect(() => {
-    console.log(member);
-  }, []);
 
   //====================================================================//
   //Valid Check
@@ -47,11 +43,11 @@ export default function Page() {
   };
 
   const isGuildDescriptionVaild = (guildDescription: string) => {
-    if (guildDescription.length > 40) {
+    if (guildDescription.length >= 80) {
       CutsomAlert(
         "warning",
         "길드생성",
-        "길드소개글은 40글자 이내로 작성해주세요."
+        "길드소개글은 80글자 이내로 작성해주세요."
       );
       return false;
     }
@@ -77,14 +73,12 @@ export default function Page() {
       isGuildImageValid(guildImage!) &&
       isGuildDescriptionVaild(guildDescription!)
     ) {
-      const guildData: CreateGuildDTO = {
+      const guildData: CreateGuildDto = {
         guildMaster: member!.memberName,
         guildName: guildName!,
         guildDescription: guildDescription!,
         guildIcon: guildIcon!,
       };
-
-      console.log("data", guildData);
 
       createGuild(guildData, guildImage)
         .then((response) => {
@@ -111,7 +105,7 @@ export default function Page() {
               <div className="flex flex-col p-3 items-center border border-brandcolor gap-3 dark:border-gray-700">
                 {guildImage === null ? (
                   <div>
-                    <img src="http://via.placeholder.com/50x50" alt="" />
+                    <img src="https://placehold.co/50x50" alt="" />
                   </div>
                 ) : (
                   <div>
@@ -143,7 +137,7 @@ export default function Page() {
               <div className="flex flex-col p-3 items-center border border-brandcolor gap-3  dark:border-gray-700">
                 <textarea
                   className="w-1/2 max-h-32 rounded-md px-2 bg-gray-50 border border-black-200  dark:text-gray-100 dark:bg-black dark:border-gray-700"
-                  placeholder="길드 소개글을 입력해주세요 (최대 40글자)"
+                  placeholder="길드 소개글을 입력해주세요 (최대 80글자)"
                   onChange={(e) => setGuildDescription(e.target.value)}
                 />
               </div>

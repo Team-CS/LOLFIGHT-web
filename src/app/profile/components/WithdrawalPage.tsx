@@ -1,16 +1,17 @@
 "use client";
-import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
+import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import { Checkbox } from "@nextui-org/react";
 import { useState } from "react";
 import CustomAlert from "../../../common/components/alert/CustomAlert";
 import { deleteMember } from "@/src/api/member.api";
 import { useRouter } from "next/navigation";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
+import { removeCookie } from "@/src/utils/cookie/cookie";
 
 const WithdrawalPage = () => {
   const router = useRouter();
   const [checked, setChecked] = useState(false);
-  const { member } = useMemberStore();
+  const { member, setMember } = useMemberStore();
 
   const handleCheckboxChange = () => {
     setChecked(!checked);
@@ -20,7 +21,9 @@ const WithdrawalPage = () => {
     if (checked) {
       deleteMember(member!.memberId)
         .then((response) => {
-          sessionStorage.clear();
+          setMember(null);
+          removeCookie("accessToken");
+          removeCookie("refreshToken");
           router.push("/register");
           CustomAlert(
             "success",
@@ -49,12 +52,12 @@ const WithdrawalPage = () => {
   };
 
   return (
-    <div className="w-1200px h-full mx-auto pt-4">
-      <p className="pb-5 text-xl font-normal border-b border-gray-200">
-        회원 탈퇴
-      </p>
-      <div className="flex flex-col items-center gap-5 py-5 mt-4">
-        <div className="p-2">
+    <div className="flex flex-col p-[16px] gap-[24px]">
+      <div className="flex justify-between items-center pb-5 border-b border-gray-200">
+        <p className="text-[24px] font-bold">회원 탈퇴</p>
+      </div>
+      <div className="flex flex-col items-center gap-[12px]">
+        <div className="flex flex-col gap-[14px] p-[12px]">
           <div>
             <span className="text-sky-950 dark:text-sky-700 font-bold">
               1. 정보 유실
@@ -105,6 +108,7 @@ const WithdrawalPage = () => {
             </p>
           </div>
         </div>
+
         <label>
           <input
             type="checkbox"
@@ -113,6 +117,7 @@ const WithdrawalPage = () => {
           />
           주의사항을 모두 확인하였습니다.
         </label>
+
         <button
           className="w-40 bg-red-500 rounded p-2"
           onClick={handleWithdrawal}

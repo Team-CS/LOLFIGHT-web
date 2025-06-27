@@ -27,23 +27,11 @@ export default function Page() {
   };
 
   const handleLoginClick = () => {
-    console.log("눌렀잖아");
     authLogin(memberId, memberPw)
       .then((response) => {
-        console.log("왜대답이없어", response.data.redirectUrl);
         if (response.data.ok) {
           window.location.href = response.data.redirectUrl;
         }
-        // findMember(memberId)
-        //   .then((response) => {
-        //     setMember(response.data.data);
-        //     CustomAlert("success", "로그인", "로그인 성공.");
-        //     router.push("/");
-        //   })
-        //   .catch((error) => {
-        //     console.log(error);
-        //     CustomAlert("warning", "로그인", "아이디 비밀번호를 확인해주세요.");
-        //   });
       })
       .catch((error) => {
         CustomAlert("warning", "로그인", "아이디 비밀번호를 확인해주세요.");

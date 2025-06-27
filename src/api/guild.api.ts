@@ -1,35 +1,43 @@
 import constant from "../common/constant/constant";
 import axios, { AxiosResponse } from "axios";
-import { ResponseDTO } from "../common/DTOs/response.dto";
-import { CreateGuildDTO, GuildDTO } from "../common/DTOs/guild/guild.dto";
-import { MemberDTO } from "../common/DTOs/member/member.dto";
+import { ResponseDto } from "../common/DTOs/response.dto";
+import {
+  CreateGuildDto,
+  GuildDto,
+  GuildListResponseDto,
+} from "../common/DTOs/guild/guild.dto";
+import { MemberDto } from "../common/DTOs/member/member.dto";
 import { GuildInviteDTO } from "../common/DTOs/guild/guild_invite.dto";
+import {
+  deleteData,
+  getData,
+  patchData,
+  postData,
+} from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/guild`;
 
 /**
  * Guild 생성
- * @param guildDTO
+ * @param GuildDto
  * @returns
  */
 export const createGuild = async (
-  createGuildDTO: CreateGuildDTO,
+  CreateGuildDto: CreateGuildDto,
   guildImage?: File | null
-): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
   let url = `${baseUrl}`;
 
   const formData = new FormData();
 
-  formData.append("guildMaster", createGuildDTO.guildMaster);
-  formData.append("guildName", createGuildDTO.guildName);
-  formData.append("guildDescription", createGuildDTO.guildDescription);
+  formData.append("guildMaster", CreateGuildDto.guildMaster);
+  formData.append("guildName", CreateGuildDto.guildName);
+  formData.append("guildDescription", CreateGuildDto.guildDescription);
   if (guildImage) {
     formData.append("guildImage", guildImage);
   }
 
-  console.log("formdata", formData);
-
-  return await axios.post(url, formData, {
+  return await postData(url, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -40,11 +48,23 @@ export const createGuild = async (
  * Guild 길드 리스트
  * @returns
  */
-export const getGuildList = async (): Promise<
-  AxiosResponse<ResponseDTO<GuildDTO[]>>
+export const getGuildList = async (
+  page: number,
+  limit: number,
+  keyword?: string | null
+): Promise<AxiosResponse<ResponseDto<GuildListResponseDto>>> => {
+  let url = `${baseUrl}/list` + `?page=${page}&limit=${limit}`;
+  if (keyword) {
+    url += `&keyword=${encodeURIComponent(keyword)}`;
+  }
+  return await getData(url);
+};
+
+export const getTopGuilds = async (): Promise<
+  AxiosResponse<ResponseDto<GuildListResponseDto>>
 > => {
-  let url = `${baseUrl}/list`;
-  return await axios.get(url);
+  let url = `${baseUrl}/top3`;
+  return await getData(url);
 };
 
 /**
@@ -54,12 +74,12 @@ export const getGuildList = async (): Promise<
  */
 export const getGuildInfo = async (
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
   let url = `${baseUrl}/info`;
 
   const queryParams = `?name=${guildName}`;
   url += queryParams;
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /**
@@ -71,14 +91,14 @@ export const getGuildInfo = async (
 export const expulsionGuildMember = async (
   memberName: string,
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
   let url = `${baseUrl}/expulsion`;
 
   const queryParams = `?member_name=${memberName}&guild_name=${guildName}`;
 
   url += queryParams;
 
-  return await axios.patch(url);
+  return await patchData(url);
 };
 
 /**
@@ -88,12 +108,12 @@ export const expulsionGuildMember = async (
  */
 export const destroyGuild = async (
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
   let url = `${baseUrl}`;
 
   const queryParams = `?name=${guildName}`;
   url += queryParams;
-  return await axios.delete(url);
+  return await deleteData(url);
 };
 
 /**
@@ -104,7 +124,7 @@ export const destroyGuild = async (
 export const inviteGuild = async (
   memberId: string,
   guildId: string
-): Promise<AxiosResponse<ResponseDTO<GuildInviteDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildInviteDTO>>> => {
   let url = `${baseUrl}/invite`;
 
   const body = {
@@ -112,7 +132,7 @@ export const inviteGuild = async (
     guildId: guildId,
   };
 
-  return await axios.post(url, body);
+  return await postData(url, body);
 };
 
 /**
@@ -122,13 +142,13 @@ export const inviteGuild = async (
  */
 export const getInviteGuildList = async (
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildInviteDTO[]>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildInviteDTO[]>>> => {
   let url = `${baseUrl}/invite/list`;
 
   const queryParams = `?name=${guildName}`;
   url += queryParams;
 
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /**
@@ -140,13 +160,13 @@ export const getInviteGuildList = async (
 export const inviteAccept = async (
   memberId: string,
   guildId: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/invite/accept`;
 
   const queryParams = `?memberId=${memberId}&guildId=${guildId}`;
   url += queryParams;
 
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /**
@@ -158,13 +178,13 @@ export const inviteAccept = async (
 export const inviteReject = async (
   memberId: string,
   guildId: string
-): Promise<AxiosResponse<ResponseDTO<MemberDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/invite/reject`;
 
   const queryParams = `?memberId=${memberId}&guildId=${guildId}`;
   url += queryParams;
 
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /**
@@ -176,11 +196,11 @@ export const inviteReject = async (
 export const changeGuildMaster = async (
   memberName: string,
   guildName: string
-): Promise<AxiosResponse<ResponseDTO<GuildDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
   let url = `${baseUrl}/changeMaster`;
 
   const queryParams = `?memberName=${memberName}&guildName=${guildName}`;
   url += queryParams;
 
-  return await axios.get(url);
+  return await getData(url);
 };

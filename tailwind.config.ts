@@ -38,9 +38,6 @@ const config: Config = {
       // => @media (min-width: 1400px) { ... }
     },
     extend: {
-      fontFamily: {
-        sans: ["var(--font-pretendard)"],
-      },
       height: {
         "screen-1/2": "50vh",
         "screen-1/3": "33.333333vh",
@@ -111,9 +108,11 @@ const config: Config = {
         brandcolor: "#7b92e0",
         brandhover: "#cedef7",
         brandbgcolor: "#f0f6fd",
+        brandborder: "#cbd5e1",
 
         branddark: "#262f40",
         brandgray: "#344057",
+        branddarkborder: "#475569",
         // brandcolor: "#11235A",
         // brandbgcolor: "#FAFAFA",
         current: "currentColor",

@@ -1,19 +1,17 @@
-import { BaseDTO } from "../base.dto";
-import { MemberDTO } from "../member/member.dto";
-import { PostDTO } from "./post.dto";
+import { BaseDto } from "../base.dto";
+import { MemberDto } from "../member/member.dto";
+import { PostDto } from "./post.dto";
 
-export interface CommentDTO extends BaseDTO {
+export interface CommentDto extends BaseDto {
   id?: string;
   commentContent: string;
   depth: number;
   orderNumber: number;
-  deltedTrue: boolean;
-  deltedAt?: Date;
   parentComment: string;
   isCommentForComment: boolean;
   postId: number;
-  postBoardId: PostDTO;
+  postBoardId: PostDto;
   commentDate: Date;
-  writer: MemberDTO;
+  writer: MemberDto;
   writerId: string;
 }

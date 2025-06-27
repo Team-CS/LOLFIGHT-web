@@ -29,7 +29,7 @@ const renderPlayerInfo = (
 const GuildFightMember = (props: Props) => {
   return (
     <div className="flex">
-      <div className="flex flex-col w-250px gap-0.5">
+      <div className="flex flex-col w-[250px] gap-[2px]">
         {renderPlayerInfo(
           props.battleData.teamA.player1?.championId,
           props.battleData.teamA.player1?.summonerName
@@ -51,7 +51,7 @@ const GuildFightMember = (props: Props) => {
           props.battleData.teamA.player5?.summonerName
         )}
       </div>
-      <div className="flex flex-col w-250px gap-0.5">
+      <div className="flex flex-col w-[250px] gap-[2px]">
         {renderPlayerInfo(
           props.battleData.teamB.player1?.championId,
           props.battleData.teamB.player1?.summonerName

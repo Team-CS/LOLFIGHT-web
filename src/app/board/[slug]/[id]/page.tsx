@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getPostContent, increaseView } from "@/src/api/post.api";
+import { getPostContent } from "@/src/api/post.api";
 import BoardNavComponent from "../../components/BoardNavComponent";
 import BoardPostComponent from "../../components/post/BoardPostComponent";
-import { PostDTO } from "@/src/common/DTOs/board/post.dto";
+import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import boardNavLinks from "@/src/data/boardNavLinks";
-import { useRouter } from "next/router";
+import { notFound } from "next/navigation";
 
 type PageProps = {
   slug: string;
@@ -18,38 +18,31 @@ function getTitleFromSlug(slug: string) {
   return link?.title ?? "";
 }
 
-function getSlugFromTitle(title: string) {
-  const link = boardNavLinks.find((link) => link.title === title);
-  return link?.slug ?? "";
-}
-
 export default function Page({ params }: { params: PageProps }) {
-  // const router = useRouter();
-  // const { postDTO } = router.query;
-  const [post, setPost] = useState<PostDTO>();
+  const [post, setPost] = useState<PostDto>();
+  const [error, setError] = useState<boolean>();
 
   useEffect(() => {
     if (!post) {
-      getPostContent(getTitleFromSlug(params.slug), params.id).then((res) => {
-        setPost(res.data.data);
-      });
+      getPostContent(getTitleFromSlug(params.slug), params.id)
+        .then((res) => {
+          setPost(res.data.data);
+        })
+        .catch((error) => {
+          setError(error);
+        });
     }
   });
 
-  useEffect(() => {
-    // console.log(post);
-    if (post) {
-      increaseView(post);
-    }
-  }, [post]);
+  if (error) {
+    notFound();
+  }
 
   return (
     <>
-      <div className="w-full my-16">
-        <div className="w-1200px mx-auto flex">
-          <BoardNavComponent></BoardNavComponent>
-          <BoardPostComponent data={post as PostDTO}></BoardPostComponent>
-        </div>
+      <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px]">
+        <BoardNavComponent></BoardNavComponent>
+        <BoardPostComponent data={post as PostDto}></BoardPostComponent>
       </div>
     </>
   );

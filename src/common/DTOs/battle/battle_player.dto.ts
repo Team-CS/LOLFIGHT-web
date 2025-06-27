@@ -1,6 +1,6 @@
-import { BaseDTO } from "../base.dto";
+import { BaseDto } from "../base.dto";
 
-export interface BattlePlayerDTO extends BaseDTO {
+export interface BattlePlayerDTO extends BaseDto {
   id: string;
   championId: number;
   summonerName: string;

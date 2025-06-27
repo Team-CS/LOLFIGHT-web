@@ -1,6 +1,6 @@
-import { BaseDTO } from "../base.dto";
+import { BaseDto } from "../base.dto";
 
-export interface MailDTO extends BaseDTO {
+export interface MailDTO extends BaseDto {
   id?: string;
   mailAddr: string;
   mailCode: string;

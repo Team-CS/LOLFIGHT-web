@@ -1,15 +1,9 @@
-import BoardWriteHeadComponent from "./BoardWriteHeadComponent";
-import BoardWriteBodyComponent from "./BoardWriteBodyComponent";
+import WysiwygEditor from "@/src/common/components/WysiwygEditor";
 
 const BoardWriteComponent = () => {
   return (
-    <div className="w-full bg-white ml-8 shadow-md dark:bg-dark">
-      <div className="">
-        <div className="head">{/* <BoardWriteHeadComponent /> */}</div>
-        <div className="body">
-          <BoardWriteBodyComponent />
-        </div>
-      </div>
+    <div className="w-full bg-white rounded-[12px] p-[24px] shadow-md dark:bg-dark">
+      <WysiwygEditor />
     </div>
   );
 };

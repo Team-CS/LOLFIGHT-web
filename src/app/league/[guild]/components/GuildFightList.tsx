@@ -3,7 +3,7 @@ import GuildFightBox from "./GuildFightBox";
 import { BattleTeamDTO } from "@/src/common/DTOs/battle/battle_team.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 
 interface Props {
   battleTeamData: BattleTeamDTO;
@@ -12,7 +12,7 @@ interface Props {
 const GuildFightList = (props: Props) => {
   const result = props.battleTeamData.isWinning ? "win" : "lose";
   const highestChampionDamage = findHighestDamagePlayer(props.battleTeamData);
-  const [guildData, setGuildData] = useState<GuildDTO>();
+  const [guildData, setGuildData] = useState<GuildDto>();
   useEffect(() => {
     getGuildInfo(props.battleTeamData.guildName).then((response) => {
       setGuildData(response.data.data);
@@ -22,13 +22,13 @@ const GuildFightList = (props: Props) => {
     <div className="w-full h-full flex flex-col drop-shadow-md text-black">
       {/* 1 */}
       <div
-        className={`w-full h-full flex p-1 justify-between ${
+        className={`w-full h-full flex py-[4px] px-[8px] justify-between ${
           result === "win" ? "bg-blue-300" : "bg-red-300"
         }`}
       >
-        <div className="flex">
+        <div className="flex gap-[12px]">
           <p
-            className={`font-extrabold pl-2 pr-2 ${
+            className={`font-extrabold ${
               result === "win" ? "text-blue-500" : "text-red-500"
             }`}
           >
@@ -37,25 +37,24 @@ const GuildFightList = (props: Props) => {
           <img
             src={`${constant.SERVER_URL}/public/guild/${props.battleTeamData.guildName}.png`}
             alt="GuildBanner"
-            width={25}
-            height={25}
+            className="w-[25px] h-[25px] rounded-[4px] object-cover"
           />
-          <p className="font-semibold pl-2">{props.battleTeamData.guildName}</p>
+          <p className="font-semibold">{props.battleTeamData.guildName}</p>
         </div>
-        <p className="text-14px text-gray-500">
+        <p className="text-[14px] text-gray-500">
           1부리그 - {guildData?.guildRecord?.recordLadder}점
         </p>
       </div>
 
       {/* 2 */}
-      <div className="w-full flex pl-2 pr-2 gap-3 text-12px dark:text-white">
-        <div className="w-250px">플레이어</div>
-        <div className="w-50px">S/R</div>
-        <div className="w-120px">KDA</div>
-        <div className="w-220px">피해량</div>
-        <div className="w-60px">LV/CS</div>
-        <div className="w-60px">시야점수</div>
-        <div className="w-350px">아이템</div>
+      <div className="w-full flex px-[8px] gap-[12px] text-[12px] dark:text-white">
+        <div className="w-[250px]">플레이어</div>
+        <div className="w-[50px]">S/R</div>
+        <div className="w-[120px]">KDA</div>
+        <div className="w-[220px]">피해량</div>
+        <div className="w-[60px]">LV/CS</div>
+        <div className="w-[60px]">시야점수</div>
+        <div className="w-[350px]">아이템</div>
       </div>
 
       {/* 3 */}

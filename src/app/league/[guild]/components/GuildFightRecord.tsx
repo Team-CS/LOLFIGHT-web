@@ -8,7 +8,7 @@ import GuildFightMember from "./GuildFightMember";
 import { BattleDTO } from "@/src/common/DTOs/battle/battle.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
-import { GuildDTO } from "@/src/common/DTOs/guild/guild.dto";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { BattlePlayerDTO } from "@/src/common/DTOs/battle/battle_player.dto";
 
 interface Props {
@@ -17,8 +17,8 @@ interface Props {
 const GuildFightRecord = (props: Props) => {
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const result = props.battleData.teamA.isWinning ? "win" : "lose";
-  const [homeGuild, setHomeGuild] = useState<GuildDTO>();
-  const [awayGuild, setawayGuild] = useState<GuildDTO>();
+  const [homeGuild, setHomeGuild] = useState<GuildDto>();
+  const [awayGuild, setawayGuild] = useState<GuildDto>();
 
   useEffect(() => {
     getGuildInfo(props.battleData.teamA.guildName).then((response) => {
@@ -61,60 +61,66 @@ const GuildFightRecord = (props: Props) => {
   return (
     <div>
       <div
-        className={`w-1200px h-130px flex mb-2 border shadow ${
+        className={`max-w-[1200px] h-[130px] flex border shadow ${
           result === "win"
             ? "border-blue-300 bg-blue-100"
             : "border-red-300 bg-red-100"
         }`}
       >
         {/* 1 */}
-        <div className="w-130px flex flex-col justify-center items-center p-3">
-          <p className="font-extrabold text-16px text-black">소환사의 협곡</p>
-          <p className="font-light text-14px text-black">{getPlayTime()}</p>
+        <div className="w-[130px] flex flex-col justify-center items-center p-[12px]">
+          <p className="font-extrabold text-[16px] text-black">소환사의 협곡</p>
+          <p className="font-light text-[12px] text-black">{getPlayTime()}</p>
           <p
-            className={`font-extrabold text-18px ${
+            className={`font-extrabold text-[18px] ${
               result === "win" ? "text-blue-500" : "text-red-500"
             }`}
           >
             {result === "win" ? "승리" : "패배"}
           </p>
-          <p className="font-light text-14px text-black">
+          <p className="font-light text-[12px] text-black">
             {getTimeDifference()}
           </p>
         </div>
 
         {/* 2 */}
-        <div className="flex w-400px justify-center items-center p-3 text-black">
-          <div className="flex flex-col items-center m-3">
-            <div className="flex p-3">
+        <div className="flex w-400px justify-between items-center text-black gap-[12px] p-[12px]">
+          <div className="flex flex-col w-full items-center gap-[8px]">
+            <div className="flex items-center gap-[8px]">
               <img
                 src={`${constant.SERVER_URL}/public/guild/${props.battleData.teamA.guildName}.png`}
                 alt="GuildBanner"
-                width={30}
-                height={30}
+                className="w-[30px] h-[30px] rounded-[4px] object-cover"
               />
-              <p className="pl-1 pt-1 font-normal text-16px">
+              <p className="font-bold text-[16px]">
                 {props.battleData.teamA.guildName}
               </p>
             </div>
-            <p className="text-14px">
+            <p className="font-light text-gray-600 text-[12px]">
               1부리그 {homeGuild?.guildRecord?.recordLadder}점
             </p>
           </div>
-          <p className="font-normal text-12px">VS</p>
-          <div className="flex flex-col items-center m-3">
-            <div className="flex p-3">
+
+          <p className="font-normal text-[12px]">VS</p>
+
+          <div className="flex flex-col w-full items-center gap-[8px]">
+            <div className="flex items-center gap-[8px]">
               <img
                 src={`${constant.SERVER_URL}/public/guild/${props.battleData.teamB.guildName}.png`}
                 alt="GuildBanner"
-                width={30}
-                height={30}
+                className="w-[30px] h-[30px] rounded-[4px] object-cover"
               />
-              <p className="pl-1 pt-1 font-normal text-16px">
+              <p
+                className={`font-bold ${
+                  props.battleData.teamB.guildName.length > 8
+                    ? "text-[10px]"
+                    : "text-[16px]"
+                }`}
+              >
                 {props.battleData.teamB.guildName}
               </p>
             </div>
-            <p className="text-14px">
+            <p className="font-light text-gray-600 text-[12px]">
               1부리그 {awayGuild?.guildRecord?.recordLadder}점
             </p>
           </div>

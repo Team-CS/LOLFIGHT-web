@@ -1,10 +1,10 @@
 import { LargeNumberLike } from "crypto";
-import { BaseDTO } from "../base.dto";
-import { PostDTO } from "./post.dto";
-import { MemberDTO } from "../member/member.dto";
+import { BaseDto } from "../base.dto";
+import { PostDto } from "./post.dto";
+import { MemberDto } from "../member/member.dto";
 
-export interface LikeDTO extends BaseDTO {
+export interface LikeDTO extends BaseDto {
   id: number;
-  likePost: PostDTO;
-  likeMember: MemberDTO;
+  likePost: PostDto;
+  likeMember: MemberDto;
 }

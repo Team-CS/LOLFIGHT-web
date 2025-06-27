@@ -1,6 +1,6 @@
 import { BooleanType } from "../types/boolean.type";
 
-export interface ResponseDTO<T> {
+export interface ResponseDto<T> {
   isSuccess: BooleanType;
   code: string;
   message: string;
