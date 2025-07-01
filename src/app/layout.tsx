@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "롤 내전/스크림은 LOLFIGHT - 롤 길드 대항전, 스크림, 내전",
   keywords: ["롤파이트", "LOLFIGHT", "내전", "스크림", "롤 커스텀", "길드전"],
   icons: {
-    icon: "/icon-blue.ico",
+    icon: "/LOLFIGHT_NONE_TEXT.ico",
   },
   other: {
     "google-adsense-account": "ca-pub-9861327972888599",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://lolfight.kr/api/public/image/icon-blue.png", // 실제 이미지 URL로 변경
+        url: "https://lolfight.kr/api/public/image/LOLFIGHT_NONE_TEXT.png", // 실제 이미지 URL로 변경
         width: 800,
         height: 600,
         alt: "LOL.FIGHT",
