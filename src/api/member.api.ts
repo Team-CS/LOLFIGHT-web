@@ -48,11 +48,11 @@ export const updateNickname = async (
  * @returns
  */
 export const leaveMember = async (
-  id: string
+  memberId: string
 ): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/leave`;
 
-  const queryParams = `?id=${id}`;
+  const queryParams = `?memberId=${memberId}`;
 
   url += queryParams;
 
@@ -95,11 +95,11 @@ export const findMemberByName = async (
  * @returns
  */
 export const deleteMember = async (
-  id: string
-): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
+  memberId: string
+): Promise<AxiosResponse<ResponseDto<void>>> => {
   let url = `${baseUrl}`;
 
-  let queryParams = `?id=${id}`;
+  let queryParams = `?memberId=${memberId}`;
   url += queryParams;
   return await deleteData(url);
 };

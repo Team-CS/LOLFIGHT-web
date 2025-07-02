@@ -32,7 +32,7 @@ const WithdrawalPage = () => {
           );
         })
         .catch((error) => {
-          if (error.response.data._code === "COM001") {
+          if (error.response.data.code === "COMMON-009") {
             CustomAlert(
               "error",
               "회원탈퇴",

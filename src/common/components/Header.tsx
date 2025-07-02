@@ -1,6 +1,5 @@
 "use client";
-import darklogo from "../../../public/icon-blue.png";
-import lightlogo from "../../../public/icon.png";
+
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,7 +14,8 @@ import { removeCookie } from "@/src/utils/cookie/cookie";
 import BoardSection from "./header/boardSection";
 import localFont from "next/font/local";
 import CustomAlert from "./alert/CustomAlert";
-
+import { FaRegBell } from "react-icons/fa";
+import { CiBellOn } from "react-icons/ci";
 const rixi = localFont({
   src: "../../fonts/RixInooAriDuriRegular.ttf",
   display: "swap",
@@ -40,6 +40,8 @@ export const Header = () => {
   const freeBoardId = 0;
   const noticeBoardId = 3;
   const eventBoardId = 4;
+
+  const hasNotification = true;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -128,6 +130,7 @@ export const Header = () => {
             </div>
             <Navigation />
           </div>
+
           <ThemeToggler />
         </div>
       </section>
@@ -166,7 +169,7 @@ export const Header = () => {
             <div className="bg-brandbgcolor dark:bg-branddark">
               {member ? (
                 <div className="w-[400px] h-[150px] flex flex-col items-center border dark:border-branddarkborder">
-                  <div className="flex w-full items-center p-[12px] gap-[14px]">
+                  <div className="flex w-full items-center p-[12px] gap-[14px] relative">
                     <div className="w-[70px] h-[70px] my-auto">
                       <img
                         className="w-full h-full rounded-[12px]"
@@ -179,7 +182,15 @@ export const Header = () => {
                       </p>
                       <p className="font-light text-base">{member.memberId}</p>
                     </div>
+                    <CiBellOn
+                      className="w-[30px] h-[30px] absolute top-[5px] right-[5px] cursor-pointer"
+                      onClick={() => router.push("/alarm")}
+                    />
+                    {hasNotification && (
+                      <span className="absolute top-[5px] right-[5px] w-[10px] h-[10px] rounded-full bg-red-500 border-2 border-white" />
+                    )}
                   </div>
+
                   <div className="flex grid grid-cols-2 w-full h-full items-center justify-center dark:border-gray-800">
                     <button
                       className="flex w-full h-full items-center justify-center cursor-pointer hover:bg-brandhover dark:hover:bg-gray-600 transition"

@@ -8,7 +8,7 @@ interface Props {
   onChangeLine: (line: string) => void;
 }
 
-const ALL_LINES = ["TOP", "JUNGLE", "MID", "BOTTOM", "SUPPORT"];
+const ALL_LINES = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 
 const LineSelector = (props: Props) => {
   const { currentLine, isMaster, onChangeLine } = props;
