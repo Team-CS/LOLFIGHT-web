@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TeamMemberCard from "./components/TeamMemberCard";
 import BattleTeamCard from "./components/BattleTeamCard";
 import { FaSearch } from "react-icons/fa";
@@ -9,6 +9,10 @@ import BattleTeamModal from "./components/modals/BattleTeamModal";
 import CreateTeamModal from "./components/modals/CreateTeamModal";
 import MatchCard from "./components/MatchCard";
 import constant from "@/src/common/constant/constant";
+import { deleteGuildTeam, getMyGuildTeam } from "@/src/api/guild_team.api";
+import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
+import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
+import { useRouter } from "next/navigation";
 type BattleTeamCardProps = {
   guildLogo: string;
   guildName: string;
@@ -20,7 +24,11 @@ type BattleTeamCardProps = {
   tier: string;
   onClick?: () => void;
 };
+
+const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
+
 export default function Page() {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(10); // 총 페이지 수
 
@@ -28,6 +36,17 @@ export default function Page() {
     null
   );
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
+  const [team, setTeam] = useState<GuildTeamDto>();
+
+  useEffect(() => {
+    getMyGuildTeam()
+      .then((response) => {
+        setTeam(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const handlePageClick = (
     event: React.ChangeEvent<unknown>,
@@ -36,7 +55,27 @@ export default function Page() {
     setCurrentPage(pageNumber);
   };
 
-  const [test, setTest] = useState<boolean>(true);
+  const handledeleteClick = () => {
+    const deleteTeam = () => {
+      if (team) {
+        deleteGuildTeam(team?.leader.id)
+          .then((response) => {
+            setTeam(undefined);
+            router.refresh();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    };
+    ButtonAlert(
+      "길드 팀 삭제",
+      `길드 팀을 삭제하시겠습니까? 팀은 해체되며 팀의 대기록목은 제거됩니다.`,
+      "삭제",
+      deleteTeam
+    );
+  };
+
   const dummyTeams = new Array(10).fill(0).map((_, i) => ({
     guildLogo: "/LOLFIGHT_NONE_TEXT.png",
     guildName: `팀 ${i + 1}`,
@@ -47,52 +86,44 @@ export default function Page() {
     rank: i + 1, // 예: 1위 ~ 10위
     tier: ["BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND"][i % 5],
   }));
-  const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
-
-  const dummyMembers = {
-    TOP: {
-      summonerName: "태양같은사나이",
-      summonerTag: "남탓을해도된다우린남이니깐#KR1",
-      tier: "GOLD",
-      rankImageUrl: `${constant.SERVER_URL}/public/rank/GOLD.png`,
-    },
-    JUNGLE: {
-      summonerName: "숲속의정글러",
-      summonerTag: "정글가는중#KR1",
-      tier: "PLATINUM",
-      rankImageUrl: `${constant.SERVER_URL}/public/rank/PLATINUM.png`,
-    },
-    MID: {
-      summonerName: "미드마스터",
-      summonerTag: "미드좀해요#KR1",
-      tier: "DIAMOND",
-      rankImageUrl: `${constant.SERVER_URL}/public/rank/DIAMOND.png`,
-    },
-    ADC: null,
-    SUPPORT: {
-      summonerName: "서포터맨",
-      summonerTag: "팀챙기는중#KR1",
-      tier: "BRONZE",
-      rankImageUrl: `${constant.SERVER_URL}/public/rank/BRONZE.png`,
-    },
-  };
 
   return (
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
-      {test ? (
+      {team ? (
         // ✅ 팀이 있을 때
         <div className="flex h-[470px] p-[32px] shadow-md rounded-[12px] gap-[24px] dark:bg-branddark">
           <div className="flex flex-col w-[50%] gap-[12px]">
             {/* Header */}
-            <div className="flex items-center gap-[16px]">
-              <img
-                src="/LOLFIGHT_NONE_TEXT.png"
-                alt="logo"
-                className="w-[60px] h-[60px] rounded-full object-cover"
-              />
-              <div className="flex flex-col">
-                <p className="text-[22px] font-semibold">판테온의방패</p>
-                <p className="text-[14px] text-gray-400">리더: 이렐리아</p>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-[16px]">
+                <img
+                  src={`${constant.SERVER_URL}/${team.guild.guildIcon}`}
+                  alt="logo"
+                  className="w-[60px] h-[60px] rounded-[12px] object-cover"
+                />
+                <div className="flex flex-col">
+                  <p className="text-[22px] font-semibold">
+                    {team.leader.memberName}팀
+                  </p>
+                  <p className="text-[14px] text-gray-400">
+                    리더: {team.leader.memberName} -{" "}
+                    {team.leader.memberGame?.gameName}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-[12px]">
+                <button
+                  onClick={() => setIsCreateTeamOpen(true)}
+                  className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                >
+                  팀 수정
+                </button>
+                <button
+                  onClick={handledeleteClick}
+                  className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                >
+                  팀 삭제
+                </button>
               </div>
             </div>
 
@@ -101,13 +132,13 @@ export default function Page() {
             {/* Member list */}
             <div className="flex flex-col gap-[6px]">
               {POSITIONS.map((pos) => {
-                const member = dummyMembers[pos];
+                const member = team.members.find((m) => m.position === pos);
                 return (
                   <TeamMemberCard
                     key={pos}
+                    teamMember={member}
                     roleTag={pos}
-                    isEmpty={!member}
-                    {...(member || {})}
+                    onAddClick={() => setIsCreateTeamOpen(true)}
                   />
                 );
               })}
@@ -120,18 +151,11 @@ export default function Page() {
               📜 내전 일정 및 최근 기록
             </p>
             <div className="flex flex-col h-full gap-[12px] overflow-y-auto">
-              <MatchCard
+              {/* <MatchCard
                 opponent="다리우스의형제들"
                 date="2025년 7월 5일 21:00"
                 status="upcoming"
                 resultText="대기중"
-              />
-
-              <MatchCard
-                opponent="모데카이저의철권"
-                date="2025년 6월 30일"
-                status="finished"
-                resultText="승리"
               />
               <MatchCard
                 opponent="모데카이저의철권"
@@ -144,7 +168,7 @@ export default function Page() {
                 date="2025년 6월 30일"
                 status="finished"
                 resultText="패배"
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -232,7 +256,10 @@ export default function Page() {
         />
       )}
       {isCreateTeamOpen && (
-        <CreateTeamModal onClose={() => setIsCreateTeamOpen(false)} />
+        <CreateTeamModal
+          onClose={() => setIsCreateTeamOpen(false)}
+          existingTeam={team}
+        />
       )}
     </div>
   );

@@ -102,7 +102,6 @@ const ProfileInfoPage = () => {
       })
       .catch((error) => {
         CustomAlert("error", "닉네임 변경", "이미 존재하는 닉네임 입니다");
-        // CustomAlert("error", "닉네임 변경", "닉네임 변경에 실패했습니다");
       });
   };
 

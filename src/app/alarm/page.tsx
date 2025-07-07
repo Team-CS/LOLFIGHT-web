@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
-
-type TeamInviteAlarm = {
-  id: number;
-  inviter: string;
-  teamName: string;
-  role: string;
-  status: "pending" | "accepted" | "declined";
-};
+import {
+  acceptGuildTeamInvite,
+  getMyInviteList,
+  rejectGuildTeamInvite,
+} from "@/src/api/guild_team.api";
+import CustomAlert from "@/src/common/components/alert/CustomAlert";
+import { GuildTeamInviteDto } from "@/src/common/DTOs/guild/guild_team/guild_team_invite.dto";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type BattleAlarm = {
   id: number;
@@ -45,32 +45,44 @@ const dummyBattleAlarms: BattleAlarm[] = [
   },
 ];
 
-const dummyTeamInvites: TeamInviteAlarm[] = [
-  {
-    id: 1,
-    inviter: "길드원A",
-    teamName: "다리우스의형제들",
-    role: "TOP",
-    status: "pending",
-  },
-  {
-    id: 2,
-    inviter: "길드원B",
-    teamName: "모데카이저팀",
-    role: "JUNGLE",
-    status: "accepted",
-  },
-  {
-    id: 3,
-    inviter: "길드원C",
-    teamName: "블루팀",
-    role: "MID",
-    status: "declined",
-  },
-];
-
 export default function Page() {
+  const router = useRouter();
   const [tab, setTab] = useState<"team" | "battle">("team");
+  const [teamInvites, setTeamInvites] = useState<GuildTeamInviteDto[]>([]);
+
+  useEffect(() => {
+    getMyInviteList()
+      .then((response) => {
+        setTeamInvites(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const handleAccept = (inviteId: string) => {
+    acceptGuildTeamInvite(inviteId)
+      .then((response) => {
+        console.log(response);
+        CustomAlert("success", "팀 초대", "팀 초대를 수락 하셨습니다.");
+        router.refresh();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleReject = (inviteId: string) => {
+    rejectGuildTeamInvite(inviteId)
+      .then((response) => {
+        console.log(response);
+        CustomAlert("success", "팀 초대", "팀 초대를 거절 하셨습니다.");
+        router.refresh();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div className="max-w-[1200px] mx-auto p-[28px] flex flex-col gap-[24px] min-h-[600px]">
@@ -105,37 +117,36 @@ export default function Page() {
       {/* 내용 */}
       {tab === "team" && (
         <div className="flex flex-col gap-[16px]">
-          {dummyTeamInvites.length === 0 ? (
+          {teamInvites.length === 0 ? (
             <p className="text-center text-gray-400 py-[40px]">
               새로운 팀 초대 알림이 없습니다.
             </p>
           ) : (
-            dummyTeamInvites.map((invite) => (
+            teamInvites.map((invite) => (
               <div
                 key={invite.id}
                 className={`p-[16px] rounded-lg border ${
-                  invite.status === "pending"
+                  invite.status === "PENDING"
                     ? "border-brandcolor bg-white dark:bg-branddark"
                     : "border-gray-300 bg-gray-50 dark:bg-gray-800"
                 } flex flex-col md:flex-row md:items-center justify-between gap-[12px]`}
               >
                 <div className="text-[15px]">
-                  <strong>{invite.inviter}</strong>님이
-                  <strong>{invite.teamName}</strong>팀의
-                  <strong>{invite.role}</strong> 라인으로 초대했습니다.
+                  <strong>{invite.team.leader.memberName}</strong>님이{" "}
+                  <strong>{invite.position}</strong> 라인으로 초대했습니다.
                 </div>
                 <div className="flex gap-[12px]">
-                  {invite.status === "pending" ? (
+                  {invite.status === "PENDING" ? (
                     <>
                       <button
                         className="px-[14px] py-[4px] bg-brandcolor text-white rounded-md hover:opacity-90 transition"
-                        // onClick={() => handleAccept(invite.id)}
+                        onClick={() => handleAccept(invite.id)}
                       >
                         수락
                       </button>
                       <button
                         className="px-[14px] py-[4px] border border-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-brandgray transition"
-                        // onClick={() => handleDecline(invite.id)}
+                        onClick={() => handleReject(invite.id)}
                       >
                         거절
                       </button>
@@ -143,12 +154,12 @@ export default function Page() {
                   ) : (
                     <p
                       className={`font-semibold ${
-                        invite.status === "accepted"
+                        invite.status === "ACCEPTED"
                           ? "text-blue-500"
                           : "text-red-500"
                       }`}
                     >
-                      {invite.status === "accepted" ? "수락됨" : "거절됨"}
+                      {invite.status === "ACCEPTED" ? "수락됨" : "거절됨"}
                     </p>
                   )}
                 </div>

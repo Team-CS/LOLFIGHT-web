@@ -102,9 +102,8 @@ export default function BattleTeamModal({
               return (
                 <TeamMemberCard
                   key={pos}
+                  teamMember={undefined}
                   roleTag={pos}
-                  isEmpty={!member}
-                  {...(member || {})}
                 />
               );
             })}

@@ -204,3 +204,10 @@ export const changeGuildMaster = async (
 
   return await getData(url);
 };
+
+export const getMembersNotInTeam = async (
+  guildId: string
+): Promise<AxiosResponse<ResponseDto<MemberDto[]>>> => {
+  const url = `${baseUrl}/${guildId}/members/not-in-team`;
+  return await getData(url);
+};

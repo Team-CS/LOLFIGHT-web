@@ -1,30 +1,18 @@
 import constant from "@/src/common/constant/constant";
+import { GuildTeamMemberDto } from "@/src/common/DTOs/guild/guild_team/guild_team_member.dto";
 import { getTierStyle } from "@/src/utils/string/string.util";
 
 interface TeamMemberCardProps {
-  summonerName?: string;
-  summonerTag?: string;
-  tier?: string;
-  rankImageUrl?: string;
+  teamMember: GuildTeamMemberDto | undefined;
   roleTag: "TOP" | "JUNGLE" | "MID" | "ADC" | "SUPPORT";
-  profileImgUrl?: string;
   isEmpty?: boolean;
   onAddClick?: () => void;
 }
 
 const TeamMemberCard = (props: TeamMemberCardProps) => {
-  const {
-    summonerName = "",
-    summonerTag = "",
-    tier = "GOLD",
-    rankImageUrl = `${constant.SERVER_URL}/public/rank/GOLD.png`,
-    roleTag,
-    profileImgUrl = "/LOLFIGHT_NONE_TEXT.png",
-    isEmpty = false,
-    onAddClick,
-  } = props;
+  const { teamMember, roleTag, isEmpty = false, onAddClick } = props;
 
-  if (isEmpty) {
+  if (isEmpty || !teamMember || !teamMember.member) {
     return (
       <div
         onClick={onAddClick}
@@ -37,6 +25,14 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
       </div>
     );
   }
+
+  const summonerName = teamMember.member.memberGame?.gameName || "Unknown";
+
+  const tier = teamMember.member.memberGame?.gameTier || "UNRANKED";
+  const rankImageUrl = `${constant.SERVER_URL}/public/rank/${
+    tier.split(" ")[0]
+  }.png`;
+  const profileImgUrl = `${constant.SERVER_URL}/${teamMember.member.memberIcon}`;
 
   return (
     <div
@@ -58,9 +54,6 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
           <div className="truncate min-w-0">
             <p className="text-sm font-medium dark:text-white truncate">
               {summonerName}
-            </p>
-            <p className="text-xs font-semibold dark:text-white truncate">
-              {summonerTag}
             </p>
           </div>
         </div>
