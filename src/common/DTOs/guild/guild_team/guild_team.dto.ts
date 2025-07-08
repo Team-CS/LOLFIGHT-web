@@ -3,6 +3,7 @@ import { GuildDto } from "../guild.dto";
 import {
   CreateGuildTeamMemberDto,
   GuildTeamMemberDto,
+  UpdateGuildTeamMemberDto,
 } from "./guild_team_member.dto";
 
 export interface GuildTeamDto {
@@ -16,4 +17,10 @@ export interface CreateGuildTeamDto {
   guild: string;
   leader: string;
   members: CreateGuildTeamMemberDto[];
+}
+
+export interface UpdateGuildTeamDto {
+  id: string;
+  leader: string;
+  members: UpdateGuildTeamMemberDto[];
 }

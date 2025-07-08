@@ -3,6 +3,7 @@ import constant from "../common/constant/constant";
 import {
   CreateGuildTeamDto,
   GuildTeamDto,
+  UpdateGuildTeamDto,
 } from "../common/DTOs/guild/guild_team/guild_team.dto";
 import { ResponseDto } from "../common/DTOs/response.dto";
 import {
@@ -12,6 +13,7 @@ import {
   postData,
 } from "../utils/axios/serverHelper";
 import { GuildTeamInviteDto } from "../common/DTOs/guild/guild_team/guild_team_invite.dto";
+import { UpdateGuildTeamMemberDto } from "../common/DTOs/guild/guild_team/guild_team_member.dto";
 
 const baseUrl = `${constant.SERVER_URL}/guild_team`;
 
@@ -53,6 +55,14 @@ export const rejectGuildTeamInvite = async (
   let url = `${baseUrl}/invite/reject`;
 
   await patchData(url, { inviteId });
+};
+
+export const guildTeamUpdate = async (
+  updateGuildTeamDto: UpdateGuildTeamDto
+): Promise<AxiosResponse<ResponseDto<GuildTeamDto>>> => {
+  let url = `${baseUrl}/update`;
+
+  return await patchData(url, updateGuildTeamDto);
 };
 
 export const deleteGuildTeam = async (leaderId: string): Promise<void> => {

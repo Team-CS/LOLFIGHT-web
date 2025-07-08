@@ -13,6 +13,7 @@ import { deleteGuildTeam, getMyGuildTeam } from "@/src/api/guild_team.api";
 import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { useRouter } from "next/navigation";
+import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
 type BattleTeamCardProps = {
   guildLogo: string;
   guildName: string;
@@ -29,6 +30,7 @@ const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
 export default function Page() {
   const router = useRouter();
+  const { guildTeam, setGuildTeam } = useGuildTeamStore();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(10); // 총 페이지 수
 
@@ -36,12 +38,11 @@ export default function Page() {
     null
   );
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
-  const [team, setTeam] = useState<GuildTeamDto>();
 
   useEffect(() => {
     getMyGuildTeam()
       .then((response) => {
-        setTeam(response.data.data);
+        setGuildTeam(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -57,10 +58,10 @@ export default function Page() {
 
   const handledeleteClick = () => {
     const deleteTeam = () => {
-      if (team) {
-        deleteGuildTeam(team?.leader.id)
+      if (guildTeam) {
+        deleteGuildTeam(guildTeam?.leader.id)
           .then((response) => {
-            setTeam(undefined);
+            setGuildTeam(null);
             router.refresh();
           })
           .catch((error) => {
@@ -89,7 +90,7 @@ export default function Page() {
 
   return (
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
-      {team ? (
+      {guildTeam ? (
         // ✅ 팀이 있을 때
         <div className="flex h-[470px] p-[32px] shadow-md rounded-[12px] gap-[24px] dark:bg-branddark">
           <div className="flex flex-col w-[50%] gap-[12px]">
@@ -97,17 +98,17 @@ export default function Page() {
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-[16px]">
                 <img
-                  src={`${constant.SERVER_URL}/${team.guild.guildIcon}`}
+                  src={`${constant.SERVER_URL}/${guildTeam.guild.guildIcon}`}
                   alt="logo"
                   className="w-[60px] h-[60px] rounded-[12px] object-cover"
                 />
                 <div className="flex flex-col">
                   <p className="text-[22px] font-semibold">
-                    {team.leader.memberName}팀
+                    {guildTeam.leader.memberName}팀
                   </p>
                   <p className="text-[14px] text-gray-400">
-                    리더: {team.leader.memberName} -{" "}
-                    {team.leader.memberGame?.gameName}
+                    리더: {guildTeam.leader.memberName} -{" "}
+                    {guildTeam.leader.memberGame?.gameName}
                   </p>
                 </div>
               </div>
@@ -131,17 +132,20 @@ export default function Page() {
 
             {/* Member list */}
             <div className="flex flex-col gap-[6px]">
-              {POSITIONS.map((pos) => {
-                const member = team.members.find((m) => m.position === pos);
-                return (
-                  <TeamMemberCard
-                    key={pos}
-                    teamMember={member}
-                    roleTag={pos}
-                    onAddClick={() => setIsCreateTeamOpen(true)}
-                  />
-                );
-              })}
+              {guildTeam &&
+                POSITIONS.map((pos) => {
+                  const member = guildTeam.members.find(
+                    (m) => m.position === pos
+                  );
+                  return (
+                    <TeamMemberCard
+                      key={pos}
+                      teamMember={member}
+                      roleTag={pos}
+                      onAddClick={() => setIsCreateTeamOpen(true)}
+                    />
+                  );
+                })}
             </div>
           </div>
 
@@ -193,15 +197,23 @@ export default function Page() {
       <div className="flex flex-col w-full p-[32px] gap-[24px] shadow-md rounded-[12px] dark:bg-branddark">
         <div className="flex justify-between">
           <p className="text-[18px] font-semibold">🔥 스크림 대기 팀 목록</p>
-          <div className="flex w-[200px] border border-gray-200 rounded-md px-[12px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
-            <div className="flex flex-wrap justify-center content-center dark:bg-black">
-              <FaSearch />
+          <div className="flex items-center gap-[12px]">
+            <div className="flex w-[200px] border border-gray-200 rounded-md px-[12px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
+              <div className="flex flex-wrap justify-center content-center dark:bg-black">
+                <FaSearch />
+              </div>
+              <input
+                className="w-full rounded-md bg-gray-100 px-[12px] py-[4px] text-[14px] focus:outline-none dark:bg-black font-normal"
+                type="text"
+                placeholder="검색어 입력 (2자 이상)"
+              />
             </div>
-            <input
-              className="w-full rounded-md bg-gray-100 px-[12px] py-[4px] text-[14px] focus:outline-none dark:bg-black font-normal"
-              type="text"
-              placeholder="검색어 입력 (2자 이상)"
-            />
+            <button
+              onClick={() => alert("만들어라")}
+              className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+            >
+              등록
+            </button>
           </div>
         </div>
 
@@ -232,17 +244,17 @@ export default function Page() {
             onChange={(event, page) => handlePageClick(event, page)}
             sx={{
               ".dark & .Mui-selected": {
-                backgroundColor: "#4C4C4C", // 원하는 색상으로 변경
-                color: "#CACACA", // 텍스트 색상
+                backgroundColor: "#4C4C4C",
+                color: "#CACACA",
                 "&:hover": {
-                  backgroundColor: "#707070", // 호버 시 색상
+                  backgroundColor: "#707070",
                 },
               },
               ".dark & .MuiPaginationItem-root": {
-                color: "#EEEEEE", // 선택되지 않은 아이템의 기본 텍스트 색상
+                color: "#EEEEEE",
               },
               ".dark & .MuiPaginationItem-icon": {
-                color: "#EEEEEE", // 텍스트 색상
+                color: "#EEEEEE",
               },
             }}
           />
@@ -256,10 +268,7 @@ export default function Page() {
         />
       )}
       {isCreateTeamOpen && (
-        <CreateTeamModal
-          onClose={() => setIsCreateTeamOpen(false)}
-          existingTeam={team}
-        />
+        <CreateTeamModal onClose={() => setIsCreateTeamOpen(false)} />
       )}
     </div>
   );

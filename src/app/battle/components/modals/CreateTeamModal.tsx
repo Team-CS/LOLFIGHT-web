@@ -1,12 +1,13 @@
 "use client";
 
-import { createGuildTeam } from "@/src/api/guild_team.api";
+import { createGuildTeam, guildTeamUpdate } from "@/src/api/guild_team.api";
 import { getMembersNotInTeam } from "@/src/api/guild.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
 import {
   CreateGuildTeamDto,
   GuildTeamDto,
+  UpdateGuildTeamDto,
 } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
 import { CreateGuildTeamMemberDto } from "@/src/common/DTOs/guild/guild_team/guild_team_member.dto";
 import { MemberDto } from "@/src/common/DTOs/member/member.dto";
@@ -14,18 +15,18 @@ import { Position } from "@/src/common/types/enums/position.enum";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { getTierStyle } from "@/src/utils/string/string.util";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 
 interface CreateTeamModalProps {
   onClose: () => void;
-  existingTeam?: GuildTeamDto; // 기존 팀 정보가 있으면 수정 모드
 }
 
 export default function CreateTeamModal(props: CreateTeamModalProps) {
-  const { onClose, existingTeam } = props;
+  const { onClose } = props;
   const { member } = useMemberStore();
+  const { guildTeam, setGuildTeam } = useGuildTeamStore();
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
   const [memberList, setMemberList] = useState<MemberDto[]>([]);
   const [assignedMembers, setAssignedMembers] = useState<
@@ -39,11 +40,11 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
   });
 
   // 수정 모드 판단
-  const isEditMode = !!existingTeam;
+  const isEditMode = !!guildTeam;
 
   // 기존 팀 멤버 있을 시 assignedMembers 초기화
   useEffect(() => {
-    if (existingTeam) {
+    if (guildTeam) {
       const initialAssigned: Record<string, MemberDto | null> = {
         TOP: null,
         JUNGLE: null,
@@ -51,13 +52,13 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
         ADC: null,
         SUPPORT: null,
       };
-      existingTeam.members.forEach((m) => {
+      guildTeam.members.forEach((m) => {
         // m.member는 MemberDto 타입이라고 가정
         initialAssigned[m.position] = m.member;
       });
       setAssignedMembers(initialAssigned);
     }
-  }, [existingTeam]);
+  }, [guildTeam]);
 
   // 팀에 속하지 않은 길드원 목록 불러오기
   useEffect(() => {
@@ -107,26 +108,25 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
       return;
     }
 
-    if (isEditMode && existingTeam) {
-      // @todo: 팀 수정 API 호출 필요 -> 팀 구성원 추가 및 삭제
-      // updateGuildTeam(existingTeam.id, {
-      //   guild: guildId,
-      //   leader: leaderId,
-      //   members,
-      // })
-      //   .then(() => {
-      //     onClose();
-      //   })
-      //   .catch((error) => {
-      //     console.error("팀 수정 실패:", error);
-      //   });
-      console.log("팀 수정 API 호출 예시", {
-        id: existingTeam.id,
-        guild: guildId,
+    if (isEditMode && guildTeam) {
+      const updateGuildTeam: UpdateGuildTeamDto = {
+        id: guildTeam.id,
         leader: leaderId,
         members,
-      });
-      onClose();
+      };
+      guildTeamUpdate(updateGuildTeam)
+        .then((response) => {
+          CustomAlert(
+            "success",
+            "팀 수정",
+            "팀 수정이 완료되었습니다. 초대메세지가 전송되었습니다."
+          );
+          setGuildTeam(response.data.data);
+          onClose();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       const guildTeam: CreateGuildTeamDto = {
         guild: guildId,
@@ -136,7 +136,7 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
       createGuildTeam(guildTeam)
         .then((response) => {
           CustomAlert("success", "팀 생성", "성공적으로 팀을 생성 했습니다.");
-          window.location.reload();
+          setGuildTeam(response.data.data);
           onClose();
         })
         .catch((error) => {

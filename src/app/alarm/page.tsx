@@ -53,6 +53,7 @@ export default function Page() {
   useEffect(() => {
     getMyInviteList()
       .then((response) => {
+        console.log(response.data.data);
         setTeamInvites(response.data.data);
       })
       .catch((error) => {
@@ -63,7 +64,6 @@ export default function Page() {
   const handleAccept = (inviteId: string) => {
     acceptGuildTeamInvite(inviteId)
       .then((response) => {
-        console.log(response);
         CustomAlert("success", "팀 초대", "팀 초대를 수락 하셨습니다.");
         router.refresh();
       })
@@ -75,7 +75,6 @@ export default function Page() {
   const handleReject = (inviteId: string) => {
     rejectGuildTeamInvite(inviteId)
       .then((response) => {
-        console.log(response);
         CustomAlert("success", "팀 초대", "팀 초대를 거절 하셨습니다.");
         router.refresh();
       })
@@ -117,7 +116,7 @@ export default function Page() {
       {/* 내용 */}
       {tab === "team" && (
         <div className="flex flex-col gap-[16px]">
-          {teamInvites.length === 0 ? (
+          {!teamInvites ? (
             <p className="text-center text-gray-400 py-[40px]">
               새로운 팀 초대 알림이 없습니다.
             </p>

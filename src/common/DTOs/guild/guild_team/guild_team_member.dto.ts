@@ -14,3 +14,8 @@ export interface CreateGuildTeamMemberDto {
   member: string;
   position: Position;
 }
+
+export interface UpdateGuildTeamMemberDto {
+  member: string;
+  position: Position;
+}
