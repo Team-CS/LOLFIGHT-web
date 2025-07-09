@@ -65,6 +65,15 @@ export const guildTeamUpdate = async (
   return await patchData(url, updateGuildTeamDto);
 };
 
+export const leaveGuildTeam = async (teamId: string): Promise<void> => {
+  let url = `${baseUrl}/leave-team`;
+
+  let queryParams = `?teamId=${teamId}`;
+  url += queryParams;
+
+  await deleteData(url);
+};
+
 export const deleteGuildTeam = async (leaderId: string): Promise<void> => {
   let url = `${baseUrl}`;
 

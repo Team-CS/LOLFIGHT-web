@@ -8,17 +8,17 @@ import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import constant from "@/src/common/constant/constant";
 
 interface Props {
-  GuildDto: GuildDto;
+  guild: GuildDto;
 }
 
 const GuildBanner = (props: Props) => {
-  const { GuildDto } = props;
+  const { guild } = props;
   const router = useRouter();
   const { member } = useMemberStore();
 
   const handleClickInviteGuild = () => {
-    if (member && GuildDto.id !== null && GuildDto.id !== undefined) {
-      inviteGuild(member.id, GuildDto.id)
+    if (member && guild.id !== null && guild.id !== undefined) {
+      inviteGuild(member.id, guild.id)
         .then((response) => {
           CustomAlert("success", "길드가입", "길드 가입신청이 완료되었습니다.");
         })
@@ -41,17 +41,16 @@ const GuildBanner = (props: Props) => {
         <div className="flex items-center gap-4">
           <img
             className="h-[75px] w-[75px] object-cover rounded-md"
-            src={`${constant.SERVER_URL}/${GuildDto.guildIcon}`}
+            src={`${constant.SERVER_URL}/${guild.guildIcon}`}
             alt="GuildIcon"
           />
           <div className="flex flex-col gap-[4px]">
             <p className="text-white text-sm font-medium">
-              롤파이트 공식리그 - 1부리그 -{GuildDto.guildRecord?.recordRanking}
-              위
+              롤파이트 공식리그 - 1부리그 -{guild.guildRecord?.recordRanking}위
             </p>
             <div className="flex items-center gap-[12px]">
               <h2 className="text-white text-2xl font-extrabold">
-                {GuildDto.guildName}
+                {guild.guildName}
               </h2>
               <button
                 aria-label="길드가입"
@@ -65,10 +64,10 @@ const GuildBanner = (props: Props) => {
         </div>
 
         <div className="flex flex-col gap-[4px] text-white text-sm">
-          <p className="font-medium">길드 마스터: {GuildDto.guildMaster}</p>
-          <p className="font-medium">클랜원:{GuildDto.guildMembers.length}명</p>
+          <p className="font-medium">길드 마스터: {guild.guildMaster}</p>
+          <p className="font-medium">길드원: {guild.guildMembers.length}명</p>
           <p className="font-medium">
-            길드 설립일: {GuildDto.createdAt?.toString()?.split("T")[0]}
+            길드 설립일: {guild.createdAt?.toString()?.split("T")[0]}
           </p>
         </div>
       </div>

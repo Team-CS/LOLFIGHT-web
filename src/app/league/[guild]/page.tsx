@@ -70,7 +70,7 @@ export default function GuildPage() {
   return (
     <>
       <div className="w-full h-full py-[24px]">
-        {guild && <GuildBanner GuildDto={guild} />}
+        {guild && <GuildBanner guild={guild} />}
         <div className="flex flex-col py-[12px] h-full max-w-[1200px] mx-auto gap-[12px]">
           <div className="w-full bg-brandbgcolor border dark:bg-dark dark:border-gray-700">
             <button

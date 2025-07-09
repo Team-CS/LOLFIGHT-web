@@ -9,11 +9,16 @@ import BattleTeamModal from "./components/modals/BattleTeamModal";
 import CreateTeamModal from "./components/modals/CreateTeamModal";
 import MatchCard from "./components/MatchCard";
 import constant from "@/src/common/constant/constant";
-import { deleteGuildTeam, getMyGuildTeam } from "@/src/api/guild_team.api";
+import {
+  deleteGuildTeam,
+  getMyGuildTeam,
+  leaveGuildTeam,
+} from "@/src/api/guild_team.api";
 import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { useRouter } from "next/navigation";
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 type BattleTeamCardProps = {
   guildLogo: string;
   guildName: string;
@@ -30,6 +35,7 @@ const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
 export default function Page() {
   const router = useRouter();
+  const { member } = useMemberStore();
   const { guildTeam, setGuildTeam } = useGuildTeamStore();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(10); // 총 페이지 수
@@ -77,6 +83,26 @@ export default function Page() {
     );
   };
 
+  const handleLeaveClick = () => {
+    const leaveTeam = () => {
+      if (guildTeam) {
+        leaveGuildTeam(guildTeam.id)
+          .then((response) => {
+            setGuildTeam(null);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    };
+    ButtonAlert(
+      "길드 팀 탈퇴",
+      "길드 팀을 탈퇴하시겠습니따? 팀의 대기목록이 제거됩니다",
+      "탈퇴",
+      leaveTeam
+    );
+  };
+
   const dummyTeams = new Array(10).fill(0).map((_, i) => ({
     guildLogo: "/LOLFIGHT_NONE_TEXT.png",
     guildName: `팀 ${i + 1}`,
@@ -90,7 +116,7 @@ export default function Page() {
 
   return (
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
-      {guildTeam ? (
+      {guildTeam && member ? (
         // ✅ 팀이 있을 때
         <div className="flex h-[470px] p-[32px] shadow-md rounded-[12px] gap-[24px] dark:bg-branddark">
           <div className="flex flex-col w-[50%] gap-[12px]">
@@ -112,20 +138,30 @@ export default function Page() {
                   </p>
                 </div>
               </div>
-              <div className="flex gap-[12px]">
+
+              {guildTeam.leader.id === member.id ? (
+                <div className="flex gap-[12px]">
+                  <button
+                    onClick={() => setIsCreateTeamOpen(true)}
+                    className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                  >
+                    팀 수정
+                  </button>
+                  <button
+                    onClick={handledeleteClick}
+                    className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                  >
+                    팀 삭제
+                  </button>
+                </div>
+              ) : (
                 <button
-                  onClick={() => setIsCreateTeamOpen(true)}
+                  onClick={handleLeaveClick}
                   className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
                 >
-                  팀 수정
+                  팀 탈퇴
                 </button>
-                <button
-                  onClick={handledeleteClick}
-                  className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
-                >
-                  팀 삭제
-                </button>
-              </div>
+              )}
             </div>
 
             <div className="border-t border-gray-600/30" />

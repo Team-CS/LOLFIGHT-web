@@ -53,7 +53,6 @@ export default function Page() {
   useEffect(() => {
     getMyInviteList()
       .then((response) => {
-        console.log(response.data.data);
         setTeamInvites(response.data.data);
       })
       .catch((error) => {
