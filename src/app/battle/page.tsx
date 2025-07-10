@@ -2,34 +2,29 @@
 
 import { useEffect, useState } from "react";
 import TeamMemberCard from "./components/TeamMemberCard";
-import BattleTeamCard from "./components/BattleTeamCard";
 import { FaSearch } from "react-icons/fa";
 import { Pagination } from "@mui/material";
-import BattleTeamModal from "./components/modals/BattleTeamModal";
 import CreateTeamModal from "./components/modals/CreateTeamModal";
-import MatchCard from "./components/MatchCard";
 import constant from "@/src/common/constant/constant";
 import {
   deleteGuildTeam,
   getMyGuildTeam,
   leaveGuildTeam,
 } from "@/src/api/guild_team.api";
-import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { useRouter } from "next/navigation";
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
-type BattleTeamCardProps = {
-  guildLogo: string;
-  guildName: string;
-  leaderName: string;
-  members: string[];
-  matchTime: string;
-  ladderPoint: number;
-  rank: number;
-  tier: string;
-  onClick?: () => void;
-};
+import BattleRegisterModal from "./components/modals/BattleRegisterModal";
+import { createScrimSlot, getScrimSlotList } from "@/src/api/scrim.api";
+import {
+  CreateScrimSlotDto,
+  ScrimSlotDto,
+  ScrimSlotListDto,
+} from "@/src/common/DTOs/scrim/scrim_slot.dto";
+import CustomAlert from "@/src/common/components/alert/CustomAlert";
+import { BattleTeamCard } from "./components/BattleTeamCard";
+import { BattleTeamModal } from "./components/modals/BattleTeamModal";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
@@ -37,13 +32,17 @@ export default function Page() {
   const router = useRouter();
   const { member } = useMemberStore();
   const { guildTeam, setGuildTeam } = useGuildTeamStore();
+
+  const [scrimSlots, setScrimSlots] = useState<ScrimSlotDto[]>([]);
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(10); // 총 페이지 수
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const scrimSlotsPerPage = 10;
 
-  const [selectedTeam, setSelectedTeam] = useState<null | BattleTeamCardProps>(
-    null
-  );
+  const [selectedTeam, setSelectedTeam] = useState<ScrimSlotDto | null>(null);
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
+  const [isRegisterTeamOpen, setIsRegisterTeamOpen] = useState<boolean>(false);
 
   useEffect(() => {
     getMyGuildTeam()
@@ -54,6 +53,37 @@ export default function Page() {
         console.log(error);
       });
   }, []);
+
+  useEffect(() => {
+    fetchScrimSlots(currentPage);
+  }, [currentPage]);
+
+  const fetchScrimSlots = async (page: number) => {
+    try {
+      const response = await getScrimSlotList(
+        page,
+        scrimSlotsPerPage,
+        searchTerm
+      );
+      const data = response.data.data as ScrimSlotListDto;
+      if (Array.isArray(data.scrimSlotList)) {
+        console.log(data.scrimSlotList);
+        setScrimSlots(data.scrimSlotList);
+      } else {
+        setScrimSlots([]);
+      }
+
+      if (data.pagination) {
+        const { totalPage } = data.pagination;
+        const pages = Math.ceil(totalPage! / scrimSlotsPerPage);
+        setTotalPages(Math.max(1, pages));
+      }
+    } catch (error) {
+      console.log("스크림 대기 팀 목록 조회 실패 : ", error);
+      setScrimSlots([]);
+      setTotalPages(1);
+    }
+  };
 
   const handlePageClick = (
     event: React.ChangeEvent<unknown>,
@@ -103,16 +133,36 @@ export default function Page() {
     );
   };
 
-  const dummyTeams = new Array(10).fill(0).map((_, i) => ({
-    guildLogo: "/LOLFIGHT_NONE_TEXT.png",
-    guildName: `팀 ${i + 1}`,
-    leaderName: "이렐리아",
-    members: ["멤버1", "멤버2", "멤버3", "멤버4", "멤버5"],
-    matchTime: "2025년 02월 05일 15:00시",
-    ladderPoint: 1000 + i * 50, // 예: 1000, 1050, 1100...
-    rank: i + 1, // 예: 1위 ~ 10위
-    tier: ["BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND"][i % 5],
-  }));
+  const handleSumbit = (datetime: string, note: string) => {
+    if (guildTeam) {
+      const date = new Date(datetime);
+      const createScrimSlotDto: CreateScrimSlotDto = {
+        hostTeam: guildTeam,
+        scheduledAt: date,
+        note: note,
+      };
+      createScrimSlot(createScrimSlotDto)
+        .then((response) => {
+          CustomAlert(
+            "success",
+            "스크림 등록",
+            "스크림 등록이 완료 되었습니다! 신청을 기다려 주세요"
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.data.code === "COMMON-005") {
+            CustomAlert("warning", "스크림 등록", "이미 등록되어 있습니다.");
+          } else if (error.response.data.code === "COMMON-010") {
+            CustomAlert(
+              "warning",
+              "스크림 등록",
+              "팀원 5명이 모두 구성되어야 스크림 등록이 가능합니다."
+            );
+          }
+        });
+    }
+  };
 
   return (
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
@@ -244,21 +294,23 @@ export default function Page() {
                 placeholder="검색어 입력 (2자 이상)"
               />
             </div>
-            <button
-              onClick={() => alert("만들어라")}
-              className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
-            >
-              등록
-            </button>
+            {guildTeam && guildTeam.leader.id === member?.id && (
+              <button
+                onClick={() => setIsRegisterTeamOpen(true)}
+                className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+              >
+                등록
+              </button>
+            )}
           </div>
         </div>
 
-        {dummyTeams.length > 0 ? (
+        {scrimSlots.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-[16px] place-items-center">
-            {dummyTeams.map((team, i) => (
+            {scrimSlots.map((team, i) => (
               <BattleTeamCard
                 key={i}
-                {...team}
+                scrimSlot={team}
                 onClick={() => setSelectedTeam(team)}
               />
             ))}
@@ -299,12 +351,19 @@ export default function Page() {
       {/* 모달 렌더링 */}
       {selectedTeam && (
         <BattleTeamModal
-          team={selectedTeam}
+          scrimSlot={selectedTeam}
           onClose={() => setSelectedTeam(null)}
         />
       )}
       {isCreateTeamOpen && (
         <CreateTeamModal onClose={() => setIsCreateTeamOpen(false)} />
+      )}
+
+      {isRegisterTeamOpen && (
+        <BattleRegisterModal
+          onSubmit={handleSumbit}
+          onClose={() => setIsRegisterTeamOpen(false)}
+        />
       )}
     </div>
   );

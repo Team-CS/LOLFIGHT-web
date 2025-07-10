@@ -16,12 +16,12 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(function (payload) {
-  const { title, body } = payload.notification;
-  const notificationOptions = {
-    body,
-    icon: "/LOLFIGHT_NONE_TEXT.png",
-  };
+// messaging.onBackgroundMessage(function (payload) {
+//   const { title, body } = payload.notification;
+//   const notificationOptions = {
+//     body,
+//     icon: "/LOLFIGHT_NONE_TEXT.png",
+//   };
 
-  self.registration.showNotification(title, notificationOptions);
-});
+//   self.registration.showNotification(title, notificationOptions);
+// });

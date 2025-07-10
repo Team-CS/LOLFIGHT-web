@@ -27,3 +27,57 @@ export const getTierStyle = (tier: string | undefined) => {
       return "text-white";
   }
 };
+
+export const calGuildTier = (ladderPoint: number) => {
+  const tierScoreMap = {
+    BRONZE: 1200,
+    SILVER: 1400,
+    GOLD: 1600,
+    PLATINUM: 1900,
+    DIAMOND: 2200,
+    MASTER: 2600,
+    GRANDMASTER: 3000,
+    CHALLENGER: 3500,
+  };
+
+  if (ladderPoint >= tierScoreMap["CHALLENGER"]) {
+    return "CHALLENGER";
+  } else if (ladderPoint >= tierScoreMap["GRANDMASTER"]) {
+    return "GRANDMASTER";
+  } else if (ladderPoint >= tierScoreMap["MASTER"]) {
+    return "MASTER";
+  } else if (ladderPoint >= tierScoreMap["DIAMOND"]) {
+    return "DIAMOND";
+  } else if (ladderPoint >= tierScoreMap["PLATINUM"]) {
+    return "PLATINUM";
+  } else if (ladderPoint >= tierScoreMap["GOLD"]) {
+    return "GOLD";
+  } else if (ladderPoint >= tierScoreMap["SILVER"]) {
+    return "SILVER";
+  } else {
+    return "BRONZE";
+  }
+};
+
+export function formatKoreanDatetime(datetimeStr: string): string {
+  const date = new Date(datetimeStr);
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // 0부터 시작하니까 +1
+  const day = date.getDate();
+
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  const ampm = hours >= 12 ? "오후" : "오전";
+  hours = hours % 12;
+  if (hours === 0) hours = 12; // 12시 표현
+
+  // 두 자리 숫자 만들기
+  const mm = month.toString().padStart(2, "0");
+  const dd = day.toString().padStart(2, "0");
+  const hh = hours.toString().padStart(2, "0");
+  const min = minutes.toString().padStart(2, "0");
+
+  return `${year}-${mm}-${dd} ${ampm} ${hh}시 ${min}분`;
+}

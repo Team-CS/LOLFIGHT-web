@@ -1,28 +1,22 @@
-import { getTierStyle } from "@/src/utils/string/string.util";
+import constant from "@/src/common/constant/constant";
+import { ScrimSlotDto } from "@/src/common/DTOs/scrim/scrim_slot.dto";
+import {
+  calGuildTier,
+  formatKoreanDatetime,
+  getTierStyle,
+} from "@/src/utils/string/string.util";
 
-type BattleTeamCardProps = {
-  guildLogo: string;
-  guildName: string;
-  leaderName: string;
-  members: string[];
-  matchTime: string;
-  ladderPoint: number;
-  rank: number;
-  tier: string;
+interface BattleTeamCardProps {
+  scrimSlot: ScrimSlotDto;
   onClick?: () => void;
-};
+}
 
-export default function BattleTeamCard({
-  guildLogo,
-  guildName,
-  leaderName,
-  members,
-  matchTime,
-  ladderPoint,
-  rank,
-  tier,
-  onClick,
-}: BattleTeamCardProps) {
+export const BattleTeamCard = (props: BattleTeamCardProps) => {
+  const { scrimSlot, onClick } = props;
+  const team = scrimSlot.hostTeam;
+  const guild = scrimSlot.hostTeam.guild;
+  const guildTier = calGuildTier(guild.guildRecord!.recordLadder);
+
   return (
     <div
       className="w-full max-w-[280px] p-[16px] rounded-[12px] shadow-md bg-white dark:bg-brandgray flex flex-col gap-[12px] transform transition-transform duration-200 ease-in-out hover:scale-105"
@@ -31,32 +25,42 @@ export default function BattleTeamCard({
       {/* Guild Info */}
       <div className="flex items-center gap-[12px]">
         <img
-          src={guildLogo}
+          src={`${constant.SERVER_URL}/${scrimSlot.hostTeam.guild.guildIcon}`}
           alt="Guild Logo"
           className="w-[40px] h-[40px] rounded-full object-cover"
         />
         <div className="flex flex-col">
-          <p className="text-[16px] font-semibold">{guildName}</p>
-          <p className="text-[12px] text-gray-400">리더: {leaderName}</p>
+          <p className="text-[16px] font-semibold">{guild.guildName}</p>
+          <p className="text-[12px] text-gray-400">
+            리더: {team.leader.memberName}
+          </p>
         </div>
       </div>
 
       {/* Ladder Info */}
       <div className="text-[13px] dark:text-gray-300 flex flex-col gap-[2px]">
-        <p>🏆 래더 점수: {ladderPoint}점</p>
-        <p>📈 전체 순위: {rank}위</p>
+        <p>🏆 래더 점수: {guild.guildRecord?.recordLadder}점</p>
+        <p>📈 전체 순위: {guild.guildRecord?.recordRanking}위</p>
         <p>
-          💠 길드티어: <span className={getTierStyle(tier)}>{tier}</span>
+          💠 길드티어:{" "}
+          <span className={getTierStyle(guildTier)}>{guildTier}</span>
         </p>
       </div>
 
       {/* Members (간략) */}
       <div className="text-[13px] dark:text-gray-300">
-        👥 멤버: {members.slice(0, 2).join(", ")} 외 {members.length - 2}명
+        👥 멤버:{" "}
+        {team.members
+          .slice(0, 2)
+          .map((m) => m.member.memberName)
+          .join(", ")}{" "}
+        외 {team.members.length - 2}명
       </div>
 
       {/* Match Time */}
-      <div className="mt-auto text-[13px] text-gray-400">🕒 {matchTime}</div>
+      <div className="mt-auto text-[13px] text-gray-400">
+        🕒 {formatKoreanDatetime(scrimSlot.scheduledAt.toString())}
+      </div>
     </div>
   );
-}
+};

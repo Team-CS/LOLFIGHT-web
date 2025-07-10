@@ -5,7 +5,6 @@ import LeagueHeaderComponent from "./league/components/LeagueHeaderComponent";
 import { GuildDto, GuildListResponseDto } from "../common/DTOs/guild/guild.dto";
 import { getGuildList } from "@/src/api/guild.api";
 import { useState, useEffect } from "react";
-import useFirebaseMessaging from "../hooks/useFirebaseMessaging";
 
 export default function Page() {
   const [guilds, setGuilds] = useState<GuildDto[]>([]);

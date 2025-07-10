@@ -3,6 +3,8 @@ import { messaging } from "@/src/firebase/firebase.client";
 import { getToken, Messaging, onMessage } from "firebase/messaging";
 import { useFirebaseStore } from "@/src/common/zustand/firebase.zustand";
 import { updateMemberFCMToken } from "../api/member.api";
+import { useMemberStore } from "../common/zustand/member.zustand";
+import { toast } from "react-toastify";
 
 export default function useFirebaseMessaging() {
   const {
@@ -11,9 +13,10 @@ export default function useFirebaseMessaging() {
     setFcmToken,
     setServiceWorkerRegistered,
   } = useFirebaseStore();
+  const { member } = useMemberStore();
 
   useEffect(() => {
-    if (!messaging) return;
+    if (!member || !messaging) return;
 
     if (!isServiceWorkerRegistered && "serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -42,13 +45,16 @@ export default function useFirebaseMessaging() {
     onMessage(messaging, (payload) => {
       const { title, body } = payload.notification || {};
       if (title && body && document.visibilityState === "visible") {
-        new Notification(title, { body, icon: "/LOLFIGHT_NONE_TEXT.png" });
+        toast.info(
+          <div>
+            <strong>{title}</strong>
+            <p>{body}</p>
+          </div>
+        );
       }
+      // if (title && body && document.visibilityState === "visible") {
+      //   new Notification(title, { body, icon: "/LOLFIGHT_NONE_TEXT.png" });
+      // }
     });
-  }, [
-    fcmToken,
-    isServiceWorkerRegistered,
-    setFcmToken,
-    setServiceWorkerRegistered,
-  ]);
+  }, [member, fcmToken, isServiceWorkerRegistered]);
 }

@@ -116,11 +116,7 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
       };
       guildTeamUpdate(updateGuildTeam)
         .then((response) => {
-          CustomAlert(
-            "success",
-            "팀 수정",
-            "팀 수정이 완료되었습니다. 초대메세지가 전송되었습니다."
-          );
+          CustomAlert("success", "팀 수정", "팀 수정이 완료되었습니다.");
           setGuildTeam(response.data.data);
           onClose();
         })
@@ -198,7 +194,11 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
                     ? "text-brandcolor border-brandcolor dark:border-brandborder"
                     : "text-branddark dark:text-white"
                 }`}
-                onClick={() => setSelectedPosition(pos)}
+                onClick={() => {
+                  if (!assignedMembers[pos]) {
+                    setSelectedPosition(pos);
+                  }
+                }}
               >
                 {assignedMembers[pos] && (
                   <button

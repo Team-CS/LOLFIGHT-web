@@ -12,10 +12,11 @@ import LeaguePodium from "./components/LeaguePodium";
 
 export default function Page() {
   const [guilds, setGuilds] = useState<GuildDto[]>([]);
+  const [topGuilds, setTopGuilds] = useState<GuildDto[]>([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0); // 총 페이지 수
   const [searchTerm, setSearchTerm] = useState<string>(""); // 검색어
-  const [topGuilds, setTopGuilds] = useState<GuildDto[]>([]);
   const guildsPerPage = 10;
 
   useEffect(() => {
