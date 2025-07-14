@@ -16,7 +16,11 @@ import { useRouter } from "next/navigation";
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import BattleRegisterModal from "./components/modals/BattleRegisterModal";
-import { createScrimSlot, getScrimSlotList } from "@/src/api/scrim.api";
+import {
+  applyScrim,
+  createScrimSlot,
+  getScrimSlotList,
+} from "@/src/api/scrim.api";
 import {
   CreateScrimSlotDto,
   ScrimSlotDto,
@@ -25,6 +29,8 @@ import {
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { BattleTeamCard } from "./components/BattleTeamCard";
 import { BattleTeamModal } from "./components/modals/BattleTeamModal";
+import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
+import { CreateScrimApplicationDto } from "@/src/common/DTOs/scrim/scrim_application.dto";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
@@ -67,7 +73,6 @@ export default function Page() {
       );
       const data = response.data.data as ScrimSlotListDto;
       if (Array.isArray(data.scrimSlotList)) {
-        console.log(data.scrimSlotList);
         setScrimSlots(data.scrimSlotList);
       } else {
         setScrimSlots([]);
@@ -158,6 +163,34 @@ export default function Page() {
               "warning",
               "스크림 등록",
               "팀원 5명이 모두 구성되어야 스크림 등록이 가능합니다."
+            );
+          }
+        });
+    }
+  };
+
+  const handleApply = (scrimSlotId: string) => {
+    if (guildTeam) {
+      const createScrimApplicationDto: CreateScrimApplicationDto = {
+        applicationTeam: guildTeam,
+      };
+      applyScrim(scrimSlotId, createScrimApplicationDto)
+        .then((response) => {
+          CustomAlert(
+            "success",
+            "스크림 신청",
+            "스크림 신청이 완료 되었습니다! 상대팀의 응답을 기다려 주세요"
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.data.code === "COMMON-005") {
+            CustomAlert("warning", "스크림 신청", "이미 신청되어 있습니다.");
+          } else if (error.response.data.code === "COMMON-010") {
+            CustomAlert(
+              "warning",
+              "스크림 신청",
+              "팀원 5명이 모두 구성되어야 스크림 신청이 가능합니다."
             );
           }
         });
@@ -353,6 +386,7 @@ export default function Page() {
         <BattleTeamModal
           scrimSlot={selectedTeam}
           onClose={() => setSelectedTeam(null)}
+          onApply={handleApply}
         />
       )}
       {isCreateTeamOpen && (

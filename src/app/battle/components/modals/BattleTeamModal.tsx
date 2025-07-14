@@ -9,16 +9,19 @@ import {
 } from "@/src/utils/string/string.util";
 import constant from "@/src/common/constant/constant";
 import { ScrimSlotDto } from "@/src/common/DTOs/scrim/scrim_slot.dto";
+import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
 
 interface BattleTeamModalProps {
   scrimSlot: ScrimSlotDto;
   onClose: () => void;
+  onApply: (scrimSlotId: string) => void;
 }
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
 export const BattleTeamModal = (props: BattleTeamModalProps) => {
-  const { scrimSlot, onClose } = props;
+  const { scrimSlot, onClose, onApply } = props;
+  const { guildTeam } = useGuildTeamStore();
   const team = scrimSlot.hostTeam;
   const guild = scrimSlot.hostTeam.guild;
   const guildTier = calGuildTier(guild.guildRecord!.recordLadder);
@@ -30,9 +33,9 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white dark:bg-branddark rounded-[12px] p-[32px] max-w-[600px] w-full max-h-[80vh] overflow-y-auto shadow-lg"
+        className="flex flex-col max-w-[600px] w-full bg-white dark:bg-branddark rounded-[12px] p-[32px] gap-[24px] overflow-y-auto shadow-lg"
       >
-        <div className="flex items-center gap-[16px] mb-[24px]">
+        <div className="flex items-center gap-[16px] ">
           <img
             src={`${constant.SERVER_URL}/${scrimSlot.hostTeam.guild.guildIcon}`}
             alt="Guild Logo"
@@ -60,8 +63,8 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
           </div>
         </div>
 
-        <div>
-          <h3 className="text-lg font-semibold mb-2">팀 멤버 목록</h3>
+        <div className="flex flex-col gap-[12px]">
+          <h3 className="text-[18px] font-semibold">팀 멤버 목록</h3>
           <div className="flex flex-col gap-[8px]">
             {POSITIONS.map((pos) => {
               const memberForPos = team.members.find((m) => m.position === pos);
@@ -76,21 +79,33 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
           </div>
         </div>
 
-        <div className="flex justify-between">
-          <button
-            onClick={onClose}
-            className="mt-6 px-4 py-2 bg-primary text-white rounded-md hover:opacity-90"
-          >
-            신청
-          </button>
+        {guildTeam ? (
+          team.guild.id !== guildTeam.guild.id ? (
+            <div className="flex justify-between">
+              <button
+                onClick={() => onApply(scrimSlot.id)}
+                className="px-[16px] py-[8px] bg-primary text-white rounded-md hover:opacity-90"
+              >
+                신청
+              </button>
 
-          <button
-            onClick={onClose}
-            className="mt-6 px-4 py-2 bg-primary text-white rounded-md hover:opacity-90"
-          >
-            닫기
-          </button>
-        </div>
+              <button
+                onClick={onClose}
+                className="px-[16px] py-[8px] bg-primary text-white rounded-md hover:opacity-90"
+              >
+                닫기
+              </button>
+            </div>
+          ) : (
+            <p className="flex justify-center text-[14px] text-gray-400">
+              같은 길드의 팀에게는 제안할수 없습니다.🙄
+            </p>
+          )
+        ) : (
+          <p className="flex justify-center text-[14px] text-gray-400">
+            팀 생성후 신청이 가능합니다.😀
+          </p>
+        )}
       </div>
     </div>
   );

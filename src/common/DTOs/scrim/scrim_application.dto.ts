@@ -7,3 +7,7 @@ export interface ScrimApplicationDto {
   applicationTeam: GuildTeamDto;
   status: string;
 }
+
+export interface CreateScrimApplicationDto {
+  applicationTeam: GuildTeamDto;
+}

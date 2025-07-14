@@ -126,11 +126,13 @@ const ProfileInfoPage = () => {
       </div>
 
       <div className="flex gap-[24px] items-center">
-        <img
-          className="flex w-[150px] h-[150px] rounded-[12px]"
-          src={`${constant.SERVER_URL}/${member!.memberIcon}`}
-          alt={"memberIcon"}
-        />
+        <div className="w-[150px] h-[150px] shrink-0">
+          <img
+            className="w-full h-full rounded-[12px] object-cover object-center block"
+            src={`${constant.SERVER_URL}/${member!.memberIcon}`}
+            alt="memberIcon"
+          />
+        </div>
         <div className="flex flex-col w-full gap-[8px]">
           <div className="flex flex-col gap-[4px]">
             <label>이메일</label>
