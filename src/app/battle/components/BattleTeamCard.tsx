@@ -45,17 +45,17 @@ export const BattleTeamCard = (props: BattleTeamCardProps) => {
           💠 길드티어:{" "}
           <span className={getTierStyle(guildTier)}>{guildTier}</span>
         </p>
+        <p>
+          👥 멤버:{" "}
+          {team.members
+            .slice(0, 1)
+            .map((m) => m.member.memberName)
+            .join(", ")}{" "}
+          외 {team.members.length - 1}명
+        </p>
       </div>
 
       {/* Members (간략) */}
-      <div className="text-[13px] dark:text-gray-300">
-        👥 멤버:{" "}
-        {team.members
-          .slice(0, 2)
-          .map((m) => m.member.memberName)
-          .join(", ")}{" "}
-        외 {team.members.length - 2}명
-      </div>
 
       {/* Match Time */}
       <div className="mt-auto text-[13px] text-gray-400">

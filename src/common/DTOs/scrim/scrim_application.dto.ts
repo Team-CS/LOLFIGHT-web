@@ -11,3 +11,9 @@ export interface ScrimApplicationDto {
 export interface CreateScrimApplicationDto {
   applicationTeam: GuildTeamDto;
 }
+
+export interface ScrimApplicationDecisionDto {
+  id: string;
+  scrimSlot: string;
+  applicationTeam: string;
+}

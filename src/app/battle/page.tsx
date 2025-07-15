@@ -19,6 +19,8 @@ import BattleRegisterModal from "./components/modals/BattleRegisterModal";
 import {
   applyScrim,
   createScrimSlot,
+  deleteScrimSlot,
+  getScrimSlot,
   getScrimSlotList,
 } from "@/src/api/scrim.api";
 import {
@@ -29,7 +31,6 @@ import {
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { BattleTeamCard } from "./components/BattleTeamCard";
 import { BattleTeamModal } from "./components/modals/BattleTeamModal";
-import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
 import { CreateScrimApplicationDto } from "@/src/common/DTOs/scrim/scrim_application.dto";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
@@ -39,6 +40,7 @@ export default function Page() {
   const { member } = useMemberStore();
   const { guildTeam, setGuildTeam } = useGuildTeamStore();
 
+  const [myTeamSlot, setMyTeamSlot] = useState<ScrimSlotDto | null>();
   const [scrimSlots, setScrimSlots] = useState<ScrimSlotDto[]>([]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -59,6 +61,18 @@ export default function Page() {
         console.log(error);
       });
   }, []);
+
+  useEffect(() => {
+    if (!guildTeam) return;
+
+    getScrimSlot(guildTeam.id)
+      .then((response) => {
+        setMyTeamSlot(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [guildTeam]);
 
   useEffect(() => {
     fetchScrimSlots(currentPage);
@@ -87,6 +101,22 @@ export default function Page() {
       console.log("스크림 대기 팀 목록 조회 실패 : ", error);
       setScrimSlots([]);
       setTotalPages(1);
+    }
+  };
+
+  const handleSearch = () => {
+    const trimmed = searchTerm.trim();
+    if (trimmed.length >= 2) {
+      setCurrentPage(1);
+      fetchScrimSlots(1);
+    } else {
+      alert("검색어는 최소 2자 이상 입력해주세요.");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
@@ -148,6 +178,12 @@ export default function Page() {
       };
       createScrimSlot(createScrimSlotDto)
         .then((response) => {
+          const newSlot = response.data.data as ScrimSlotDto;
+
+          setScrimSlots((prevSlots) => [newSlot, ...prevSlots]);
+
+          setMyTeamSlot(newSlot);
+
           CustomAlert(
             "success",
             "스크림 등록",
@@ -184,17 +220,71 @@ export default function Page() {
         })
         .catch((error) => {
           console.log(error);
-          if (error.response.data.code === "COMMON-005") {
+          const code = error?.response?.data?.code;
+          if (code === "COMMON-005") {
             CustomAlert("warning", "스크림 신청", "이미 신청되어 있습니다.");
-          } else if (error.response.data.code === "COMMON-010") {
+          } else if (code === "COMMON-010") {
             CustomAlert(
               "warning",
               "스크림 신청",
               "팀원 5명이 모두 구성되어야 스크림 신청이 가능합니다."
             );
+          } else if (code === "COMMON-003") {
+            CustomAlert("warning", "스크림 신청", "삭제된 스크림 입니다.");
           }
         });
     }
+  };
+
+  const handledeleteSlotClick = () => {
+    const onConfirmDelete = () => {
+      if (myTeamSlot) {
+        deleteScrimSlot(myTeamSlot.id)
+          .then((res) => {
+            setScrimSlots((prevSlots) =>
+              prevSlots.filter((slot) => slot.id !== myTeamSlot.id)
+            );
+
+            setMyTeamSlot(undefined);
+
+            CustomAlert(
+              "success",
+              "스크림 등록 취소",
+              "등록된 스크림이 삭제되었습니다."
+            );
+          })
+          .catch((error) => {
+            console.log(error);
+            const code = error?.response?.data?.code;
+            if (code === "COMMON-002") {
+              CustomAlert(
+                "error",
+                "삭제 불가",
+                "이미 매치가 확정된 스크림은 삭제할 수 없습니다."
+              );
+            } else if (code === "COMMON-006") {
+              CustomAlert(
+                "error",
+                "권한 없음",
+                "스크림을 삭제할 권한이 없습니다."
+              );
+            } else {
+              CustomAlert(
+                "error",
+                "삭제 실패",
+                "스크림 삭제 중 오류가 발생했습니다."
+              );
+            }
+          });
+      }
+    };
+
+    ButtonAlert(
+      "스크림 등록 취소",
+      "등록된 스크림을 삭제하시겠습니까? 대기 중인 신청도 모두 취소됩니다.",
+      "취소",
+      onConfirmDelete
+    );
   };
 
   return (
@@ -223,20 +313,29 @@ export default function Page() {
               </div>
 
               {guildTeam.leader.id === member.id ? (
-                <div className="flex gap-[12px]">
+                myTeamSlot ? (
                   <button
-                    onClick={() => setIsCreateTeamOpen(true)}
+                    onClick={handledeleteSlotClick}
                     className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
                   >
-                    팀 수정
+                    스크림 등록 취소
                   </button>
-                  <button
-                    onClick={handledeleteClick}
-                    className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
-                  >
-                    팀 삭제
-                  </button>
-                </div>
+                ) : (
+                  <div className="flex gap-[12px]">
+                    <button
+                      onClick={() => setIsCreateTeamOpen(true)}
+                      className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                    >
+                      팀 수정
+                    </button>
+                    <button
+                      onClick={handledeleteClick}
+                      className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                    >
+                      팀 삭제
+                    </button>
+                  </div>
+                )
               ) : (
                 <button
                   onClick={handleLeaveClick}
@@ -318,13 +417,18 @@ export default function Page() {
           <p className="text-[18px] font-semibold">🔥 스크림 대기 팀 목록</p>
           <div className="flex items-center gap-[12px]">
             <div className="flex w-[200px] border border-gray-200 rounded-md px-[12px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
-              <div className="flex flex-wrap justify-center content-center dark:bg-black">
+              <div
+                className="flex flex-wrap justify-center content-center dark:bg-black"
+                onClick={handleSearch}
+              >
                 <FaSearch />
               </div>
               <input
                 className="w-full rounded-md bg-gray-100 px-[12px] py-[4px] text-[14px] focus:outline-none dark:bg-black font-normal"
                 type="text"
                 placeholder="검색어 입력 (2자 이상)"
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
             </div>
             {guildTeam && guildTeam.leader.id === member?.id && (

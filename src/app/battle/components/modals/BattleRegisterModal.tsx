@@ -49,13 +49,13 @@ const BattleRegisterModal = ({
         </label>
 
         <label className="flex flex-col mb-[24px] text-brandgray dark:text-brandhover">
-          <span className="mb-[8px]">간단한 노트 (최대 50글자)</span>
+          <span className="mb-[8px]">우리 팀 한마디 (최대 50자)</span>
           <input
             type="text"
             maxLength={50}
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="예) 마지막 한타까지 긴장 풀지 않습니다"
+            placeholder="예) 피드백 주고받는 스크림 원해요"
             className="p-[12px] border border-brandborder rounded-[8px] bg-brandbgcolor dark:bg-brandgray dark:border-branddarkborder focus:outline-none text-[14px] text-brandgray dark:text-brandhover"
           />
         </label>

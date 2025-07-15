@@ -63,6 +63,15 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
           </div>
         </div>
 
+        <div className="flex flex-col gap-[8px]">
+          <h3 className="text-[16px] font-semibold flex items-center gap-[6px]">
+            <span className="text-xl">💬</span> 한 마디
+          </h3>
+          <div className="p-[12px] rounded-md bg-gray-100 dark:bg-[#2f2f2f] text-[14px] text-gray-800 dark:text-gray-200 whitespace-pre-line border border-gray-300 dark:border-gray-600">
+            {scrimSlot.note || "팀 소개가 등록되지 않았습니다."}
+          </div>
+        </div>
+
         <div className="flex flex-col gap-[12px]">
           <h3 className="text-[18px] font-semibold">팀 멤버 목록</h3>
           <div className="flex flex-col gap-[8px]">

@@ -6,17 +6,26 @@ import {
   getMyInviteList,
   rejectGuildTeamInvite,
 } from "@/src/api/guild_team.api";
-import { getScrimApplicationList } from "@/src/api/scrim.api";
+import {
+  acceptScrimApplcation,
+  getScrimApplicationList,
+  rejectScrimApplcation,
+} from "@/src/api/scrim.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { GuildTeamInviteDto } from "@/src/common/DTOs/guild/guild_team/guild_team_invite.dto";
-import { ScrimApplicationDto } from "@/src/common/DTOs/scrim/scrim_application.dto";
+import {
+  ScrimApplicationDecisionDto,
+  ScrimApplicationDto,
+} from "@/src/common/DTOs/scrim/scrim_application.dto";
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { formatKoreanDatetime } from "@/src/utils/string/string.util";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Page() {
   const router = useRouter();
+  const { member } = useMemberStore();
   const { guildTeam, setGuildTeam } = useGuildTeamStore();
   const [tab, setTab] = useState<"team" | "battle">("team");
   const [teamInvites, setTeamInvites] = useState<GuildTeamInviteDto[]>([]);
@@ -65,6 +74,82 @@ export default function Page() {
       })
       .catch((error) => {
         console.log(error);
+      });
+  };
+
+  const handleScrimAccept = (scrimApplicationDto: ScrimApplicationDto) => {
+    setApplications((prev) =>
+      prev.map((app) =>
+        app.id === scrimApplicationDto.id ? { ...app, status: "ACCEPTED" } : app
+      )
+    );
+
+    const acceptApplicationDto: ScrimApplicationDecisionDto = {
+      id: scrimApplicationDto.id,
+      scrimSlot: scrimApplicationDto.scrimSlot.id,
+      applicationTeam: scrimApplicationDto.applicationTeam.id,
+    };
+
+    acceptScrimApplcation(acceptApplicationDto)
+      .then(() => {
+        CustomAlert(
+          "success",
+          "스크림 신청 수락",
+          "스크림 신청을 수락하셨습니다. 해당일시 5분 전에 방 코드가 생성됩니다!"
+        );
+      })
+      .catch((error) => {
+        setApplications((prev) =>
+          prev.map((app) =>
+            app.id === scrimApplicationDto.id
+              ? { ...app, status: "PENDING" }
+              : app
+          )
+        );
+        CustomAlert(
+          "error",
+          "스크림 신청 수락 실패",
+          "잠시 후 다시 시도해주세요."
+        );
+        console.error(error);
+      });
+  };
+
+  const handleScrimReject = (scrimApplicationDto: ScrimApplicationDto) => {
+    setApplications((prev) =>
+      prev.map((app) =>
+        app.id === scrimApplicationDto.id ? { ...app, status: "REJECTED" } : app
+      )
+    );
+
+    const rejectApplicationDto: ScrimApplicationDecisionDto = {
+      id: scrimApplicationDto.id,
+      scrimSlot: scrimApplicationDto.scrimSlot.id,
+      applicationTeam: scrimApplicationDto.applicationTeam.id,
+    };
+
+    rejectScrimApplcation(rejectApplicationDto)
+      .then(() => {
+        CustomAlert(
+          "success",
+          "스크림 신청 거절",
+          "스크림 신청을 거절하셨습니다."
+        );
+      })
+      .catch((error) => {
+        setApplications((prev) =>
+          prev.map((app) =>
+            app.id === scrimApplicationDto.id
+              ? { ...app, status: "PENDING" }
+              : app
+          )
+        );
+        CustomAlert(
+          "error",
+          "스크림 신청 거절 실패",
+          "잠시 후 다시 시도해주세요."
+        );
+        console.error(error);
       });
   };
 
@@ -179,42 +264,41 @@ export default function Page() {
                   }`}
                 >
                   <p>
-                    팀{" "}
-                    <strong>
-                      {opponentTeam.leader?.memberName ?? "상대팀"}
-                    </strong>{" "}
-                    과(와){" "}
                     <strong>
                       {formatKoreanDatetime(
                         application.scrimSlot.scheduledAt.toString()
                       )}
-                    </strong>{" "}
-                    에 스크림이{" "}
+                    </strong>
+                    에{" "}
+                    <strong>
+                      {opponentTeam.leader?.memberName ?? "상대팀"}
+                    </strong>
+                    {` 팀과의 스크림이 `}
                     {application.status === "ACCEPTED"
-                      ? "생성되었습니다"
+                      ? "확정되었습니다."
                       : application.status === "REJECTED"
-                      ? "거절되었습니다"
-                      : "신청 대기 중입니다"}
-                    .
+                      ? "거절되었습니다."
+                      : "신청 대기 중입니다."}
                   </p>
 
-                  {/* ✅ 신청 받은 사람만 수락/거절 버튼 노출 */}
-                  {isRecipient && application.status === "PENDING" && (
-                    <div className="flex gap-[12px] mt-[8px]">
-                      <button
-                        className="px-[16px] py-[8px] bg-brandcolor text-white rounded-md hover:opacity-90 transition"
-                        // onClick={() => handleBattleAccept(application.id)}
-                      >
-                        수락
-                      </button>
-                      <button
-                        className="px-[16px] py-[8px] border border-gray-300 rounded-md hover:bg-gray-100 transition"
-                        // onClick={() => handleBattleDecline(application.id)}
-                      >
-                        거절
-                      </button>
-                    </div>
-                  )}
+                  {isRecipient &&
+                    application.status === "PENDING" &&
+                    guildTeam.leader.id === member?.id && (
+                      <div className="flex gap-[12px] mt-[8px]">
+                        <button
+                          className="px-[16px] py-[8px] bg-brandcolor text-white rounded-md hover:opacity-90 transition"
+                          onClick={() => handleScrimAccept(application)}
+                        >
+                          수락
+                        </button>
+                        <button
+                          className="px-[16px] py-[8px] border border-gray-300 rounded-md hover:bg-gray-100 transition"
+                          onClick={() => handleScrimReject(application)}
+                        >
+                          거절
+                        </button>
+                      </div>
+                    )}
                 </div>
               );
             })
