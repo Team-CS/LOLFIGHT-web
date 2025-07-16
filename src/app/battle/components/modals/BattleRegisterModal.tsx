@@ -35,7 +35,7 @@ const BattleRegisterModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <p className="font-semibold text-[20px] mb-[16px] text-brandgray dark:text-brandhover">
-          내전 대기 등록
+          스크림 대기 등록
         </p>
 
         <label className="flex flex-col mb-[16px] text-brandgray dark:text-brandhover">

@@ -179,7 +179,7 @@ export default function Page() {
           aria-selected={tab === "battle"}
           role="tab"
         >
-          내전 알림
+          스크림 알림
         </button>
       </div>
 
@@ -242,7 +242,7 @@ export default function Page() {
         <div className="flex flex-col gap-[16px]">
           {applications.length === 0 ? (
             <p className="text-center text-gray-400 py-[40px]">
-              내전 알림이 없습니다.
+              스크림 알림이 없습니다.
             </p>
           ) : (
             applications.map((application) => {

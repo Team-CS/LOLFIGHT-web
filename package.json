@@ -23,6 +23,7 @@
     "@types/jwt-decode": "^3.1.0",
     "@types/react-syntax-highlighter": "^15.5.11",
     "axios": "^1.6.2",
+    "dayjs": "^1.11.13",
     "express": "^4.19.2",
     "firebase": "^11.10.0",
     "framer-motion": "^10.18.0",

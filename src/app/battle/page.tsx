@@ -18,8 +18,10 @@ import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import BattleRegisterModal from "./components/modals/BattleRegisterModal";
 import {
   applyScrim,
+  cancelScrim,
   createScrimSlot,
   deleteScrimSlot,
+  getScrimApplicationList,
   getScrimSlot,
   getScrimSlotList,
 } from "@/src/api/scrim.api";
@@ -31,7 +33,11 @@ import {
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { BattleTeamCard } from "./components/BattleTeamCard";
 import { BattleTeamModal } from "./components/modals/BattleTeamModal";
-import { CreateScrimApplicationDto } from "@/src/common/DTOs/scrim/scrim_application.dto";
+import {
+  CreateScrimApplicationDto,
+  ScrimApplicationDto,
+} from "@/src/common/DTOs/scrim/scrim_application.dto";
+import MatchCard from "./components/MatchCard";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
@@ -42,6 +48,7 @@ export default function Page() {
 
   const [myTeamSlot, setMyTeamSlot] = useState<ScrimSlotDto | null>();
   const [scrimSlots, setScrimSlots] = useState<ScrimSlotDto[]>([]);
+  const [applications, setApplications] = useState<ScrimApplicationDto[]>([]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(10); // 총 페이지 수
@@ -56,6 +63,13 @@ export default function Page() {
     getMyGuildTeam()
       .then((response) => {
         setGuildTeam(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    getScrimApplicationList()
+      .then((response) => {
+        setApplications(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -137,15 +151,45 @@ export default function Page() {
           })
           .catch((error) => {
             console.log(error);
+            const code = error?.response?.data?.code;
+            if (code === "COMMON-002") {
+              CustomAlert(
+                "warning",
+                "길드 팀 삭제",
+                "대기중인 스크림이 없어야 팀 삭제가 가능합니다."
+              );
+            }
           });
       }
     };
+
+    if (applications.length > 0) {
+      CustomAlert(
+        "warning",
+        "길드 팀 삭제",
+        "대기중인 스크림이 없어야 팀 삭제가 가능합니다."
+      );
+      return;
+    }
+
     ButtonAlert(
       "길드 팀 삭제",
       `길드 팀을 삭제하시겠습니까? 팀은 해체되며 팀의 대기록목은 제거됩니다.`,
       "삭제",
       deleteTeam
     );
+  };
+
+  const handleUpdateClick = () => {
+    if (applications.length > 0) {
+      CustomAlert(
+        "warning",
+        "길드 팀 수정",
+        "대기중인 스크림이 없어야 팀 수정이 가능합니다."
+      );
+      return;
+    }
+    setIsCreateTeamOpen(true);
   };
 
   const handleLeaveClick = () => {
@@ -162,7 +206,7 @@ export default function Page() {
     };
     ButtonAlert(
       "길드 팀 탈퇴",
-      "길드 팀을 탈퇴하시겠습니따? 팀의 대기목록이 제거됩니다",
+      "길드 팀을 탈퇴하시겠습니까?\n 팀의 대기목록과 대기중인 스크림이 제거됩니다",
       "탈퇴",
       leaveTeam
     );
@@ -192,9 +236,10 @@ export default function Page() {
         })
         .catch((error) => {
           console.log(error);
-          if (error.response.data.code === "COMMON-005") {
+          const code = error.response.data.code;
+          if (code === "COMMON-005") {
             CustomAlert("warning", "스크림 등록", "이미 등록되어 있습니다.");
-          } else if (error.response.data.code === "COMMON-010") {
+          } else if (code === "COMMON-010") {
             CustomAlert(
               "warning",
               "스크림 등록",
@@ -231,6 +276,12 @@ export default function Page() {
             );
           } else if (code === "COMMON-003") {
             CustomAlert("warning", "스크림 신청", "삭제된 스크림 입니다.");
+          } else if (code === "COMMON-002") {
+            CustomAlert(
+              "warning",
+              "스크림 신청",
+              "해당 팀은 이미 스크림을 등록한 상태입니다.\n 다른 팀에 신청할 수 없습니다."
+            );
           }
         });
     }
@@ -287,6 +338,33 @@ export default function Page() {
     );
   };
 
+  const handleCancelScrim = (scrimSlotId: string) => {
+    const onConfirmCancel = () => {
+      if (guildTeam) {
+        cancelScrim(scrimSlotId, guildTeam?.id)
+          .then((response) => {
+            setApplications((prev) =>
+              prev.filter((app) => app.scrimSlot.id !== scrimSlotId)
+            );
+          })
+          .catch((error) => {
+            console.log(error);
+            const code = error?.response?.data?.code;
+            if (code === "COMMON-003") {
+              CustomAlert("error", "취소 실패", "존재하지 않는 스크림 입니다.");
+            }
+          });
+      }
+    };
+
+    ButtonAlert(
+      "스크림  취소",
+      "진행중인 스크림을 취소하시겠습니까? 대기중인 스크림을 취소하면 래더점수가 하락합니다.",
+      "취소",
+      onConfirmCancel
+    );
+  };
+
   return (
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
       {guildTeam && member ? (
@@ -323,7 +401,7 @@ export default function Page() {
                 ) : (
                   <div className="flex gap-[12px]">
                     <button
-                      onClick={() => setIsCreateTeamOpen(true)}
+                      onClick={handleUpdateClick}
                       className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
                     >
                       팀 수정
@@ -370,32 +448,34 @@ export default function Page() {
           {/* 내전 대기 또는 진행중 */}
           <div className="flex flex-col w-[50%] gap-[12px]">
             <p className="text-[18px] font-semibold ">
-              📜 내전 일정 및 최근 기록
+              📜 스크림 일정 및 최근 기록
             </p>
             <div className="flex flex-col h-full gap-[12px] overflow-y-auto">
-              {/* <MatchCard
-                opponent="다리우스의형제들"
-                date="2025년 7월 5일 21:00"
-                status="upcoming"
-                resultText="대기중"
-              />
-              <MatchCard
-                opponent="모데카이저의철권"
-                date="2025년 6월 30일"
-                status="finished"
-                resultText="승리"
-              />
-              <MatchCard
-                opponent="모데카이저의철권"
-                date="2025년 6월 30일"
-                status="finished"
-                resultText="패배"
-              /> */}
+              {applications
+                .filter((data) => {
+                  const myTeamId = guildTeam?.id;
+                  const isRecipient = myTeamId === data.applicationTeam?.id;
+
+                  if (data.status === "PENDING" && !isRecipient) {
+                    return false;
+                  }
+
+                  return ["PENDING", "ACCEPTED", "CLOSED"].includes(
+                    data.status
+                  );
+                })
+                .map((data) => (
+                  <MatchCard
+                    key={data.id}
+                    scrim={data}
+                    onCancel={handleCancelScrim}
+                  />
+                ))}
             </div>
           </div>
         </div>
       ) : (
-        // ✅ 팀이 없을 때
+        // 팀이 없을 때
         <div className="flex flex-col items-center justify-center h-[470px] gap-[16px] py-[60px] rounded-[12px] dark:bg-branddark shadow-md">
           <p className="text-[14px] text-gray-400">
             😓 아직 팀에 가입하지 않았습니다
@@ -454,9 +534,9 @@ export default function Page() {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center gap-[16px] py-[60px] rounded-[12px] dark:bg-branddark shadow-md text-gray-400">
-            <p className="text-[18px]">😓 내전을 원하는 팀이 없습니다.</p>
+            <p className="text-[18px]">😓 스크림 대기 팀이 없습니다.</p>
             <p className="text-[14px] text-center">
-              새로운 팀들이 내전을 신청하면 여기서 확인할 수 있습니다.
+              새로운 팀들이 스크림을 등록하면 여기서 확인할 수 있습니다.
             </p>
           </div>
         )}

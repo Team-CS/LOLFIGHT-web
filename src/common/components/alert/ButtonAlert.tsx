@@ -10,7 +10,7 @@ interface Props {
 const ButtonAlert = ({ title, text, confirmButtonText, onConfirm }: Props) => {
   Swal.fire({
     title,
-    text,
+    html: text.replace(/\n/g, "<br/>"),
     showCancelButton: true,
     confirmButtonText: confirmButtonText,
   }).then((result) => {

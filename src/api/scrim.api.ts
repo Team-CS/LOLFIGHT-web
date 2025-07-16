@@ -88,3 +88,16 @@ export const deleteScrimSlot = async (
 
   return await deleteData(url);
 };
+
+export const cancelScrim = async (
+  scrimSlotId: string,
+  guildTeamId: string
+): Promise<AxiosResponse<ResponseDto<void>>> => {
+  let url = `${baseUrl}/cancel`;
+  const data = {
+    scrimSlotId: scrimSlotId,
+    guildTeamId: guildTeamId,
+  };
+
+  return await patchData(url, data);
+};

@@ -10,6 +10,7 @@ import {
 import constant from "@/src/common/constant/constant";
 import { ScrimSlotDto } from "@/src/common/DTOs/scrim/scrim_slot.dto";
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
+import { useMemberStore } from "@/src/common/zustand/member.zustand";
 
 interface BattleTeamModalProps {
   scrimSlot: ScrimSlotDto;
@@ -22,6 +23,7 @@ const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 export const BattleTeamModal = (props: BattleTeamModalProps) => {
   const { scrimSlot, onClose, onApply } = props;
   const { guildTeam } = useGuildTeamStore();
+  const { member } = useMemberStore();
   const team = scrimSlot.hostTeam;
   const guild = scrimSlot.hostTeam.guild;
   const guildTier = calGuildTier(guild.guildRecord!.recordLadder);
@@ -57,7 +59,7 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
               <span className={getTierStyle(guildTier)}>{guildTier}</span>
             </p>
             <p className="text-[14px] dark:text-gray-300">
-              🕒 내전 일시:{" "}
+              🕒 스크림 일시:{" "}
               {formatKoreanDatetime(scrimSlot.scheduledAt.toString())}
             </p>
           </div>
@@ -91,13 +93,18 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
         {guildTeam ? (
           team.guild.id !== guildTeam.guild.id ? (
             <div className="flex justify-between">
-              <button
-                onClick={() => onApply(scrimSlot.id)}
-                className="px-[16px] py-[8px] bg-primary text-white rounded-md hover:opacity-90"
-              >
-                신청
-              </button>
-
+              {guildTeam.leader.id === member?.id ? (
+                <button
+                  onClick={() => onApply(scrimSlot.id)}
+                  className="px-[16px] py-[8px] bg-primary text-white rounded-md hover:opacity-90"
+                >
+                  신청
+                </button>
+              ) : (
+                <p className="text-[14px] text-gray-400 flex items-center">
+                  팀 리더만 신청할 수 있습니다.
+                </p>
+              )}
               <button
                 onClick={onClose}
                 className="px-[16px] py-[8px] bg-primary text-white rounded-md hover:opacity-90"
@@ -107,12 +114,12 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
             </div>
           ) : (
             <p className="flex justify-center text-[14px] text-gray-400">
-              같은 길드의 팀에게는 제안할수 없습니다.🙄
+              같은 길드의 팀에게는 제안할 수 없습니다.🙄
             </p>
           )
         ) : (
           <p className="flex justify-center text-[14px] text-gray-400">
-            팀 생성후 신청이 가능합니다.😀
+            팀 생성 후 신청이 가능합니다.😀
           </p>
         )}
       </div>

@@ -11,7 +11,7 @@ const CustomAlert = ({ icon, title, text }: Props) => {
   Swal.fire({
     icon,
     title,
-    text,
+    html: text.replace(/\n/g, "<br/>"),
     customClass: {
       container: "swal-container",
     },
