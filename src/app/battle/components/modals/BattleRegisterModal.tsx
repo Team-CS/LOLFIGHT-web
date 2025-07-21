@@ -21,6 +21,14 @@ const BattleRegisterModal = ({
       alert("노트는 최대 50글자까지 입력 가능합니다.");
       return;
     }
+    const selectedTime = new Date(datetime);
+    const now = new Date();
+
+    if (selectedTime < now) {
+      alert("선택한 일시는 현재 시간 이후여야 합니다.");
+      return;
+    }
+
     onSubmit(datetime, note);
     onClose();
   };

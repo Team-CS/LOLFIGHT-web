@@ -103,7 +103,7 @@ const WysiwygEditor = () => {
           .filter((link) => link.href !== "/")
           .map((link) => {
             if (link.title === category) {
-              router.push(link.href + "/" + response.data.data.id);
+              router.replace(link.href + "/" + response.data.data.id);
             }
           });
         return;

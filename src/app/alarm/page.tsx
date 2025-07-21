@@ -95,7 +95,7 @@ export default function Page() {
         CustomAlert(
           "success",
           "스크림 신청 수락",
-          "스크림 신청을 수락하셨습니다. 해당일시 5분 전에 방 코드가 생성됩니다!"
+          "스크림 신청을 수락하셨습니다. \n 해당일시 5분 전에 방 코드가 생성됩니다!"
         );
       })
       .catch((error) => {

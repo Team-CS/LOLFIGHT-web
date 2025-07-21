@@ -169,7 +169,7 @@ export default function Page() {
             "롤로세움",
             "롤로세움 투기장 작성이 완료되었습니다"
           );
-          router.push("/judgment");
+          router.replace("/judgment");
         })
         .catch((error) => {
           console.log(error);
