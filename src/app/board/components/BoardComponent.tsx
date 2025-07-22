@@ -92,7 +92,11 @@ const BoardComponent = (props: BoardComponentProps) => {
       <div className="flex flex-col gap-[2px] py-[8px]">
         {posts.length > 0 ? (
           posts.map((post) => (
-            <BoardInfoComponent key={post.id} data={post} slug={props.slug} />
+            <BoardInfoComponent
+              key={`${post.postBoard}-${post.id}`}
+              data={post}
+              slug={props.slug}
+            />
           ))
         ) : (
           <div className="w-full text-center text-gray-400 py-[20px] text-[14px]">

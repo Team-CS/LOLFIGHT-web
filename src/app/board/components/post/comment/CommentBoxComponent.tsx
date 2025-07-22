@@ -5,9 +5,7 @@ import { CommentDto } from "@/src/common/DTOs/board/comment.dto";
 import { writeReplyComment } from "@/src/api/comment.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
-import Image from "next/image";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
-import { findMemberByName } from "@/src/api/member.api";
 
 interface CommentBoxComponentProps {
   data: PostDto;

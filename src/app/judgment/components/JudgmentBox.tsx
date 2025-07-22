@@ -2,8 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import React from "react";
-import Image from "next/image";
-import constant from "@/src/common/constant/constant";
 import { JudgmentDto } from "@/src/common/DTOs/judgment/judgment.dto";
 import JudgmentDataCard from "./JudgmentDataCard";
 

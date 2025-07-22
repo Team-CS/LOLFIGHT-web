@@ -81,3 +81,16 @@ export function formatKoreanDatetime(datetimeStr: string): string {
 
   return `${year}-${mm}-${dd} ${ampm} ${hh}시 ${min}분`;
 }
+
+export function convertBoardNameToCode(boardName: string): string {
+  switch (boardName.trim()) {
+    case "자유":
+      return "free";
+    case "싸움":
+      return "fight";
+    case "길드원 모집":
+      return "rgm";
+    default:
+      return "unknown"; // 매칭되는 게 없을 경우 기본값
+  }
+}
