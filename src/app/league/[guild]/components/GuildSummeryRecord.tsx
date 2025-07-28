@@ -9,11 +9,11 @@ interface Props {
 
 const GuildSummeryRecord = (props: Props) => {
   return (
-    <div className="h-full w-full flex flex-col p-3 rounded bg-white dark:bg-dark">
-      <p className="font-extrabold">최근 매치</p>
+    <div className="h-full w-full flex flex-col p-[12px] rounded bg-white dark:bg-dark border dark:bg-dark dark:border-gray-700">
+      <p className="font-extrabold">매치 통계</p>
 
-      <div className="flex p-3 items-center">
-        <div className="flex w-400px items-center gap-10">
+      <div className="flex py-[8px] px-[12px] items-center">
+        <div className="flex w-[400px] items-center justify-around">
           <div style={{ width: "140px", height: "140px" }}>
             <CircularProgressbar
               value={
@@ -29,11 +29,17 @@ const GuildSummeryRecord = (props: Props) => {
               }
               strokeWidth={8}
               text={
-                (
+                isNaN(
                   (props.guildVictory! /
                     (props.guildDefeat! + props.guildVictory!)) *
-                  100
-                ).toFixed(2) + "%"
+                    100
+                )
+                  ? "기록없음"
+                  : (
+                      (props.guildVictory! /
+                        (props.guildDefeat! + props.guildVictory!)) *
+                      100
+                    ).toFixed(2) + "%"
               }
               styles={{
                 path: {
@@ -41,19 +47,19 @@ const GuildSummeryRecord = (props: Props) => {
                 },
                 text: {
                   fill: "currentcolor",
-                  fontSize: "18px",
-                  fontWeight: "600",
+                  fontSize: "16px",
+                  fontWeight: "500",
                 },
               }}
               className="dark:text-white"
             />
           </div>
-          <div className="flex flex-col items-center pl-6">
-            <p className="text-22px">
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-[22px]">
               {props.guildVictory! + props.guildDefeat!}전 {props.guildVictory}
               승 {props.guildDefeat}패
             </p>
-            <p className="text-red-500 text-22px p-2">
+            <p className="text-red-500 text-[22px]">
               {isNaN(
                 (props.guildVictory! /
                   (props.guildDefeat! + props.guildVictory!)) *
@@ -66,15 +72,10 @@ const GuildSummeryRecord = (props: Props) => {
                     100
                   ).toFixed(2)}%)`}
             </p>
-            {/* <p className="text-sky-500 font-extrabold text-16px">
-              0 연승중(더미데이터)
-            </p> */}
           </div>
         </div>
-        <div className="w-400px h-40 flex flex-col border-l-2 pl-10">
-          {/* <GuildSummeryBox />
-          <GuildSummeryBox />
-          <GuildSummeryBox /> */}
+        <div className="flex flex-col w-[400px] items-center justify-center">
+          <p className="font-light text-[14px]">준비중입니다</p>
         </div>
       </div>
     </div>

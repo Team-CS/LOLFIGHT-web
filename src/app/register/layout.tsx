@@ -16,7 +16,7 @@ export default function RegisterLayout({
 }) {
   return (
     <>
-      <div className="font-['Pretendard']">
+      <div className="">
         <div className="w-full h-screen">
           <div className="mx-auto w-1200px">
             <div className="flex justify-center items-center pt-24 mb-8">

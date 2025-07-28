@@ -6,46 +6,49 @@ interface Props {
   guildLength: number;
   searchTerm?: string;
   setSearchTerm?: React.Dispatch<React.SetStateAction<string>>;
+  onSearch?: () => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const LeagueHeaderComponent = ({
   guildLength,
   searchTerm,
   setSearchTerm,
+  onSearch,
+  onKeyDown,
 }: Props) => {
   const pathName = usePathname();
   const isSearchVisible = pathName === "/";
   return (
     <>
       <div className="flex items-center">
-        <div className="flex w-50px rounded rounded-full bg-white text-black items-center p-1">
-          <p className="pl-1 pr-1 font-extrabold text-sm">공식</p>
-          <div className="flex w-8px h-8px bg-green-500 rounded-full" />
+        <div className="flex flex gap-[8px] items-center">
+          <div className="flex rounded rounded-[12px] bg-white shadow-md text-black items-center p-[8px] gap-[8px]">
+            <p className="font-extrabold text-sm">공식</p>
+            <div className="flex w-8px h-8px bg-green-500 rounded-full" />
+          </div>
+          <p className="text-[14px] font-light">
+            {guildLength}개의 길드 참여중
+          </p>
         </div>
-        <div className="pl-5">{guildLength}개의 길드 참여중</div>
         {!isSearchVisible && (
           <div className="flex justify-center ml-auto">
-            <div className="bg-gray-100 w-12 h-10 flex flex-wrap justify-center content-center dark:bg-dark rounded-l-md">
+            <div
+              className="bg-gray-100 p-[12px] flex flex-wrap justify-center content-center dark:bg-dark rounded-l-md"
+              onClick={onSearch}
+            >
               <FaSearch />
             </div>
             <input
-              className="w-full h-10 px-2 bg-gray-100 focus:outline-none dark:bg-dark font-normal rounded-r-md"
+              className="w-full px-[12px] py-[8px] bg-gray-100 focus:outline-none dark:bg-dark font-normal rounded-r-md"
               type="text"
               placeholder="길드 이름 검색"
               value={searchTerm}
               onChange={(e) => setSearchTerm!(e.target.value)}
+              onKeyDown={onKeyDown}
             />
           </div>
         )}
-      </div>
-      <div className="w-full h-30px flex justify-around items-center bg-brandcolor text-white dark:bg-dark font-thin mt-2 rounded-t">
-        <div className="w-220px text-center">길드이름</div>
-        <div className="w-1/4 text-center">길드소개</div>
-        <div className="w-1/12 text-center">길드원</div>
-        <div className="w-1/12 text-center">승</div>
-        <div className="w-1/12 text-center">패</div>
-        <div className="w-1/12 text-center">티어</div>
-        <div className="w-1/6 text-center">길드장</div>
       </div>
     </>
   );

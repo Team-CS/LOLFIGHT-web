@@ -1,23 +1,39 @@
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import { MemberDTO } from "@/src/common/DTOs/member/member.dto";
-import { updateMemberIcon } from "@/src/api/member.api";
+import {
+  updateMemberIcon,
+  updateNickname,
+  updatePassword,
+} from "@/src/api/member.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
+import { ProfileIconModal } from "./modals/ProfileIconModal";
+import { ProfilePasswordModal } from "./modals/profilePasswordModal";
+import { removeCookie } from "@/src/utils/cookie/cookie";
+import { useRouter } from "next/navigation";
 
 const ProfileInfoPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+  const { member, setMember } = useMemberStore();
+  const [openModal, setOpenModal] = useState<ModalType>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>("");
-  const { member } = useMemberStore();
+  const [nickname, setNickname] = useState<string>("");
 
-  const handleChangeIconClick = () => {
-    setIsModalOpen(true);
+  type ModalType = "profileIcon" | "profilePassword" | null;
+
+  useEffect(() => {
+    if (member) {
+      setNickname(member.memberName);
+    }
+  }, [member]);
+
+  const handleOpenModal = (modal: ModalType) => {
+    setOpenModal(modal);
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    setOpenModal(null);
     setSelectedImage(null);
     setPreviewImage("");
   };
@@ -34,18 +50,19 @@ const ProfileInfoPage = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleIconSubmit = () => {
     if (selectedImage) {
-      updateMemberIcon(member!, selectedImage)
+      updateMemberIcon(selectedImage)
         .then((response) => {
           CustomAlert("success", "프로필 사진 변경", "변경이 완료되었습니다");
+          setMember(response.data.data);
           setSelectedImage(null);
           setPreviewImage("");
         })
         .catch((error) => {
           CustomAlert("error", "프로필 사진 변경", "변경 실패");
         });
-      setIsModalOpen(false);
+      setOpenModal(null);
     } else {
       CustomAlert(
         "warning",
@@ -55,95 +72,153 @@ const ProfileInfoPage = () => {
     }
   };
 
+  const handlePasswordSubmit = (
+    currentPassword: string,
+    newPassword: string
+  ) => {
+    updatePassword(currentPassword, newPassword)
+      .then((response) => {
+        CustomAlert(
+          "success",
+          "비밀번호 변경",
+          "비밀번호 변경이 완료되었습니다"
+        );
+        setMember(null);
+        removeCookie("accessToken");
+        removeCookie("refreshToken");
+
+        router.replace("/register");
+      })
+      .catch((error) => {
+        CustomAlert("error", "비밀번호 변경", "비밀번호를 확인해주세요");
+      });
+  };
+
+  const handleNicknameSubmit = () => {
+    updateNickname(nickname)
+      .then((response) => {
+        setMember(response.data.data);
+        CustomAlert("success", "닉네임 변경", "닉네임 변경이 완료되었습니다");
+      })
+      .catch((error) => {
+        CustomAlert("error", "닉네임 변경", "이미 존재하는 닉네임 입니다");
+      });
+  };
+
   return (
-    <div className="w-1200px h-full mx-auto pt-4">
+    <div className="flex flex-col p-[16px] gap-[24px]">
       <div className="flex justify-between items-center pb-5 border-b border-gray-200">
-        <p className="text-xl font-normal">내 정보</p>
-        <button
-          className="bg-brandcolor text-white px-4 py-2 rounded hover:bg-brandhover"
-          onClick={handleChangeIconClick}
-        >
-          프로필 사진 변경
-        </button>
+        <p className="text-[24px] font-bold">내 정보</p>
+        <div className="flex gap-[12px]">
+          <button
+            className="bg-brandcolor text-white px-4 py-2 rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
+            onClick={() => handleOpenModal("profileIcon")}
+          >
+            프로필 사진 변경
+          </button>
+          <button
+            className="bg-brandcolor text-white px-4 py-2 rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
+            onClick={() => handleOpenModal("profilePassword")}
+          >
+            비밀번호 변경
+          </button>
+        </div>
       </div>
 
-      <div className="flex mt-4">
-        <div className="w-[128px] h-[128px] my-auto">
-          <Image
-            className="w-full h-full rounded-full mr-[20px]"
-            width={70}
-            height={70}
+      <div className="flex gap-[24px] items-center">
+        <div className="w-[150px] h-[150px] shrink-0">
+          <img
+            className="w-full h-full rounded-[12px] object-cover object-center block"
             src={`${constant.SERVER_URL}/${member!.memberIcon}`}
-            alt={"memberIcon"}
-            unoptimized
+            alt="memberIcon"
           />
         </div>
-        <div className="info-container flex-col ml-8">
-          <div className="flex items-center">
-            <p className="font-bold py-2 pr-8">이메일</p>
-            <p>{member!.memberId}</p>
+        <div className="flex flex-col w-full gap-[8px]">
+          <div className="flex flex-col gap-[4px]">
+            <label>이메일</label>
+            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] w-full cursor-not-allowed">
+              {member!.memberId}
+            </div>
           </div>
-          <div className="flex items-center">
-            <p className="font-bold py-2 pr-8">닉네임</p>
-            {member!.memberName}
-          </div>
-          <div className="flex items-center">
-            <p className="font-bold py-2 pr-8">가입일</p>
-            {member!.createdAt?.toString().split("T")[0]}
-          </div>
-        </div>
-      </div>
 
-      <p className="pb-5 text-xl font-normal border-b border-gray-200 mt-8">
-        계정 정보
-      </p>
-      <div className="flex pt-4 pb-16">
-        <div className="flex flex-col">
-          <div className="flex items-center">
-            <p className="font-bold py-2 pr-8">인게임 닉네임</p>
-            {member!.memberGame?.gameName}
-          </div>
-          <div className="flex items-center">
-            <p className="font-bold py-2 pr-24">티어</p>
-            {member!.memberGame?.gameTier}
-          </div>
-        </div>
-      </div>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-5 dark:text-black">
-            <h2 className="text-lg font-bold mb-4">프로필 사진 변경</h2>
-            <div className="flex justify-center mb-4">
-              {selectedImage === null ? (
-                <img src="http://via.placeholder.com/50x50" alt="" />
-              ) : (
-                <img src={previewImage} alt="프로필 사진 미리보기" width={50} />
+          <div className="flex flex-col gap-[4px]">
+            <label>닉네임</label>
+            <div className="flex gap-[12px]">
+              <input
+                type="text"
+                placeholder="10글자 이내로 작성해주세요"
+                maxLength={10}
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              {member?.memberName !== nickname && (
+                <button
+                  className="min-w-[100px] bg-brandcolor rounded text-white px-[14px] py-[8px] hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
+                  onClick={handleNicknameSubmit}
+                >
+                  확인
+                </button>
               )}
             </div>
+          </div>
 
-            <input
-              type="file"
-              onChange={handleImageChange}
-              accept="image/*"
-              className="mb-4"
-            />
-            <div className="flex justify-end mt-4">
-              <button
-                className="bg-gray-300 text-black px-4 py-2 rounded mr-2"
-                onClick={handleCloseModal}
-              >
-                취소
-              </button>
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={handleSubmit}
-              >
-                등록
-              </button>
+          <div className="flex flex-col gap-[4px]">
+            <label>가입일</label>
+            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed">
+              {member!.createdAt?.toString().split("T")[0]}
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-between items-center pb-5 border-b border-gray-200">
+        <p className="text-[24px] font-bold">Riot 계정 정보</p>
+      </div>
+
+      <div className="flex flex-col gap-[24px]">
+        <div className="flex flex-col gap-[4px]">
+          <label>인게임 닉네임</label>
+          <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed">
+            {member!.memberGame?.gameName ?? "등록되지 않음"}
+          </div>
+        </div>
+        <div className="flex flex-col gap-[4px]">
+          <label>티어</label>
+          <div className="flex items-center bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] gap-[12px] cursor-not-allowed">
+            {member?.memberGame?.gameTier ? (
+              <>
+                <img
+                  src={`${constant.SERVER_URL}/public/rank/${
+                    member.memberGame.gameTier.split(" ")[0]
+                  }.png`}
+                  alt="Tier"
+                  width={25}
+                  height={25}
+                />
+                {member.memberGame.gameTier}
+              </>
+            ) : (
+              <span>등록되지 않음</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {openModal === "profileIcon" && (
+        <ProfileIconModal
+          selectedImage={selectedImage}
+          previewImage={previewImage}
+          onClose={handleCloseModal}
+          onImageChange={handleImageChange}
+          onSubmit={handleIconSubmit}
+        />
+      )}
+      {openModal === "profilePassword" && (
+        <ProfilePasswordModal
+          onClose={handleCloseModal}
+          onSubmit={handlePasswordSubmit}
+        />
       )}
     </div>
   );

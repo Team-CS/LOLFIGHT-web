@@ -1,23 +1,23 @@
+import { notFound } from "next/navigation";
 import BoardNavComponent from "../components/BoardNavComponent";
 import BoardComponent from "../components/BoardComponent";
-import { useRouter } from "next/router";
-import boardNavLinks from "@/src/data/boardNavLinks";
+import boardNavLinks from "@/src/data/boardNavLinks"; // slug 정의된 곳
 
 type PageProps = {
   slug: string;
 };
 
 export default function Page({ params }: { params: PageProps }) {
-  // const title = getTitleFromSlug(params.slug);
+  const isValidSlug = boardNavLinks.some((link) => link.slug === params.slug);
+
+  if (!isValidSlug) {
+    notFound();
+  }
 
   return (
-    <>
-      <div className="w-full my-16">
-        <div className="w-1200px h-full mx-auto flex">
-          <BoardNavComponent></BoardNavComponent>
-          <BoardComponent slug={params.slug}></BoardComponent>
-        </div>
-      </div>
-    </>
+    <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px]">
+      <BoardNavComponent />
+      <BoardComponent slug={params.slug} />
+    </div>
   );
 }

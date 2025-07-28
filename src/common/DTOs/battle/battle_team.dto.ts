@@ -1,7 +1,7 @@
-import { BaseDTO } from "../base.dto";
+import { BaseDto } from "../base.dto";
 import { BattlePlayerDTO } from "./battle_player.dto";
 
-export interface BattleTeamDTO extends BaseDTO {
+export interface BattleTeamDTO extends BaseDto {
   id: string;
   isWinning: boolean;
   point: number;

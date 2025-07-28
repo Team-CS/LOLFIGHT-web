@@ -1,4 +1,4 @@
-export interface BaseDTO {
+export interface BaseDto {
   createdAt?: Date;
   updatedAt?: Date;
 }

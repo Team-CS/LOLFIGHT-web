@@ -1,140 +1,84 @@
 "use client";
 
-import { JudgmentDTO } from "@/src/common/DTOs/judgment/judgment.dto";
-import Image from "next/image";
-import constant from "@/src/common/constant/constant";
+import { JudgmentDto } from "@/src/common/DTOs/judgment/judgment.dto";
+import { SummonerInfoCard } from "./SummonerInfoCard";
+
 interface Props {
-  judgment: JudgmentDTO;
+  judgment: JudgmentDto;
 }
 
-const JudgmentDataCard = (props: Props) => {
-  const totalLike =
-    props.judgment?.judgmentLeftLike + props.judgment?.judgmentRightLike;
-  const leftpercent =
-    totalLike === 0 ? 50 : (props.judgment?.judgmentLeftLike / totalLike) * 100;
+const JudgmentDataCard = ({ judgment }: Props) => {
+  const leftVoteCount = (judgment?.votes ?? []).filter(
+    (v) => v.voteSide === "left"
+  ).length;
+  const rightVoteCount = (judgment?.votes ?? []).filter(
+    (v) => v.voteSide === "right"
+  ).length;
+  const totalVoteCount = leftVoteCount + rightVoteCount;
 
-  const rightpercent = 100 - leftpercent;
+  const leftPercent =
+    totalVoteCount === 0 ? 50 : (leftVoteCount / totalVoteCount) * 100;
+  const rightPercent = 100 - leftPercent;
+
+  const backgroundStyle = {
+    background: `linear-gradient(to right, 
+    rgba(59, 130, 246, 0.15) 0%, 
+    rgba(59, 130, 246, 0) ${leftPercent}%, 
+    rgba(239, 68, 68, 0) ${leftPercent}%, 
+    rgba(239, 68, 68, 0.15) 100%)`,
+  };
+
   return (
     <div
-      className="judgment_summation flex w-full justify-around items-center rounded-lg"
-      style={{
-        background: `linear-gradient(to right, rgba(59, 130, 246, 1) 0%, rgba(59, 130, 246, 0) ${leftpercent}%, rgba(239, 68, 68, 0) ${leftpercent}%, rgba(239, 68, 68, 1) 100%)`,
-      }}
+      className="w-full flex flex-col gap-[16px] p-[20px] rounded-[16px] shadow-md border border-brandborder dark:border-branddarkborder"
+      style={backgroundStyle}
     >
-      {/* Left side */}
-      <div className="font-bold text-[28px] text-white drop-shadow-md">
-        {leftpercent.toFixed(0)}%
-      </div>
-      <div className="flex items-center">
-        <div className="flex flex-col w-[300px] justify-center text-sm mr-5 rounded-lg p-4">
-          <div className="flex h-[30px] justify-between items-center">
-            <p className="font-semibold text-gray-700 dark:text-gray-400">
-              소환사명:
-            </p>
-            <p className="text-right font-bold transition duration-300">
-              {props.judgment?.judgmentLeftName}
-            </p>
-          </div>
-          <div className="flex h-[30px] justify-between items-center">
-            <p className="font-semibold text-gray-700 dark:text-gray-400">
-              라인:
-            </p>
-            <p className="text-right font-bold transition duration-300">
-              {props.judgment?.judgmentLeftLine}
-            </p>
-          </div>
-          <div className="flex h-[30px] justify-between items-center">
-            <p className="font-semibold text-gray-700 dark:text-gray-400">
-              티어:
-            </p>
-            <div className="flex items-center text-right font-bold transition duration-300 gap-1">
-              {props.judgment?.judgmentLeftTier}
-              {props.judgment?.judgmentLeftTier ? (
-                <Image
-                  width={30}
-                  height={30}
-                  src={`${constant.SERVER_URL}/public/rank/${
-                    props.judgment?.judgmentLeftTier.split(" ")[0]
-                  }.png`}
-                  alt="light logo"
-                />
-              ) : (
-                <div></div>
-              )}
-            </div>
-          </div>
-        </div>
-        {props.judgment?.judgmentLeftChampion ? (
-          <Image
-            className="rounded-full"
-            width={70}
-            height={70}
-            src={`${constant.SERVER_URL}/public/champions/${props.judgment?.judgmentLeftChampion}.png`}
-            alt="light logo"
-          />
-        ) : (
-          <div></div>
-        )}
-      </div>
-
-      {/* VS in the center */}
-      <div className="px-10 text-lg font-bold">VS</div>
-
-      {/* Right side */}
-      <div className="flex items-center">
-        {props.judgment?.judgmentRightChampion ? (
-          <Image
-            className="rounded-full"
-            width={70}
-            height={70}
-            src={`${constant.SERVER_URL}/public/champions/${props.judgment?.judgmentRightChampion}.png`}
-            alt="dark logo"
-          />
-        ) : (
-          <div></div>
-        )}
-
-        <div className="flex flex-col w-[300px] justify-center text-sm ml-5 p-4">
-          <div className="flex h-[30px] justify-between items-center">
-            <p className="font-semibold text-gray-700 dark:text-gray-400">
-              소환사명:
-            </p>
-            <p className="text-right font-bold transition duration-300">
-              {props.judgment?.judgmentRightName}
-            </p>
-          </div>
-          <div className="flex h-[30px] justify-between items-center">
-            <p className="font-semibold text-gray-700 dark:text-gray-400">
-              라인:
-            </p>
-            <p className="text-right font-bold transition duration-300">
-              {props.judgment?.judgmentRightLine}
-            </p>
-          </div>
-          <div className="flex h-[30px] justify-between items-center">
-            <p className="font-semibold text-gray-700 dark:text-gray-400">
-              티어:
-            </p>
-            <div className="flex items-center text-right font-bold transition duration-300 gap-1">
-              {props.judgment?.judgmentRightTier}
-              {props.judgment?.judgmentRightTier ? (
-                <Image
-                  width={30}
-                  height={30}
-                  src={`${constant.SERVER_URL}/public/rank/${
-                    props.judgment?.judgmentRightTier.split(" ")[0]
-                  }.png`}
-                  alt="light logo"
-                />
-              ) : (
-                <div></div>
-              )}
-            </div>
-          </div>
+      {/* 게이지 바 */}
+      <div className="relative h-[18px] w-full rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 mb-[12px]">
+        {/* 왼쪽 막대 */}
+        <div
+          className="absolute top-0 left-0 h-full bg-blue-500 transition-all duration-500"
+          style={{
+            width: `${leftPercent}%`,
+            borderTopLeftRadius: "9999px",
+            borderBottomLeftRadius: "9999px",
+          }}
+        />
+        {/* 오른쪽 막대 */}
+        <div
+          className="absolute top-0 right-0 h-full bg-red-500 transition-all duration-500"
+          style={{
+            width: `${rightPercent}%`,
+            borderTopRightRadius: "9999px",
+            borderBottomRightRadius: "9999px",
+          }}
+        />
+        {/* 퍼센트 텍스트 */}
+        <div className="absolute inset-0 flex justify-between items-center px-[12px] text-white font-bold text-[14px] drop-shadow">
+          <span>{leftPercent.toFixed(0)}%</span>
+          <span>{rightPercent.toFixed(0)}%</span>
         </div>
       </div>
-      <div className="font-bold text-[28px] text-white drop-shadow-md">
-        {rightpercent.toFixed(0)}%
+
+      {/* 플레이어 정보 */}
+      <div className="flex items-center justify-between">
+        <SummonerInfoCard
+          name={judgment?.judgmentLeftName}
+          line={judgment?.judgmentLeftLine}
+          tier={judgment?.judgmentLeftTier}
+          championId={judgment?.judgmentLeftChampion}
+          align="right"
+        />
+        <div className="text-[18px] font-bold text-brandgray dark:text-brandhover">
+          VS
+        </div>
+        <SummonerInfoCard
+          name={judgment?.judgmentRightName}
+          line={judgment?.judgmentRightLine}
+          tier={judgment?.judgmentRightTier}
+          championId={judgment?.judgmentRightChampion}
+          align="left"
+        />
       </div>
     </div>
   );

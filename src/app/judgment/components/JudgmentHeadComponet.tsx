@@ -1,120 +1,82 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import constant from "@/src/common/constant/constant";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
-import { JudgmentDTO } from "@/src/common/DTOs/judgment/judgment.dto";
+import { JudgmentDto } from "@/src/common/DTOs/judgment/judgment.dto";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
+import { deleteJudgment } from "@/src/api/judgment.api";
+import CustomAlert from "@/src/common/components/alert/CustomAlert";
 
 interface JudgmentHeadComponetProps {
-  judgment: JudgmentDTO;
+  judgment: JudgmentDto;
 }
 
 const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
+  const { judgment } = props;
   const [isMine, setIsMine] = useState(false);
-  const [isImageError, setIsImageError] = useState<Record<string, boolean>>({});
   const { member } = useMemberStore();
   const router = useRouter();
-  const getDate = (date: Date | undefined) => {
-    const today = new Date();
-    if (date) {
-      const postDateTime = new Date(date);
-
-      if (
-        postDateTime.getDate() === today.getDate() &&
-        postDateTime.getMonth() === today.getMonth() &&
-        postDateTime.getFullYear() === today.getFullYear()
-      ) {
-        const hour = postDateTime.getHours().toString().padStart(2, "0");
-        const minute = postDateTime.getMinutes().toString().padStart(2, "0");
-        return `${hour}:${minute}`;
-      } else {
-        const year = postDateTime.getFullYear().toString().padStart(2, "0");
-        const month = (postDateTime.getMonth() + 1).toString().padStart(2, "0");
-        const day = postDateTime.getDate().toString().padStart(2, "0");
-        return `${year}-${month}-${day}`;
-      }
-    }
-  };
+  const judgmentDateTime = new Date(judgment.createdAt!);
+  const year = judgmentDateTime.getFullYear();
+  const month = (judgmentDateTime.getMonth() + 1).toString().padStart(2, "0");
+  const day = judgmentDateTime.getDate().toString().padStart(2, "0");
 
   useEffect(() => {
     if (member) {
-      if (props.judgment?.judgmentWriter === member.memberName) {
+      if (judgment?.member.memberName === member.memberName) {
         setIsMine(true);
       }
     }
-  }, [props.judgment]);
+  }, [judgment]);
 
   const handleDeleteButtonClick = () => {
     const onConfirmDelete = () => {
-      // @todo judgment삭제
-      //   deletePost(props.post).then((res) => {
-      //     CustomAlert("success", "게시글 삭제", "게시글을 삭제했습니다.");
-      //   });
-      router.push("/board/free");
+      deleteJudgment(judgment.id).then((response) => {
+        CustomAlert(
+          "success",
+          "롤로세움 재판 삭제",
+          "해당 재판(롤로세움)을 삭제했습니다."
+        );
+      });
+      router.push("/judgment");
     };
 
     ButtonAlert(
-      "게시글 삭제",
-      "게시글을 삭제하시겠습니까?",
+      "롤로세움 재판 삭제",
+      "롤로세움을 삭제하시겠습니까?",
       "삭제",
       onConfirmDelete
     );
   };
 
-  const handleImageError = () => {
-    setIsImageError((prev) => ({
-      ...prev,
-      [props.judgment?.judgmentWriter]: true,
-    }));
-  };
-
   return (
-    <div className="flex flex-col m-12">
-      <div className="flex justify-between">
-        <span className="text-3xl font-bold">
-          {props.judgment?.judgmentTitle}
-        </span>
-      </div>
-      <div className="text-sm mt-8 flex justify-between">
-        <div className="flex">
-          <Image
-            className="rounded-full mr-[5px]"
-            width={20}
-            height={20}
-            src={
-              isImageError[props.judgment?.judgmentWriter] // 작성자 이름으로 이미지 오류 체크
-                ? `${constant.SERVER_URL}/public/default.png`
-                : `${constant.SERVER_URL}/public/member/${props.judgment?.judgmentWriter}.png`
-            }
+    <div className="flex flex-col px-[24px] py-[12px] gap-[12px]">
+      <span className="text-[24px] font-bold">{judgment?.judgmentTitle}</span>
+      <div className=" flex justify-between">
+        <div className="flex gap-[8px] items-center">
+          <img
+            className="rounded-full w-[20px] h-[20px]"
+            src={`${constant.SERVER_URL}/${judgment.member.memberIcon}`}
             alt="memberIcon"
-            onError={handleImageError} // 오류 발생 시 핸들러 호출
-            unoptimized
           />
-          <span className="text-black dark:text-gray-100">
-            {props.judgment?.judgmentWriter}
-          </span>
+          <p className="text-[16px] dark:text-gray-400">
+            {judgment?.member.memberName}
+          </p>
 
-          <span className="mx-1"></span>
-          <span className="text-gray-400">
-            {getDate(props.judgment?.createdAt)}
-          </span>
+          <p className="text-[12px] text-gray-400">{`${year}.${month}.${day}`}</p>
 
-          <span className="mx-1"></span>
-
-          <span className="text-gray-400">
-            조회수 : {props.judgment?.judgmentView}
-          </span>
+          <p className="text-[12px] text-gray-400">
+            조회수 : {judgment?.judgmentView}
+          </p>
         </div>
         {isMine && (
-          <div className="head_btn content-center">
+          <div className="content-center">
             <button className="text-gray-400" onClick={handleDeleteButtonClick}>
-              <span className="p-1">삭제</span>
+              <p className="text-[14px]">삭제</p>
             </button>
           </div>
         )}
       </div>
-      <div className="border-b w-full mt-4 dark:border-gray-700"></div>
     </div>
   );
 };

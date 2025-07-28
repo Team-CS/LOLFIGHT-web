@@ -1,22 +1,22 @@
 import constant from "../common/constant/constant";
 import axios from "axios";
-import { PostDTO } from "../common/DTOs/board/post.dto";
-import { CommentDTO } from "../common/DTOs/board/comment.dto";
-import { ResponseDTO } from "../common/DTOs/response.dto";
+import { PostDto } from "../common/DTOs/board/post.dto";
+import { CommentDto } from "../common/DTOs/board/comment.dto";
+import { ResponseDto } from "../common/DTOs/response.dto";
 import { AxiosResponse } from "axios";
 
 const baseUrl = `${constant.SERVER_URL}/comment`;
 
 /*
  * 댓글 작성
- * @param postDTO, memberId, commentContent
+ * @param postDto, memberId, commentContent
  * @returns
  */
 export const writeComment = async (
-  post: PostDTO,
+  post: PostDto,
   memberId: string,
   commentContent: string
-): Promise<AxiosResponse<ResponseDTO<CommentDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<CommentDto>>> => {
   let url = `${baseUrl}`;
   // let url = `${baseUrl}/${post.postBoard}/${post.id}`;
   // let url = `${baseUrl}/${encodeURIComponent(post.postBoard)}/${post.id}`;
@@ -40,15 +40,15 @@ export const writeComment = async (
 
 /*
  * 대댓글 작성
- * @param postDTO, memberId, commentContent, parentCommentId
+ * @param postDto, memberId, commentContent, parentCommentId
  * @returns
  */
 export const writeReplyComment = async (
-  post: PostDTO,
+  post: PostDto,
   memberId: string,
   commentContent: string,
   parentCommentId: string
-): Promise<AxiosResponse<ResponseDTO<CommentDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<CommentDto>>> => {
   let url = `${baseUrl}`;
   const formData = new FormData();
 
@@ -72,12 +72,12 @@ export const writeReplyComment = async (
 
 /*
  * 댓글 리스트 조회
- * @param commentDTO
+ * @param commentDto
  * @returns
  */
 export const getCommentList = async (
-  post: PostDTO
-): Promise<AxiosResponse<ResponseDTO<CommentDTO[]>>> => {
+  post: PostDto
+): Promise<AxiosResponse<ResponseDto<CommentDto[]>>> => {
   let url = `${baseUrl}`;
   const queryParams = `?postId=${post.id}&postBoard=${post.postBoard}`;
   url += queryParams;

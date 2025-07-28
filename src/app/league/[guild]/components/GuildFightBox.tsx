@@ -40,29 +40,27 @@ const GuildFightBox = (props: Props) => {
 
   return (
     <div
-      className={`w-full h-45px flex text-14px pl-2 pr-2 gap-3 ${
+      className={`w-full h-45px flex text-[14px] px-[8px] gap-[12px] ${
         result === "win" ? "bg-sky-100" : "bg-rose-100"
       }`}
     >
       {/* 플레이어 */}
-      <div className="flex h-full font-medium text-14px pb-3 pt-3 w-250px gap-2">
+      <div className="flex h-full font-medium text-[14px] w-[250px] items-center gap-[8px]">
         <img
           src={`${constant.SERVER_URL}/public/guild/${props.guildName}.png`}
           alt="GuildBanner"
-          width={22}
-          height={22}
+          className="w-[25px] h-[25px] rounded-[4px] object-cover"
         />
         <img
           src={`${constant.SERVER_URL}/public/champions/${props.battlePlayerData.championId}.png`}
           alt="Champion"
-          width={20}
-          height={20}
+          className="w-[25px] h-[25px]"
         />
         <p>{props.battlePlayerData.summonerName}</p>
       </div>
 
       {/* Spell/Rune */}
-      <div className="flex w-50px gap-1">
+      <div className="flex w-[50px] gap-[4px]">
         <div className="flex flex-col">
           <img
             src={`${constant.SERVER_URL}/public/spell/${props.battlePlayerData.spell1Id}.png`}
@@ -89,8 +87,8 @@ const GuildFightBox = (props: Props) => {
         </div>
       </div>
       {/* KDA */}
-      <div className={`flex flex-col justify-center font-medium w-120px `}>
-        <div className={`text-12px ${getKDABackgroundColor(kda)}`}>
+      <div className={`flex flex-col justify-center font-medium w-[120px] `}>
+        <div className={`text-[12px] ${getKDABackgroundColor(kda)}`}>
           평점 {kda}
         </div>
         <div className="font-light">
@@ -100,8 +98,8 @@ const GuildFightBox = (props: Props) => {
       </div>
 
       {/* 피해량 */}
-      <div className="flex pb-3 pt-3 w-220px">
-        <div className="w-200px h-full bg-gray-500 relative drop-shadow-md rounded">
+      <div className="flex py-[12px] w-[220px]">
+        <div className="w-full h-full bg-gray-500 relative drop-shadow-md rounded">
           <div
             className={`h-full bg-red-500 rounded`}
             style={{
@@ -112,14 +110,14 @@ const GuildFightBox = (props: Props) => {
               }%`,
             }}
           ></div>
-          <p className="absolute text-12px top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white ">
+          <p className="absolute text-[12px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white ">
             {props.battlePlayerData.totalChampionsDamage}
           </p>
         </div>
       </div>
 
       {/* CS */}
-      <div className="flex flex-col pb-1 pt-2 w-60px text-12px">
+      <div className="flex flex-col py-[4px] justify-center w-[60px] text-[12px]">
         <p className="h-full font-normal">
           레벨 {props.battlePlayerData.level}
         </p>
@@ -129,14 +127,12 @@ const GuildFightBox = (props: Props) => {
       </div>
 
       {/* 시야점수 */}
-      <div className="flex flex-col pb-1 pt-2 w-60px text-14px">
-        <p className="font-light pl-2 pt-1">
-          {props.battlePlayerData.visionScore}
-        </p>
+      <div className="flex flex-col w-[60px] text-[14px] justify-center">
+        <p className="font-light">{props.battlePlayerData.visionScore}</p>
       </div>
 
       {/* 아이템 */}
-      <div className="flex w-300px pt-2 pb-2 text-12px gap-1">
+      <div className="flex w-[300px] py-[8px] text-[12px] gap-[2px]">
         {props.battlePlayerData.items.split(",").map((itemId, index) => {
           const itemNumber = parseInt(itemId.trim());
           return (
@@ -144,7 +140,7 @@ const GuildFightBox = (props: Props) => {
               <img
                 key={index}
                 src={`${constant.SERVER_URL}/public/items/${itemNumber}.png`}
-                className="object-contain w-30px"
+                className="object-contain w-[30px]"
                 alt={`Item${itemNumber}`}
               />
             )

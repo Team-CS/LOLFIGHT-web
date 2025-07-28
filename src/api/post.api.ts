@@ -1,43 +1,45 @@
 import constant from "../common/constant/constant";
 import axios, { AxiosResponse } from "axios";
-import { PostDTO } from "../common/DTOs/board/post.dto";
-import { ResponseDTO } from "../common/DTOs/response.dto";
+import {
+  PostCreateDto,
+  PostDto,
+  PostListResponseDto,
+} from "../common/DTOs/board/post.dto";
+import { ResponseDto } from "../common/DTOs/response.dto";
 import { LikeDTO } from "../common/DTOs/board/like.dto";
+import { getData, postData } from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/post`;
 
 /*
  * 게시글 작성
- * @param postDTO
+ * @param postDto
  * @returns
  */
 export const writePost = async (
-  postTitle: string,
-  postContent: string,
-  postWriter: string,
-  postBoard: string
-): Promise<AxiosResponse<ResponseDTO<PostDTO>>> => {
+  data: PostCreateDto
+): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}`;
 
-  const formData = new FormData();
-  formData.append("postTitle", postTitle);
-  formData.append("postContent", postContent);
-  formData.append("postWriter", postWriter);
-  formData.append("postBoard", postBoard);
-
-  return await axios.post(url, formData);
+  return await postData(url, data);
 };
 
 /*
  * 게시글 목록 조회
- * @param postDTO
+ * @param postDto
  * @returns
  */
 export const getPostList = async (
-  board: string
-): Promise<AxiosResponse<ResponseDTO<PostDTO[]>>> => {
-  let url = `${baseUrl}/list` + `?board=${board}`;
-  return await axios.get(url);
+  board: string,
+  page: number,
+  limit: number,
+  keyword?: string | null
+): Promise<AxiosResponse<ResponseDto<PostListResponseDto>>> => {
+  let url = `${baseUrl}/list` + `?board=${board}&page=${page}&limit=${limit}`;
+  if (keyword) {
+    url += `&keyword=${encodeURIComponent(keyword)}`;
+  }
+  return await getData(url);
 };
 
 /**
@@ -47,9 +49,9 @@ export const getPostList = async (
  */
 export const getRecentPostList = async (
   boardId: number
-): Promise<AxiosResponse<ResponseDTO<PostDTO[]>>> => {
+): Promise<AxiosResponse<ResponseDto<PostDto[]>>> => {
   let url = `${baseUrl}/recentlist` + `?boardId=${boardId}`;
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /*
@@ -60,10 +62,10 @@ export const getRecentPostList = async (
 export const getPostContent = async (
   board: string,
   postId: string
-): Promise<AxiosResponse<ResponseDTO<PostDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}/?board=${board}&postId=${postId}`;
 
-  return await axios.get(url);
+  return await getData(url);
 };
 
 /*
@@ -72,17 +74,17 @@ export const getPostContent = async (
  * @returns
  */
 export const likePost = async (
-  postDTO: PostDTO,
+  postDto: PostDto,
   memberId: string
-): Promise<AxiosResponse<ResponseDTO<LikeDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<LikeDTO>>> => {
   let url = `${baseUrl}/like`;
 
   const body = {
-    postDTO: postDTO,
+    postDto: postDto,
     memberId: memberId,
   };
 
-  return await axios.post(url, body);
+  return await postData(url, body);
 };
 
 /*
@@ -91,34 +93,17 @@ export const likePost = async (
  * @returns
  */
 export const getLike = async (
-  postDTO: PostDTO,
+  postDto: PostDto,
   memberId: string
-): Promise<AxiosResponse<ResponseDTO<LikeDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<LikeDTO>>> => {
   let url = `${baseUrl}/getLike`;
 
   const body = {
-    postDTO: postDTO,
+    postDto: postDto,
     memberId: memberId,
   };
 
-  return await axios.post(url, body);
-};
-
-/*
- * 게시글 조회수 증가
- * @param
- * @returns
- */
-export const increaseView = async (
-  postDTO: PostDTO
-): Promise<AxiosResponse<ResponseDTO<PostDTO>>> => {
-  let url = `${baseUrl}/view`;
-
-  const body = {
-    postDTO: postDTO,
-  };
-
-  return await axios.post(url, body);
+  return await postData(url, body);
 };
 
 /*
@@ -127,13 +112,26 @@ export const increaseView = async (
  * @returns
  */
 export const deletePost = async (
-  postDTO: PostDTO
-): Promise<AxiosResponse<ResponseDTO<PostDTO>>> => {
+  postDto: PostDto
+): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}/delete`;
 
   const body = {
-    postDTO: postDTO,
+    postDto: postDto,
   };
 
-  return await axios.post(url, body);
+  return await postData(url, body);
+};
+
+export const getPopularPosts = async (
+  page: number,
+  limit: number,
+  keyword?: string | null
+): Promise<AxiosResponse<ResponseDto<PostListResponseDto>>> => {
+  let url = `${baseUrl}/popular-list` + `?page=${page}&limit=${limit}`;
+
+  if (keyword) {
+    url += `&keyword=${encodeURIComponent(keyword)}`;
+  }
+  return await getData(url);
 };

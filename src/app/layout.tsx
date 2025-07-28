@@ -1,26 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
-import { Nanum_Gothic } from "next/font/google";
 import "../css/tailwind.css";
-import Header from "../common/components/Header";
-import Navigation from "../common/components/Navigation";
-import Footer from "../common/components/Footer";
-import localFont from "next/font/local";
 import BaseLayout from "./../layouts/BaseLayout";
-
-const inter = Inter({ subsets: ["latin"] });
-
-const nanum_gothic = Nanum_Gothic({
-  weight: ["400", "700", "800"],
-  subsets: ["latin"],
-});
+import localFont from "next/font/local";
 
 export const metadata: Metadata = {
   title: "LOL.FIGHT",
   description: "롤 내전/스크림은 LOLFIGHT - 롤 길드 대항전, 스크림, 내전",
   keywords: ["롤파이트", "LOLFIGHT", "내전", "스크림", "롤 커스텀", "길드전"],
   icons: {
-    icon: "/icon-blue.ico",
+    icon: "/LOLFIGHT_NONE_TEXT.ico",
   },
   other: {
     "google-adsense-account": "ca-pub-9861327972888599",
@@ -36,7 +24,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://lolfight.kr/api/public/image/icon-blue.png", // 실제 이미지 URL로 변경
+        url: "https://lolfight.kr/api/public/image/LOLFIGHT_NONE_TEXT.png", // 실제 이미지 URL로 변경
         width: 800,
         height: 600,
         alt: "LOL.FIGHT",
@@ -44,6 +32,12 @@ export const metadata: Metadata = {
     ],
   },
 };
+
+const pretendard = localFont({
+  src: "../fonts/PretendardVariable.ttf",
+  display: "swap",
+  variable: "--font-pretendard",
+});
 
 export const viewport: Viewport = {
   width: "1280",
@@ -56,15 +50,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="font-['Pretendard'] bg-brandbgcolor h-screen">
+    <html
+      lang="en"
+      className={`bg-brandbgcolor h-screen ${pretendard.className}`}
+      suppressHydrationWarning
+    >
       <body className={`bg-[#FCFCFC] dark:bg-black`}>
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
+        ) : null}
         <Providers>
           <BaseLayout>{children}</BaseLayout>
         </Providers>
       </body>
-      {/* <body className={`${pretendard.className}`}>{children}</body> */}
     </html>
   );
 }
 
 import { Providers } from "./providers";
+import GoogleAnalytics from "../lib/GoogleAnalytics";

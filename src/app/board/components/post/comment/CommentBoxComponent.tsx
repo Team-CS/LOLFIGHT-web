@@ -1,20 +1,18 @@
-import { PostDTO } from "@/src/common/DTOs/board/post.dto";
+import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import { SetStateAction, useEffect, useState } from "react";
 import { getCommentList } from "@/src/api/comment.api";
-import { CommentDTO } from "@/src/common/DTOs/board/comment.dto";
+import { CommentDto } from "@/src/common/DTOs/board/comment.dto";
 import { writeReplyComment } from "@/src/api/comment.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
-import Image from "next/image";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
-import { findMemberByName } from "@/src/api/member.api";
 
 interface CommentBoxComponentProps {
-  data: PostDTO;
+  data: PostDto;
 }
 
 const CommentBoxComponent = (props: CommentBoxComponentProps) => {
-  const [commentList, setCommentList] = useState<CommentDTO[]>([]);
+  const [commentList, setCommentList] = useState<CommentDto[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [openCommentId, setOpenCommentId] = useState<string>("");
   const [replyCommentContent, setReplyCommentContent] = useState("");
@@ -30,11 +28,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     }
   }, [props.data, refresh]);
 
-  const handleChangeReplyComment = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setReplyCommentContent(e.target.value);
-  };
-
-  const handleReplyButtonClick = (comment: CommentDTO) => {
+  const handleReplyButtonClick = (comment: CommentDto) => {
     setIsOpen(!isOpen); // isOpen 상태를 토글합니다.
     setOpenCommentId(comment.id as string);
   };
@@ -97,65 +91,61 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
 
   const getMargin = (depth: number) => {
     return {
-      marginLeft: `${depth * 2}rem`,
+      marginLeft: depth > 0 ? "18px" : "0px",
     };
   };
 
   return (
-    <div className="comment_box">
+    <div className="flex flex-col gap-[8px]">
       {commentList.map((comment) => (
         <div
-          className="my-4 p-2 flex border-b dark:border-gray-700"
+          className="flex p-[8px] border-b dark:border-gray-700"
           key={comment.id}
           style={getMargin(comment.depth)}
         >
           {comment.depth > 0 && (
-            <div className="border-b-2 border-l-2 border-brandcolor w-2 h-2 mr-4 dark:border-white" />
+            <div className="w-[8px] h-[8px] mr-[12px] border-b-[1px] border-l-[1px] border-brandcolor dark:border-white rounded-bl-[2px]" />
           )}
-          <div className="w-full">
-            <div className="flex items-center mb-1">
-              <div className="w-[30px] h-[30px] mr-[5px] my-auto">
-                <Image
-                  className="w-full h-full rounded-full"
-                  width={35}
-                  height={35}
-                  src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
-                  alt="memberIcon"
-                  unoptimized
-                />
-              </div>
-              <span className="font-bold">{comment.writer.memberName}</span>
-              <span className="text-gray-400 pl-3 font-normal text-xs">
+
+          <div className="flex flex-col w-full gap-[8px]">
+            <div className="flex items-center gap-[8px]">
+              <img
+                className="w-[30px] h-[30px] rounded-[12px]"
+                src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
+                alt="memberIcon"
+              />
+              <p className="text-[14px] font-bold">
+                {comment.writer.memberName}
+              </p>
+              <p className="text-gray-400 font-normal text-[12px]">
                 {getDate(comment.commentDate)}
-              </span>
+              </p>
             </div>
-            <span className="font-normal text-base">
+            <p className="text-[14px] font-normal whitespace-pre-wrap">
               {comment.commentContent}
-            </span>
+            </p>
             {comment.depth == 0 && (
-              <div className="my-1">
-                <button onClick={() => handleReplyButtonClick(comment)}>
-                  <span className="text-gray-400 py-1 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    답글 쓰기
-                  </span>
+              <div>
+                <button
+                  className="text-[14px] text-gray-400"
+                  onClick={() => handleReplyButtonClick(comment)}
+                >
+                  답글 쓰기
                 </button>
               </div>
             )}
 
             {isOpen && comment.id == openCommentId && (
-              <div className="my-4 p-2">
-                <div className="rounded-md ml-8 px-4 border dark:border-gray-700 dark:bg-black">
-                  <div className=" h-36">
-                    <input
-                      className="w-full h-12 focus:outline-none dark:bg-black"
-                      placeholder="댓글을 입력하세요."
-                      onChange={handleChangeReplyComment}
-                    />
-                  </div>
-                  <div className="border-b w-full mt-4 dark:border-gray-700"></div>
-                  <div className="flex justify-end m-2 dark:border-gray-700">
+              <div className="flex flex-col p-[24px] gap-[12px]">
+                <div className="w-full rounded-md border dark:border-gray-700 dark:bg-black">
+                  <textarea
+                    className="w-full h-[100px] p-[12px] rounded-[12px] focus:outline-none dark:bg-black"
+                    placeholder="댓글을 입력하세요."
+                    onChange={(e) => setReplyCommentContent(e.target.value)}
+                  />
+                  <div className="flex justify-end p-[12px]">
                     <button
-                      className="border rounded-md bg-brandcolor text-white w-20 h-8 dark:border-gray-700"
+                      className="border rounded-md bg-brandcolor text-white px-[12px] py-[4px] dark:border-gray-700"
                       onClick={handleSaveReplyButtonClick}
                     >
                       작성하기

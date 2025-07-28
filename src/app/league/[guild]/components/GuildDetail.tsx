@@ -9,12 +9,12 @@ interface Props {
 
 const GuildDetail = (props: Props) => {
   return (
-    <div className="w-full h-full rounded ml-3 p-3 flex flex-col bg-brandcolor dark:bg-branddark text-white">
-      <div className="border-b-2 border-white p-1 text-xl">상세정보</div>
-      <div className="flex border-b-2 border-white p-1 text-32px justify-between">
+    <div className="flex flex-col w-full h-full rounded p-[12px] gap-[4px] text-white bg-brandcolor dark:bg-branddark border dark:bg-dark dark:border-gray-700">
+      <p className="text-[16px] border-b border-[#d0d5e5]">상세정보</p>
+      <div className="flex border-b border-[#d0d5e5] text-[26px] justify-between py-[4px]">
         래더 : <p>{props.guildLadder}점</p>
       </div>
-      <div className="flex border-b-2 border-white p-1 text-32px justify-between">
+      <div className="flex border-b border-[#d0d5e5] text-[26px] justify-between py-[4px]">
         승률 :
         <p className="text-green-500">
           <span className="text-sm text-white">
@@ -32,7 +32,7 @@ const GuildDetail = (props: Props) => {
               ).toFixed(2)}%)`}
         </p>
       </div>
-      <div className="flex border-b-2 border-white p-1 text-32px justify-between">
+      <div className="flex border-b border-[#d0d5e5] text-[26px] justify-between py-[4px]">
         랭킹 :
         <p>
           <span className="text-sm">1부리그</span> {props.guildRank}등

@@ -25,7 +25,7 @@ export default function LoginCallbackPage() {
   }, [router, setMember]);
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center ">
       <p>로그인 처리 중입니다...</p>
     </div>
   );
