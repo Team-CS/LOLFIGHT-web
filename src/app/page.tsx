@@ -6,9 +6,10 @@ import { GuildDto, GuildListResponseDto } from "../common/DTOs/guild/guild.dto";
 import { getGuildList } from "@/src/api/guild.api";
 import { useState, useEffect } from "react";
 import { PostDto, PostListResponseDto } from "../common/DTOs/board/post.dto";
-import { getPopularPosts, getRecentPostList } from "../api/post.api";
+import { getPopularPosts } from "../api/post.api";
 import BoardInfoComponent from "./board/components/BoardInfoComponent";
 import { convertBoardNameToCode } from "../utils/string/string.util";
+import Script from "next/script";
 
 export default function Page() {
   const [guilds, setGuilds] = useState<GuildDto[]>([]);
@@ -52,6 +53,17 @@ export default function Page() {
       <div className="flex flex-col max-w-[1200px] mx-auto py-[28px] gap-[24px]">
         <div className="flex flex-col gap-[12px]">
           <LeagueHeaderComponent guildLength={guilds.length} />
+          <Script
+            src="https://cdn.jsdelivr.net/npm/@widgetbot/crate@3"
+            strategy="lazyOnload"
+            onLoad={() => {
+              // @ts-ignore
+              new window.Crate({
+                server: process.env.NEXT_PUBLIC_DISCORD_SERVER,
+                channel: process.env.NEXT_PUBLIC_DISCORD_CHANNEL,
+              });
+            }}
+          />
 
           <div className="flex flex-col ">
             <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[4px] w-full whitespace-nowrap">

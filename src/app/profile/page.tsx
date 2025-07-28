@@ -54,7 +54,7 @@ export default function Page() {
   if (isLoading) return <div className="text-center mt-10">로딩 중...</div>;
 
   return (
-    <div className="flex flex-col items-center p-[16px] gap-[16px]">
+    <div className="flex flex-col items-center p-[16px] gap-[28px]">
       <div className="grid grid-cols-3 w-full max-w-[1200px] mx-auto gap-[16px]">
         <ProfileHeader
           title="내정보"
