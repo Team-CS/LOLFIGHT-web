@@ -255,7 +255,7 @@ export default function Page() {
               />
               <div className="grid grid-cols-12 gap-[4px]">
                 {filteredChampions.map(([id, name]) => (
-                  <div className="flex flex-col justify-center items-center">
+                  <div key={id} className="flex flex-col justify-center items-center">
                     <img
                       key={id}
                       src={`${constant.SERVER_URL}/public/champions/${id}.png`}

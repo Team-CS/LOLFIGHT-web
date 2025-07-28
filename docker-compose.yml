@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_SERVER_URL: https://lolfight.kr/api
+        NEXT_PUBLIC_SERVER_HOST: https://lolfight.kr/api
     container_name: lolfight_front
     ports:
       - "4000:4000"
