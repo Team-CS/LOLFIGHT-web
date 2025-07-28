@@ -56,6 +56,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className={`bg-[#FCFCFC] dark:bg-black`}>
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
+        ) : null}
         <Providers>
           <BaseLayout>{children}</BaseLayout>
         </Providers>
@@ -65,3 +68,4 @@ export default function RootLayout({
 }
 
 import { Providers } from "./providers";
+import GoogleAnalytics from "../lib/GoogleAnalytics";
