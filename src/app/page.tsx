@@ -117,7 +117,7 @@ export default function Page() {
               {posts.length > 0 ? (
                 posts.map((post) => (
                   <BoardInfoComponent
-                    key={post.id}
+                    key={`${post.postBoard}-${post.id}`}
                     data={post}
                     slug={`board/${convertBoardNameToCode(post.postBoard)}`}
                   />
