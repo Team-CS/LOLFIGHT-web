@@ -19,7 +19,7 @@ export const useMemberStore = create(
         })),
     }),
     {
-      name: "member-store", // localStorage key
+      name: "member-store",
     }
   )
 );

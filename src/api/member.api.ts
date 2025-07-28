@@ -1,6 +1,6 @@
 import constant from "../common/constant/constant";
 import { MemberDto } from "../common/DTOs/member/member.dto";
-import { AxiosResponse } from "axios";
+import { Axios, AxiosResponse } from "axios";
 import { ResponseDto } from "../common/DTOs/response.dto";
 import { GuildDto } from "../common/DTOs/guild/guild.dto";
 import { MemberGameDto } from "../common/DTOs/member/member_game.dto";
@@ -48,11 +48,11 @@ export const updateNickname = async (
  * @returns
  */
 export const leaveMember = async (
-  id: string
+  memberId: string
 ): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/leave`;
 
-  const queryParams = `?id=${id}`;
+  const queryParams = `?memberId=${memberId}`;
 
   url += queryParams;
 
@@ -95,11 +95,11 @@ export const findMemberByName = async (
  * @returns
  */
 export const deleteMember = async (
-  id: string
-): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
+  memberId: string
+): Promise<AxiosResponse<ResponseDto<void>>> => {
   let url = `${baseUrl}`;
 
-  let queryParams = `?id=${id}`;
+  let queryParams = `?memberId=${memberId}`;
   url += queryParams;
   return await deleteData(url);
 };
@@ -124,6 +124,18 @@ export const updateMemberIcon = async (
       "Content-Type": "multipart/form-data",
     },
   });
+};
+
+export const updateMemberFCMToken = async (
+  fcmToken: string
+): Promise<AxiosResponse<ResponseDto<void>>> => {
+  let url = `${baseUrl}/fcm-token`;
+
+  const body = {
+    fcmToken: fcmToken,
+  };
+
+  return await patchData(url, body);
 };
 
 export const updateMemberGameLine = async (

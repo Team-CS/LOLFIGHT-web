@@ -204,3 +204,23 @@ export const changeGuildMaster = async (
 
   return await getData(url);
 };
+
+export const getMembersNotInTeam = async (
+  guildId: string
+): Promise<AxiosResponse<ResponseDto<MemberDto[]>>> => {
+  const url = `${baseUrl}/${guildId}/members/not-in-team`;
+  return await getData(url);
+};
+
+export const updateGuildBanner = async (
+  guildBanner: File
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
+  let url = `${baseUrl}/banner`;
+
+  const formData = new FormData();
+  formData.append("guildBanner", guildBanner);
+
+  return await patchData(url, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};

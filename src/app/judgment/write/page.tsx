@@ -3,13 +3,9 @@ import constant from "@/src/common/constant/constant";
 import React, { useRef, useState } from "react";
 
 import championData from "../../../common/constant/champion_id_name_map.json";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createJudgment } from "@/src/api/judgment.api";
-import {
-  JudgmentCreateDto,
-  JudgmentDto,
-} from "@/src/common/DTOs/judgment/judgment.dto";
+import { JudgmentCreateDto } from "@/src/common/DTOs/judgment/judgment.dto";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { Summoner } from "@/src/common/types/judgment.type";
@@ -169,7 +165,7 @@ export default function Page() {
             "롤로세움",
             "롤로세움 투기장 작성이 완료되었습니다"
           );
-          router.push("/judgment");
+          router.replace("/judgment");
         })
         .catch((error) => {
           console.log(error);

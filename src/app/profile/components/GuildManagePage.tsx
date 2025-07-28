@@ -10,6 +10,7 @@ import {
   getInviteGuildList,
   inviteAccept,
   inviteReject,
+  updateGuildBanner,
 } from "@/src/api/guild.api";
 import GuildMemberBox from "./GuildMemberBox";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
@@ -23,14 +24,18 @@ import GuildLeaveSection from "./GuildLeaveSection";
 import GuildDeleteSection from "./GuildDeleteSection";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { MemberDto } from "@/src/common/DTOs/member/member.dto";
+import { GuildBannerModal } from "./modals/GuildBannerModal";
 
 const GuildManagePage = () => {
   const [inviteMembers, setInviteMembers] = useState<GuildInviteDTO[]>([]);
   const [guild, setGuild] = useState<GuildDto>();
+  const { member } = useMemberStore();
   const [currentTab, setCurrentTab] = useState("members");
   const [guildChecked, setGuildChecked] = useState(false);
   const [memberChecked, setMemberChecked] = useState(false);
-  const { member } = useMemberStore();
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string>("");
   const router = useRouter();
 
   const recordDefeat = guild?.guildRecord?.recordDefeat ?? 0;
@@ -204,6 +209,40 @@ const GuildManagePage = () => {
       });
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedImage(e.target.files[0]);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
+  const handleBannerSubmit = () => {
+    if (selectedImage) {
+      updateGuildBanner(selectedImage)
+        .then((response) => {
+          CustomAlert("success", "길드 배너 변경", "변경이 완료되었습니다.");
+          setGuild(response.data.data);
+          setSelectedImage(null);
+          setPreviewImage("");
+        })
+        .catch((error) => {
+          CustomAlert("error", "길드 배너 변경", "변경 실패");
+        });
+      setOpenModal(!openModal);
+    } else {
+      CustomAlert(
+        "error",
+        "길드 배너 변경",
+        "길드 배너 이미지를 등록해주세요."
+      );
+    }
+  };
+
   return (
     <div className="flex flex-col p-[16px] gap-24px">
       {member!.memberGuild === null || member!.memberGuild === undefined ? (
@@ -253,6 +292,10 @@ const GuildManagePage = () => {
           <div className="flex flex-col">
             <div className="grid grid-cols-4 gap-[4px]">
               <ProfileHeader
+                title="길드배너"
+                onClick={() => changeTab("banner")}
+              />
+              <ProfileHeader
                 title="길드원"
                 onClick={() => changeTab("members")}
               />
@@ -279,6 +322,46 @@ const GuildManagePage = () => {
             </div>
 
             <div className="py-[12px]">
+              {currentTab === "banner" && (
+                <div className="flex flex-col items-center justify-center w-full border rounded-[8px] p-[16px] gap-[16px]">
+                  {guild?.guildBanner ? (
+                    <div className="flex flex-col items-center gap-[12px]">
+                      {member &&
+                        member.memberName ===
+                          member.memberGuild.guildMaster && (
+                          <button
+                            className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                            onClick={() => setOpenModal(true)}
+                          >
+                            배너 수정하기
+                          </button>
+                        )}
+                      <img
+                        src={`${constant.SERVER_URL}/${guild.guildBanner}`}
+                        alt="Guild Banner"
+                        className=" rounded-[8px] shadow-md"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-gray-400 text-center text-[14px]">
+                        배너가 없습니다.
+                      </p>
+                      {member &&
+                        member.memberName ===
+                          member.memberGuild.guildMaster && (
+                          <button
+                            className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                            onClick={() => setOpenModal(true)}
+                          >
+                            배너 추가하기
+                          </button>
+                        )}
+                    </>
+                  )}
+                </div>
+              )}
+
               {currentTab === "members" && (
                 <div className="flex flex-col gap-[4px] max-h-[300px]">
                   <div className="flex bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">
@@ -340,6 +423,15 @@ const GuildManagePage = () => {
             </div>
           </div>
         </div>
+      )}
+      {openModal && (
+        <GuildBannerModal
+          selectedImage={selectedImage}
+          previewImage={previewImage}
+          onClose={() => setOpenModal(false)}
+          onImageChange={handleImageChange}
+          onSubmit={handleBannerSubmit}
+        />
       )}
     </div>
   );

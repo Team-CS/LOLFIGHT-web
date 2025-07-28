@@ -70,9 +70,15 @@ export default function GuildPage() {
   return (
     <>
       <div className="w-full h-full py-[24px]">
-        {guild && <GuildBanner GuildDto={guild} />}
+        {guild && <GuildBanner guild={guild} />}
         <div className="flex flex-col py-[12px] h-full max-w-[1200px] mx-auto gap-[12px]">
           <div className="w-full bg-brandbgcolor border dark:bg-dark dark:border-gray-700">
+            <button
+              className="font-medium text-[16px] hover:bg-brandhover px-[8px] py-[4px] dark:hover:bg-gray-700 transition"
+              onClick={() => changeTab("banner")}
+            >
+              길드배너
+            </button>
             <button
               className="font-medium text-[16px] hover:bg-brandhover px-[8px] py-[4px] dark:hover:bg-gray-700 transition"
               onClick={() => changeTab("guildInfo")}
@@ -86,6 +92,36 @@ export default function GuildPage() {
               길드원
             </button>
           </div>
+
+          {currentTab === "banner" && (
+            <div className="flex flex-col w-full gap-[24px]">
+              {/* 소개글 블럭 */}
+              <div className="w-full bg-white dark:bg-dark rounded-[12px] p-[24px] shadow-md flex flex-col gap-[12px]">
+                <h2 className="text-[20px] font-bold text-brandcolor">
+                  📣 길드 소개
+                </h2>
+                <p className="text-[16px] leading-relaxed whitespace-pre-wrap dark:text-white">
+                  {guild?.guildDescription ??
+                    "아직 길드 소개가 작성되지 않았습니다."}
+                </p>
+              </div>
+
+              {/* 배너 이미지 블럭 */}
+              <div className="w-full bg-white dark:bg-dark rounded-[12px] p-[24px] shadow-md flex justify-center items-center min-h-[200px]">
+                {guild?.guildBanner ? (
+                  <img
+                    src={`${constant.SERVER_URL}/${guild.guildBanner}`}
+                    alt="Guild Banner"
+                    className=" w-full rounded-[12px]"
+                  />
+                ) : (
+                  <p className="text-gray-400 text-sm">
+                    등록된 배너가 없습니다.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {currentTab === "guildInfo" && (
             <div className="flex flex-col gap-[12px]">

@@ -37,6 +37,21 @@ const Footer = () => {
             </p>
           </div>
         </div>
+        <a
+          href="https://discord.gg/cgfRmWWM7c"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center font-bold text-[12px] gap-[8px] text-brandcolor hover:text-primary transition-colors cursor-pointer"
+        >
+          <img
+            src="/discord.svg"
+            alt="discord icon"
+            width={20}
+            height={20}
+            draggable={false}
+          />
+          LOLFIGHT
+        </a>
       </div>
     </footer>
   );

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import constant from "@/src/common/constant/constant";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";

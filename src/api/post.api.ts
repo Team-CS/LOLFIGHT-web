@@ -122,3 +122,16 @@ export const deletePost = async (
 
   return await postData(url, body);
 };
+
+export const getPopularPosts = async (
+  page: number,
+  limit: number,
+  keyword?: string | null
+): Promise<AxiosResponse<ResponseDto<PostListResponseDto>>> => {
+  let url = `${baseUrl}/popular-list` + `?page=${page}&limit=${limit}`;
+
+  if (keyword) {
+    url += `&keyword=${encodeURIComponent(keyword)}`;
+  }
+  return await getData(url);
+};

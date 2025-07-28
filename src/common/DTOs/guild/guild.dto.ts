@@ -12,6 +12,7 @@ export interface GuildDto extends BaseDto {
   guildDescription: string;
   guildTier: string;
   guildIcon: string;
+  guildBanner: string;
   guildRecord: GuildRecrodDTO | null;
 }
 

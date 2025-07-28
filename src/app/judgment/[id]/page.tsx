@@ -19,7 +19,6 @@ export default function Page({ params }: { params: PageProps }) {
     if (!judgment) {
       getJudgment(params.id)
         .then((response) => {
-          console.log(response);
           setJudgment(response.data.data);
         })
         .catch((error) => {

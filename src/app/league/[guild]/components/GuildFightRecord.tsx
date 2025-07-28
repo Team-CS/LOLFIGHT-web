@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { SlArrowDown } from "react-icons/sl";
 
 import GuildFightDetail from "./GuildFightDetail";
@@ -9,7 +8,6 @@ import { BattleDTO } from "@/src/common/DTOs/battle/battle.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
-import { BattlePlayerDTO } from "@/src/common/DTOs/battle/battle_player.dto";
 
 interface Props {
   battleData: BattleDTO;
