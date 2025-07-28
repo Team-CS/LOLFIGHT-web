@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SERVER_URL: https://lolfight.kr/api
+    container_name: lolfight_front
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    networks:
+      - lolfight_network
+
+networks:
+  lolfight_network:
+    external: true
