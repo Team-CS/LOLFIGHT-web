@@ -24,6 +24,7 @@ import {
   getScrimApplicationList,
   getScrimSlot,
   getScrimSlotList,
+  rematchScrim,
 } from "@/src/api/scrim.api";
 import {
   CreateScrimSlotDto,
@@ -36,8 +37,10 @@ import { BattleTeamModal } from "./components/modals/BattleTeamModal";
 import {
   CreateScrimApplicationDto,
   ScrimApplicationDto,
+  ScrimApplicationRematchDto,
 } from "@/src/common/DTOs/scrim/scrim_application.dto";
 import MatchCard from "./components/MatchCard";
+import { getCookie } from "@/src/utils/cookie/cookie";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
@@ -59,26 +62,30 @@ export default function Page() {
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
   const [isRegisterTeamOpen, setIsRegisterTeamOpen] = useState<boolean>(false);
 
+  const accessToken = getCookie("accessToken");
+
   useEffect(() => {
-    getMyGuildTeam()
-      .then((response) => {
-        setGuildTeam(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    getScrimApplicationList()
-      .then((response) => {
-        setApplications(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (accessToken) {
+      getMyGuildTeam()
+        .then((response) => {
+          setGuildTeam(response.data.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      getScrimApplicationList()
+        .then((response) => {
+          console.log(response);
+          setApplications(response.data.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }, []);
 
   useEffect(() => {
     if (!guildTeam) return;
-
     getScrimSlot(guildTeam.id)
       .then((response) => {
         setMyTeamSlot(response.data.data);
@@ -89,6 +96,7 @@ export default function Page() {
   }, [guildTeam]);
 
   useEffect(() => {
+    if (!member?.memberGuild) return;
     fetchScrimSlots(currentPage);
   }, [currentPage]);
 
@@ -365,6 +373,76 @@ export default function Page() {
     );
   };
 
+  const handleRematchScrim = (
+    scrimSlotId: string,
+    applicationTeamId: string
+  ) => {
+    const onConfirmRematch = () => {
+      if (guildTeam) {
+        const scrimApplicationRematchDto: ScrimApplicationRematchDto = {
+          scrimSlotId: scrimSlotId,
+          applicationTeamId: applicationTeamId,
+        };
+        rematchScrim(scrimApplicationRematchDto)
+          .then((response) => {
+            setApplications((prev) =>
+              prev.map((app) =>
+                app.scrimSlot.id === scrimSlotId
+                  ? { ...app, status: "PENDING" }
+                  : app
+              )
+            );
+            CustomAlert(
+              "success",
+              "재경기 요청 완료",
+              "재경기 요청을 보냈습니다."
+            );
+          })
+          .catch((error) => {
+            const code = error?.response?.data?.code;
+            if (code === "COMMON-003") {
+              CustomAlert(
+                "error",
+                "재경기 요청 실패",
+                "존재하지 않는 스크림입니다."
+              );
+            } else if (code === "COMMON-002") {
+              CustomAlert(
+                "error",
+                "권한 없음",
+                "재경기를 요청할 권한이 없습니다."
+              );
+            } else if (code === "COMMON-005") {
+              CustomAlert(
+                "error",
+                "재경기 요청 실패",
+                "이미 재경기 요청이 진행 중입니다."
+              );
+            } else {
+              CustomAlert("error", "요청 실패", "잠시 후 다시 시도해주세요.");
+            }
+          });
+      }
+    };
+
+    ButtonAlert(
+      "재경기 요청",
+      "재경기를 요청하시겠습니까?\n 상대팀의 응답을 기다려 주세요",
+      "요청",
+      onConfirmRematch
+    );
+  };
+
+  if (!member?.memberGuild) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen p-8">
+        <p className="text-gray-500 text-[14px]">
+          😓 아직 속한 길드가 없습니다.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
       {guildTeam && member ? (
@@ -469,6 +547,7 @@ export default function Page() {
                     key={data.id}
                     scrim={data}
                     onCancel={handleCancelScrim}
+                    onRematch={handleRematchScrim}
                   />
                 ))}
             </div>

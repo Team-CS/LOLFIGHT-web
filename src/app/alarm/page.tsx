@@ -278,6 +278,8 @@ export default function Page() {
                       ? "확정되었습니다."
                       : application.status === "REJECTED"
                       ? "거절되었습니다."
+                      : application.status === "CLOSED"
+                      ? "종료되었습니다."
                       : "신청 대기 중입니다."}
                   </p>
 
