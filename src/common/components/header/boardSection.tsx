@@ -50,18 +50,18 @@ export default function BoardSection({
             <div key={post.id} className="flex gap-[4px] items-center">
               {containsImage(post.postContent) ? <ImageIcon /> : <TextIcon />}
               <p
-                className="max-w-[300px] hover:underline hover:decoration-gray-400 hover:decoration-opacity-50 cursor-pointer truncate"
+                className="max-w-[300px] text-[16px] hover:underline hover:decoration-gray-400 hover:decoration-opacity-50 cursor-pointer truncate"
                 onClick={() => onPostClick(post.id)}
               >
                 {post.postTitle}
               </p>
-              <span className="text-red-400 text-xs">
+              <span className="text-red-400 text-[12px]">
                 [{post.postComments}]
               </span>
             </div>
           ))
         ) : (
-          <p className="text-gray-500">게시글이 없습니다.</p>
+          <p className="text-[14px] text-gray-400">게시글이 없습니다.</p>
         )}
       </div>
     </div>

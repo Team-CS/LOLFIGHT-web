@@ -14,7 +14,6 @@ import { removeCookie } from "@/src/utils/cookie/cookie";
 import BoardSection from "./header/boardSection";
 import localFont from "next/font/local";
 import CustomAlert from "./alert/CustomAlert";
-import { FaRegBell } from "react-icons/fa";
 import { CiBellOn } from "react-icons/ci";
 const rixi = localFont({
   src: "../../fonts/RixInooAriDuriRegular.ttf",
