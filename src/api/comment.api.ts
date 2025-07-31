@@ -4,6 +4,7 @@ import { PostDto } from "../common/DTOs/board/post.dto";
 import { CommentDto } from "../common/DTOs/board/comment.dto";
 import { ResponseDto } from "../common/DTOs/response.dto";
 import { AxiosResponse } from "axios";
+import { deleteData, getData, postData } from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/comment`;
 
@@ -18,8 +19,6 @@ export const writeComment = async (
   commentContent: string
 ): Promise<AxiosResponse<ResponseDto<CommentDto>>> => {
   let url = `${baseUrl}`;
-  // let url = `${baseUrl}/${post.postBoard}/${post.id}`;
-  // let url = `${baseUrl}/${encodeURIComponent(post.postBoard)}/${post.id}`;
   const formData = new FormData();
 
   formData.append("postId", post.id.toString());
@@ -35,7 +34,7 @@ export const writeComment = async (
     commentContent: commentContent,
   };
 
-  return await axios.post(url, body);
+  return await postData(url, body);
 };
 
 /*
@@ -67,7 +66,7 @@ export const writeReplyComment = async (
     parentComment: parentCommentId,
   };
 
-  return await axios.post(url, body);
+  return await postData(url, body);
 };
 
 /*
@@ -82,5 +81,14 @@ export const getCommentList = async (
   const queryParams = `?postId=${post.id}&postBoard=${post.postBoard}`;
   url += queryParams;
 
-  return await axios.get(url);
+  return await getData(url);
+};
+
+export const deleteComment = async (commentId: string): Promise<void> => {
+  let url = `${baseUrl}`;
+  const queryParams = `?id=${commentId}`;
+
+  url += queryParams;
+
+  await deleteData(url);
 };

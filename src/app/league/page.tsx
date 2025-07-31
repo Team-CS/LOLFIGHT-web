@@ -113,7 +113,7 @@ export default function Page() {
           <div className="flex-[0.25] text-center px-[8px]">승</div>
           <div className="flex-[0.25] text-center px-[8px]">패</div>
           <div className="flex-[0.5] text-center px-[8px]">티어</div>
-          <div className="flex-[1] text-center px-[8px]">길드장</div>
+          <div className="flex-[0.5] text-center px-[8px]">래더점수</div>
         </div>
         <div className="flex flex-col">
           {guilds.map((guild) => (
