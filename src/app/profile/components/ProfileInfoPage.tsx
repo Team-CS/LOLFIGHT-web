@@ -107,7 +107,7 @@ const ProfileInfoPage = () => {
 
   return (
     <div className="flex flex-col p-[16px] gap-[24px]">
-      <div className="flex justify-between items-center pb-5 border-b border-gray-200">
+      <div className="flex justify-between items-center pb-5 border-b border-gray-200 dark:border-branddarkborder">
         <p className="text-[24px] font-bold">내 정보</p>
         <div className="flex gap-[12px]">
           <button
@@ -136,7 +136,7 @@ const ProfileInfoPage = () => {
         <div className="flex flex-col w-full gap-[8px]">
           <div className="flex flex-col gap-[4px]">
             <label>이메일</label>
-            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] w-full cursor-not-allowed">
+            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] w-full cursor-not-allowed dark:border-branddarkborder">
               {member!.memberId}
             </div>
           </div>
@@ -150,7 +150,7 @@ const ProfileInfoPage = () => {
                 maxLength={10}
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-branddarkborder"
               />
               {member?.memberName !== nickname && (
                 <button
@@ -165,27 +165,27 @@ const ProfileInfoPage = () => {
 
           <div className="flex flex-col gap-[4px]">
             <label>가입일</label>
-            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed">
+            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed dark:border-branddarkborder">
               {member!.createdAt?.toString().split("T")[0]}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex justify-between items-center pb-5 border-b border-gray-200">
+      <div className="flex justify-between items-center pb-5 border-b border-gray-200 dark:border-branddarkborder">
         <p className="text-[24px] font-bold">Riot 계정 정보</p>
       </div>
 
       <div className="flex flex-col gap-[24px]">
         <div className="flex flex-col gap-[4px]">
           <label>인게임 닉네임</label>
-          <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed">
+          <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed dark:border-branddarkborder">
             {member!.memberGame?.gameName ?? "등록되지 않음"}
           </div>
         </div>
         <div className="flex flex-col gap-[4px]">
           <label>티어</label>
-          <div className="flex items-center bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] gap-[12px] cursor-not-allowed">
+          <div className="flex items-center bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] gap-[12px] cursor-not-allowed dark:border-branddarkborder">
             {member?.memberGame?.gameTier ? (
               <>
                 <img

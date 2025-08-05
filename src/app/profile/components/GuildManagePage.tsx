@@ -15,7 +15,11 @@ import {
 import GuildMemberBox from "./GuildMemberBox";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { GuildInviteDTO } from "@/src/common/DTOs/guild/guild_invite.dto";
-import { leaveMember, updateMemberGameLine } from "@/src/api/member.api";
+import {
+  getMemberData,
+  leaveMember,
+  updateMemberGameLine,
+} from "@/src/api/member.api";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { GuildInfoItem } from "./guildInfoItem";
 import { ProfileHeader } from "./profileHeader";
@@ -29,7 +33,7 @@ import { GuildBannerModal } from "./modals/GuildBannerModal";
 const GuildManagePage = () => {
   const [inviteMembers, setInviteMembers] = useState<GuildInviteDTO[]>([]);
   const [guild, setGuild] = useState<GuildDto>();
-  const { member } = useMemberStore();
+  const { member, setMember } = useMemberStore();
   const [currentTab, setCurrentTab] = useState("members");
   const [guildChecked, setGuildChecked] = useState(false);
   const [memberChecked, setMemberChecked] = useState(false);
@@ -78,12 +82,16 @@ const GuildManagePage = () => {
     //길드원 길드탈퇴 체크박스
     setMemberChecked(!memberChecked);
   };
-  const deleteGuild = () => {
+  const deleteGuild = async () => {
     //길드마스터 길드해체
     if (guildChecked) {
-      destroyGuild(member!.memberGuild!.guildName).then((response) => {
+      await destroyGuild(member!.memberGuild!.guildName).then((response) => {
         CustomAlert("success", "길드해체", "성공적으로 길드가 해체되었습니다.");
-        router.push("/");
+        getMemberData().then((response) => {
+          const memberData: MemberDto = response.data.data;
+          setMember(memberData);
+          router.push("/");
+        });
       });
     } else {
       CustomAlert(
@@ -323,7 +331,7 @@ const GuildManagePage = () => {
 
             <div className="py-[12px]">
               {currentTab === "banner" && (
-                <div className="flex flex-col items-center justify-center w-full border rounded-[8px] p-[16px] gap-[16px]">
+                <div className="flex flex-col items-center justify-center w-full border rounded-[8px] p-[16px] gap-[16px] dark:border-branddarkborder">
                   {guild?.guildBanner ? (
                     <div className="flex flex-col items-center gap-[12px]">
                       {member &&
@@ -394,10 +402,11 @@ const GuildManagePage = () => {
               )}
               {currentTab === "applicants" && (
                 <div className="flex flex-col gap-[4px] max-h-[300px]">
-                  <div className="grid grid-cols-4 bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">
-                    <p>닉네임</p>
-                    <p>소환사명</p>
-                    <p>티어</p>
+                  <div className="flex bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">
+                    <div className="flex-[1]">닉네임</div>
+                    <div className="flex-[2]">소환사명</div>
+                    <div className="flex-[1]">티어</div>
+                    <div className="flex-[1]" />
                   </div>
                   <div className="flex flex-col gap-[12px] overflow-y-auto">
                     {inviteMembers?.map((invite) => (

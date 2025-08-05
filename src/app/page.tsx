@@ -53,18 +53,6 @@ export default function Page() {
       <div className="flex flex-col max-w-[1200px] mx-auto py-[28px] gap-[24px]">
         <div className="flex flex-col gap-[12px]">
           <LeagueHeaderComponent guildLength={guilds.length} />
-          <Script
-            src="https://cdn.jsdelivr.net/npm/@widgetbot/crate@3"
-            strategy="lazyOnload"
-            onLoad={() => {
-              // @ts-ignore
-              new window.Crate({
-                server: process.env.NEXT_PUBLIC_DISCORD_SERVER,
-                channel: process.env.NEXT_PUBLIC_DISCORD_CHANNEL,
-              });
-            }}
-          />
-
           <div className="flex flex-col ">
             <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[4px] w-full whitespace-nowrap">
               <div className="flex-[0.25] text-center px-[8px]">순위</div>

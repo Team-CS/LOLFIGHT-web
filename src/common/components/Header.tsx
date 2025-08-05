@@ -15,6 +15,8 @@ import BoardSection from "./header/boardSection";
 import localFont from "next/font/local";
 import CustomAlert from "./alert/CustomAlert";
 import { CiBellOn } from "react-icons/ci";
+import { useGuildTeamStore } from "../zustand/guild_team.zustand";
+import { useFirebaseStore } from "../zustand/firebase.zustand";
 const rixi = localFont({
   src: "../../fonts/RixInooAriDuriRegular.ttf",
   display: "swap",
@@ -71,7 +73,14 @@ export const Header = () => {
 
     removeCookie("accessToken");
     removeCookie("refreshToken");
-
+    localStorage.removeItem("member-store");
+    // 메모리 상태도 완전 클리어
+    useMemberStore.setState({ member: null });
+    useGuildTeamStore.setState({ guildTeam: null });
+    useFirebaseStore.setState({
+      fcmToken: null,
+      isServiceWorkerRegistered: false,
+    });
     router.push("/");
 
     CustomAlert("success", "로그아웃", "로그아웃 되었습니다.");

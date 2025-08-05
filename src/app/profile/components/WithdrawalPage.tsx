@@ -53,7 +53,7 @@ const WithdrawalPage = () => {
 
   return (
     <div className="flex flex-col p-[16px] gap-[24px]">
-      <div className="flex justify-between items-center pb-5 border-b border-gray-200">
+      <div className="flex justify-between items-center pb-5 border-b border-gray-200 dark:border-branddarkborder">
         <p className="text-[24px] font-bold">회원 탈퇴</p>
       </div>
       <div className="flex flex-col items-center gap-[12px]">

@@ -41,12 +41,14 @@ import {
 } from "@/src/common/DTOs/scrim/scrim_application.dto";
 import MatchCard from "./components/MatchCard";
 import { getCookie } from "@/src/utils/cookie/cookie";
+import { getMemberData } from "@/src/api/member.api";
+import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
 export default function Page() {
   const router = useRouter();
-  const { member } = useMemberStore();
+  const { member, setMember } = useMemberStore();
   const { guildTeam, setGuildTeam } = useGuildTeamStore();
 
   const [myTeamSlot, setMyTeamSlot] = useState<ScrimSlotDto | null>();
@@ -66,6 +68,10 @@ export default function Page() {
 
   useEffect(() => {
     if (accessToken) {
+      getMemberData().then((response) => {
+        const memberData: MemberDto = response.data.data;
+        setMember(memberData);
+      });
       getMyGuildTeam()
         .then((response) => {
           setGuildTeam(response.data.data);
@@ -75,7 +81,6 @@ export default function Page() {
         });
       getScrimApplicationList()
         .then((response) => {
-          console.log(response);
           setApplications(response.data.data);
         })
         .catch((error) => {
@@ -85,7 +90,7 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if (!guildTeam) return;
+    if (!guildTeam || !member) return;
     getScrimSlot(guildTeam.id)
       .then((response) => {
         setMyTeamSlot(response.data.data);
@@ -96,7 +101,6 @@ export default function Page() {
   }, [guildTeam]);
 
   useEffect(() => {
-    if (!member?.memberGuild) return;
     fetchScrimSlots(currentPage);
   }, [currentPage]);
 
@@ -433,15 +437,15 @@ export default function Page() {
     );
   };
 
-  if (!member?.memberGuild) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen p-8">
-        <p className="text-gray-500 text-[14px]">
-          😓 아직 속한 길드가 없습니다.
-        </p>
-      </div>
-    );
-  }
+  // if (!member?.memberGuild) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-screen p-8">
+  //       <p className="text-gray-500 text-[14px]">
+  //         😓 아직 속한 길드가 없습니다.
+  //       </p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
@@ -553,8 +557,8 @@ export default function Page() {
             </div>
           </div>
         </div>
-      ) : (
-        // 팀이 없을 때
+      ) : member?.memberGuild ? (
+        // member.memberGuild는 있지만 guildTeam이 없을 때
         <div className="flex flex-col items-center justify-center h-[470px] gap-[16px] py-[60px] rounded-[12px] dark:bg-branddark shadow-md">
           <p className="text-[14px] text-gray-400">
             😓 아직 팀에 가입하지 않았습니다
@@ -567,6 +571,13 @@ export default function Page() {
               팀 생성
             </button>
           </div>
+        </div>
+      ) : (
+        // member.memberGuild도 없을 때 (완전 없는 상태)
+        <div className="flex flex-col items-center justify-center h-[470px] gap-[16px] py-[60px] rounded-[12px] dark:bg-branddark shadow-md">
+          <p className="text-[14px] text-gray-400">
+            ❌ 아직 속한 길드가 없습니다.
+          </p>
         </div>
       )}
 
