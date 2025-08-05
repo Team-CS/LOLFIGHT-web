@@ -22,6 +22,9 @@ import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { formatKoreanDatetime } from "@/src/utils/string/string.util";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BattleTeamModal } from "../battle/components/modals/BattleTeamModal";
+import { ScrimSlotDto } from "@/src/common/DTOs/scrim/scrim_slot.dto";
+import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
 
 export default function Page() {
   const router = useRouter();
@@ -30,6 +33,7 @@ export default function Page() {
   const [tab, setTab] = useState<"team" | "battle">("team");
   const [teamInvites, setTeamInvites] = useState<GuildTeamInviteDto[]>([]);
   const [applications, setApplications] = useState<ScrimApplicationDto[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<GuildTeamDto | null>(null);
 
   useEffect(() => {
     getMyInviteList()
@@ -53,7 +57,7 @@ export default function Page() {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [tab]);
 
   const handleAccept = (inviteId: string) => {
     acceptGuildTeamInvite(inviteId)
@@ -151,6 +155,17 @@ export default function Page() {
         );
         console.error(error);
       });
+  };
+
+  const handleSelectedTeam = (application: ScrimApplicationDto) => {
+    const isRecipient = application.scrimSlot.hostTeam.id === guildTeam?.id;
+
+    // ✅ 상대 팀 구분
+    const opponentTeam = isRecipient
+      ? application.applicationTeam
+      : application.scrimSlot.hostTeam;
+
+    setSelectedTeam(opponentTeam);
   };
 
   return (
@@ -257,36 +272,44 @@ export default function Page() {
               return (
                 <div
                   key={application.id}
-                  className={`p-[16px] rounded-lg border flex flex-col gap-[6px] ${
+                  className={`p-[16px] rounded-lg border flex flex-col gap-[12px] ${
                     application.status === "PENDING" && isRecipient
                       ? "border-brandcolor bg-white dark:bg-branddark"
                       : "border-gray-300 bg-gray-50 dark:bg-gray-800"
                   }`}
                 >
-                  <p>
-                    <strong>
-                      {formatKoreanDatetime(
-                        application.scrimSlot.scheduledAt.toString()
-                      )}
-                    </strong>
-                    에{" "}
-                    <strong>
-                      {opponentTeam.leader?.memberName ?? "상대팀"}
-                    </strong>
-                    {` 팀과의 스크림이 `}
-                    {application.status === "ACCEPTED"
-                      ? "확정되었습니다."
-                      : application.status === "REJECTED"
-                      ? "거절되었습니다."
-                      : application.status === "CLOSED"
-                      ? "종료되었습니다."
-                      : "신청 대기 중입니다."}
-                  </p>
+                  <div className="flex gap-[12px] justify-between items-center">
+                    <p>
+                      <strong>
+                        {formatKoreanDatetime(
+                          application.scrimSlot.scheduledAt.toString()
+                        )}
+                      </strong>
+                      에{" "}
+                      <strong>
+                        {opponentTeam.leader?.memberName ?? "상대팀"}
+                      </strong>
+                      {` 팀과의 스크림이 `}
+                      {application.status === "ACCEPTED"
+                        ? "확정되었습니다."
+                        : application.status === "REJECTED"
+                        ? "거절되었습니다."
+                        : application.status === "CLOSED"
+                        ? "종료되었습니다."
+                        : "신청 대기 중입니다."}
+                    </p>
+                    <button
+                      className="px-[14px] py-[6px] bg-green-500 text-white rounded-md hover:opacity-90 transition"
+                      onClick={() => handleSelectedTeam(application)}
+                    >
+                      팀 보기
+                    </button>
+                  </div>
 
                   {isRecipient &&
                     application.status === "PENDING" &&
                     guildTeam.leader.id === member?.id && (
-                      <div className="flex gap-[12px] mt-[8px]">
+                      <div className="flex gap-[12px] ">
                         <button
                           className="px-[16px] py-[8px] bg-brandcolor text-white rounded-md hover:opacity-90 transition"
                           onClick={() => handleScrimAccept(application)}
@@ -306,6 +329,15 @@ export default function Page() {
             })
           )}
         </div>
+      )}
+
+      {selectedTeam && (
+        <BattleTeamModal
+          team={selectedTeam}
+          mode="view"
+          onClose={() => setSelectedTeam(null)}
+          onApply={() => {}}
+        />
       )}
     </div>
   );

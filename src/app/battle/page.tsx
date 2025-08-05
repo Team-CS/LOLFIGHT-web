@@ -437,16 +437,6 @@ export default function Page() {
     );
   };
 
-  // if (!member?.memberGuild) {
-  //   return (
-  //     <div className="flex flex-col items-center justify-center h-screen p-8">
-  //       <p className="text-gray-500 text-[14px]">
-  //         😓 아직 속한 길드가 없습니다.
-  //       </p>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
       {guildTeam && member ? (
@@ -658,7 +648,11 @@ export default function Page() {
       {/* 모달 렌더링 */}
       {selectedTeam && (
         <BattleTeamModal
-          scrimSlot={selectedTeam}
+          team={selectedTeam.hostTeam}
+          scheduledAt={selectedTeam.scheduledAt}
+          note={selectedTeam.note}
+          scrimSlotId={selectedTeam.id}
+          mode="apply"
           onClose={() => setSelectedTeam(null)}
           onApply={handleApply}
         />
