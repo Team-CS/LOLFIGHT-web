@@ -27,7 +27,7 @@ export default function useFirebaseMessaging() {
         .catch(console.error);
     }
 
-    const token = getCookie("accessToken");
+    const token = getCookie("lf_rtk");
 
     if (!fcmToken && token) {
       Notification.requestPermission().then((permission) => {

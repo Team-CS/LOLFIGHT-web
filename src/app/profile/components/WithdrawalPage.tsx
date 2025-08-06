@@ -22,8 +22,8 @@ const WithdrawalPage = () => {
       deleteMember(member!.memberId)
         .then((response) => {
           setMember(null);
-          removeCookie("accessToken");
-          removeCookie("refreshToken");
+          removeCookie("lf_atk");
+          removeCookie("lf_rtk");
           router.push("/register");
           CustomAlert(
             "success",

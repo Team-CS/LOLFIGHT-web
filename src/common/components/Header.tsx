@@ -71,8 +71,8 @@ export const Header = () => {
   const handleLogoutClick = async () => {
     setMember(null);
 
-    removeCookie("accessToken");
-    removeCookie("refreshToken");
+    removeCookie("lf_atk");
+    removeCookie("lf_rtk");
     localStorage.removeItem("member-store");
     // 메모리 상태도 완전 클리어
     useMemberStore.setState({ member: null });

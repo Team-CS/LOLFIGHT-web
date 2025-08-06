@@ -23,18 +23,18 @@ export const ProfileIconModal = (props: ProfileIconModalProps) => {
 
         <input type="file" onChange={onImageChange} accept="image/*" />
 
-        <div className="flex justify-end mt-4">
-          <button
-            className="bg-gray-300 text-black px-[12px] py-[8px] rounded mr-[8px]"
-            onClick={onClose}
-          >
-            취소
-          </button>
+        <div className="flex justify-end gap-[12px]">
           <button
             className="bg-blue-500 text-white px-[12px] py-[8px] rounded"
             onClick={onSubmit}
           >
             등록
+          </button>
+          <button
+            className="bg-gray-300 text-black px-[12px] py-[8px] rounded mr-[8px]"
+            onClick={onClose}
+          >
+            취소
           </button>
         </div>
       </div>

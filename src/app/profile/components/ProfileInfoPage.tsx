@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  removeIcon,
   updateMemberIcon,
   updateNickname,
   updatePassword,
@@ -11,6 +12,7 @@ import { ProfileIconModal } from "./modals/ProfileIconModal";
 import { ProfilePasswordModal } from "./modals/profilePasswordModal";
 import { removeCookie } from "@/src/utils/cookie/cookie";
 import { useRouter } from "next/navigation";
+import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 
 const ProfileInfoPage = () => {
   const router = useRouter();
@@ -84,8 +86,8 @@ const ProfileInfoPage = () => {
           "비밀번호 변경이 완료되었습니다"
         );
         setMember(null);
-        removeCookie("accessToken");
-        removeCookie("refreshToken");
+        removeCookie("lf_atk");
+        removeCookie("lf_rtk");
 
         router.replace("/register");
       })
@@ -105,19 +107,61 @@ const ProfileInfoPage = () => {
       });
   };
 
+  const hanldeIconRemove = () => {
+    const removeProfileIcon = () => {
+      removeIcon()
+        .then((response) => {
+          setMember(response.data.data);
+        })
+        .catch((error) => {
+          const code = error.response.data.code;
+
+          if (code === "USER-001") {
+            CustomAlert(
+              "error",
+              "프로필 아이콘 삭제",
+              "존재하지 않는 멤버 입니다"
+            );
+          } else if (code === "COMMON-002") {
+            CustomAlert(
+              "error",
+              "프로필 아이콘 삭제",
+              "기본 프로필 아이콘은 삭제할 수 없습니다"
+            );
+          }
+        });
+    };
+
+    ButtonAlert(
+      "프로필 아이콘 삭제",
+      "아이콘을 삭제 하시겠습니까?",
+      "삭제",
+      "닫기",
+      removeProfileIcon
+    );
+  };
+
   return (
     <div className="flex flex-col p-[16px] gap-[24px]">
       <div className="flex justify-between items-center pb-5 border-b border-gray-200 dark:border-branddarkborder">
         <p className="text-[24px] font-bold">내 정보</p>
         <div className="flex gap-[12px]">
+          {member?.memberIcon !== "public/default.png" && (
+            <button
+              className="bg-red-500 text-white px-[12px] py-[8px] rounded hover:bg-red-400"
+              onClick={hanldeIconRemove}
+            >
+              프로필 사진 삭제
+            </button>
+          )}
           <button
-            className="bg-brandcolor text-white px-4 py-2 rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
+            className="bg-brandcolor text-white px-[12px] py-[8px] rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
             onClick={() => handleOpenModal("profileIcon")}
           >
             프로필 사진 변경
           </button>
           <button
-            className="bg-brandcolor text-white px-4 py-2 rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
+            className="bg-brandcolor text-white px-[12px] py-[8px] rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
             onClick={() => handleOpenModal("profilePassword")}
           >
             비밀번호 변경

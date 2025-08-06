@@ -64,7 +64,7 @@ export default function Page() {
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
   const [isRegisterTeamOpen, setIsRegisterTeamOpen] = useState<boolean>(false);
 
-  const accessToken = getCookie("accessToken");
+  const accessToken = getCookie("lf_atk");
 
   useEffect(() => {
     if (accessToken) {
@@ -188,6 +188,7 @@ export default function Page() {
       "길드 팀 삭제",
       `길드 팀을 삭제하시겠습니까? 팀은 해체되며 팀의 대기록목은 제거됩니다.`,
       "삭제",
+      "닫기",
       deleteTeam
     );
   };
@@ -220,6 +221,7 @@ export default function Page() {
       "길드 팀 탈퇴",
       "길드 팀을 탈퇴하시겠습니까?\n 팀의 대기목록과 대기중인 스크림이 제거됩니다",
       "탈퇴",
+      "닫기",
       leaveTeam
     );
   };
@@ -345,7 +347,8 @@ export default function Page() {
     ButtonAlert(
       "스크림 등록 취소",
       "등록된 스크림을 삭제하시겠습니까? \n 대기 중인 신청도 모두 취소됩니다.",
-      "취소",
+      "삭제",
+      "닫기",
       onConfirmDelete
     );
   };
@@ -373,6 +376,7 @@ export default function Page() {
       "스크림 취소",
       "진행중인 스크림을 취소하시겠습니까? \n 대기중인 스크림을 취소하면 래더점수가 하락합니다.",
       "취소",
+      "닫기",
       onConfirmCancel
     );
   };
@@ -433,6 +437,7 @@ export default function Page() {
       "재경기 요청",
       "재경기를 요청하시겠습니까?\n 상대팀의 응답을 기다려 주세요",
       "요청",
+      "닫기",
       onConfirmRematch
     );
   };

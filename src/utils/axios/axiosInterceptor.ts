@@ -26,7 +26,7 @@ const onTokenRefreshed = (token: string) => {
 //========================================================================//
 
 export const onRequest = (config: InternalAxiosRequestConfig) => {
-  const token = getCookie("accessToken");
+  const token = getCookie("lf_atk");
 
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
@@ -58,7 +58,7 @@ export const onErrorResponse = async (error: AxiosError) => {
   ) {
     originalRequest._retry = true; // ✅ 딱 한 번만 재시도
 
-    const refreshToken = getCookie("refreshToken");
+    const refreshToken = getCookie("lf_rtk");
     if (!refreshToken) {
       alert("리프레시 토큰이 없습니다. 로그인 페이지로 이동합니다.");
       window.location.href = "/register";
@@ -70,8 +70,8 @@ export const onErrorResponse = async (error: AxiosError) => {
       errorData.code === "EXPIRED_TOKEN"
     ) {
       alert("잘못된 토큰입니다. 만료되었을 가능성이 큽니다.");
-      removeCookie("accessToken");
-      removeCookie("refreshToken");
+      removeCookie("lf_atk");
+      removeCookie("lf_rtk");
       setMember(null);
       window.location.href = "/";
       return Promise.reject(error);
@@ -96,7 +96,7 @@ export const onErrorResponse = async (error: AxiosError) => {
         console.log("🔐 토큰 재발급 응답:", refreshTokenResponse);
 
         if (refreshTokenResponse.data.ok) {
-          const accessToken = getCookie("accessToken");
+          const accessToken = getCookie("lf_atk");
           onTokenRefreshed(accessToken!);
 
           originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
@@ -106,8 +106,8 @@ export const onErrorResponse = async (error: AxiosError) => {
         }
       } catch (e) {
         console.error("❌ 토큰 재발급 실패:", e);
-        removeCookie("accessToken");
-        removeCookie("refreshToken");
+        removeCookie("lf_atk");
+        removeCookie("lf_rtk");
         setMember(null);
         window.location.href = "/register";
         return Promise.reject(e);
@@ -120,7 +120,7 @@ export const onErrorResponse = async (error: AxiosError) => {
     // ✅ 토큰 재발급 대기 중이면 구독 대기 → 완료 후 재시도
     return new Promise((resolve) => {
       subscribeTokenRefresh(() => {
-        const newToken = getCookie("accessToken");
+        const newToken = getCookie("lf_rtk");
         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
         console.log("⏱ 재시도하는 요청", originalRequest);
         resolve(axiosInstance.request(originalRequest));

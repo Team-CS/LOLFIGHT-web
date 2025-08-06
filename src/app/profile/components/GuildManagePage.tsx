@@ -139,6 +139,7 @@ const GuildManagePage = () => {
       "길드추방",
       `${member.memberName}길드원을 추방하시겠습니까?`,
       "추방",
+      "닫기",
       expulsion
     );
   };
@@ -163,6 +164,7 @@ const GuildManagePage = () => {
       "길드마스터 변경",
       `길드마스터를 ${memberName}으로 변경하시겠습니까?`,
       "변경",
+      "닫기",
       changeMaster
     );
   };

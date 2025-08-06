@@ -71,10 +71,10 @@ const WysiwygEditor = () => {
     }
 
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("accessToken");
+      const token = getCookie("lf_atk");
       if (token) {
         const decoded: any = jwtDecode(token);
-        setIsAdminUser(decoded.admin || false);
+        setIsAdminUser(decoded.role === "ADMIN" || false);
       }
     }
   }, [editorRef]);
@@ -114,7 +114,7 @@ const WysiwygEditor = () => {
   };
 
   const onUploadImage = async (blob: any, callback: any) => {
-    const token = getCookie("accessToken");
+    const token = getCookie("lf_atk");
     const formData = new FormData();
     formData.append("file", blob);
     try {

@@ -33,6 +33,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
       "게시글 삭제",
       "게시글을 삭제하시겠습니까?",
       "삭제",
+      "닫기",
       onConfirmDelete
     );
   };
