@@ -1,9 +1,9 @@
-import { BattleDTO } from "@/src/common/DTOs/battle/battle.dto";
+import { BattleDto } from "@/src/common/DTOs/battle/battle.dto";
 import constant from "@/src/common/constant/constant";
 import React from "react";
 
 interface Props {
-  battleData: BattleDTO;
+  battleData: BattleDto;
 }
 
 const renderPlayerInfo = (
@@ -21,56 +21,62 @@ const renderPlayerInfo = (
         width={20}
         height={20}
       />
-      <p className="text-14px">{playerName}</p>
+      <div className="flex items-center">
+        <p className="text-[14px] font-medium">{playerName.split("#")[0]}</p>
+        <p className="text-[12px] text-gray-600 font-light">
+          #{playerName.split("#")[1]}
+        </p>
+      </div>
     </div>
   );
 };
 
 const GuildFightMember = (props: Props) => {
+  const { battleData } = props;
   return (
     <div className="flex">
       <div className="flex flex-col w-[250px] gap-[2px]">
         {renderPlayerInfo(
-          props.battleData.teamA.player1?.championId,
-          props.battleData.teamA.player1?.summonerName
+          battleData.redTeam.topPlayer?.championId,
+          battleData.redTeam.topPlayer?.summonerName
         )}
         {renderPlayerInfo(
-          props.battleData.teamA.player2?.championId,
-          props.battleData.teamA.player2?.summonerName
+          battleData.redTeam.junglePlayer?.championId,
+          battleData.redTeam.junglePlayer?.summonerName
         )}
         {renderPlayerInfo(
-          props.battleData.teamA.player3?.championId,
-          props.battleData.teamA.player3?.summonerName
+          battleData.redTeam.midPlayer?.championId,
+          battleData.redTeam.midPlayer?.summonerName
         )}
         {renderPlayerInfo(
-          props.battleData.teamA.player4?.championId,
-          props.battleData.teamA.player4?.summonerName
+          battleData.redTeam.adcPlayer?.championId,
+          battleData.redTeam.adcPlayer?.summonerName
         )}
         {renderPlayerInfo(
-          props.battleData.teamA.player5?.championId,
-          props.battleData.teamA.player5?.summonerName
+          battleData.redTeam.supportPlayer?.championId,
+          battleData.redTeam.supportPlayer?.summonerName
         )}
       </div>
       <div className="flex flex-col w-[250px] gap-[2px]">
         {renderPlayerInfo(
-          props.battleData.teamB.player1?.championId,
-          props.battleData.teamB.player1?.summonerName
+          battleData.blueTeam.topPlayer?.championId,
+          battleData.blueTeam.topPlayer?.summonerName
         )}
         {renderPlayerInfo(
-          props.battleData.teamB.player2?.championId,
-          props.battleData.teamB.player2?.summonerName
+          battleData.blueTeam.junglePlayer?.championId,
+          battleData.blueTeam.junglePlayer?.summonerName
         )}
         {renderPlayerInfo(
-          props.battleData.teamB.player3?.championId,
-          props.battleData.teamB.player3?.summonerName
+          battleData.blueTeam.midPlayer?.championId,
+          battleData.blueTeam.midPlayer?.summonerName
         )}
         {renderPlayerInfo(
-          props.battleData.teamB.player4?.championId,
-          props.battleData.teamB.player4?.summonerName
+          battleData.blueTeam.adcPlayer?.championId,
+          battleData.blueTeam.adcPlayer?.summonerName
         )}
         {renderPlayerInfo(
-          props.battleData.teamB.player5?.championId,
-          props.battleData.teamB.player5?.summonerName
+          battleData.blueTeam.supportPlayer?.championId,
+          battleData.blueTeam.supportPlayer?.summonerName
         )}
       </div>
     </div>

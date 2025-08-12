@@ -1,7 +1,10 @@
-import { BattleDTO } from "../common/DTOs/battle/battle.dto";
+import {
+  BattleDto,
+  BattleListResponseDto,
+} from "../common/DTOs/battle/battle.dto";
 import { ResponseDto } from "../common/DTOs/response.dto";
 import constant from "../common/constant/constant";
-import axios, { Axios, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 
 const baseUrl = `${constant.SERVER_URL}/battle`;
 
@@ -10,10 +13,13 @@ const baseUrl = `${constant.SERVER_URL}/battle`;
  * @returns
  */
 export const getBattleList = async (
-  guildName: string
-): Promise<AxiosResponse<ResponseDto<BattleDTO[]>>> => {
-  let url = `${baseUrl}/getBattle`;
-  let queryParams = `?guildName=${guildName}`;
+  guildName: string,
+  page: number,
+  limit: number
+): Promise<AxiosResponse<ResponseDto<BattleListResponseDto>>> => {
+  let url = `${baseUrl}/list`;
+  let queryParams = `?guildName=${guildName}&page=${page}&limit=${limit}`;
+
   url += queryParams;
 
   return await axios.get(url);

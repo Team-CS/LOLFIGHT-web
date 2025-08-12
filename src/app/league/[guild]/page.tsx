@@ -7,22 +7,23 @@ import GuildSummeryRecord from "./components/GuildSummeryRecord";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
-import { BattleDTO } from "@/src/common/DTOs/battle/battle.dto";
+import {
+  BattleDto,
+  BattleListResponseDto,
+} from "@/src/common/DTOs/battle/battle.dto";
 import { getBattleList } from "@/src/api/battle.api";
-import { BattleTeamDTO } from "@/src/common/DTOs/battle/battle_team.dto";
-import Pagination from "@mui/material/Pagination";
 import constant from "@/src/common/constant/constant";
 import { getTierStyle } from "@/src/utils/string/string.util";
 
 export default function GuildPage() {
   const router = useRouter();
+  const guildPath = usePathname();
   const [guild, setGuild] = useState<GuildDto>();
   const [currentTab, setCurrentTab] = useState("guildInfo");
-  const [battleDataList, setBattleDataList] = useState<BattleDTO[]>([]);
-  const guildPath = usePathname();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0); // 총 페이지 수
-  const battlesPerPage = 10;
+  const [battleDataList, setBattleDataList] = useState<BattleDto[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(0);
+  const battlesPerPage = 5;
 
   useEffect(() => {
     const guildName = decodeURIComponent(guildPath.replace(/^\/league\//, ""));
@@ -36,18 +37,15 @@ export default function GuildPage() {
         router.push("/error");
       });
 
-    getBattleList(guildName).then((response) => {
-      let tempBattle: BattleDTO[] = response.data.data;
-      let tempBattleTeam: BattleTeamDTO;
-      tempBattle.forEach((battle) => {
-        if (battle.teamA.guildName !== guildName) {
-          tempBattleTeam = battle.teamA;
-          battle.teamA = battle.teamB;
-          battle.teamB = tempBattleTeam;
-        }
-      });
-      setBattleDataList(tempBattle);
-      setTotalPages(Math.ceil(response.data.data.length / battlesPerPage));
+    getBattleList(guildName, currentPage, battlesPerPage).then((response) => {
+      const data = response.data.data as BattleListResponseDto;
+      if (Array.isArray(data.battleList)) {
+        setBattleDataList(data.battleList);
+        setCurrentPage(currentPage + 1);
+        setTotalPage(data.pagination.totalPage!);
+      } else {
+        setBattleDataList([]);
+      }
     });
   }, []);
 
@@ -55,17 +53,18 @@ export default function GuildPage() {
     setCurrentTab(tab);
   };
 
-  const handlePageClick = (
-    event: React.ChangeEvent<unknown>,
-    pageNumber: number
-  ) => {
-    setCurrentPage(pageNumber);
+  const fetchBattleData = () => {
+    const guildName = decodeURIComponent(guildPath.replace(/^\/league\//, ""));
+    getBattleList(guildName, currentPage, battlesPerPage).then((response) => {
+      const data = response.data.data as BattleListResponseDto;
+      if (Array.isArray(data.battleList)) {
+        setBattleDataList((prevList) => [...prevList, ...data.battleList]);
+        setCurrentPage(currentPage + 1);
+      } else {
+        setBattleDataList([]);
+      }
+    });
   };
-
-  const paginatedBattles = battleDataList.slice(
-    (currentPage - 1) * battlesPerPage,
-    currentPage * battlesPerPage
-  );
 
   return (
     <>
@@ -137,34 +136,28 @@ export default function GuildPage() {
                   guildRank={guild?.guildRecord?.recordRanking}
                 />
               </div>
-              <div className="w-full flex flex-col gap-[12px]">
-                {paginatedBattles.map((battle) => (
-                  <GuildFightRecord key={battle.id} battleData={battle} />
-                ))}
-              </div>
-              <div className="w-full flex justify-center py-[4px]">
-                <Pagination
-                  count={totalPages}
-                  shape="rounded"
-                  boundaryCount={2}
-                  onChange={(event, page) => handlePageClick(event, page)}
-                  sx={{
-                    ".dark & .Mui-selected": {
-                      backgroundColor: "#4C4C4C",
-                      color: "#CACACA", // 텍스트 색상
-                      "&:hover": {
-                        backgroundColor: "#707070", // 호버 시 색상
-                      },
-                    },
-                    ".dark & .MuiPaginationItem-root": {
-                      color: "#EEEEEE", // 선택되지 않은 아이템의 기본 텍스트 색상
-                    },
-                    ".dark & .MuiPaginationItem-icon": {
-                      color: "#EEEEEE", // 텍스트 색상
-                    },
-                  }}
-                />
-              </div>
+              {guild ? (
+                <div className="w-full flex flex-col gap-[12px]">
+                  {battleDataList.map((battle) => (
+                    <GuildFightRecord
+                      key={battle.id}
+                      battleData={battle}
+                      guildName={guild?.guildName}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p>길드 정보를 불러오는 중입니다...</p>
+              )}
+
+              {battleDataList.length < totalPage && (
+                <button
+                  className="w-full py-[4px] border rounded-[12px]"
+                  onClick={fetchBattleData}
+                >
+                  더보기
+                </button>
+              )}
             </div>
           )}
           {currentTab === "members" && (

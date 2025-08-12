@@ -1,11 +1,17 @@
 import { BaseDto } from "../base.dto";
+import { PaginationDto } from "../pagination.dto";
 import { BattleTeamDTO } from "./battle_team.dto";
 
-export interface BattleDTO extends BaseDto {
+export interface BattleDto extends BaseDto {
   id: string;
-  battleId: number;
+  matchId: number;
   battleMode: string;
   battleLength: number;
-  teamA: BattleTeamDTO;
-  teamB: BattleTeamDTO;
+  redTeam: BattleTeamDTO;
+  blueTeam: BattleTeamDTO;
+}
+
+export interface BattleListResponseDto {
+  battleList: BattleDto[];
+  pagination: PaginationDto;
 }

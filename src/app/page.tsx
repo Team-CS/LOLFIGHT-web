@@ -9,7 +9,6 @@ import { PostDto, PostListResponseDto } from "../common/DTOs/board/post.dto";
 import { getPopularPosts } from "../api/post.api";
 import BoardInfoComponent from "./board/components/BoardInfoComponent";
 import { convertBoardNameToCode } from "../utils/string/string.util";
-import Script from "next/script";
 
 export default function Page() {
   const [guilds, setGuilds] = useState<GuildDto[]>([]);
@@ -56,13 +55,13 @@ export default function Page() {
           <div className="flex flex-col ">
             <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[4px] w-full whitespace-nowrap">
               <div className="flex-[0.25] text-center px-[8px]">순위</div>
-              <div className="flex-[1] text-center px-[8px]">길드이름</div>
+              <div className="flex-[1] text-center px-[8px]">길드명</div>
               <div className="flex-[2] text-center px-[8px]">길드소개</div>
               <div className="flex-[0.25] text-center px-[8px]">길드원</div>
               <div className="flex-[0.25] text-center px-[8px]">승</div>
               <div className="flex-[0.25] text-center px-[8px]">패</div>
               <div className="flex-[0.5] text-center px-[8px]">티어</div>
-              <div className="flex-[1] text-center px-[8px]">길드장</div>
+              <div className="flex-[0.5] text-center px-[8px]">래더점수</div>
             </div>
             {isLoading ? (
               <div className="flex justify-center items-center py-[28px]">

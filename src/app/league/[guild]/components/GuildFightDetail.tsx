@@ -1,9 +1,10 @@
 import React from "react";
 import GuildFightList from "./GuildFightList";
-import { BattleDTO } from "@/src/common/DTOs/battle/battle.dto";
+import { BattleDto } from "@/src/common/DTOs/battle/battle.dto";
 
 interface Props {
-  battleData: BattleDTO;
+  battleData: BattleDto;
+  guildName: string;
 }
 
 const formatDate = (batteDate: Date): string => {
@@ -18,6 +19,11 @@ const formatDate = (batteDate: Date): string => {
 };
 
 const GuildFightDetail = (props: Props) => {
+  const { battleData, guildName } = props;
+  const [myTeamData, enemyTeamData] =
+    battleData.redTeam.guild.guildName === guildName
+      ? [battleData.redTeam, battleData.blueTeam]
+      : [battleData.blueTeam, battleData.redTeam];
   return (
     <div className="max-w-[1200px] border flex flex-col shadow py-[12px] bg-white dark:bg-dark border dark:border-gray-700">
       {/* 1 */}
@@ -33,8 +39,8 @@ const GuildFightDetail = (props: Props) => {
 
       {/* 2 */}
       <div>
-        <GuildFightList battleTeamData={props.battleData.teamA} />
-        <GuildFightList battleTeamData={props.battleData.teamB} />
+        <GuildFightList battleTeamData={myTeamData} />
+        <GuildFightList battleTeamData={enemyTeamData} />
       </div>
     </div>
   );
