@@ -24,7 +24,7 @@ const WithdrawalPage = () => {
           setMember(null);
           removeCookie("lf_atk");
           removeCookie("lf_rtk");
-          router.push("/register");
+          router.push("/");
           CustomAlert(
             "success",
             "회원탈퇴",

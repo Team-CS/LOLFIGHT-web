@@ -2,7 +2,7 @@
 User-agent: *
 Allow: /
 Disallow: /profile
-Disallow: /register
+Disallow: /login
 Disallow: /policies
 
 # Host

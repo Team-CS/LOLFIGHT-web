@@ -393,16 +393,28 @@ const GuildManagePage = () => {
                       <p className="text-gray-400 text-center text-[14px]">
                         배너가 없습니다.
                       </p>
-                      {member &&
-                        member.memberName ===
-                          member.memberGuild.guildMaster && (
-                          <button
-                            className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
-                            onClick={() => setOpenModal("banner")}
-                          >
-                            배너 추가하기
-                          </button>
-                        )}
+                      <div className="flex gap-[12px]">
+                        {member &&
+                          member.memberName ===
+                            member.memberGuild.guildMaster && (
+                            <button
+                              className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                              onClick={() => setOpenModal("banner")}
+                            >
+                              배너 추가하기
+                            </button>
+                          )}
+                        {member &&
+                          member.memberName ===
+                            member.memberGuild.guildMaster && (
+                            <button
+                              className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                              onClick={() => setOpenModal("description")}
+                            >
+                              길드소개 수정하기
+                            </button>
+                          )}
+                      </div>
                     </>
                   )}
                 </div>

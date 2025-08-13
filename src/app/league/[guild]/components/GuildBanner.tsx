@@ -31,7 +31,6 @@ const GuildBanner = (props: Props) => {
         });
     } else {
       CustomAlert("warning", "길드가입", "로그인후 이용할 수 있습니다.");
-      router.push("/register");
     }
   };
 

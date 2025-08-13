@@ -54,14 +54,17 @@ export const onErrorResponse = async (error: AxiosError) => {
     originalRequest &&
     !originalRequest._retry &&
     !originalRequest.url?.includes("/auth/refresh") &&
-    !originalRequest.url?.includes("/register")
+    !originalRequest.url?.includes("/login")
   ) {
     originalRequest._retry = true; // ✅ 딱 한 번만 재시도
 
     const refreshToken = getCookie("lf_rtk");
     if (!refreshToken) {
-      alert("리프레시 토큰이 없습니다. 로그인 페이지로 이동합니다.");
-      window.location.href = "/register";
+      removeCookie("lf_atk");
+      removeCookie("lf_rtk");
+      setMember(null);
+      alert("토큰이 만료 되었습니다. 재로그인이 필요합니다.");
+      window.location.href = "/login";
       return Promise.reject(error);
     }
 
@@ -73,7 +76,7 @@ export const onErrorResponse = async (error: AxiosError) => {
       removeCookie("lf_atk");
       removeCookie("lf_rtk");
       setMember(null);
-      window.location.href = "/";
+      window.location.href = "/login";
       return Promise.reject(error);
     }
 
@@ -109,7 +112,7 @@ export const onErrorResponse = async (error: AxiosError) => {
         removeCookie("lf_atk");
         removeCookie("lf_rtk");
         setMember(null);
-        window.location.href = "/register";
+        window.location.href = "/login";
         return Promise.reject(e);
       } finally {
         isRefreshing = false;

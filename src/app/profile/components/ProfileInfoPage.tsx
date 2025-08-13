@@ -74,28 +74,6 @@ const ProfileInfoPage = () => {
     }
   };
 
-  const handlePasswordSubmit = (
-    currentPassword: string,
-    newPassword: string
-  ) => {
-    updatePassword(currentPassword, newPassword)
-      .then((response) => {
-        CustomAlert(
-          "success",
-          "비밀번호 변경",
-          "비밀번호 변경이 완료되었습니다"
-        );
-        setMember(null);
-        removeCookie("lf_atk");
-        removeCookie("lf_rtk");
-
-        router.replace("/register");
-      })
-      .catch((error) => {
-        CustomAlert("error", "비밀번호 변경", "비밀번호를 확인해주세요");
-      });
-  };
-
   const handleNicknameSubmit = () => {
     updateNickname(nickname)
       .then((response) => {
@@ -160,12 +138,12 @@ const ProfileInfoPage = () => {
           >
             프로필 사진 변경
           </button>
-          <button
+          {/* <button
             className="bg-brandcolor text-white px-[12px] py-[8px] rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
             onClick={() => handleOpenModal("profilePassword")}
           >
             비밀번호 변경
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -258,12 +236,12 @@ const ProfileInfoPage = () => {
           onSubmit={handleIconSubmit}
         />
       )}
-      {openModal === "profilePassword" && (
+      {/* {openModal === "profilePassword" && (
         <ProfilePasswordModal
           onClose={handleCloseModal}
           onSubmit={handlePasswordSubmit}
         />
-      )}
+      )} */}
     </div>
   );
 };
