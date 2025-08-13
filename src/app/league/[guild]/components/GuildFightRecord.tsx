@@ -4,25 +4,31 @@ import { SlArrowDown } from "react-icons/sl";
 
 import GuildFightDetail from "./GuildFightDetail";
 import GuildFightMember from "./GuildFightMember";
-import { BattleDTO } from "@/src/common/DTOs/battle/battle.dto";
+import { BattleDto } from "@/src/common/DTOs/battle/battle.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 
 interface Props {
-  battleData: BattleDTO;
+  battleData: BattleDto;
+  guildName: string;
 }
 const GuildFightRecord = (props: Props) => {
+  const { battleData, guildName } = props;
   const [showDetails, setShowDetails] = useState<boolean>(false);
-  const result = props.battleData.teamA.isWinning ? "win" : "lose";
+  const [myTeamData, enemyTeamData] =
+    battleData.redTeam.guild.guildName === guildName
+      ? [battleData.redTeam, battleData.blueTeam]
+      : [battleData.blueTeam, battleData.redTeam];
+  const result = myTeamData.isWinning ? "win" : "lose";
   const [homeGuild, setHomeGuild] = useState<GuildDto>();
   const [awayGuild, setawayGuild] = useState<GuildDto>();
 
   useEffect(() => {
-    getGuildInfo(props.battleData.teamA.guildName).then((response) => {
+    getGuildInfo(myTeamData.guild.guildName).then((response) => {
       setHomeGuild(response.data.data);
     });
-    getGuildInfo(props.battleData.teamB.guildName).then((response) => {
+    getGuildInfo(enemyTeamData.guild.guildName).then((response) => {
       setawayGuild(response.data.data);
     });
   }, []);
@@ -86,12 +92,12 @@ const GuildFightRecord = (props: Props) => {
           <div className="flex flex-col w-full items-center gap-[8px]">
             <div className="flex items-center gap-[8px]">
               <img
-                src={`${constant.SERVER_URL}/public/guild/${props.battleData.teamA.guildName}.png`}
+                src={`${constant.SERVER_URL}/${myTeamData.guild.guildIcon}`}
                 alt="GuildBanner"
                 className="w-[30px] h-[30px] rounded-[4px] object-cover"
               />
               <p className="font-bold text-[16px]">
-                {props.battleData.teamA.guildName}
+                {myTeamData.guild.guildName}
               </p>
             </div>
             <p className="font-light text-gray-600 text-[12px]">
@@ -104,18 +110,18 @@ const GuildFightRecord = (props: Props) => {
           <div className="flex flex-col w-full items-center gap-[8px]">
             <div className="flex items-center gap-[8px]">
               <img
-                src={`${constant.SERVER_URL}/public/guild/${props.battleData.teamB.guildName}.png`}
+                src={`${constant.SERVER_URL}/${enemyTeamData.guild.guildIcon}`}
                 alt="GuildBanner"
                 className="w-[30px] h-[30px] rounded-[4px] object-cover"
               />
               <p
                 className={`font-bold ${
-                  props.battleData.teamB.guildName.length > 8
+                  enemyTeamData.guild.guildName.length > 8
                     ? "text-[10px]"
                     : "text-[16px]"
                 }`}
               >
-                {props.battleData.teamB.guildName}
+                {enemyTeamData.guild.guildName}
               </p>
             </div>
             <p className="font-light text-gray-600 text-[12px]">
@@ -133,8 +139,8 @@ const GuildFightRecord = (props: Props) => {
             }`}
           >
             {result === "win"
-              ? `+${props.battleData.teamA.point}점`
-              : `${props.battleData.teamA.point}점`}
+              ? `+${myTeamData.point}점`
+              : `${myTeamData.point}점`}
           </p>
         </div>
 
@@ -161,7 +167,10 @@ const GuildFightRecord = (props: Props) => {
       </div>
       {showDetails && (
         <div className="w-full h-full pb-2">
-          <GuildFightDetail battleData={props.battleData} />
+          <GuildFightDetail
+            battleData={props.battleData}
+            guildName={guildName}
+          />
         </div>
       )}
     </div>

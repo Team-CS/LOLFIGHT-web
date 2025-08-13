@@ -13,7 +13,6 @@ import {
   postData,
 } from "../utils/axios/serverHelper";
 import { GuildTeamInviteDto } from "../common/DTOs/guild/guild_team/guild_team_invite.dto";
-import { UpdateGuildTeamMemberDto } from "../common/DTOs/guild/guild_team/guild_team_member.dto";
 
 const baseUrl = `${constant.SERVER_URL}/guild_team`;
 

@@ -44,7 +44,7 @@ const GuildMemberBox = (props: Props) => {
 
   return (
     <div
-      className="flex flex-col p-[8px] gap-[12px] border border-[#CDCDCD] rounded-[8px] bg-[#EEEEEE] dark:bg-branddark"
+      className="flex flex-col p-[8px] gap-[12px] border border-[#CDCDCD] rounded-[8px] bg-[#EEEEEE] dark:bg-branddark dark:border-branddarkborder"
       onContextMenu={
         type === "guildMember" &&
         guildMember.memberName !== guild.guildMaster &&
@@ -79,19 +79,25 @@ const GuildMemberBox = (props: Props) => {
           ) : null}
         </div>
 
-        <div className="flex-[1] items-center text-[14px] font-medium">
-          {guildMember.memberGame?.line ? (
-            <LineSelector
-              currentLine={guildMember.memberGame.line}
-              isMaster={guild.guildMaster === member?.memberName}
-              onChangeLine={(newLine) => {
-                onChangeLine?.(guildMember.id, newLine);
-              }}
-            />
-          ) : null}
-        </div>
+        {type === "guildMember" && (
+          <div className="flex-[1] items-center text-[14px] font-medium">
+            {guildMember.memberGame?.line ? (
+              <LineSelector
+                currentLine={guildMember.memberGame.line}
+                isMaster={guild.guildMaster === member?.memberName}
+                onChangeLine={(newLine) => {
+                  onChangeLine?.(guildMember.id, newLine);
+                }}
+              />
+            ) : null}
+          </div>
+        )}
 
-        <div className="flex gap-[16px]">
+        <div
+          className={`${
+            type === "guildMember" ? "flex" : "flex flex-[1]"
+          } gap-[16px]`}
+        >
           {type === "guildMember" ? (
             guildMember.memberName !== guild.guildMaster &&
             guild.guildMaster === member?.memberName && (

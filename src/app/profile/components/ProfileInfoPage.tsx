@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  removeIcon,
   updateMemberIcon,
   updateNickname,
   updatePassword,
@@ -11,6 +12,7 @@ import { ProfileIconModal } from "./modals/ProfileIconModal";
 import { ProfilePasswordModal } from "./modals/profilePasswordModal";
 import { removeCookie } from "@/src/utils/cookie/cookie";
 import { useRouter } from "next/navigation";
+import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 
 const ProfileInfoPage = () => {
   const router = useRouter();
@@ -72,28 +74,6 @@ const ProfileInfoPage = () => {
     }
   };
 
-  const handlePasswordSubmit = (
-    currentPassword: string,
-    newPassword: string
-  ) => {
-    updatePassword(currentPassword, newPassword)
-      .then((response) => {
-        CustomAlert(
-          "success",
-          "비밀번호 변경",
-          "비밀번호 변경이 완료되었습니다"
-        );
-        setMember(null);
-        removeCookie("accessToken");
-        removeCookie("refreshToken");
-
-        router.replace("/register");
-      })
-      .catch((error) => {
-        CustomAlert("error", "비밀번호 변경", "비밀번호를 확인해주세요");
-      });
-  };
-
   const handleNicknameSubmit = () => {
     updateNickname(nickname)
       .then((response) => {
@@ -105,23 +85,65 @@ const ProfileInfoPage = () => {
       });
   };
 
+  const hanldeIconRemove = () => {
+    const removeProfileIcon = () => {
+      removeIcon()
+        .then((response) => {
+          setMember(response.data.data);
+        })
+        .catch((error) => {
+          const code = error.response.data.code;
+
+          if (code === "USER-001") {
+            CustomAlert(
+              "error",
+              "프로필 아이콘 삭제",
+              "존재하지 않는 멤버 입니다"
+            );
+          } else if (code === "COMMON-002") {
+            CustomAlert(
+              "error",
+              "프로필 아이콘 삭제",
+              "기본 프로필 아이콘은 삭제할 수 없습니다"
+            );
+          }
+        });
+    };
+
+    ButtonAlert(
+      "프로필 아이콘 삭제",
+      "아이콘을 삭제 하시겠습니까?",
+      "삭제",
+      "닫기",
+      removeProfileIcon
+    );
+  };
+
   return (
     <div className="flex flex-col p-[16px] gap-[24px]">
-      <div className="flex justify-between items-center pb-5 border-b border-gray-200">
+      <div className="flex justify-between items-center pb-5 border-b border-gray-200 dark:border-branddarkborder">
         <p className="text-[24px] font-bold">내 정보</p>
         <div className="flex gap-[12px]">
+          {member?.memberIcon !== "public/default.png" && (
+            <button
+              className="bg-red-500 text-white px-[12px] py-[8px] rounded hover:bg-red-400"
+              onClick={hanldeIconRemove}
+            >
+              프로필 사진 삭제
+            </button>
+          )}
           <button
-            className="bg-brandcolor text-white px-4 py-2 rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
+            className="bg-brandcolor text-white px-[12px] py-[8px] rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
             onClick={() => handleOpenModal("profileIcon")}
           >
             프로필 사진 변경
           </button>
-          <button
-            className="bg-brandcolor text-white px-4 py-2 rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
+          {/* <button
+            className="bg-brandcolor text-white px-[12px] py-[8px] rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
             onClick={() => handleOpenModal("profilePassword")}
           >
             비밀번호 변경
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -136,7 +158,7 @@ const ProfileInfoPage = () => {
         <div className="flex flex-col w-full gap-[8px]">
           <div className="flex flex-col gap-[4px]">
             <label>이메일</label>
-            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] w-full cursor-not-allowed">
+            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] w-full cursor-not-allowed dark:border-branddarkborder">
               {member!.memberId}
             </div>
           </div>
@@ -150,7 +172,7 @@ const ProfileInfoPage = () => {
                 maxLength={10}
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-branddarkborder"
               />
               {member?.memberName !== nickname && (
                 <button
@@ -165,27 +187,27 @@ const ProfileInfoPage = () => {
 
           <div className="flex flex-col gap-[4px]">
             <label>가입일</label>
-            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed">
+            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed dark:border-branddarkborder">
               {member!.createdAt?.toString().split("T")[0]}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex justify-between items-center pb-5 border-b border-gray-200">
+      <div className="flex justify-between items-center pb-5 border-b border-gray-200 dark:border-branddarkborder">
         <p className="text-[24px] font-bold">Riot 계정 정보</p>
       </div>
 
       <div className="flex flex-col gap-[24px]">
         <div className="flex flex-col gap-[4px]">
           <label>인게임 닉네임</label>
-          <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed">
+          <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed dark:border-branddarkborder">
             {member!.memberGame?.gameName ?? "등록되지 않음"}
           </div>
         </div>
         <div className="flex flex-col gap-[4px]">
           <label>티어</label>
-          <div className="flex items-center bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] gap-[12px] cursor-not-allowed">
+          <div className="flex items-center bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] gap-[12px] cursor-not-allowed dark:border-branddarkborder">
             {member?.memberGame?.gameTier ? (
               <>
                 <img
@@ -214,12 +236,12 @@ const ProfileInfoPage = () => {
           onSubmit={handleIconSubmit}
         />
       )}
-      {openModal === "profilePassword" && (
+      {/* {openModal === "profilePassword" && (
         <ProfilePasswordModal
           onClose={handleCloseModal}
           onSubmit={handlePasswordSubmit}
         />
-      )}
+      )} */}
     </div>
   );
 };

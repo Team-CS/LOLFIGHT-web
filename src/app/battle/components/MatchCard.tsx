@@ -7,10 +7,11 @@ import dayjs from "dayjs";
 interface MatchCardProps {
   scrim: ScrimApplicationDto;
   onCancel: (id: string) => void;
+  onRematch: (scrimSlotId: string, applicationTeamId: string) => void;
 }
 
 const MatchCard = (props: MatchCardProps) => {
-  const { scrim, onCancel } = props;
+  const { scrim, onCancel, onRematch } = props;
   const { guildTeam } = useGuildTeamStore();
   const { member } = useMemberStore();
 
@@ -60,6 +61,14 @@ const MatchCard = (props: MatchCardProps) => {
   const isAccepted = scrim.status === "ACCEPTED";
   const isWithin5Min = scheduledAt && scheduledAt.diff(now, "minute") <= 5;
   const showEntryCode = isAccepted && isWithin5Min;
+
+  const isClosed = scrim.status === "CLOSED";
+  const finishedAt = scrim?.updatedAt;
+  const isWithin5MinAfterFinish =
+    finishedAt &&
+    now.diff(finishedAt, "minute") <= 10 &&
+    now.isAfter(finishedAt);
+  const showRematchButton = isClosed && isWithin5MinAfterFinish;
 
   return (
     <div
@@ -121,6 +130,16 @@ const MatchCard = (props: MatchCardProps) => {
               @todo ABCDEFG
             </span>
           </p>
+        )}
+        {showRematchButton && (
+          <button
+            className="px-[8px] py-[4px] text-[14px] bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+            onClick={() => {
+              onRematch(scrim.scrimSlot.id, scrim.applicationTeam.id);
+            }}
+          >
+            재경기 신청
+          </button>
         )}
       </div>
     </div>

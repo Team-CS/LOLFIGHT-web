@@ -1,5 +1,6 @@
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import constant from "@/src/common/constant/constant";
+import { getTierStyle } from "@/src/utils/string/string.util";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -50,19 +51,27 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
         <span className="w-full">{props.guild.guildDescription}</span>
       </div>
       <div className="flex-[0.25] px-[8px] text-center">
-        {props.guild.guildMembers.length}
+        {props.guild.guildMembers.length}{" "}
+        <span className="text-[14px]"> 명</span>
       </div>
       <div className="flex-[0.25] px-[8px] text-center">
-        {props.guild.guildRecord!.recordVictory}승
+        {props.guild.guildRecord!.recordVictory}
+        <span className="text-[14px]"> 승</span>
       </div>
       <div className="flex-[0.25] px-[8px] text-center">
-        {props.guild.guildRecord!.recordDefeat}패
+        {props.guild.guildRecord!.recordDefeat}
+        <span className="text-[14px]"> 패</span>
       </div>
-      <div className="flex-[0.5] px-[8px] text-center">
+      <div
+        className={`flex-[0.5] px-[8px] text-center ${getTierStyle(
+          props.guild.guildTier
+        )}`}
+      >
         {props.guild.guildTier}
       </div>
-      <div className="flex-[1] px-[8px] text-center">
-        {props.guild.guildMaster}
+      <div className="flex-[0.5] px-[8px] text-center font-medium">
+        {props.guild.guildRecord?.recordLadder}{" "}
+        <span className="text-[14px]">점</span>
       </div>
     </div>
   );

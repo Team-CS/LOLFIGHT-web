@@ -42,6 +42,14 @@ export const updateNickname = async (
   return await patchData(url, body);
 };
 
+export const removeIcon = async (): Promise<
+  AxiosResponse<ResponseDto<MemberDto>>
+> => {
+  let url = `${baseUrl}/remove-icon`;
+
+  return await patchData(url);
+};
+
 /**
  * member 길드 탈퇴
  * @param id

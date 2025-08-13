@@ -14,8 +14,9 @@ import { removeCookie } from "@/src/utils/cookie/cookie";
 import BoardSection from "./header/boardSection";
 import localFont from "next/font/local";
 import CustomAlert from "./alert/CustomAlert";
-import { FaRegBell } from "react-icons/fa";
 import { CiBellOn } from "react-icons/ci";
+import { useGuildTeamStore } from "../zustand/guild_team.zustand";
+import { useFirebaseStore } from "../zustand/firebase.zustand";
 const rixi = localFont({
   src: "../../fonts/RixInooAriDuriRegular.ttf",
   display: "swap",
@@ -36,10 +37,10 @@ export const Header = () => {
   const [activeTabLeft, setActiveTabLeft] = useState("공지사항");
   const [activeTabRight, setActiveTabRight] = useState("자유게시판");
 
-  const rgmBoardId = 2;
-  const freeBoardId = 0;
-  const noticeBoardId = 3;
-  const eventBoardId = 4;
+  const rgmBoardId = 3;
+  const freeBoardId = 1;
+  const noticeBoardId = 4;
+  const eventBoardId = 5;
 
   const hasNotification = true;
 
@@ -70,16 +71,23 @@ export const Header = () => {
   const handleLogoutClick = async () => {
     setMember(null);
 
-    removeCookie("accessToken");
-    removeCookie("refreshToken");
-
+    removeCookie("lf_atk");
+    removeCookie("lf_rtk");
+    localStorage.removeItem("member-store");
+    // 메모리 상태도 완전 클리어
+    useMemberStore.setState({ member: null });
+    useGuildTeamStore.setState({ guildTeam: null });
+    useFirebaseStore.setState({
+      fcmToken: null,
+      isServiceWorkerRegistered: false,
+    });
     router.push("/");
 
     CustomAlert("success", "로그아웃", "로그아웃 되었습니다.");
   };
 
-  const handleLoginClick = () => {
-    router.push("/register");
+  const googleLogin = () => {
+    window.open(`${constant.SERVER_URL}/auth/google`, "_self");
   };
 
   const handleProfileClick = () => {
@@ -207,25 +215,16 @@ export const Header = () => {
                   </div>
                 </div>
               ) : (
-                <div className="w-[400px] h-[150px] flex flex-col justify-between items-center p-[16px]">
-                  <p className="text-center">
+                <div className="w-[400px] h-[150px] flex flex-col gap-[24px] justify-center items-center p-[16px]">
+                  <p className="text-center text-[16px]">
                     롤파이트의 서비스를 편리하게 이용하세요
                   </p>
                   <button
-                    className="w-full bg-brandcolor text-white text-[20px] font-bold py-[8px] rounded hover:bg-brandhover"
-                    onClick={handleLoginClick}
+                    className="flex items-center justify-center gap-[12px] w-full bg-brandcolor text-white text-[20px] font-bold py-[8px] rounded border border-brandborder hover:bg-brandhover"
+                    onClick={() => router.push("/login")}
                   >
                     롤파이트 로그인
                   </button>
-                  <div className="flex gap-[8px] text-sm">
-                    <Link key={"회원가입"} href="/register/signup">
-                      회원가입
-                    </Link>
-                    <span>|</span>
-                    <Link key={"비밀번호 찾기"} href="/register/find">
-                      비밀번호 찾기
-                    </Link>
-                  </div>
                 </div>
               )}
             </div>

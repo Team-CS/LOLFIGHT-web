@@ -10,11 +10,12 @@ interface Props {
 }
 
 const GuildFightList = (props: Props) => {
-  const result = props.battleTeamData.isWinning ? "win" : "lose";
-  const highestChampionDamage = findHighestDamagePlayer(props.battleTeamData);
+  const { battleTeamData } = props;
+  const result = battleTeamData.isWinning ? "win" : "lose";
+  const highestChampionDamage = findHighestDamagePlayer(battleTeamData);
   const [guildData, setGuildData] = useState<GuildDto>();
   useEffect(() => {
-    getGuildInfo(props.battleTeamData.guildName).then((response) => {
+    getGuildInfo(battleTeamData.guild.guildName).then((response) => {
       setGuildData(response.data.data);
     });
   }, []);
@@ -26,7 +27,7 @@ const GuildFightList = (props: Props) => {
           result === "win" ? "bg-blue-300" : "bg-red-300"
         }`}
       >
-        <div className="flex gap-[12px]">
+        <div className="flex gap-[12px] items-center">
           <p
             className={`font-extrabold ${
               result === "win" ? "text-blue-500" : "text-red-500"
@@ -35,15 +36,88 @@ const GuildFightList = (props: Props) => {
             {result === "win" ? "승리" : "패배"}
           </p>
           <img
-            src={`${constant.SERVER_URL}/public/guild/${props.battleTeamData.guildName}.png`}
+            src={`${constant.SERVER_URL}/${battleTeamData.guild.guildIcon}`}
             alt="GuildBanner"
             className="w-[25px] h-[25px] rounded-[4px] object-cover"
           />
-          <p className="font-semibold">{props.battleTeamData.guildName}</p>
+          <p className="font-semibold">{battleTeamData.guild.guildName}</p>
         </div>
-        <p className="text-[14px] text-gray-500">
-          1부리그 - {guildData?.guildRecord?.recordLadder}점
-        </p>
+
+        <div className="flex gap-[12px] items-center">
+          {/* Baron */}
+          <div className="flex items-center gap-[4px]">
+            <img
+              src={`${constant.SERVER_URL}/public/objects/${
+                result === "win" ? "baron-blue.png" : "baron-red.png"
+              }`}
+              className="w-[15px] h-[15px]"
+            />
+            <p className="text-[12px]">{battleTeamData.baronCount}</p>
+          </div>
+          {/* Baron */}
+          <div className="flex items-center gap-[4px]">
+            <img
+              src={`${constant.SERVER_URL}/public/objects/${
+                result === "win" ? "baron-blue.png" : "baron-red.png"
+              }`}
+              className="w-[15px] h-[15px]"
+            />
+            <p className="text-[12px]">{battleTeamData.baronCount}</p>
+          </div>
+          {/* Dragon */}
+          <div className="flex items-center gap-[4px]">
+            <img
+              src={`${constant.SERVER_URL}/public/objects/${
+                result === "win" ? "dragon-blue.png" : "dragon-red.png"
+              }`}
+              className="w-[15px] h-[15px]"
+            />
+            <p className="text-[12px]">{battleTeamData.dragonCount}</p>
+          </div>
+          {/* Herald */}
+          <div className="flex items-center gap-[4px]">
+            <img
+              src={`${constant.SERVER_URL}/public/objects/${
+                result === "win" ? "herald-blue.png" : "herald-red.png"
+              }`}
+              className="w-[15px] h-[15px]"
+            />
+            <p className="text-[12px]">{battleTeamData.riftHeraldCount}</p>
+          </div>
+          {/* Horde */}
+          <div className="flex items-center gap-[4px]">
+            <img
+              src={`${constant.SERVER_URL}/public/objects/${
+                result === "win" ? "horde-blue.png" : "horde-red.png"
+              }`}
+              className="w-[15px] h-[15px]"
+            />
+            <p className="text-[12px]">{battleTeamData.hordeCount}</p>
+          </div>
+          {/* Inhibitor */}
+          <div className="flex items-center gap-[4px]">
+            <img
+              src={`${constant.SERVER_URL}/public/objects/${
+                result === "win" ? "inhibitor-blue.png" : "inhibitor-red.png"
+              }`}
+              className="w-[15px] h-[15px]"
+            />
+            <p className="text-[12px]">{battleTeamData.inhibitorCount}</p>
+          </div>
+          {/* Tower */}
+          <div className="flex items-center gap-[4px]">
+            <img
+              src={`${constant.SERVER_URL}/public/objects/${
+                result === "win" ? "tower-blue.png" : "tower-red.png"
+              }`}
+              className="w-[17px] h-[17px]"
+            />
+            <p className="text-[12px]">{battleTeamData.destroyedTowerCount}</p>
+          </div>
+          <p className="text-[14px] text-gray-500">
+            1부리그 - {guildData?.guildRecord?.recordLadder}점
+          </p>
+        </div>
       </div>
 
       {/* 2 */}
@@ -60,33 +134,33 @@ const GuildFightList = (props: Props) => {
       {/* 3 */}
 
       <GuildFightBox
-        battlePlayerData={props.battleTeamData.player1}
-        result={props.battleTeamData.isWinning}
-        guildName={props.battleTeamData.guildName}
+        battlePlayerData={battleTeamData.topPlayer}
+        isResult={battleTeamData.isWinning}
+        guild={battleTeamData.guild}
         highestDamage={highestChampionDamage}
       />
       <GuildFightBox
-        battlePlayerData={props.battleTeamData.player2}
-        result={props.battleTeamData.isWinning}
-        guildName={props.battleTeamData.guildName}
+        battlePlayerData={battleTeamData.junglePlayer}
+        isResult={battleTeamData.isWinning}
+        guild={battleTeamData.guild}
         highestDamage={highestChampionDamage}
       />
       <GuildFightBox
-        battlePlayerData={props.battleTeamData.player3}
-        result={props.battleTeamData.isWinning}
-        guildName={props.battleTeamData.guildName}
+        battlePlayerData={battleTeamData.midPlayer}
+        isResult={battleTeamData.isWinning}
+        guild={battleTeamData.guild}
         highestDamage={highestChampionDamage}
       />
       <GuildFightBox
-        battlePlayerData={props.battleTeamData.player4}
-        result={props.battleTeamData.isWinning}
-        guildName={props.battleTeamData.guildName}
+        battlePlayerData={battleTeamData.adcPlayer}
+        isResult={battleTeamData.isWinning}
+        guild={battleTeamData.guild}
         highestDamage={highestChampionDamage}
       />
       <GuildFightBox
-        battlePlayerData={props.battleTeamData.player5}
-        result={props.battleTeamData.isWinning}
-        guildName={props.battleTeamData.guildName}
+        battlePlayerData={battleTeamData.supportPlayer}
+        isResult={battleTeamData.isWinning}
+        guild={battleTeamData.guild}
         highestDamage={highestChampionDamage}
       />
     </div>
@@ -98,11 +172,11 @@ const findHighestDamagePlayer = (teamData: BattleTeamDTO) => {
   let highestDamage = 0;
 
   for (const player of [
-    teamData.player1,
-    teamData.player2,
-    teamData.player3,
-    teamData.player4,
-    teamData.player5,
+    teamData.topPlayer,
+    teamData.junglePlayer,
+    teamData.midPlayer,
+    teamData.adcPlayer,
+    teamData.supportPlayer,
   ]) {
     if (player?.totalChampionsDamage > highestDamage) {
       highestDamage = player.totalChampionsDamage;

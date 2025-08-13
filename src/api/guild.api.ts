@@ -224,3 +224,11 @@ export const updateGuildBanner = async (
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
+
+export const updateGuildDescription = async (
+  desc: string
+): Promise<AxiosResponse<ResponseDto<GuildDto>>> => {
+  let url = `${baseUrl}/description`;
+
+  return await patchData(url, { desc });
+};

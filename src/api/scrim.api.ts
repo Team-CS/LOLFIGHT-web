@@ -16,6 +16,7 @@ import {
   CreateScrimApplicationDto,
   ScrimApplicationDecisionDto,
   ScrimApplicationDto,
+  ScrimApplicationRematchDto,
 } from "../common/DTOs/scrim/scrim_application.dto";
 
 const baseUrl = `${constant.SERVER_URL}/scrim`;
@@ -100,4 +101,12 @@ export const cancelScrim = async (
   };
 
   return await patchData(url, data);
+};
+
+export const rematchScrim = async (
+  scrimApplicationRematchDto: ScrimApplicationRematchDto
+): Promise<AxiosResponse<ResponseDto<ScrimApplicationDto>>> => {
+  let url = `${baseUrl}/rematch`;
+
+  return await patchData(url, scrimApplicationRematchDto);
 };

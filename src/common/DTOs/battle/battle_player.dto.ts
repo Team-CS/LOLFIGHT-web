@@ -1,9 +1,10 @@
 import { BaseDto } from "../base.dto";
 
-export interface BattlePlayerDTO extends BaseDto {
+export interface BattlePlayerDto extends BaseDto {
   id: string;
   championId: number;
   summonerName: string;
+  puuid: string;
   detectedTeamPosition: string;
   items: string;
   spell1Id: number;
@@ -17,13 +18,6 @@ export interface BattlePlayerDTO extends BaseDto {
   totalDamage: number;
   totalChampionsDamage: number;
   visionScore: number;
-
-  perk0: number;
-  perk1: number;
-  perk2: number;
-  perk3: number;
-  perk4: number;
-  perk5: number;
-
-  perkSub: number;
+  primaryPerkStyle: string;
+  subPerkStyle: string;
 }

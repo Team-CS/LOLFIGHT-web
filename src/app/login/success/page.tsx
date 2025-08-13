@@ -17,7 +17,7 @@ export default function LoginCallbackPage() {
         router.push("/"); // 또는 원하는 경로로
       } catch (error) {
         console.error("유저 정보 불러오기 실패:", error);
-        router.push("/register"); // 실패 시 로그인으로 다시 보내기
+        router.push("/login"); // 실패 시 로그인으로 다시 보내기
       }
     };
 
