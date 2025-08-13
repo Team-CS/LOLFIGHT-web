@@ -11,11 +11,16 @@ import {
   inviteAccept,
   inviteReject,
   updateGuildBanner,
+  updateGuildDescription,
 } from "@/src/api/guild.api";
 import GuildMemberBox from "./GuildMemberBox";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { GuildInviteDTO } from "@/src/common/DTOs/guild/guild_invite.dto";
-import { leaveMember, updateMemberGameLine } from "@/src/api/member.api";
+import {
+  getMemberData,
+  leaveMember,
+  updateMemberGameLine,
+} from "@/src/api/member.api";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { GuildInfoItem } from "./guildInfoItem";
 import { ProfileHeader } from "./profileHeader";
@@ -25,17 +30,19 @@ import GuildDeleteSection from "./GuildDeleteSection";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import { GuildBannerModal } from "./modals/GuildBannerModal";
+import { GuildDescriptionModal } from "./modals/GuildDescriptionModal";
 
 const GuildManagePage = () => {
   const [inviteMembers, setInviteMembers] = useState<GuildInviteDTO[]>([]);
   const [guild, setGuild] = useState<GuildDto>();
-  const { member } = useMemberStore();
+  const { member, setMember } = useMemberStore();
   const [currentTab, setCurrentTab] = useState("members");
   const [guildChecked, setGuildChecked] = useState(false);
   const [memberChecked, setMemberChecked] = useState(false);
-  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>("");
+  const [newDesc, setNewDesc] = useState<string>("");
   const router = useRouter();
 
   const recordDefeat = guild?.guildRecord?.recordDefeat ?? 0;
@@ -78,12 +85,16 @@ const GuildManagePage = () => {
     //길드원 길드탈퇴 체크박스
     setMemberChecked(!memberChecked);
   };
-  const deleteGuild = () => {
+  const deleteGuild = async () => {
     //길드마스터 길드해체
     if (guildChecked) {
-      destroyGuild(member!.memberGuild!.guildName).then((response) => {
+      await destroyGuild(member!.memberGuild!.guildName).then((response) => {
         CustomAlert("success", "길드해체", "성공적으로 길드가 해체되었습니다.");
-        router.push("/");
+        getMemberData().then((response) => {
+          const memberData: MemberDto = response.data.data;
+          setMember(memberData);
+          router.push("/");
+        });
       });
     } else {
       CustomAlert(
@@ -131,6 +142,7 @@ const GuildManagePage = () => {
       "길드추방",
       `${member.memberName}길드원을 추방하시겠습니까?`,
       "추방",
+      "닫기",
       expulsion
     );
   };
@@ -155,6 +167,7 @@ const GuildManagePage = () => {
       "길드마스터 변경",
       `길드마스터를 ${memberName}으로 변경하시겠습니까?`,
       "변경",
+      "닫기",
       changeMaster
     );
   };
@@ -233,12 +246,33 @@ const GuildManagePage = () => {
         .catch((error) => {
           CustomAlert("error", "길드 배너 변경", "변경 실패");
         });
-      setOpenModal(!openModal);
+      setOpenModal(null);
     } else {
       CustomAlert(
         "error",
         "길드 배너 변경",
         "길드 배너 이미지를 등록해주세요."
+      );
+    }
+  };
+
+  const handleDescriptionSubmit = (desc: string) => {
+    if (newDesc.length > 0) {
+      updateGuildDescription(desc)
+        .then((response) => {
+          CustomAlert("success", "길드 소개 변경", "변경이 완료되었습니다.");
+          setGuild(response.data.data);
+          setNewDesc("");
+        })
+        .catch((error) => {
+          CustomAlert("error", "길드 소개 변경", "변경 실패");
+        });
+      setOpenModal(null);
+    } else {
+      CustomAlert(
+        "error",
+        "길드 소개 변경",
+        "길드 소개를 한 글자 이상 작성해주세요"
       );
     }
   };
@@ -323,19 +357,31 @@ const GuildManagePage = () => {
 
             <div className="py-[12px]">
               {currentTab === "banner" && (
-                <div className="flex flex-col items-center justify-center w-full border rounded-[8px] p-[16px] gap-[16px]">
+                <div className="flex flex-col items-center justify-center w-full border rounded-[8px] p-[16px] gap-[16px] dark:border-branddarkborder">
                   {guild?.guildBanner ? (
                     <div className="flex flex-col items-center gap-[12px]">
-                      {member &&
-                        member.memberName ===
-                          member.memberGuild.guildMaster && (
-                          <button
-                            className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
-                            onClick={() => setOpenModal(true)}
-                          >
-                            배너 수정하기
-                          </button>
-                        )}
+                      <div className="flex gap-[12px]">
+                        {member &&
+                          member.memberName ===
+                            member.memberGuild.guildMaster && (
+                            <button
+                              className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                              onClick={() => setOpenModal("banner")}
+                            >
+                              배너 수정하기
+                            </button>
+                          )}
+                        {member &&
+                          member.memberName ===
+                            member.memberGuild.guildMaster && (
+                            <button
+                              className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                              onClick={() => setOpenModal("description")}
+                            >
+                              길드소개 수정하기
+                            </button>
+                          )}
+                      </div>
                       <img
                         src={`${constant.SERVER_URL}/${guild.guildBanner}`}
                         alt="Guild Banner"
@@ -347,16 +393,28 @@ const GuildManagePage = () => {
                       <p className="text-gray-400 text-center text-[14px]">
                         배너가 없습니다.
                       </p>
-                      {member &&
-                        member.memberName ===
-                          member.memberGuild.guildMaster && (
-                          <button
-                            className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
-                            onClick={() => setOpenModal(true)}
-                          >
-                            배너 추가하기
-                          </button>
-                        )}
+                      <div className="flex gap-[12px]">
+                        {member &&
+                          member.memberName ===
+                            member.memberGuild.guildMaster && (
+                            <button
+                              className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                              onClick={() => setOpenModal("banner")}
+                            >
+                              배너 추가하기
+                            </button>
+                          )}
+                        {member &&
+                          member.memberName ===
+                            member.memberGuild.guildMaster && (
+                            <button
+                              className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                              onClick={() => setOpenModal("description")}
+                            >
+                              길드소개 수정하기
+                            </button>
+                          )}
+                      </div>
                     </>
                   )}
                 </div>
@@ -394,10 +452,11 @@ const GuildManagePage = () => {
               )}
               {currentTab === "applicants" && (
                 <div className="flex flex-col gap-[4px] max-h-[300px]">
-                  <div className="grid grid-cols-4 bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">
-                    <p>닉네임</p>
-                    <p>소환사명</p>
-                    <p>티어</p>
+                  <div className="flex bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">
+                    <div className="flex-[1]">닉네임</div>
+                    <div className="flex-[2]">소환사명</div>
+                    <div className="flex-[1]">티어</div>
+                    <div className="flex-[1]" />
                   </div>
                   <div className="flex flex-col gap-[12px] overflow-y-auto">
                     {inviteMembers?.map((invite) => (
@@ -424,13 +483,23 @@ const GuildManagePage = () => {
           </div>
         </div>
       )}
-      {openModal && (
+      {openModal === "banner" && (
         <GuildBannerModal
           selectedImage={selectedImage}
           previewImage={previewImage}
-          onClose={() => setOpenModal(false)}
+          onClose={() => setOpenModal(null)}
           onImageChange={handleImageChange}
           onSubmit={handleBannerSubmit}
+        />
+      )}
+      {openModal === "description" && (
+        <GuildDescriptionModal
+          value={newDesc}
+          onTextChange={(value: string) => setNewDesc(value)}
+          onClose={() => {
+            setOpenModal(null), setNewDesc("");
+          }}
+          onSubmit={handleDescriptionSubmit}
         />
       )}
     </div>

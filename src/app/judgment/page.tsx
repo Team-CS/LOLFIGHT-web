@@ -118,9 +118,15 @@ export default function Page() {
 
         {/* Body */}
         <div className="flex flex-col w-full h-full p-[20px] gap-[12px]">
-          {judgments.map((judgment) => (
-            <JudgmentBox key={judgment.id} judgment={judgment} />
-          ))}
+          {judgments.length > 0 ? (
+            judgments.map((judgment) => (
+              <JudgmentBox key={judgment.id} judgment={judgment} />
+            ))
+          ) : (
+            <div className="w-full text-center text-gray-400 py-[20px] text-[14px]">
+              해당 글이 존재하지 않습니다 😅
+            </div>
+          )}
         </div>
 
         {/* Pagination */}

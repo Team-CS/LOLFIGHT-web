@@ -1,6 +1,6 @@
 import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import { SetStateAction, useEffect, useState } from "react";
-import { getCommentList } from "@/src/api/comment.api";
+import { deleteComment, getCommentList } from "@/src/api/comment.api";
 import { CommentDto } from "@/src/common/DTOs/board/comment.dto";
 import { writeReplyComment } from "@/src/api/comment.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
@@ -45,14 +45,34 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
         replyCommentContent,
         openCommentId
       ).then((res) => {
-        // router.refresh();
         setRefresh((prev) => prev + 1);
+
         setIsOpen(false);
         setOpenCommentId("");
         setReplyCommentContent("");
-        // setCommentBoxKey((prevKey) => prevKey + 1);
       });
     }
+  };
+
+  const handleDeleteComment = (commentId: string) => {
+    deleteComment(commentId)
+      .then((response) => {
+        CustomAlert("success", "댓글 삭제", "삭제 되었습니다.");
+        setCommentList((prevList) =>
+          prevList.filter((comment) => comment.id !== commentId)
+        );
+      })
+      .catch((error) => {
+        const code = error?.response?.data?.code;
+
+        if (code === "COMMON-003") {
+          CustomAlert("error", "댓글 삭제", "이미 삭제된 댓글 입니다.");
+        } else if (code === "COMMON-002") {
+          CustomAlert("error", "댓글 삭제", "본인 댓글만 삭제 가능합니다.");
+        } else {
+          CustomAlert("error", "댓글 삭제", "에러");
+        }
+      });
   };
 
   const getDate = (date: string | number | Date) => {
@@ -108,18 +128,28 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
           )}
 
           <div className="flex flex-col w-full gap-[8px]">
-            <div className="flex items-center gap-[8px]">
-              <img
-                className="w-[30px] h-[30px] rounded-[12px]"
-                src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
-                alt="memberIcon"
-              />
-              <p className="text-[14px] font-bold">
-                {comment.writer.memberName}
-              </p>
-              <p className="text-gray-400 font-normal text-[12px]">
-                {getDate(comment.commentDate)}
-              </p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-[8px]">
+                <img
+                  className="w-[30px] h-[30px] rounded-[12px]"
+                  src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
+                  alt="memberIcon"
+                />
+                <p className="text-[14px] font-bold">
+                  {comment.writer.memberName}
+                </p>
+                <p className="text-gray-400 font-normal text-[12px]">
+                  {getDate(comment.commentDate)}
+                </p>
+              </div>
+              {comment.writer.id === member?.id && (
+                <p
+                  className="text-gray-400 font-normal text-[12px] cursor-pointer hover:text-gray-500"
+                  onClick={() => handleDeleteComment(comment.id!)}
+                >
+                  삭제하기
+                </p>
+              )}
             </div>
             <p className="text-[14px] font-normal whitespace-pre-wrap">
               {comment.commentContent}

@@ -22,6 +22,7 @@ const BoardComponent = (props: BoardComponentProps) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0); // 총 페이지 수
   const [searchTerm, setSearchTerm] = useState<string>(""); // 검색어
+  const [searchTarget, setSearchTarget] = useState<string>("title"); // 기본은 제목
   const postsPerPage = 20;
 
   useEffect(() => {
@@ -41,7 +42,8 @@ const BoardComponent = (props: BoardComponentProps) => {
         `${getTitleFromSlug(props.slug)}`,
         page,
         postsPerPage,
-        searchTerm
+        searchTerm,
+        searchTarget
       );
       const data = response.data.data as PostListResponseDto;
       if (Array.isArray(data.postList)) {
@@ -88,6 +90,8 @@ const BoardComponent = (props: BoardComponentProps) => {
         setSearchTerm={setSearchTerm}
         onSearch={handleSearch}
         onKeyDown={handleKeyDown}
+        searchTarget={searchTarget}
+        setSearchTarget={setSearchTarget}
       ></BoardHeadComponent>
       <div className="flex flex-col gap-[2px] py-[8px]">
         {posts.length > 0 ? (

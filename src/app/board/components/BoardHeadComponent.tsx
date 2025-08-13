@@ -12,6 +12,8 @@ interface BoardHeadComponentProps {
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   onSearch: () => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  searchTarget: string;
+  setSearchTarget: React.Dispatch<React.SetStateAction<string>>;
 }
 
 function getTitleFromSlug(slug: string) {
@@ -38,9 +40,17 @@ const BoardHeadComponent = (props: BoardHeadComponentProps) => {
           {getTitleFromSlug(props.head.slug)}
         </p>
         <div className="flex gap-[12px] items-center">
+          <select
+            className="h-[30px] px-[8px] border border-gray-300 rounded-md text-sm bg-white dark:bg-black dark:text-white dark:border-gray-700"
+            value={props.searchTarget}
+            onChange={(e) => props.setSearchTarget(e.target.value)}
+          >
+            <option value="title">제목</option>
+            <option value="author">작성자</option>
+          </select>
           <div className="flex w-[200px] border border-gray-200 rounded-md px-[12px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
             <div
-              className="flex flex-wrap justify-center content-center dark:bg-black"
+              className="flex flex-wrap justify-center content-center dark:bg-black cursor-pointer"
               onClick={props.onSearch}
             >
               <FaSearch />

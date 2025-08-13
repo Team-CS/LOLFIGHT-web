@@ -2,7 +2,13 @@ import { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import axiosService from "./axiosInstance";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { getCookie, removeCookie, setCookie } from "../cookie/cookie";
-import { getMemberData } from "@/src/api/member.api";
+
+declare module "axios" {
+  export interface InternalAxiosRequestConfig {
+    _retry?: boolean;
+  }
+}
+
 //========================================================================//
 //function
 //========================================================================//
@@ -20,7 +26,7 @@ const onTokenRefreshed = (token: string) => {
 //========================================================================//
 
 export const onRequest = (config: InternalAxiosRequestConfig) => {
-  const token = getCookie("accessToken");
+  const token = getCookie("lf_atk");
 
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
@@ -42,17 +48,23 @@ export const onErrorResponse = async (error: AxiosError) => {
 
   const originalRequest = error.config!;
 
+  // ✅ 무한루프 방지용 플래그
   if (
     error.response?.status === 401 &&
     originalRequest &&
-    !originalRequest.url?.includes("/auth/refresh")
+    !originalRequest._retry &&
+    !originalRequest.url?.includes("/auth/refresh") &&
+    !originalRequest.url?.includes("/login")
   ) {
-    const refreshToken = getCookie("refreshToken");
-    console.log(refreshToken);
+    originalRequest._retry = true; // ✅ 딱 한 번만 재시도
 
+    const refreshToken = getCookie("lf_rtk");
     if (!refreshToken) {
-      alert("리프레시 토큰이 없습니다. 로그인 페이지로 이동합니다.");
-      window.location.href = "/register";
+      removeCookie("lf_atk");
+      removeCookie("lf_rtk");
+      setMember(null);
+      alert("토큰이 만료 되었습니다. 재로그인이 필요합니다.");
+      window.location.href = "/login";
       return Promise.reject(error);
     }
 
@@ -61,17 +73,19 @@ export const onErrorResponse = async (error: AxiosError) => {
       errorData.code === "EXPIRED_TOKEN"
     ) {
       alert("잘못된 토큰입니다. 만료되었을 가능성이 큽니다.");
-      removeCookie("accessToken");
-      removeCookie("refreshToken");
-      window.location.href = "/";
+      removeCookie("lf_atk");
+      removeCookie("lf_rtk");
+      setMember(null);
+      window.location.href = "/login";
       return Promise.reject(error);
     }
 
+    // ✅ 토큰 재발급 중이 아닌 경우
     if (!isRefreshing) {
       isRefreshing = true;
 
       try {
-        console.log("토큰 재발급 시도 중...", isRefreshing);
+        console.log("🔁 토큰 재발급 시도 중...");
 
         const refreshTokenResponse = await axiosInstance.post(
           `${process.env.NEXT_PUBLIC_SERVER_HOST}/auth/refresh`,
@@ -82,39 +96,36 @@ export const onErrorResponse = async (error: AxiosError) => {
           }
         );
 
-        console.log("refreshToken 재발급 응답:", refreshTokenResponse);
+        console.log("🔐 토큰 재발급 응답:", refreshTokenResponse);
 
         if (refreshTokenResponse.data.ok) {
-          // const accessToken = refreshTokenResponse.data.data.accessToken;
-          // const newRefreshToken = refreshTokenResponse.data.data.refreshToken;
+          const accessToken = getCookie("lf_atk");
+          onTokenRefreshed(accessToken!);
 
-          const accessToken = getCookie("accessToken");
-          const newRefreshToken = getCookie("refreshToken");
-
-          onTokenRefreshed(accessToken!); // 대기 중 요청 처리
-
-          // ✅ 최초 요청도 수동으로 재시도해서 반환
           originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
           return axiosInstance.request(originalRequest);
+        } else {
+          throw new Error("refreshToken 응답 실패");
         }
       } catch (e) {
-        alert("토큰 재발급에 실패했습니다.");
-        isRefreshing = false;
-        window.location.href = "/register";
+        console.error("❌ 토큰 재발급 실패:", e);
+        removeCookie("lf_atk");
+        removeCookie("lf_rtk");
         setMember(null);
+        window.location.href = "/login";
         return Promise.reject(e);
       } finally {
         isRefreshing = false;
-        console.log("토큰 재발급 종료");
+        console.log("🔚 토큰 재발급 종료");
       }
     }
 
-    // ✅ isRefreshing 중이면 대기 -> 이후 재시도
+    // ✅ 토큰 재발급 대기 중이면 구독 대기 → 완료 후 재시도
     return new Promise((resolve) => {
       subscribeTokenRefresh(() => {
-        const newToken = getCookie("accessToken");
+        const newToken = getCookie("lf_rtk");
         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-        console.log("재시도하는 요청", originalRequest);
+        console.log("⏱ 재시도하는 요청", originalRequest);
         resolve(axiosInstance.request(originalRequest));
       });
     });

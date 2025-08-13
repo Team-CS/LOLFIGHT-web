@@ -45,6 +45,7 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
       "롤로세움 재판 삭제",
       "롤로세움을 삭제하시겠습니까?",
       "삭제",
+      "닫기",
       onConfirmDelete
     );
   };

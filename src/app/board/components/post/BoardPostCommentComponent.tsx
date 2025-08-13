@@ -28,7 +28,6 @@ const BoardPostCommentComponent = (props: BoardPostCommentComponentProps) => {
         router.refresh();
         setCommentBoxKey((prevKey) => prevKey + 1);
         setCommentContent("");
-        // window.location.reload();
       });
     }
   };

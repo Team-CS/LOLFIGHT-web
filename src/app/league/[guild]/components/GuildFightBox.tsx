@@ -1,22 +1,26 @@
 import React, { useEffect } from "react";
-import { BattlePlayerDTO } from "@/src/common/DTOs/battle/battle_player.dto";
+import { BattlePlayerDto } from "@/src/common/DTOs/battle/battle_player.dto";
 import constant from "@/src/common/constant/constant";
+import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 interface Props {
-  battlePlayerData: BattlePlayerDTO;
-  result: boolean;
-  guildName: string;
+  battlePlayerData: BattlePlayerDto;
+  isResult: boolean;
+  guild: GuildDto;
   highestDamage: number;
 }
 
 const GuildFightBox = (props: Props) => {
-  const result = props.result ? "win" : "lose";
+  const { battlePlayerData, isResult, guild, highestDamage } = props;
+  const result = isResult ? "win" : "lose";
   const kda =
-    props.battlePlayerData?.deaths === 0
+    battlePlayerData?.deaths === 0
       ? "Perfect"
       : (
-          (props.battlePlayerData?.killed + props.battlePlayerData?.assists) /
-          props.battlePlayerData?.deaths
+          (battlePlayerData?.killed + battlePlayerData?.assists) /
+          battlePlayerData?.deaths
         ).toFixed(2);
+  const primayRune = battlePlayerData.primaryPerkStyle.split(",")[1];
+  const subRune = battlePlayerData.subPerkStyle.split(",")[0];
 
   // KDA에 따라 색상을 동적으로 지정하는 함수
   const getKDABackgroundColor = (kda: number | string) => {
@@ -34,7 +38,7 @@ const GuildFightBox = (props: Props) => {
     }
   };
 
-  if (props.battlePlayerData == null || undefined) {
+  if (battlePlayerData == null || undefined) {
     return <div></div>;
   }
 
@@ -47,23 +51,30 @@ const GuildFightBox = (props: Props) => {
       {/* 플레이어 */}
       <div className="flex h-full font-medium text-[14px] w-[250px] items-center gap-[8px]">
         <img
-          src={`${constant.SERVER_URL}/public/guild/${props.guildName}.png`}
+          src={`${constant.SERVER_URL}/${guild.guildIcon}`}
           alt="GuildBanner"
           className="w-[25px] h-[25px] rounded-[4px] object-cover"
         />
         <img
-          src={`${constant.SERVER_URL}/public/champions/${props.battlePlayerData.championId}.png`}
+          src={`${constant.SERVER_URL}/public/champions/${battlePlayerData.championId}.png`}
           alt="Champion"
           className="w-[25px] h-[25px]"
         />
-        <p>{props.battlePlayerData.summonerName}</p>
+        <div className="flex items-center">
+          <p className="text-[14px] font-medium">
+            {battlePlayerData.summonerName.split("#")[0]}
+          </p>
+          <p className="text-[12px] text-gray-600 font-light">
+            #{battlePlayerData.summonerName.split("#")[1]}
+          </p>
+        </div>
       </div>
 
       {/* Spell/Rune */}
       <div className="flex w-[50px] gap-[4px]">
         <div className="flex flex-col">
           <img
-            src={`${constant.SERVER_URL}/public/spell/${props.battlePlayerData.spell1Id}.png`}
+            src={`${constant.SERVER_URL}/public/spell/${battlePlayerData.spell1Id}.png`}
             alt="spell1"
             width={20}
           />
@@ -75,12 +86,12 @@ const GuildFightBox = (props: Props) => {
         </div>
         <div className="flex flex-col">
           <img
-            src={`${constant.SERVER_URL}/public/rune/${props.battlePlayerData.perk0}.png`}
+            src={`${constant.SERVER_URL}/public/rune/${primayRune}.png`}
             alt="rune"
             width={20}
           />
           <img
-            src={`${constant.SERVER_URL}/public/rune/${props.battlePlayerData.perkSub}.png`}
+            src={`${constant.SERVER_URL}/public/rune/${subRune}.png`}
             alt="sub_rune"
             width={18}
           />

@@ -6,6 +6,7 @@ import { updateMemberFCMToken } from "../api/member.api";
 import { useMemberStore } from "../common/zustand/member.zustand";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { getCookie } from "../utils/cookie/cookie";
 
 export default function useFirebaseMessaging() {
   const {
@@ -26,7 +27,9 @@ export default function useFirebaseMessaging() {
         .catch(console.error);
     }
 
-    if (!fcmToken) {
+    const token = getCookie("lf_rtk");
+
+    if (!fcmToken && token) {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
           getToken(messaging as Messaging, {

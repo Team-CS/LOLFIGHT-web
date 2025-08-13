@@ -1,6 +1,8 @@
 # 1. 플랫폼 지정 (M1/M2 맥 대비)
 FROM --platform=linux/amd64 node:20
 
+ENV NODE_OPTIONS=--max-old-space-size=2048
+
 # 작업 디렉토리 설정
 WORKDIR /app
 

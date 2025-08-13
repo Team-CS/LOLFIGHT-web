@@ -33,11 +33,15 @@ export const getPostList = async (
   board: string,
   page: number,
   limit: number,
-  keyword?: string | null
+  keyword?: string | null,
+  searchType?: string | null
 ): Promise<AxiosResponse<ResponseDto<PostListResponseDto>>> => {
   let url = `${baseUrl}/list` + `?board=${board}&page=${page}&limit=${limit}`;
   if (keyword) {
     url += `&keyword=${encodeURIComponent(keyword)}`;
+  }
+  if (searchType) {
+    url += `&searchType=${searchType}`;
   }
   return await getData(url);
 };
