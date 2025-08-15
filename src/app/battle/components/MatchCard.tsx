@@ -1,8 +1,10 @@
+import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { ScrimApplicationDto } from "@/src/common/DTOs/scrim/scrim_application.dto";
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { formatKoreanDatetime } from "@/src/utils/string/string.util";
 import dayjs from "dayjs";
+import { useState } from "react";
 
 interface MatchCardProps {
   scrim: ScrimApplicationDto;
@@ -60,7 +62,9 @@ const MatchCard = (props: MatchCardProps) => {
   const now = dayjs();
   const isAccepted = scrim.status === "ACCEPTED";
   const isWithin5Min = scheduledAt && scheduledAt.diff(now, "minute") <= 5;
-  const showEntryCode = isAccepted && isWithin5Min;
+  // const showEntryCode = isAccepted && isWithin5Min;
+  const [showEntryCode, setShowEntryCode] = useState<boolean>(false);
+  const [code, setCode] = useState<string>("");
 
   const isClosed = scrim.status === "CLOSED";
   const finishedAt = scrim?.updatedAt;
@@ -69,6 +73,20 @@ const MatchCard = (props: MatchCardProps) => {
     now.diff(finishedAt, "minute") <= 10 &&
     now.isAfter(finishedAt);
   const showRematchButton = isClosed && isWithin5MinAfterFinish;
+
+  const showCodeClick = () => {
+    if (isWithin5Min && isAccepted) {
+      if (showEntryCode === false) setShowEntryCode(true);
+      // const data = @TODO 실제 방 코드 요쳥 api
+      setCode(scrim.scrimSlot.code);
+    } else {
+      CustomAlert(
+        "info",
+        "코드 확인",
+        "스크림 시작 시간 5분전에 확인 가능합니다."
+      );
+    }
+  };
 
   return (
     <div
@@ -117,20 +135,28 @@ const MatchCard = (props: MatchCardProps) => {
             {resultText}
           </span>
         </p>
-        {showEntryCode && (
-          <p className="text-[13px] text-gray-600">
+        {/* {showEntryCode && ( */}
+        <div className="flex items-center gap-[12px]" onClick={showCodeClick}>
+          <p className="text-[13px] text-gray-600 dark:text-gray-300">
             입장 코드:{" "}
+          </p>
+          {showEntryCode ? (
             <span
               className="text-[14px] font-semibold text-blue-500 cursor-pointer"
               onClick={() => {
-                navigator.clipboard.writeText("ABCDEFG");
+                navigator.clipboard.writeText(code);
                 alert("입장 코드가 복사되었습니다!");
               }}
             >
-              @todo ABCDEFG
+              {code}
             </span>
-          </p>
-        )}
+          ) : (
+            <div className="bg-brandcolor dark:bg-branddark text-white text-[12px] px-[8px] py-[2px] rounded-[12px]">
+              코드 확인
+            </div>
+          )}
+        </div>
+        {/* )} */}
         {showRematchButton && (
           <button
             className="px-[8px] py-[4px] text-[14px] bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
