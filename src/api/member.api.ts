@@ -1,9 +1,7 @@
 import constant from "../common/constant/constant";
 import { MemberDto } from "../common/DTOs/member/member.dto";
-import { Axios, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { ResponseDto } from "../common/DTOs/response.dto";
-import { GuildDto } from "../common/DTOs/guild/guild.dto";
-import { MemberGameDto } from "../common/DTOs/member/member_game.dto";
 import { deleteData, getData, patchData } from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/member`;
@@ -78,21 +76,6 @@ export const findMember = async (
   let url = `${baseUrl}/find`;
 
   let queryParams = `?id=${id}`;
-  url += queryParams;
-  return await getData(url);
-};
-
-/**
- * member 찾기 (name)
- * @param id
- * @returns
- */
-export const findMemberByName = async (
-  name: string
-): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
-  let url = `${baseUrl}/findByName`;
-
-  let queryParams = `?name=${name}`;
   url += queryParams;
   return await getData(url);
 };

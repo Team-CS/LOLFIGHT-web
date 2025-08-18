@@ -1,5 +1,5 @@
 import constant from "../common/constant/constant";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import {
   PostCreateDto,
   PostDto,
@@ -68,7 +68,6 @@ export const getPostContent = async (
   postId: string
 ): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}/?board=${board}&postId=${postId}`;
-
   return await getData(url);
 };
 

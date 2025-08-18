@@ -1,5 +1,5 @@
 import { PostDto } from "@/src/common/DTOs/board/post.dto";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { deleteComment, getCommentList } from "@/src/api/comment.api";
 import { CommentDto } from "@/src/common/DTOs/board/comment.dto";
 import { writeReplyComment } from "@/src/api/comment.api";
