@@ -49,7 +49,7 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
           <img
             src={profileImgUrl}
             alt="profile"
-            className="w-[32px] h-[32px] rounded-full "
+            className="w-[32px] h-[32px] object-cover rounded-full "
           />
           <div className="truncate min-w-0">
             <p className="text-sm font-medium dark:text-white truncate">

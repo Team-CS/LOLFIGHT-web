@@ -88,25 +88,30 @@ const WysiwygEditor = () => {
   };
 
   const handleSaveClick = async () => {
-    const link = "";
     const editorIns = editorRef.current?.getInstance().getHTML() || "";
-    const strippedHTML = editorIns.replace(/<[^>]*>/g, ""); // HTML 태그 제거
-    if (title && strippedHTML) {
+
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = editorIns;
+
+    const textContent = tempDiv.textContent?.trim() || "";
+    const hasImage = tempDiv.querySelector("img") !== null;
+
+    if (title && (textContent !== "" || hasImage)) {
       const postData: PostCreateDto = {
         postTitle: title,
         postContent: editorIns,
         postWriter: member!,
         postBoard: category,
       };
+
       writePost(postData).then((response) => {
         boardNavLinks
           .filter((link) => link.href !== "/")
-          .map((link) => {
+          .forEach((link) => {
             if (link.title === category) {
               router.replace(link.href + "/" + response.data.data.id);
             }
           });
-        return;
       });
     } else {
       CustomAlert("warning", "글쓰기", "제목과 내용을 작성해주세요.");

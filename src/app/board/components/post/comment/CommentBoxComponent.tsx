@@ -1,5 +1,5 @@
 import { PostDto } from "@/src/common/DTOs/board/post.dto";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { deleteComment, getCommentList } from "@/src/api/comment.api";
 import { CommentDto } from "@/src/common/DTOs/board/comment.dto";
 import { writeReplyComment } from "@/src/api/comment.api";
@@ -131,7 +131,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[8px]">
                 <img
-                  className="w-[30px] h-[30px] rounded-[12px]"
+                  className="w-[30px] h-[30px] object-cover rounded-[12px]"
                   src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
                   alt="memberIcon"
                 />

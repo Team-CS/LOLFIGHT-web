@@ -23,8 +23,11 @@ export default function useFirebaseMessaging() {
     if (!isServiceWorkerRegistered && "serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
-        .then(() => setServiceWorkerRegistered(true))
-        .catch(console.error);
+        .then((registration) => {
+          console.log("등록 성공 : ", registration),
+            setServiceWorkerRegistered(true);
+        })
+        .catch((error) => console.error("등록 실패 : ", error));
     }
 
     const token = getCookie("lf_rtk");
