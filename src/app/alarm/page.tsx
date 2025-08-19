@@ -34,6 +34,7 @@ export default function Page() {
   const [teamInvites, setTeamInvites] = useState<GuildTeamInviteDto[]>([]);
   const [applications, setApplications] = useState<ScrimApplicationDto[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<GuildTeamDto | null>(null);
+  const [isMatched, setIsMatched] = useState(false);
 
   useEffect(() => {
     getMyInviteList()
@@ -46,6 +47,11 @@ export default function Page() {
     getScrimApplicationList()
       .then((response) => {
         setApplications(response.data.data);
+
+        const matched = response.data.data.some(
+          (app: ScrimApplicationDto) => app.status === "ACCEPTED"
+        );
+        setIsMatched(matched);
       })
       .catch((error) => {
         console.log(error);
@@ -312,13 +318,33 @@ export default function Page() {
                       <div className="flex gap-[12px] ">
                         <button
                           className="px-[16px] py-[8px] bg-brandcolor text-white rounded-md hover:opacity-90 transition"
-                          onClick={() => handleScrimAccept(application)}
+                          onClick={() => {
+                            if (isMatched) {
+                              CustomAlert(
+                                "error",
+                                "진행중인 매치",
+                                "이미 진행중인 매치가 존재합니다.\n매치가 종료된 후에 다시 시도해주세요."
+                              );
+                              return;
+                            }
+                            handleScrimAccept(application);
+                          }}
                         >
                           수락
                         </button>
                         <button
                           className="px-[16px] py-[8px] border border-gray-300 rounded-md hover:bg-gray-100 transition"
-                          onClick={() => handleScrimReject(application)}
+                          onClick={() => {
+                            if (isMatched) {
+                              CustomAlert(
+                                "error",
+                                "진행중인 매치",
+                                "이미 진행중인 매치가 존재합니다.\n매치가 종료된 후에 다시 시도해주세요."
+                              );
+                              return;
+                            }
+                            handleScrimReject(application);
+                          }}
                         >
                           거절
                         </button>

@@ -68,11 +68,11 @@ const MatchCard = (props: MatchCardProps) => {
 
   const isClosed = scrim.status === "CLOSED";
   const finishedAt = scrim?.updatedAt;
-  const isWithin5MinAfterFinish =
+  const isWithin10MinAfterFinish =
     finishedAt &&
     now.diff(finishedAt, "minute") <= 10 &&
     now.isAfter(finishedAt);
-  const showRematchButton = isClosed && isWithin5MinAfterFinish;
+  const showRematchButton = isRecipient && isClosed && isWithin10MinAfterFinish;
 
   const showCodeClick = () => {
     if (isWithin5Min && isAccepted) {
@@ -83,7 +83,7 @@ const MatchCard = (props: MatchCardProps) => {
       CustomAlert(
         "info",
         "코드 확인",
-        "스크림 시작 시간 5분전에 확인 가능합니다."
+        "스크림 시작 시간 10분전에 확인 가능합니다."
       );
     }
   };
@@ -135,28 +135,28 @@ const MatchCard = (props: MatchCardProps) => {
             {resultText}
           </span>
         </p>
-        {/* {showEntryCode && ( */}
-        <div className="flex items-center gap-[12px]" onClick={showCodeClick}>
-          <p className="text-[13px] text-gray-600 dark:text-gray-300">
-            입장 코드:{" "}
-          </p>
-          {showEntryCode ? (
-            <span
-              className="text-[14px] font-semibold text-blue-500 cursor-pointer"
-              onClick={() => {
-                navigator.clipboard.writeText(code);
-                alert("입장 코드가 복사되었습니다!");
-              }}
-            >
-              {code}
-            </span>
-          ) : (
-            <div className="bg-brandcolor dark:bg-branddark text-white text-[12px] px-[8px] py-[2px] rounded-[12px]">
-              코드 확인
-            </div>
-          )}
-        </div>
-        {/* )} */}
+        {scrim.status === "ACCEPTED" && (
+          <div className="flex items-center gap-[12px]" onClick={showCodeClick}>
+            <p className="text-[13px] text-gray-600 dark:text-gray-300">
+              입장 코드:{" "}
+            </p>
+            {showEntryCode ? (
+              <span
+                className="text-[14px] font-semibold text-blue-500 cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(code);
+                  alert("입장 코드가 복사되었습니다!");
+                }}
+              >
+                {code}
+              </span>
+            ) : (
+              <div className="bg-brandcolor dark:bg-branddark text-white text-[12px] px-[8px] py-[2px] rounded-[12px]">
+                코드 확인
+              </div>
+            )}
+          </div>
+        )}
         {showRematchButton && (
           <button
             className="px-[8px] py-[4px] text-[14px] bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
