@@ -111,7 +111,7 @@ export default function GuildPage() {
                   <img
                     src={`${constant.SERVER_URL}/${guild.guildBanner}`}
                     alt="Guild Banner"
-                    className=" w-full rounded-[12px]"
+                    className="rounded-[12px]"
                   />
                 ) : (
                   <p className="text-gray-400 text-sm">

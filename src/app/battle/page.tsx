@@ -93,7 +93,8 @@ export default function Page() {
     if (!guildTeam || !member) return;
     getScrimSlot(guildTeam.id)
       .then((response) => {
-        setMyTeamSlot(response.data.data);
+        const data = response.data.data;
+        if (data.status !== "CLOSED") setMyTeamSlot(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -175,7 +176,7 @@ export default function Page() {
       }
     };
 
-    if (applications.length > 0) {
+    if (applications.some((application) => application.status === "ACCEPTED")) {
       CustomAlert(
         "warning",
         "길드 팀 삭제",
@@ -194,7 +195,7 @@ export default function Page() {
   };
 
   const handleUpdateClick = () => {
-    if (applications.length > 0) {
+    if (applications.some((application) => application.status === "ACCEPTED")) {
       CustomAlert(
         "warning",
         "길드 팀 수정",
@@ -259,6 +260,12 @@ export default function Page() {
               "스크림 등록",
               "팀원 5명이 모두 구성되어야 스크림 등록이 가능합니다."
             );
+          } else if (code === "COMMON-002") {
+            CustomAlert(
+              "warning",
+              "스크림 등록",
+              "신청한 스크림이 존재합니다. 진행중인 스크림을 종료하고 다시 시도해주세요."
+            );
           }
         });
     }
@@ -294,7 +301,7 @@ export default function Page() {
             CustomAlert(
               "warning",
               "스크림 신청",
-              "해당 팀은 이미 스크림을 등록한 상태입니다.\n 다른 팀에 신청할 수 없습니다."
+              "해당 팀은 이미 스크림을 등록한 상태이거나,\n 대기중인 스크림이 존재합니다. \n 다른 팀에 신청할 수 없습니다."
             );
           }
         });
@@ -440,6 +447,18 @@ export default function Page() {
       "닫기",
       onConfirmRematch
     );
+  };
+
+  const handleRegisterScrim = () => {
+    if (applications.some((application) => application.status === "ACCEPTED")) {
+      CustomAlert(
+        "warning",
+        "스크림 등록",
+        "대기중인 스크림이 없어야 등록이 가능합니다."
+      );
+      return;
+    }
+    setIsRegisterTeamOpen(true);
   };
 
   return (
@@ -598,7 +617,7 @@ export default function Page() {
             </div>
             {guildTeam && guildTeam.leader.id === member?.id && (
               <button
-                onClick={() => setIsRegisterTeamOpen(true)}
+                onClick={handleRegisterScrim}
                 className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
               >
                 등록

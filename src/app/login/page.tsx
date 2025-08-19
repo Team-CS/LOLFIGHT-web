@@ -16,7 +16,7 @@ export default function Page() {
       <div className="flex flex-col gap-[12px] w-full">
         <div className="border-b w-full dark:border-gray-700"></div>
         <button
-          className="flex items-center justify-center gap-[12px] w-full bg-white border border-brandborder text-[20px] font-bold py-[8px] rounded border border-brandborder hover:bg-brandhover"
+          className={`flex items-center justify-center gap-[12px] w-full bg-white border border-brandborder text-[20px] font-bold py-[8px] rounded border border-brandborder hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray`}
           onClick={googleLogin}
         >
           <img

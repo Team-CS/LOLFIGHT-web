@@ -14,6 +14,7 @@ import "@toast-ui/editor/toastui-editor-viewer.css";
 import { useRouter } from "next/navigation";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
+import { useTheme } from "next-themes";
 
 interface BoardPostBodyComponentProps {
   data: PostDto | null | undefined;
@@ -31,6 +32,8 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
 
   const [like, setLike] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (data) {
@@ -73,9 +76,11 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
 
   return (
     <div className="flex flex-col pb-[24px] px-[24px] gap-[12px]">
-      <div className="w-full">
-        <DynamicViewer key={data.postContent} initialValue={data.postContent} />
-      </div>
+      <DynamicViewer
+        key={data.postContent}
+        initialValue={data.postContent}
+        theme={theme}
+      />
       <div className="m-auto">
         {like === 0 ? (
           <button

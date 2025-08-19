@@ -8,6 +8,7 @@ export interface ScrimSlotDto {
   scheduledAt: Date;
   note: string;
   status: string;
+  code: string;
   applications: ScrimApplicationDto[];
 }
 
