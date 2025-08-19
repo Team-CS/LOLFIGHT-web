@@ -46,7 +46,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
       <div className="flex justify-between pb-[12px] border-b dark:border-gray-700">
         <div className="flex items-center gap-[8px]">
           <img
-            className="w-[30px] h-[30px] rounded-[12px]"
+            className="w-[30px] h-[30px] object-cover rounded-[12px]"
             src={`${constant.SERVER_URL}/${
               post?.postWriter.memberIcon || "public/default.png"
             }`}

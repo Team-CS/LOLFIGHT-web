@@ -180,7 +180,7 @@ export const Header = () => {
                   <div className="flex w-full items-center p-[12px] gap-[14px] relative">
                     <div className="w-[70px] h-[70px] my-auto">
                       <img
-                        className="w-full h-full rounded-[12px]"
+                        className="w-full h-full object-cover rounded-[12px]"
                         src={`${constant.SERVER_URL}/${member.memberIcon}`}
                       />
                     </div>
