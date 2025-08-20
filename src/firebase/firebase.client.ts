@@ -11,14 +11,28 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+console.log("FIREBASE CONFIG", firebaseConfig);
 
-let messaging: Messaging | undefined = undefined;
-if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
-  try {
-    messaging = getMessaging(app);
-  } catch (e) {
-    messaging = undefined;
-  }
+// let messaging: Messaging | undefined = undefined;
+// if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
+//   try {
+//     messaging = getMessaging(app);
+//   } catch (e) {
+//     messaging = undefined;
+//   }
+// }
+
+let messaging: Messaging | undefined;
+
+if (typeof window !== "undefined") {
+  import("firebase/messaging").then(() => {
+    try {
+      messaging = getMessaging(app);
+    } catch (e) {
+      console.error("FCM init failed", e);
+      messaging = undefined;
+    }
+  });
 }
 
 export { messaging };
