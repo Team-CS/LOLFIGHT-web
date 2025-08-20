@@ -18,9 +18,15 @@ export default function useFirebaseMessaging() {
   const { member } = useMemberStore();
   const router = useRouter();
   useEffect(() => {
-    if (!member || !messaging) return;
+    if (!member || !messaging) {
+      console.log("not actvice");
+
+      return;
+    }
+    console.log("active");
 
     if (!isServiceWorkerRegistered && "serviceWorker" in navigator) {
+      console.log("active 2");
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
         .then((registration) => {
@@ -33,6 +39,7 @@ export default function useFirebaseMessaging() {
     const token = getCookie("lf_rtk");
 
     if (!fcmToken && token) {
+      console.log("refresh");
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
           getToken(messaging as Messaging, {
