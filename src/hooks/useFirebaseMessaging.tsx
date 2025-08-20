@@ -19,19 +19,14 @@ export default function useFirebaseMessaging() {
   const router = useRouter();
   useEffect(() => {
     if (!member || !messaging) {
-      console.log("not actvice");
-
       return;
     }
-    console.log("active");
 
     if (!isServiceWorkerRegistered && "serviceWorker" in navigator) {
-      console.log("active 2");
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
         .then((registration) => {
-          console.log("등록 성공 : ", registration),
-            setServiceWorkerRegistered(true);
+          setServiceWorkerRegistered(true);
         })
         .catch((error) => console.error("등록 실패 : ", error));
     }
@@ -39,7 +34,6 @@ export default function useFirebaseMessaging() {
     const token = getCookie("lf_rtk");
 
     if (!fcmToken && token) {
-      console.log("refresh");
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
           getToken(messaging as Messaging, {

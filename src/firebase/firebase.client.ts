@@ -11,7 +11,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-console.log("FIREBASE CONFIG", firebaseConfig);
 
 // let messaging: Messaging | undefined = undefined;
 // if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
