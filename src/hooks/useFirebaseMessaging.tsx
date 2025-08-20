@@ -18,14 +18,15 @@ export default function useFirebaseMessaging() {
   const { member } = useMemberStore();
   const router = useRouter();
   useEffect(() => {
-    if (!member || !messaging) return;
+    if (!member || !messaging) {
+      return;
+    }
 
     if (!isServiceWorkerRegistered && "serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
         .then((registration) => {
-          console.log("등록 성공 : ", registration),
-            setServiceWorkerRegistered(true);
+          setServiceWorkerRegistered(true);
         })
         .catch((error) => console.error("등록 실패 : ", error));
     }
