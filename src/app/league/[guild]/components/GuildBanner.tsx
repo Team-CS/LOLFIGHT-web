@@ -18,6 +18,14 @@ const GuildBanner = (props: Props) => {
 
   const handleClickInviteGuild = () => {
     if (member && guild.id !== null && guild.id !== undefined) {
+      if (guild.guildMembers.length === guild.maxMembers) {
+        CustomAlert(
+          "error",
+          "길드가입",
+          "가입하려는 길드의 정원 수가 초과되었습니다."
+        );
+        return;
+      }
       inviteGuild(member.id, guild.id)
         .then((response) => {
           CustomAlert("success", "길드가입", "길드 가입신청이 완료되었습니다.");
@@ -63,8 +71,11 @@ const GuildBanner = (props: Props) => {
         </div>
 
         <div className="flex flex-col gap-[4px] text-white text-sm">
-          <p className="font-medium">길드 마스터: {guild.guildMaster}</p>
-          <p className="font-medium">길드원: {guild.guildMembers.length}명</p>
+          <p className="font-medium">길드 마스터 : {guild.guildMaster}</p>
+          <p className="font-medium">
+            길드원 : {guild.guildMembers.length}{" "}
+            <span className="text-brandhover"> / {guild.maxMembers}</span>
+          </p>
           <p className="font-medium">
             길드 설립일: {guild.createdAt?.toString()?.split("T")[0]}
           </p>

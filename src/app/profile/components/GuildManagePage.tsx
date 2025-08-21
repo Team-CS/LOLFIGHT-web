@@ -174,6 +174,14 @@ const GuildManagePage = () => {
 
   const acceptMember = (memberId: string, guildId: string) => {
     //길드신청 수락
+    if (guild?.guildMembers.length === guild?.maxMembers) {
+      CustomAlert(
+        "error",
+        "신청수락",
+        "가입하려는 길드의 정원 수가 초과되었습니다."
+      );
+      return;
+    }
     inviteAccept(memberId, guildId)
       .then((response) => {
         CustomAlert("success", "신청수락", "길드 가입신청을 수락하셨습니다.");
@@ -182,11 +190,20 @@ const GuildManagePage = () => {
         );
       })
       .catch((error) => {
-        CustomAlert(
-          "error",
-          "신청수락",
-          "이미 길드에 가입되었거나 길드에 속한 멤버입니다."
-        );
+        const code = error.response.data.code;
+        if (code === "COMMON-003") {
+          CustomAlert(
+            "error",
+            "신청수락",
+            "이미 길드에 가입되었거나 길드에 속한 멤버입니다."
+          );
+        } else if (code === "COMMON-002") {
+          CustomAlert(
+            "error",
+            "신청수락",
+            "가입하려는 길드의 정원 수가 초과되었습니다."
+          );
+        }
       });
   };
   const rejectMember = (memberId: string, guildId: string) => {
@@ -308,10 +325,16 @@ const GuildManagePage = () => {
                     : `${guild?.guildRecord?.recordRanking}위`
                 }
               />
-              <GuildInfoItem
-                title={"길드인원"}
-                value={`${guild?.guildMembers.length}명`}
-              />
+              <div className="grid grid-cols-2 gap-[12px]">
+                <GuildInfoItem
+                  title={"길드인원"}
+                  value={`${guild?.guildMembers.length}명`}
+                />
+                <GuildInfoItem
+                  title={"최대 길드원 수"}
+                  value={`${guild?.maxMembers}명`}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-[12px]">
               <GuildInfoItem title="길드티어" value={guild?.guildTier} />
