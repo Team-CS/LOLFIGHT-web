@@ -86,10 +86,6 @@ export const Header = () => {
     CustomAlert("success", "로그아웃", "로그아웃 되었습니다.");
   };
 
-  const googleLogin = () => {
-    window.open(`${constant.SERVER_URL}/auth/google`, "_self");
-  };
-
   const handleProfileClick = () => {
     router.push("/profile");
   };

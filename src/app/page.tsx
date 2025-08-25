@@ -9,6 +9,7 @@ import { PostDto, PostListResponseDto } from "../common/DTOs/board/post.dto";
 import { getPopularPosts } from "../api/post.api";
 import BoardInfoComponent from "./board/components/BoardInfoComponent";
 import { convertBoardNameToCode } from "../utils/string/string.util";
+import { showDoNotTouch } from "../utils/string/doNotTouch";
 
 export default function Page() {
   const [guilds, setGuilds] = useState<GuildDto[]>([]);
@@ -39,6 +40,7 @@ export default function Page() {
         .catch((error) => {
           console.log(error);
         });
+      showDoNotTouch();
     } catch (error) {
       console.log("Guild fetch error");
     } finally {
