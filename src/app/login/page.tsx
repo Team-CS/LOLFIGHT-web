@@ -9,7 +9,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col gap-[24px]">
-      <span className="text-32px">
+      <span className="text-[32px]">
         무자비하게 <p />
         우리와 함께하세요
       </span>

@@ -1,5 +1,7 @@
 // components/BoardSection.tsx
 
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
+
 interface Post {
   id: number;
   postTitle: string;
@@ -26,17 +28,23 @@ export default function BoardSection({
   onPostClick,
   containsImage,
 }: BoardSectionProps) {
+  const isMobile = useIsMobile();
+
   return (
-    <div className="flex flex-col w-full h-full gap-[12px] bg-brandbgcolor border dark:border-branddarkborder dark:bg-branddark">
+    <div
+      className={`flex flex-col w-full min-w-[180px] gap-[4px] bg-brandbgcolor border dark:border-branddarkborder dark:bg-branddark ${
+        isMobile ? "h-[150px]" : "h-[200px]"
+      }`}
+    >
       <div className="flex w-full items-center justify-between">
         {tabTitles.map((title) => (
           <button
             key={title}
-            className={`w-full p-[12px] ${
+            className={`w-full ${
               activeTab === title
                 ? "font-bold text-brandcolor dark:text-white"
                 : "bg-[#e4eefb] dark:bg-brandgray text-gray-500"
-            }`}
+            } ${isMobile ? "text-[12px] p-[8px]" : "text-[14px] p-[12px]"}`}
             onClick={() => setActiveTab(title)}
           >
             {title}
@@ -46,11 +54,16 @@ export default function BoardSection({
 
       <div className="flex flex-col px-[12px] py-[4px] gap-[8px]">
         {postLists[activeTab] && postLists[activeTab].length > 0 ? (
-          postLists[activeTab].map((post) => (
+          (isMobile
+            ? postLists[activeTab].slice(0, 4)
+            : postLists[activeTab]
+          ).map((post) => (
             <div key={post.id} className="flex gap-[4px] items-center">
               {containsImage(post.postContent) ? <ImageIcon /> : <TextIcon />}
               <p
-                className="max-w-[300px] text-[16px] hover:underline hover:decoration-gray-400 hover:decoration-opacity-50 cursor-pointer truncate"
+                className={`hover:underline hover:decoration-gray-400 hover:decoration-opacity-50 cursor-pointer truncate ${
+                  isMobile ? "text-[12px]" : "text-[14px]"
+                }`}
                 onClick={() => onPostClick(post.id)}
               >
                 {post.postTitle}
@@ -61,7 +74,13 @@ export default function BoardSection({
             </div>
           ))
         ) : (
-          <p className="text-[14px] text-gray-400">게시글이 없습니다.</p>
+          <p
+            className={`${
+              isMobile ? "text-[12px]" : "text-[14px]"
+            } text-gray-400`}
+          >
+            게시글이 없습니다.
+          </p>
         )}
       </div>
     </div>
@@ -69,6 +88,8 @@ export default function BoardSection({
 }
 
 function ImageIcon() {
+  const isMobile = useIsMobile();
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +97,7 @@ function ImageIcon() {
       viewBox="0 0 24 24"
       strokeWidth="1.2"
       stroke="currentColor"
-      className="w-5 h-5"
+      className={`${isMobile ? "w-[14px] h-[14px]" : "w-[20px] h-[20px]"}`}
     >
       <path
         strokeLinecap="round"
@@ -92,6 +113,8 @@ function ImageIcon() {
 }
 
 function TextIcon() {
+  const isMobile = useIsMobile();
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -99,7 +122,7 @@ function TextIcon() {
       viewBox="0 0 24 24"
       strokeWidth="1.2"
       stroke="currentColor"
-      className="w-5 h-5"
+      className={`${isMobile ? "w-[16px] h-[16px]" : "w-[20px] h-[20px]"}`}
     >
       <path
         strokeLinecap="round"

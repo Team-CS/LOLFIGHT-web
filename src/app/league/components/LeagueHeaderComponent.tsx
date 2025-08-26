@@ -25,7 +25,7 @@ const LeagueHeaderComponent = ({
         <div className="flex flex gap-[8px] items-center">
           <div className="flex rounded rounded-[12px] bg-white shadow-md text-black items-center p-[8px] gap-[8px]">
             <p className="font-extrabold text-sm">공식</p>
-            <div className="flex w-8px h-8px bg-green-500 rounded-full" />
+            <div className="flex w-[8px] h-[8px] bg-green-500 rounded-full" />
           </div>
           <p className="text-[14px] font-light">
             {guildLength}개의 길드 참여중
