@@ -50,6 +50,22 @@ const config: Config = {
         brandgray: "#344057",
         branddarkborder: "#475569",
 
+        winLightColor: "#DBEAFE",
+        winLightText: "#229CE0",
+        winLightBorder: "#93C5FD",
+
+        loseLightColor: "#FFD9d9",
+        loseLightText: "#EB5858",
+        loseLightBorder: "#FCA5A5",
+
+        winDarkColor: "#13192E",
+        winDarkText: "#0B88CD",
+        winDarkBorder: "#3B82F6",
+
+        loseDarkColor: "#301A22",
+        loseDarkText: "#DA4344",
+        loseDarkBorder: "#EF4444",
+
         current: "currentColor",
         white: "#FFFFFF",
         black: "#121723",

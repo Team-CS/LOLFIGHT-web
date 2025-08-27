@@ -67,7 +67,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             </div>
           ) : (
             <div
-              className="flex justify-center gap-[4px] bg-[#0B1A28] px-[14px] py-[8px] rounded-[8px] hover:bg-[#1E364D] hoverable duration-300 gap-[8px] cursor-pointer"
+              className="flex justify-center gap-[4px] bg-brandcolor px-[14px] py-[8px] rounded-[8px] hover:bg-brandhover hoverable duration-300 gap-[8px] cursor-pointer"
               onClick={() => {
                 router.push("/login");
                 onClose();

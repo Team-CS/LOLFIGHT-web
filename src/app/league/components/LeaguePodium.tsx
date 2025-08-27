@@ -1,5 +1,6 @@
 import constant from "@/src/common/constant/constant";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import React from "react";
 
 interface LeaguePodiumProps {
@@ -10,12 +11,15 @@ interface LeaguePodiumProps {
 
 const LeaguePodium = (props: LeaguePodiumProps) => {
   const { first, second, third } = props;
+  const isMobile = useIsMobile();
 
   const renderGuildBox = (guild: GuildDto, color: string, emoji: string) => {
     return (
       <div className="flex flex-col items-center h-full p-[12px] gap-[4px]">
         <img
-          className={`object-cover w-[150px] h-[150px] rounded-[12px] border-[2px] ${color} shadow`}
+          className={`object-cover  rounded-[12px] border-[2px] ${color} shadow ${
+            isMobile ? "w-[100px] h-[100px]" : "w-[150px] h-[150px]"
+          }`}
           src={`${constant.SERVER_URL}/${guild.guildIcon}`}
           alt="길드 아이콘"
         />
@@ -45,7 +49,7 @@ const LeaguePodium = (props: LeaguePodiumProps) => {
   };
 
   return (
-    <div className="flex justify-center items-end gap-[12px] h-[300px]">
+    <div className="gap-[12px] max-w-[1200px] h-[300px] grid grid-cols-3">
       {second && (
         <div className="self-end">
           {renderGuildBox(second, "border-[#BBC6C9]", "🥈")}

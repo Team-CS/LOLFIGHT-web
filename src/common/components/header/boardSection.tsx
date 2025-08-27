@@ -32,7 +32,7 @@ export default function BoardSection({
 
   return (
     <div
-      className={`flex flex-col w-full min-w-[180px] gap-[4px] bg-brandbgcolor border dark:border-branddarkborder dark:bg-branddark ${
+      className={`flex flex-col w-full min-w-[150px] gap-[4px] bg-brandbgcolor border dark:border-branddarkborder dark:bg-branddark ${
         isMobile ? "h-[150px]" : "h-[200px]"
       }`}
     >

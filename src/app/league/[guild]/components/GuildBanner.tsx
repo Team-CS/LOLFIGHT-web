@@ -6,14 +6,16 @@ import CustomAlert from "../../../../common/components/alert/CustomAlert";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import constant from "@/src/common/constant/constant";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface Props {
   guild: GuildDto;
 }
 
 const GuildBanner = (props: Props) => {
-  const { guild } = props;
   const router = useRouter();
+  const isMobile = useIsMobile();
+  const { guild } = props;
   const { member } = useMemberStore();
 
   const handleClickInviteGuild = () => {
@@ -44,25 +46,43 @@ const GuildBanner = (props: Props) => {
 
   return (
     <div className="w-full bg-brandcolor dark:bg-branddark">
-      <div className="max-w-[1200px] mx-auto py-[24px] flex justify-between items-center gap-6">
-        <div className="flex items-center gap-4">
+      <div
+        className={`max-w-[1200px] mx-auto py-[24px] flex justify-between items-center ${
+          isMobile && "px-[12px]"
+        }`}
+      >
+        <div className="flex items-center gap-[12px]">
           <img
-            className="h-[75px] w-[75px] object-cover rounded-md"
+            className=" object-cover rounded-md"
             src={`${constant.SERVER_URL}/${guild.guildIcon}`}
+            width={isMobile ? 50 : 75}
+            height={isMobile ? 50 : 75}
             alt="GuildIcon"
           />
           <div className="flex flex-col gap-[4px]">
-            <p className="text-white text-sm font-medium">
+            <p
+              className={`text-white font-medium ${
+                isMobile ? "text-[10px]" : "text-[14px]"
+              }`}
+            >
               롤파이트 공식리그 - 1부리그 -{guild.guildRecord?.recordRanking}위
             </p>
             <div className="flex items-center gap-[12px]">
-              <h2 className="text-white text-2xl font-extrabold">
+              <h2
+                className={`text-white font-extrabold ${
+                  isMobile ? "text-[20px]" : "text-[24px]"
+                }`}
+              >
                 {guild.guildName}
               </h2>
               <button
                 aria-label="길드가입"
                 onClick={handleClickInviteGuild}
-                className="px-[12px] py-[4px] bg-white text-sm font-semibold text-brandcolor rounded hover:bg-gray-100 transition"
+                className={`bg-white font-semibold text-brandcolor rounded hover:bg-gray-100 transition ${
+                  isMobile
+                    ? "px-[8px] py-[2px] text-[12px]"
+                    : "px-[12px] py-[4px] text-[14px]"
+                }`}
               >
                 길드가입
               </button>
@@ -70,7 +90,11 @@ const GuildBanner = (props: Props) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-[4px] text-white text-sm">
+        <div
+          className={`flex flex-col text-white ${
+            isMobile ? "text-[10px] gap-[2px]" : "text-[14px] gap-[4px]"
+          }`}
+        >
           <p className="font-medium">길드 마스터 : {guild.guildMaster}</p>
           <p className="font-medium">
             길드원 : {guild.guildMembers.length}{" "}

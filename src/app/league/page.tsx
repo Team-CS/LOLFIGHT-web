@@ -9,8 +9,10 @@ import {
 import { getGuildList, getTopGuilds } from "@/src/api/guild.api";
 import Pagination from "@mui/material/Pagination";
 import LeaguePodium from "./components/LeaguePodium";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 export default function Page() {
+  const isMobile = useIsMobile();
   const [guilds, setGuilds] = useState<GuildDto[]>([]);
   const [topGuilds, setTopGuilds] = useState<GuildDto[]>([]);
 
@@ -104,16 +106,61 @@ export default function Page() {
         onSearch={handleSearch}
         onKeyDown={handleKeyDown}
       />
-      <div className="flex flex-col border rounded-t-[12px] dark:border-branddark">
+      <div className="flex flex-col px-[12px] rounded-t-[12px]">
         <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[12px] w-full whitespace-nowrap">
-          <div className="flex-[0.25] text-center px-[8px]">순위</div>
-          <div className="flex-[1] text-center px-[8px]">길드명</div>
-          <div className="flex-[2] text-center px-[8px]">길드소개</div>
-          <div className="flex-[0.25] text-center px-[8px]">길드원</div>
-          <div className="flex-[0.25] text-center px-[8px]">승</div>
-          <div className="flex-[0.25] text-center px-[8px]">패</div>
-          <div className="flex-[0.5] text-center px-[8px]">티어</div>
-          <div className="flex-[0.5] text-center px-[8px]">래더점수</div>
+          <div
+            className={`flex-[0.25] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            순위
+          </div>
+          <div
+            className={`flex-[1] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            길드명
+          </div>
+          {!isMobile && (
+            <>
+              <div className={`flex-[2] text-center px-[8px] text-[16px]`}>
+                길드소개
+              </div>
+
+              <div className={`flex-[0.25] text-center px-[8px] text-[16px]`}>
+                길드원
+              </div>
+            </>
+          )}
+          <div
+            className={`flex-[0.25] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            승
+          </div>
+          <div
+            className={`flex-[0.25] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            패
+          </div>
+          <div
+            className={`flex-[0.5] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            티어
+          </div>
+          <div
+            className={`flex-[0.5] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            래더점수
+          </div>
         </div>
         <div className="flex flex-col">
           {guilds.map((guild) => (

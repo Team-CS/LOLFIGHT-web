@@ -22,19 +22,18 @@ const GuildFightBox = (props: Props) => {
   const primayRune = battlePlayerData.primaryPerkStyle.split(",")[1];
   const subRune = battlePlayerData.subPerkStyle.split(",")[0];
 
-  // KDA에 따라 색상을 동적으로 지정하는 함수
   const getKDABackgroundColor = (kda: number | string) => {
     if (
       kda === "Perfect" ||
       (typeof kda === "string" && parseFloat(kda) >= 4.0)
     ) {
-      return "text-red-500 font-bold underline"; // Perfect일 경우 빨간색
+      return "text-red-500 font-bold underline";
     } else if (typeof kda === "string" && parseFloat(kda) >= 3.0) {
-      return "text-blue-500 font-bold"; // 4.0 이상일 경우 초록색
+      return "text-blue-500 font-bold";
     } else if (typeof kda === "string" && parseFloat(kda) >= 2.0) {
-      return "text-green-500"; // 3.0 이상일 경우 파란색
+      return "text-green-500";
     } else {
-      return "text-gray-500"; // 그 외의 경우 회색
+      return "text-gray-500";
     }
   };
 
@@ -43,13 +42,9 @@ const GuildFightBox = (props: Props) => {
   }
 
   return (
-    <div
-      className={`w-full h-45px flex text-[14px] px-[8px] gap-[12px] ${
-        result === "win" ? "bg-sky-100" : "bg-rose-100"
-      }`}
-    >
+    <div className={`w-full h-[45px] flex text-[14px] px-[8px] gap-[12px]`}>
       {/* 플레이어 */}
-      <div className="flex h-full font-medium text-[14px] w-[250px] items-center gap-[8px]">
+      <div className="flex flex-[2.5] h-full font-medium text-[14px] items-center gap-[8px]">
         <img
           src={`${constant.SERVER_URL}/${guild.guildIcon}`}
           alt="GuildBanner"
@@ -71,7 +66,7 @@ const GuildFightBox = (props: Props) => {
       </div>
 
       {/* Spell/Rune */}
-      <div className="flex w-[50px] gap-[4px]">
+      <div className="flex flex-[0.5] gap-[4px]">
         <div className="flex flex-col">
           <img
             src={`${constant.SERVER_URL}/public/spell/${battlePlayerData.spell1Id}.png`}
@@ -98,18 +93,18 @@ const GuildFightBox = (props: Props) => {
         </div>
       </div>
       {/* KDA */}
-      <div className={`flex flex-col justify-center font-medium w-[120px] `}>
+      <div className={`flex flex-col flex-[1.2] justify-center font-medium `}>
         <div className={`text-[12px] ${getKDABackgroundColor(kda)}`}>
           평점 {kda}
         </div>
-        <div className="font-light">
+        <div className="font-medium text-[14px]">
           {props.battlePlayerData.killed} / {props.battlePlayerData.deaths} /{" "}
           {props.battlePlayerData.assists}
         </div>
       </div>
 
       {/* 피해량 */}
-      <div className="flex py-[12px] w-[220px]">
+      <div className="flex flex-[2.2] py-[12px]">
         <div className="w-full h-full bg-gray-500 relative drop-shadow-md rounded">
           <div
             className={`h-full bg-red-500 rounded`}
@@ -128,7 +123,7 @@ const GuildFightBox = (props: Props) => {
       </div>
 
       {/* CS */}
-      <div className="flex flex-col py-[4px] justify-center w-[60px] text-[12px]">
+      <div className="flex flex-col flex-[0.6] py-[4px] justify-center text-[12px]">
         <p className="h-full font-normal">
           레벨 {props.battlePlayerData.level}
         </p>
@@ -138,25 +133,46 @@ const GuildFightBox = (props: Props) => {
       </div>
 
       {/* 시야점수 */}
-      <div className="flex flex-col w-[60px] text-[14px] justify-center">
+      <div className="flex flex-col flex-[0.6] text-[14px] justify-center">
         <p className="font-light">{props.battlePlayerData.visionScore}</p>
       </div>
 
       {/* 아이템 */}
-      <div className="flex w-[300px] py-[8px] text-[12px] gap-[2px]">
-        {props.battlePlayerData.items.split(",").map((itemId, index) => {
-          const itemNumber = parseInt(itemId.trim());
-          return (
-            itemNumber !== 0 && (
+      <div className="flex flex-[3.5] py-[8px] text-[12px] gap-[2px]">
+        {(() => {
+          const items = props.battlePlayerData.items
+            .split(",")
+            .map((id) => parseInt(id.trim()));
+
+          const IMG_SIZE = "w-[30px] h-[30px]"; // 고정 크기
+
+          // 8칸으로 고정, 마지막칸은 빈칸 없이 실제 아이템 또는 회색 div
+          const paddedItems = [
+            items[0] || 0,
+            items[1] || 0,
+            items[2] || 0,
+            items[3] || 0,
+            items[4] || 0,
+            items[5] || 0,
+            items[6] || 0,
+          ];
+
+          return paddedItems.map((itemNumber, index) =>
+            itemNumber !== 0 ? (
               <img
                 key={index}
                 src={`${constant.SERVER_URL}/public/items/${itemNumber}.png`}
-                className="object-contain w-[30px]"
+                className={`object-contain ${IMG_SIZE} rounded-[4px]`}
                 alt={`Item${itemNumber}`}
+              />
+            ) : (
+              <div
+                key={index}
+                className={`${IMG_SIZE} bg-gray-300 dark:bg-black rounded-[4px] shrink-0`}
               />
             )
           );
-        })}
+        })()}
       </div>
     </div>
   );
