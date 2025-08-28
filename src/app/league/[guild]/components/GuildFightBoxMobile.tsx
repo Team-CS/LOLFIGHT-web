@@ -51,7 +51,7 @@ const GuildFightBoxMobile = (props: Props) => {
           className="w-[25px] h-[25px] rounded-[4px]"
         />
 
-        <div className="flex gap-[2px]  flex-shrink-0">
+        <div className="flex gap-[2px] flex-shrink-0">
           <div className="flex flex-col">
             <img
               src={`${constant.SERVER_URL}/public/spell/${battlePlayerData.spell1Id}.png`}

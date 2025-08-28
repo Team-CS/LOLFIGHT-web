@@ -23,7 +23,11 @@ const LeagueHeaderComponent = ({
   const isMobile = useIsMobile();
   return (
     <>
-      <div className="flex items-center justify-between px-[12px]">
+      <div
+        className={`flex items-center justify-between  ${
+          isMobile && "px-[12px]"
+        }`}
+      >
         <div className="flex flex gap-[8px] items-center">
           <div
             className={`flex rounded rounded-[12px] bg-white shadow-md text-black items-center  ${

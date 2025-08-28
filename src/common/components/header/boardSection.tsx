@@ -59,16 +59,24 @@ export default function BoardSection({
             : postLists[activeTab]
           ).map((post) => (
             <div key={post.id} className="flex gap-[4px] items-center">
-              {containsImage(post.postContent) ? <ImageIcon /> : <TextIcon />}
+              <div className="flex-shrink-0">
+                {containsImage(post.postContent) ? <ImageIcon /> : <TextIcon />}
+              </div>
               <p
                 className={`hover:underline hover:decoration-gray-400 hover:decoration-opacity-50 cursor-pointer truncate ${
-                  isMobile ? "text-[12px]" : "text-[14px]"
+                  isMobile
+                    ? "text-[12px] max-w-[120px]"
+                    : "text-[14px] max-w-[320px]"
                 }`}
                 onClick={() => onPostClick(post.id)}
               >
                 {post.postTitle}
               </p>
-              <span className="text-red-400 text-[12px]">
+              <span
+                className={`text-red-400 ${
+                  isMobile ? "text-[10px]" : "text-[12px]"
+                }`}
+              >
                 [{post.postComments}]
               </span>
             </div>
@@ -97,7 +105,7 @@ function ImageIcon() {
       viewBox="0 0 24 24"
       strokeWidth="1.2"
       stroke="currentColor"
-      className={`${isMobile ? "w-[14px] h-[14px]" : "w-[20px] h-[20px]"}`}
+      className={`${isMobile ? "w-[14px] h-[14px]" : "w-[20px] h-[20px]"} `}
     >
       <path
         strokeLinecap="round"

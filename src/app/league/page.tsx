@@ -176,18 +176,26 @@ export default function Page() {
           boundaryCount={2}
           onChange={(event, page) => handlePageClick(event, page)}
           sx={{
+            // 다크 모드 선택된 아이템
             ".dark & .Mui-selected": {
               backgroundColor: "#4C4C4C",
-              color: "#CACACA", // 텍스트 색상
+              color: "#CACACA",
               "&:hover": {
-                backgroundColor: "#707070", // 호버 시 색상
+                backgroundColor: "#707070",
               },
             },
+            // 다크 모드 일반 아이템
             ".dark & .MuiPaginationItem-root": {
-              color: "#EEEEEE", // 선택되지 않은 아이템의 기본 텍스트 색상
+              color: "#EEEEEE",
             },
             ".dark & .MuiPaginationItem-icon": {
-              color: "#EEEEEE", // 텍스트 색상
+              color: "#EEEEEE",
+            },
+            // 모바일 / PC 반응형
+            "& .MuiPaginationItem-root": {
+              fontSize: isMobile ? "10px" : "14px", // 폰트 크기
+              minWidth: isMobile ? "24px" : "36px", // 버튼 최소 너비
+              height: isMobile ? "24px" : "36px", // 버튼 높이
             },
           }}
         />

@@ -200,6 +200,7 @@ export const Header = () => {
                           <img
                             className="object-cover rounded-[12px] w-[70px] h-[70px]"
                             src={`${constant.SERVER_URL}/${member.memberIcon}`}
+                            alt="member-icon"
                           />
                           <div className="flex flex-col">
                             <p className="font-extrabold text-[18px]">

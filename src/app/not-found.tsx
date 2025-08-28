@@ -1,6 +1,6 @@
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen text-center bg-white text-gray-800">
+    <div className="flex flex-col items-center justify-center h-screen text-center text-gray-800">
       <h1 className="text-5xl font-bold mb-4">404</h1>
       <p className="text-xl">페이지를 찾을 수 없습니다</p>
       <p className="text-gray-500 mt-2">

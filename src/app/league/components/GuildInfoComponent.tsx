@@ -50,8 +50,8 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
           alt="길드 아이콘"
         />
         <div
-          className={`font-semibold ${
-            isMobile ? "text-[14px]" : "text-[16px]"
+          className={`font-semibold truncate ${
+            isMobile ? "text-[10px] max-w-[100px]" : "text-[16px]"
           }`}
         >
           {props.guild.guildName}
@@ -59,8 +59,12 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
       </div>
       {!isMobile && (
         <>
-          <div className="flex items-center justify-center flex-[2] px-[8px] text-[14px] h-[60px] whitespace-normal break-words overflow-hidden text-center">
-            <span className="w-full">{props.guild.guildDescription}</span>
+          <div className="flex flex-[2] px-[8px] h-[60px]">
+            <div className="flex items-center justify-center w-full h-full">
+              <div className="line-clamp-3 overflow-hidden text-center text-[14px] break-words">
+                {props.guild.guildDescription}
+              </div>
+            </div>
           </div>
 
           <div className={`flex-[0.25] px-[8px] text-center`}>

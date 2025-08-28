@@ -56,7 +56,7 @@ export default function Page() {
       <div className="flex flex-col max-w-[1200px] mx-auto py-[28px] gap-[24px]">
         <div className="flex flex-col gap-[12px]">
           <LeagueHeaderComponent guildLength={guilds.length} />
-          <div className="flex flex-col px-[12px]">
+          <div className={`flex flex-col ${isMobile && "px-[12px]"} `}>
             <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[12px] w-full whitespace-nowrap">
               <div
                 className={`flex-[0.25] text-center ${
@@ -87,14 +87,14 @@ export default function Page() {
               )}
               <div
                 className={`flex-[0.25] text-center ${
-                  isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+                  isMobile ? "px-[4px] text-[14px]" : "px-[8px] text-[16px]"
                 }`}
               >
                 승
               </div>
               <div
                 className={`flex-[0.25] text-center ${
-                  isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+                  isMobile ? "px-[4px] text-[14px]" : "px-[8px] text-[16px]"
                 }`}
               >
                 패
@@ -128,10 +128,29 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="flex flex-col py-[12px] gap-[12px] bg-white dark:bg-dark rounded-[12px] shadow-md">
-          <p className="p-[12px] text-[14px] font-bold">LOLFIGHT 인기 게시글</p>
-          <div>
-            <div className="w-full py-[8px] text-sm flex border-t border-b border-brandborder dark:border-branddarkborder bg-[#f4f7ff] dark:bg-branddark">
+        <div
+          className={`flex flex-col gap-[12px] ${
+            isMobile ? "p-[12px]" : "py-[12px]"
+          }`}
+        >
+          <div
+            className={`bg-white dark:bg-dark rounded-[12px] shadow-md ${
+              isMobile ? "py-[12px]" : "p-[12px]"
+            }`}
+          >
+            <p
+              className={`p-[12px] font-bold ${
+                isMobile ? "text-[10px]" : "text-[14px]"
+              }`}
+            >
+              LOLFIGHT 인기 게시글
+            </p>
+
+            <div
+              className={`w-full py-[8px] flex border-t border-b border-brandborder dark:border-branddarkborder bg-[#f4f7ff] dark:bg-branddark ${
+                isMobile ? "text-[10px]" : "text-[14px]"
+              }`}
+            >
               <div className="w-1/12 flex items-center justify-center text-brandcolor font-semibold">
                 추천
               </div>
