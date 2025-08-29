@@ -168,7 +168,7 @@ export default function Page() {
           ))}
         </div>
       </div>
-      <div className="notice__pagination w-full flex justify-center mt-1 p-3">
+      <div className="w-full flex justify-center mt-1 p-3">
         <Pagination
           count={totalPages}
           page={currentPage}

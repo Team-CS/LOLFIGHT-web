@@ -2,12 +2,14 @@
 
 import { JudgmentDto } from "@/src/common/DTOs/judgment/judgment.dto";
 import { SummonerInfoCard } from "./SummonerInfoCard";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface Props {
   judgment: JudgmentDto;
 }
 
 const JudgmentDataCard = ({ judgment }: Props) => {
+  const isMobile = useIsMobile();
   const leftVoteCount = (judgment?.votes ?? []).filter(
     (v) => v.voteSide === "left"
   ).length;
@@ -61,7 +63,7 @@ const JudgmentDataCard = ({ judgment }: Props) => {
       </div>
 
       {/* 플레이어 정보 */}
-      <div className="flex items-center justify-between">
+      <div className={`flex items-center justify-between`}>
         <SummonerInfoCard
           name={judgment?.judgmentLeftName}
           line={judgment?.judgmentLeftLine}
@@ -69,7 +71,11 @@ const JudgmentDataCard = ({ judgment }: Props) => {
           championId={judgment?.judgmentLeftChampion}
           align="right"
         />
-        <div className="text-[18px] font-bold text-brandgray dark:text-brandhover">
+        <div
+          className={`font-bold text-brandgray dark:text-brandhover ${
+            isMobile ? "text-[14px]" : "text-[18px]"
+          }`}
+        >
           VS
         </div>
         <SummonerInfoCard

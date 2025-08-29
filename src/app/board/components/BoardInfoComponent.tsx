@@ -118,8 +118,8 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
           <p
             className={`truncate cursor-pointer hover:decoration-gray-400 hover:decoration-opacity-50 ${
               isMobile
-                ? "text-[12px] max-w-[130px]"
-                : "text-[14px] max-w-[400px] "
+                ? "text-[12px] max-w-[100px]"
+                : "text-[14px] max-w-[350px] "
             }`}
             onClick={handleOnClick}
           >
@@ -144,7 +144,7 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
       </div>
       <div
         className={`w-1/6 flex items-center justify-center ${
-          isMobile ? "text-[10px]" : "text-[14px]"
+          isMobile ? "text-[8px]" : "text-[14px]"
         }`}
       >
         {getDate(data.postDate)}
