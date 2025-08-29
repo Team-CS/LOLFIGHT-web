@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import constant from "@/src/common/constant/constant";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface Props {
   currentLine: string;
@@ -13,6 +14,7 @@ const ALL_LINES = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 const LineSelector = (props: Props) => {
   const { currentLine, isMaster, onChangeLine } = props;
 
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -36,12 +38,14 @@ const LineSelector = (props: Props) => {
       <button
         ref={buttonRef}
         onClick={toggleDropdown}
-        className="flex items-center gap-[4px] text-[14px] font-medium rounded cursor-pointer"
+        className={`flex items-center gap-[4px] font-medium rounded cursor-pointer ${
+          isMobile ? "text-[10px]" : "text-[14px]"
+        }`}
       >
         <img
           src={`${constant.SERVER_URL}/public/ranked-positions/${currentLine}.png`}
           alt={currentLine}
-          className="w-[25px] h-[25px]"
+          className={`${isMobile ? "w-[15px] h-[15px]" : "w-[25px] h-[25px]"}`}
         />
         {currentLine}
       </button>
@@ -62,12 +66,18 @@ const LineSelector = (props: Props) => {
                   onChangeLine(line);
                   closeDropdown();
                 }}
-                className="flex items-center gap-[4px] px-[12px] py-[8px] w-full text-[14px] hover:bg-gray-100 dark:hover:bg-neutral-700"
+                className={`flex items-center gap-[4px] w-full hover:bg-gray-100 dark:hover:bg-neutral-700 ${
+                  isMobile
+                    ? "px-[8px] py-[4px] text-[12px]"
+                    : "px-[12px] py-[8px] text-[14px]"
+                }`}
               >
                 <img
                   src={`${constant.SERVER_URL}/public/ranked-positions/${line}.png`}
                   alt={line}
-                  className="w-[20px] h-[20px]"
+                  className={`${
+                    isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
+                  }`}
                 />
                 <span>{line}</span>
               </button>

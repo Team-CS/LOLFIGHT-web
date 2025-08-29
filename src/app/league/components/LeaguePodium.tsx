@@ -60,7 +60,11 @@ const LeaguePodium = ({ first, second, third }: LeaguePodiumProps) => {
   };
 
   return (
-    <div className="flex justify-center items-end gap-[40px] max-w-[1200px] mx-auto ">
+    <div
+      className={`flex justify-center items-end  max-w-[1200px] mx-auto  ${
+        isMobile ? "px-[12px] gap-[20px]" : "gap-[40px]"
+      }`}
+    >
       {second && (
         <div
           className="flex flex-col items-center justify-end"
