@@ -91,6 +91,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   {link.title}
                 </Link>
               ))}
+            <Link
+              key={"alarm"}
+              href={"/alarm"}
+              className="block w-full px-[12px] py-[10px] rounded-[8px] text-[14px] font-medium text-gray-800 dark:text-white hover:bg-brandhover dark:hover:bg-gray-700 transition duration-300"
+              onClick={onClose}
+            >
+              알림
+            </Link>
           </div>
 
           {member && (

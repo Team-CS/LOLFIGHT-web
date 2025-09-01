@@ -43,11 +43,14 @@ import MatchCard from "./components/MatchCard";
 import { getCookie } from "@/src/utils/cookie/cookie";
 import { getMemberData } from "@/src/api/member.api";
 import { MemberDto } from "@/src/common/DTOs/member/member.dto";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import { BattleTeamCardMobile } from "./components/BattleTeamCardMobile";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
 export default function Page() {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const { member, setMember } = useMemberStore();
   const { guildTeam, setGuildTeam } = useGuildTeamStore();
 
@@ -63,6 +66,7 @@ export default function Page() {
   const [selectedTeam, setSelectedTeam] = useState<ScrimSlotDto | null>(null);
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState<boolean>(false);
   const [isRegisterTeamOpen, setIsRegisterTeamOpen] = useState<boolean>(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const accessToken = getCookie("lf_atk");
 
@@ -138,6 +142,10 @@ export default function Page() {
       fetchScrimSlots(1);
     } else {
       alert("검색어는 최소 2자 이상 입력해주세요.");
+    }
+
+    if (isSearchOpen) {
+      setIsSearchOpen(false);
     }
   };
 
@@ -465,21 +473,39 @@ export default function Page() {
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
       {guildTeam && member ? (
         // ✅ 팀이 있을 때
-        <div className="flex h-[470px] p-[32px] shadow-md rounded-[12px] gap-[24px] dark:bg-branddark">
-          <div className="flex flex-col w-[50%] gap-[12px]">
+        <div
+          className={`flex p-[32px] shadow-md rounded-[12px] gap-[24px] dark:bg-branddark ${
+            isMobile ? "flex-col h-[940px]" : "h-[470px]"
+          }`}
+        >
+          <div
+            className={`flex flex-col w-[50%] gap-[12px] ${
+              isMobile ? "w-full" : "w-[50%]"
+            }`}
+          >
             {/* Header */}
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-[16px]">
                 <img
                   src={`${constant.SERVER_URL}/${guildTeam.guild.guildIcon}`}
                   alt="logo"
-                  className="w-[60px] h-[60px] rounded-[12px] object-cover"
+                  className={`rounded-[12px] object-cover ${
+                    isMobile ? "w-[50px] h-[50px]" : "w-[60px] h-[60px]"
+                  }`}
                 />
                 <div className="flex flex-col">
-                  <p className="text-[22px] font-semibold">
+                  <p
+                    className={`font-semibold ${
+                      isMobile ? "text-[16px]" : "text-[22px]"
+                    }`}
+                  >
                     {guildTeam.leader.memberName}팀
                   </p>
-                  <p className="text-[14px] text-gray-400">
+                  <p
+                    className={`text-gray-400 ${
+                      isMobile ? "text-[12px]" : "text-[14px]"
+                    }`}
+                  >
                     리더: {guildTeam.leader.memberName} -{" "}
                     {guildTeam.leader.memberGame?.gameName}
                   </p>
@@ -490,7 +516,11 @@ export default function Page() {
                 myTeamSlot ? (
                   <button
                     onClick={handledeleteSlotClick}
-                    className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                    className={`bg-brandcolor text-white rounded-md hover:opacity-90 ${
+                      isMobile
+                        ? "min-w-[100px] px-[8px] py-[4px] text-[12px]"
+                        : "px-[12px] py-[4px] text-[14px]"
+                    }`}
                   >
                     스크림 등록 취소
                   </button>
@@ -498,13 +528,21 @@ export default function Page() {
                   <div className="flex gap-[12px]">
                     <button
                       onClick={handleUpdateClick}
-                      className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                      className={`bg-brandcolor text-white rounded-md hover:opacity-90 ${
+                        isMobile
+                          ? "min-w-[60px] px-[8px] py-[4px] text-[12px]"
+                          : "px-[12px] py-[4px] text-[14px]"
+                      }`}
                     >
                       팀 수정
                     </button>
                     <button
                       onClick={handledeleteClick}
-                      className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                      className={`bg-brandcolor text-white rounded-md hover:opacity-90 ${
+                        isMobile
+                          ? "min-w-[60px] px-[8px] py-[4px] text-[12px]"
+                          : "px-[12px] py-[4px] text-[14px]"
+                      }`}
                     >
                       팀 삭제
                     </button>
@@ -513,7 +551,11 @@ export default function Page() {
               ) : (
                 <button
                   onClick={handleLeaveClick}
-                  className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                  className={`bg-brandcolor text-white rounded-md hover:opacity-90 ${
+                    isMobile
+                      ? "min-w-[60px] px-[8px] py-[4px] text-[12px]"
+                      : "px-[12px] py-[4px] text-[14px]"
+                  }`}
                 >
                   팀 탈퇴
                 </button>
@@ -542,11 +584,19 @@ export default function Page() {
           </div>
 
           {/* 내전 대기 또는 진행중 */}
-          <div className="flex flex-col w-[50%] gap-[12px]">
+          <div
+            className={`flex flex-col gap-[12px] ${
+              isMobile ? "w-full" : "w-[50%]"
+            }`}
+          >
             <p className="text-[18px] font-semibold ">
               📜 스크림 일정 및 최근 기록
             </p>
-            <div className="flex flex-col h-full gap-[12px] overflow-y-auto">
+            <div
+              className={`flex flex-col gap-[12px] overflow-y-auto ${
+                isMobile ? "h-[470px]" : "h-full"
+              }`}
+            >
               {applications
                 .filter((data) => {
                   const myTeamId = guildTeam?.id;
@@ -598,23 +648,85 @@ export default function Page() {
       {/* Battle Team List */}
       <div className="flex flex-col w-full p-[32px] gap-[24px] shadow-md rounded-[12px] dark:bg-branddark">
         <div className="flex justify-between">
-          <p className="text-[18px] font-semibold">🔥 스크림 대기 팀 목록</p>
+          <p
+            className={`${
+              isMobile ? "text-[14px]" : "text-[18px]"
+            } font-semibold`}
+          >
+            🔥 스크림 대기 팀 목록
+          </p>
           <div className="flex items-center gap-[12px]">
-            <div className="flex w-[200px] border border-gray-200 rounded-md px-[12px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
+            {isMobile ? (
+              <>
+                {/* 검색 아이콘 */}
+                <div
+                  onClick={() => setIsSearchOpen(true)}
+                  className="cursor-pointer"
+                >
+                  <FaSearch />
+                </div>
+
+                {/* 검색 팝업 */}
+                {isSearchOpen && (
+                  <div
+                    className="fixed inset-0 z-50 flex items-start justify-center bg-black/30"
+                    onClick={() => setIsSearchOpen(false)} // overlay 클릭 닫기
+                  >
+                    {/* 팝업 박스 */}
+                    <div
+                      className="mt-[40px] w-[90%] max-w-md rounded-xl border border-gray-300 bg-white dark:bg-black dark:border-gray-700 shadow-lg p-[12px]"
+                      onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫히지 않게
+                    >
+                      <div className="flex items-center gap-[8px]">
+                        <div className="flex flex-1 border border-gray-200 rounded-md px-[8px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
+                          <div
+                            className="flex flex-wrap justify-center content-center cursor-pointer"
+                            onClick={handleSearch}
+                          >
+                            <FaSearch />
+                          </div>
+                          <input
+                            autoFocus
+                            className="w-full rounded-md bg-gray-100 px-[8px] py-[4px] text-[12px] focus:outline-none dark:bg-black font-normal"
+                            type="text"
+                            placeholder="길드명 입력 (2자 이상)"
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
               <div
-                className="flex flex-wrap justify-center content-center dark:bg-black"
-                onClick={handleSearch}
+                className={`flex border border-gray-200 rounded-md px-[12px] gap-[12px] bg-gray-100 dark:bg-black dark:border-black`}
               >
-                <FaSearch />
+                <div
+                  className="flex flex-wrap justify-center content-center dark:bg-black"
+                  onClick={handleSearch}
+                >
+                  <FaSearch
+                    className={`${
+                      isMobile ? "w-[10px] h-[10px]" : "w-[15px] h-[15px]"
+                    }`}
+                  />
+                </div>
+                <input
+                  className={`"w-full rounded-md bg-gray-100 focus:outline-none dark:bg-black font-normal ${
+                    isMobile
+                      ? "px-[12px] py-[4px] text-[12px] w-[100px]"
+                      : "px-[12px] py-[8px] text-[14px] w-[200px]"
+                  }`}
+                  type="text"
+                  placeholder="길드명 입력 (2자 이상)"
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                />
               </div>
-              <input
-                className="w-full rounded-md bg-gray-100 px-[12px] py-[4px] text-[14px] focus:outline-none dark:bg-black font-normal"
-                type="text"
-                placeholder="검색어 입력 (2자 이상)"
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-            </div>
+            )}
+
             {guildTeam && guildTeam.leader.id === member?.id && (
               <button
                 onClick={handleRegisterScrim}
@@ -627,19 +739,39 @@ export default function Page() {
         </div>
 
         {scrimSlots.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-[16px] place-items-center">
-            {scrimSlots.map((team, i) => (
-              <BattleTeamCard
-                key={i}
-                scrimSlot={team}
-                onClick={() => setSelectedTeam(team)}
-              />
-            ))}
+          <div
+            className={`gap-[16px] ${
+              isMobile
+                ? "flex flex-col items-center"
+                : "grid grid-cols-5 place-items-center "
+            }`}
+          >
+            {scrimSlots.map((team, i) =>
+              isMobile ? (
+                <BattleTeamCardMobile
+                  key={i}
+                  scrimSlot={team}
+                  onClick={() => setSelectedTeam(team)}
+                />
+              ) : (
+                <BattleTeamCard
+                  key={i}
+                  scrimSlot={team}
+                  onClick={() => setSelectedTeam(team)}
+                />
+              )
+            )}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center gap-[16px] py-[60px] rounded-[12px] dark:bg-branddark shadow-md text-gray-400">
-            <p className="text-[18px]">😓 스크림 대기 팀이 없습니다.</p>
-            <p className="text-[14px] text-center">
+            <p className={`${isMobile ? "text-[14px]" : "text-[18px]"}`}>
+              😓 스크림 대기 팀이 없습니다.
+            </p>
+            <p
+              className={`${
+                isMobile ? "text-[12px]" : "text-[14px]"
+              } text-center`}
+            >
               새로운 팀들이 스크림을 등록하면 여기서 확인할 수 있습니다.
             </p>
           </div>
@@ -652,6 +784,7 @@ export default function Page() {
             boundaryCount={2}
             onChange={(event, page) => handlePageClick(event, page)}
             sx={{
+              // 다크 모드 선택된 아이템
               ".dark & .Mui-selected": {
                 backgroundColor: "#4C4C4C",
                 color: "#CACACA",
@@ -659,16 +792,24 @@ export default function Page() {
                   backgroundColor: "#707070",
                 },
               },
+              // 다크 모드 일반 아이템
               ".dark & .MuiPaginationItem-root": {
                 color: "#EEEEEE",
               },
               ".dark & .MuiPaginationItem-icon": {
                 color: "#EEEEEE",
               },
+              // 모바일 / PC 반응형
+              "& .MuiPaginationItem-root": {
+                fontSize: isMobile ? "10px" : "14px", // 폰트 크기
+                minWidth: isMobile ? "24px" : "36px", // 버튼 최소 너비
+                height: isMobile ? "24px" : "36px", // 버튼 높이
+              },
             }}
           />
         </div>
       </div>
+
       {/* 모달 렌더링 */}
       {selectedTeam && (
         <BattleTeamModal
