@@ -7,6 +7,8 @@ import CustomAlert from "../../../../common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import { getCookie } from "@/src/utils/cookie/cookie";
+import { jwtDecode } from "jwt-decode";
 
 interface BoardPostHeadComponentProps {
   post: PostDto;
@@ -40,6 +42,8 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
   };
 
   const isMine = post?.postWriter.memberName === member?.memberName;
+  const token = getCookie("lf_atk");
+  const isAdmin = token ? (jwtDecode(token) as any)?.role === "ADMIN" : false;
 
   return (
     <div className="flex flex-col p-[24px] gap-[12px]">
@@ -77,7 +81,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
             조회수 : {post?.postViews}
           </p>
         </div>
-        {isMine && (
+        {(isMine || isAdmin) && (
           <div className="head_btn content-center">
             <button
               className={`text-gray-400 ${

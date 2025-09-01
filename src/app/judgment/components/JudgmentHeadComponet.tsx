@@ -7,6 +7,8 @@ import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { deleteJudgment } from "@/src/api/judgment.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import { getCookie } from "@/src/utils/cookie/cookie";
+import { jwtDecode } from "jwt-decode";
 
 interface JudgmentHeadComponetProps {
   judgment: JudgmentDto;
@@ -22,7 +24,8 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
   const year = judgmentDateTime.getFullYear();
   const month = (judgmentDateTime.getMonth() + 1).toString().padStart(2, "0");
   const day = judgmentDateTime.getDate().toString().padStart(2, "0");
-
+  const token = getCookie("lf_atk");
+  const isAdmin = token ? (jwtDecode(token) as any)?.role === "ADMIN" : false;
   useEffect(() => {
     if (member) {
       if (judgment?.member.memberName === member.memberName) {
@@ -88,7 +91,7 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
             조회수 : {judgment?.judgmentView}
           </p>
         </div>
-        {isMine && (
+        {(isMine || isAdmin) && (
           <div className="content-center">
             <button
               className={`text-gray-400 ${
