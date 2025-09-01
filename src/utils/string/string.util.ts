@@ -94,3 +94,20 @@ export function convertBoardNameToCode(boardName: string): string {
       return "unknown"; // 매칭되는 게 없을 경우 기본값
   }
 }
+
+export function convertLineToEnglish(line: string): string {
+  switch (line) {
+    case "탑":
+      return "TOP";
+    case "정글":
+      return "JUNGLE";
+    case "미드":
+      return "MID";
+    case "원딜":
+      return "ADC";
+    case "서폿":
+      return "SUPPORT";
+    default:
+      return "";
+  }
+}

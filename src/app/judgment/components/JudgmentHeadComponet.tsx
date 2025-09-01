@@ -6,6 +6,9 @@ import { JudgmentDto } from "@/src/common/DTOs/judgment/judgment.dto";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { deleteJudgment } from "@/src/api/judgment.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import { getCookie } from "@/src/utils/cookie/cookie";
+import { jwtDecode } from "jwt-decode";
 
 interface JudgmentHeadComponetProps {
   judgment: JudgmentDto;
@@ -15,12 +18,14 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
   const { judgment } = props;
   const [isMine, setIsMine] = useState(false);
   const { member } = useMemberStore();
+  const isMobile = useIsMobile();
   const router = useRouter();
   const judgmentDateTime = new Date(judgment.createdAt!);
   const year = judgmentDateTime.getFullYear();
   const month = (judgmentDateTime.getMonth() + 1).toString().padStart(2, "0");
   const day = judgmentDateTime.getDate().toString().padStart(2, "0");
-
+  const token = getCookie("lf_atk");
+  const isAdmin = token ? (jwtDecode(token) as any)?.role === "ADMIN" : false;
   useEffect(() => {
     if (member) {
       if (judgment?.member.memberName === member.memberName) {
@@ -52,28 +57,49 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
 
   return (
     <div className="flex flex-col px-[24px] py-[12px] gap-[12px]">
-      <span className="text-[24px] font-bold">{judgment?.judgmentTitle}</span>
+      <span className={`font-bold ${isMobile ? "text-[20px]" : "text-[24px]"}`}>
+        {judgment?.judgmentTitle}
+      </span>
       <div className=" flex justify-between">
         <div className="flex gap-[8px] items-center">
           <img
-            className="rounded-full w-[20px] h-[20px]"
+            className={`object-cover rounded-[12px] ${
+              isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+            }`}
             src={`${constant.SERVER_URL}/${judgment.member.memberIcon}`}
             alt="memberIcon"
           />
-          <p className="text-[16px] dark:text-gray-400">
+          <p
+            className={`font-bold dark:text-gray-400 ${
+              isMobile ? "text-[14px]" : "text-[16px]"
+            }`}
+          >
             {judgment?.member.memberName}
           </p>
 
-          <p className="text-[12px] text-gray-400">{`${year}.${month}.${day}`}</p>
+          <p
+            className={`text-gray-400 ${
+              isMobile ? "text-[10px]" : "text-[12px]"
+            }`}
+          >{`${year}.${month}.${day}`}</p>
 
-          <p className="text-[12px] text-gray-400">
+          <p
+            className={`text-gray-400 ${
+              isMobile ? "text-[10px]" : "text-[12px]"
+            }`}
+          >
             조회수 : {judgment?.judgmentView}
           </p>
         </div>
-        {isMine && (
+        {(isMine || isAdmin) && (
           <div className="content-center">
-            <button className="text-gray-400" onClick={handleDeleteButtonClick}>
-              <p className="text-[14px]">삭제</p>
+            <button
+              className={`text-gray-400 ${
+                isMobile ? "text-[10px]" : "text-[12px]"
+              }`}
+              onClick={handleDeleteButtonClick}
+            >
+              삭제
             </button>
           </div>
         )}

@@ -31,6 +31,7 @@ import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import { GuildBannerModal } from "./modals/GuildBannerModal";
 import { GuildDescriptionModal } from "./modals/GuildDescriptionModal";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 const GuildManagePage = () => {
   const [inviteMembers, setInviteMembers] = useState<GuildInviteDTO[]>([]);
@@ -44,6 +45,7 @@ const GuildManagePage = () => {
   const [previewImage, setPreviewImage] = useState<string>("");
   const [newDesc, setNewDesc] = useState<string>("");
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const recordDefeat = guild?.guildRecord?.recordDefeat ?? 0;
   const recordVictory = guild?.guildRecord?.recordVictory ?? 0;
@@ -174,6 +176,14 @@ const GuildManagePage = () => {
 
   const acceptMember = (memberId: string, guildId: string) => {
     //길드신청 수락
+    if (guild?.guildMembers.length === guild?.maxMembers) {
+      CustomAlert(
+        "error",
+        "신청수락",
+        "가입하려는 길드의 정원 수가 초과되었습니다."
+      );
+      return;
+    }
     inviteAccept(memberId, guildId)
       .then((response) => {
         CustomAlert("success", "신청수락", "길드 가입신청을 수락하셨습니다.");
@@ -182,11 +192,20 @@ const GuildManagePage = () => {
         );
       })
       .catch((error) => {
-        CustomAlert(
-          "error",
-          "신청수락",
-          "이미 길드에 가입되었거나 길드에 속한 멤버입니다."
-        );
+        const code = error.response.data.code;
+        if (code === "COMMON-003") {
+          CustomAlert(
+            "error",
+            "신청수락",
+            "이미 길드에 가입되었거나 길드에 속한 멤버입니다."
+          );
+        } else if (code === "COMMON-002") {
+          CustomAlert(
+            "error",
+            "신청수락",
+            "가입하려는 길드의 정원 수가 초과되었습니다."
+          );
+        }
       });
   };
   const rejectMember = (memberId: string, guildId: string) => {
@@ -278,7 +297,7 @@ const GuildManagePage = () => {
   };
 
   return (
-    <div className="flex flex-col p-[16px] gap-24px">
+    <div className="flex flex-col p-[16px] gap-[24px]">
       {member!.memberGuild === null || member!.memberGuild === undefined ? (
         <GuildCreateIntro />
       ) : (
@@ -287,11 +306,19 @@ const GuildManagePage = () => {
             <img
               src={`${constant.SERVER_URL}/${guild?.guildIcon}`}
               alt="GuildIcon"
-              className="object-cover w-[100px] h-[100px] rounded-[12px]"
+              className={`object-cover rounded-[12px] ${
+                isMobile ? "w-[70px] h-[70px]" : "w-[100px] h-[100px]"
+              }`}
             />
             <div className="flex flex-col items-between">
-              <h2 className="text-[28px] font-bold">{guild?.guildName}</h2>
-              <p className="text-[16px]">
+              <p
+                className={`font-bold ${
+                  isMobile ? "text-[20px]" : "text-[28px]"
+                }`}
+              >
+                {guild?.guildName}
+              </p>
+              <p className={`${isMobile ? "text-[12px]" : "text-[16px]"}`}>
                 {member!.memberGuild.guildDescription}
               </p>
             </div>
@@ -308,10 +335,16 @@ const GuildManagePage = () => {
                     : `${guild?.guildRecord?.recordRanking}위`
                 }
               />
-              <GuildInfoItem
-                title={"길드인원"}
-                value={`${guild?.guildMembers.length}명`}
-              />
+              <div className="grid grid-cols-2 gap-[12px]">
+                <GuildInfoItem
+                  title={"길드인원"}
+                  value={`${guild?.guildMembers.length}명`}
+                />
+                <GuildInfoItem
+                  title={"최대 길드원 수"}
+                  value={`${guild?.maxMembers}명`}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-[12px]">
               <GuildInfoItem title="길드티어" value={guild?.guildTier} />
@@ -365,7 +398,11 @@ const GuildManagePage = () => {
                           member.memberName ===
                             member.memberGuild.guildMaster && (
                             <button
-                              className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                              className={`bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow ${
+                                isMobile
+                                  ? "px-[8px] py-[4px] text-[12px]"
+                                  : "px-[12px] py-[8px] text-[14px]"
+                              }`}
                               onClick={() => setOpenModal("banner")}
                             >
                               배너 수정하기
@@ -375,7 +412,11 @@ const GuildManagePage = () => {
                           member.memberName ===
                             member.memberGuild.guildMaster && (
                             <button
-                              className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                              className={`bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow ${
+                                isMobile
+                                  ? "px-[8px] py-[4px] text-[12px]"
+                                  : "px-[12px] py-[8px] text-[14px]"
+                              }`}
                               onClick={() => setOpenModal("description")}
                             >
                               길드소개 수정하기
@@ -422,7 +463,11 @@ const GuildManagePage = () => {
 
               {currentTab === "members" && (
                 <div className="flex flex-col gap-[4px] max-h-[300px]">
-                  <div className="flex bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">
+                  <div
+                    className={`flex bg-brandcolor px-[8px] dark:bg-brandgray text-white ${
+                      isMobile ? "text-[10px]" : "text-[12px]"
+                    }`}
+                  >
                     <div className="flex-[1]">닉네임</div>
                     <div className="flex-[2]">소환사명</div>
                     <div className="flex-[1]">티어</div>
@@ -452,7 +497,11 @@ const GuildManagePage = () => {
               )}
               {currentTab === "applicants" && (
                 <div className="flex flex-col gap-[4px] max-h-[300px]">
-                  <div className="flex bg-brandcolor px-[8px] dark:bg-brandgray text-white text-[12px]">
+                  <div
+                    className={`flex bg-brandcolor px-[8px] dark:bg-brandgray text-white ${
+                      isMobile ? "text-[10px]" : "text-[12px]"
+                    }`}
+                  >
                     <div className="flex-[1]">닉네임</div>
                     <div className="flex-[2]">소환사명</div>
                     <div className="flex-[1]">티어</div>

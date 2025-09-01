@@ -11,6 +11,7 @@ import ProfileInfoPage from "../profile/components/ProfileInfoPage";
 import WithdrawalPage from "./components/WithdrawalPage";
 import GuildManagePage from "./components/GuildManagePage";
 import { ProfileHeader } from "./components/profileHeader";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 type ProfileSection = "profile" | "guild" | "withdrawal";
 
@@ -51,7 +52,7 @@ export default function Page() {
     }
   };
 
-  if (isLoading) return <div className="text-center mt-10">로딩 중...</div>;
+  if (isLoading) return <div className="text-center mt-[40px]">로딩 중...</div>;
 
   return (
     <div className="flex flex-col items-center p-[16px] gap-[28px]">

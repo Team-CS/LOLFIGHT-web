@@ -23,7 +23,7 @@ const renderPlayerInfo = (
       />
       <div className="flex items-center">
         <p className="text-[14px] font-medium">{playerName.split("#")[0]}</p>
-        <p className="text-[12px] text-gray-600 font-light">
+        <p className="text-[12px] text-gray-500 font-light">
           #{playerName.split("#")[1]}
         </p>
       </div>

@@ -9,8 +9,11 @@ import { PostDto, PostListResponseDto } from "../common/DTOs/board/post.dto";
 import { getPopularPosts } from "../api/post.api";
 import BoardInfoComponent from "./board/components/BoardInfoComponent";
 import { convertBoardNameToCode } from "../utils/string/string.util";
+import { showDoNotTouch } from "../utils/string/doNotTouch";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 export default function Page() {
+  const isMobile = useIsMobile();
   const [guilds, setGuilds] = useState<GuildDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,6 +42,7 @@ export default function Page() {
         .catch((error) => {
           console.log(error);
         });
+      showDoNotTouch();
     } catch (error) {
       console.log("Guild fetch error");
     } finally {
@@ -52,16 +56,63 @@ export default function Page() {
       <div className="flex flex-col max-w-[1200px] mx-auto py-[28px] gap-[24px]">
         <div className="flex flex-col gap-[12px]">
           <LeagueHeaderComponent guildLength={guilds.length} />
-          <div className="flex flex-col ">
-            <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[4px] w-full whitespace-nowrap">
-              <div className="flex-[0.25] text-center px-[8px]">순위</div>
-              <div className="flex-[1] text-center px-[8px]">길드명</div>
-              <div className="flex-[2] text-center px-[8px]">길드소개</div>
-              <div className="flex-[0.25] text-center px-[8px]">길드원</div>
-              <div className="flex-[0.25] text-center px-[8px]">승</div>
-              <div className="flex-[0.25] text-center px-[8px]">패</div>
-              <div className="flex-[0.5] text-center px-[8px]">티어</div>
-              <div className="flex-[0.5] text-center px-[8px]">래더점수</div>
+          <div className={`flex flex-col ${isMobile && "px-[12px]"} `}>
+            <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[12px] w-full whitespace-nowrap">
+              <div
+                className={`flex-[0.25] text-center ${
+                  isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+                }`}
+              >
+                순위
+              </div>
+              <div
+                className={`flex-[1] text-center ${
+                  isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+                }`}
+              >
+                길드명
+              </div>
+              {!isMobile && (
+                <>
+                  <div className={`flex-[2] text-center px-[8px] text-[16px]`}>
+                    길드소개
+                  </div>
+
+                  <div
+                    className={`flex-[0.25] text-center px-[8px] text-[16px]`}
+                  >
+                    길드원
+                  </div>
+                </>
+              )}
+              <div
+                className={`flex-[0.25] text-center ${
+                  isMobile ? "px-[4px] text-[14px]" : "px-[8px] text-[16px]"
+                }`}
+              >
+                승
+              </div>
+              <div
+                className={`flex-[0.25] text-center ${
+                  isMobile ? "px-[4px] text-[14px]" : "px-[8px] text-[16px]"
+                }`}
+              >
+                패
+              </div>
+              <div
+                className={`flex-[0.5] text-center ${
+                  isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+                }`}
+              >
+                티어
+              </div>
+              <div
+                className={`flex-[0.5] text-center ${
+                  isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+                }`}
+              >
+                래더점수
+              </div>
             </div>
             {isLoading ? (
               <div className="flex justify-center items-center py-[28px]">
@@ -77,10 +128,29 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="flex flex-col py-[12px] gap-[12px] bg-white dark:bg-dark rounded-[12px] shadow-md">
-          <p className="p-[12px] text-[14px] font-bold">LOLFIGHT 인기 게시글</p>
-          <div>
-            <div className="w-full py-[8px] text-sm flex border-t border-b border-brandborder dark:border-branddarkborder bg-[#f4f7ff] dark:bg-branddark">
+        <div
+          className={`flex flex-col gap-[12px] ${
+            isMobile ? "p-[12px]" : "py-[12px]"
+          }`}
+        >
+          <div
+            className={`bg-white dark:bg-dark rounded-[12px] shadow-md ${
+              isMobile ? "py-[12px]" : "p-[12px]"
+            }`}
+          >
+            <p
+              className={`p-[12px] font-bold ${
+                isMobile ? "text-[10px]" : "text-[14px]"
+              }`}
+            >
+              LOLFIGHT 인기 게시글
+            </p>
+
+            <div
+              className={`w-full py-[8px] flex border-t border-b border-brandborder dark:border-branddarkborder bg-[#f4f7ff] dark:bg-branddark ${
+                isMobile ? "text-[10px]" : "text-[14px]"
+              }`}
+            >
               <div className="w-1/12 flex items-center justify-center text-brandcolor font-semibold">
                 추천
               </div>

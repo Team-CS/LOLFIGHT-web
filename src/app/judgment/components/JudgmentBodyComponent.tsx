@@ -9,6 +9,7 @@ import constant from "@/src/common/constant/constant";
 import { voteFactionJudgment } from "@/src/api/judgment.api";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { SectionCard } from "./SectionCard";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface JudgmentBodyComponentProp {
   judgment: JudgmentDto | null | undefined;
@@ -16,7 +17,7 @@ interface JudgmentBodyComponentProp {
 
 const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
   const { judgment } = props;
-  const router = useRouter();
+  const isMobile = useIsMobile();
   const { member } = useMemberStore();
 
   const votes = judgment?.votes ?? [];
@@ -44,7 +45,6 @@ const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
     voteFactionJudgment(side, judgment.id, member.id)
       .then(() => {
         CustomAlert("success", "투표", "투표가 완료되었습니다.");
-        window.location.reload();
       })
       .catch(() => {
         CustomAlert("error", "투표", "에러가 발생했습니다.");
@@ -84,7 +84,11 @@ const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
 
       {/* 상황 설명 */}
       <SectionCard title="상황 설명">
-        <p className="text-[17px] leading-relaxed text-brandgray dark:text-brandhover whitespace-pre-line">
+        <p
+          className={`leading-relaxed text-brandgray dark:text-brandhover whitespace-pre-line ${
+            isMobile ? "text-[14px]" : "text-[16px]"
+          }`}
+        >
           {judgment.judgmentDesc}
         </p>
       </SectionCard>
@@ -92,19 +96,31 @@ const JudgmentBodyComponent = (props: JudgmentBodyComponentProp) => {
       {/* 투표 하기 */}
       <SectionCard title="투표 하기">
         {hasVoted ? (
-          <div className="w-full p-4 text-xl text-center font-bold rounded-lg bg-gray-400 text-white cursor-not-allowed">
+          <div
+            className={`w-full text-center font-bold rounded-lg bg-gray-400 text-white cursor-not-allowed ${
+              isMobile ? "py-[4px] text-[14px]" : "p-[12px] text-[18px]"
+            }`}
+          >
             투표 완료
           </div>
         ) : (
-          <div className="flex w-full gap-4">
+          <div className="flex w-full gap-[12px]">
             <button
-              className="w-1/2 py-3 text-lg font-bold rounded-xl bg-brandcolor hover:bg-brandhover text-white transition-all"
+              className={`w-1/2 font-bold rounded-xl bg-brandcolor hover:bg-brandhover text-white transition-all ${
+                isMobile
+                  ? "h-full py-[8px] text-[14px]"
+                  : "py-[12px] text-[18px]"
+              }`}
               onClick={() => handleFactionVoteClick("left")}
             >
               좌측에 투표
             </button>
             <button
-              className="w-1/2 py-3 text-lg font-bold rounded-xl bg-red-600 hover:bg-red-700 text-white transition-all"
+              className={`w-1/2 font-bold rounded-xl bg-red-600 hover:bg-red-700 text-white transition-all ${
+                isMobile
+                  ? "h-full py-[8px] text-[14px]"
+                  : "py-[12px] text-[18px]"
+              }`}
               onClick={() => handleFactionVoteClick("right")}
             >
               우측에 투표

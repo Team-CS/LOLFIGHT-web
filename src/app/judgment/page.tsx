@@ -11,6 +11,7 @@ import {
 import JudgmentBox from "./components/JudgmentBox";
 import Pagination from "@mui/material/Pagination";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 export default function Page() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function Page() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { member } = useMemberStore();
   const judgmentPerPage = 10;
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     fetchJudgments(currentPage);
@@ -85,19 +87,35 @@ export default function Page() {
       <div className="w-full bg-white dark:bg-dark rounded-[12px] shadow-md">
         {/* Header */}
         <div className="flex gap-[12px] py-[12px] px-[24px] items-center justify-between">
-          <p className="flex text-[18px] font-bold text-center justify-center items-center">
+          <p
+            className={`flex font-bold text-center justify-center items-center ${
+              isMobile ? "text-[14px]" : "text-[18px]"
+            }`}
+          >
             롤로세움
           </p>
           <div className="flex gap-[12px] items-center">
-            <div className="flex w-[200px] border border-gray-200 rounded-md px-[12px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
+            <div
+              className={`flex rounded-md px-[12px] gap-[4px] bg-gray-100 dark:bg-black ${
+                isMobile ? "w-[150px]" : "min-w-[200px]"
+              }`}
+            >
               <div
                 className="flex flex-wrap justify-center content-center dark:bg-black"
                 onClick={handleSearch}
               >
-                <FaSearch />
+                <FaSearch
+                  className={`${
+                    isMobile ? "w-[10px] h-[10px]" : "w-[15px] h-[15px]"
+                  }`}
+                />
               </div>
               <input
-                className="w-full rounded-md bg-gray-100 px-[12px] py-[4px] text-[14px] focus:outline-none dark:bg-black font-normal"
+                className={`min-w-[100px] bg-gray-100 focus:outline-none dark:bg-black font-normal rounded-r-md ${
+                  isMobile
+                    ? "px-[12px] py-[4px] text-[12px]"
+                    : "px-[12px] py-[8px] text-[14px]"
+                }`}
                 type="text"
                 placeholder="검색"
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -105,7 +123,11 @@ export default function Page() {
               />
             </div>
             <button
-              className="h-[30px] w-[60px] border border-brandcolor bg-brandcolor text-white text-[14px] rounded-[8px]"
+              className={`border border-brandcolor bg-brandcolor text-white rounded-[8px] ${
+                isMobile
+                  ? "h-[25px] w-[50px] text-[12px]"
+                  : "h-[30px] w-[60px] text-[14px]"
+              }`}
               onClick={handleWriteClick}
             >
               글쓰기
@@ -133,22 +155,31 @@ export default function Page() {
         <div className="w-full flex justify-center py-[12px] border-t border-brandborder dark:border-branddarkborder">
           <Pagination
             count={totalPages}
+            page={currentPage}
             shape="rounded"
             boundaryCount={2}
             onChange={(event, page) => handlePageClick(event, page)}
             sx={{
+              // 다크 모드 선택된 아이템
               ".dark & .Mui-selected": {
                 backgroundColor: "#4C4C4C",
-                color: "#CACACA", // 텍스트 색상
+                color: "#CACACA",
                 "&:hover": {
-                  backgroundColor: "#707070", // 호버 시 색상
+                  backgroundColor: "#707070",
                 },
               },
+              // 다크 모드 일반 아이템
               ".dark & .MuiPaginationItem-root": {
-                color: "#EEEEEE", // 선택되지 않은 아이템의 기본 텍스트 색상
+                color: "#EEEEEE",
               },
               ".dark & .MuiPaginationItem-icon": {
-                color: "#EEEEEE", // 텍스트 색상
+                color: "#EEEEEE",
+              },
+              // 모바일 / PC 반응형
+              "& .MuiPaginationItem-root": {
+                fontSize: isMobile ? "10px" : "14px", // 폰트 크기
+                minWidth: isMobile ? "24px" : "36px", // 버튼 최소 너비
+                height: isMobile ? "24px" : "36px", // 버튼 높이
               },
             }}
           />

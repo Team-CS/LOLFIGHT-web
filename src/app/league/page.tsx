@@ -9,8 +9,10 @@ import {
 import { getGuildList, getTopGuilds } from "@/src/api/guild.api";
 import Pagination from "@mui/material/Pagination";
 import LeaguePodium from "./components/LeaguePodium";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 export default function Page() {
+  const isMobile = useIsMobile();
   const [guilds, setGuilds] = useState<GuildDto[]>([]);
   const [topGuilds, setTopGuilds] = useState<GuildDto[]>([]);
 
@@ -104,16 +106,61 @@ export default function Page() {
         onSearch={handleSearch}
         onKeyDown={handleKeyDown}
       />
-      <div className="flex flex-col border rounded-t-[12px] dark:border-branddark">
+      <div className="flex flex-col px-[12px] rounded-t-[12px]">
         <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[12px] w-full whitespace-nowrap">
-          <div className="flex-[0.25] text-center px-[8px]">순위</div>
-          <div className="flex-[1] text-center px-[8px]">길드명</div>
-          <div className="flex-[2] text-center px-[8px]">길드소개</div>
-          <div className="flex-[0.25] text-center px-[8px]">길드원</div>
-          <div className="flex-[0.25] text-center px-[8px]">승</div>
-          <div className="flex-[0.25] text-center px-[8px]">패</div>
-          <div className="flex-[0.5] text-center px-[8px]">티어</div>
-          <div className="flex-[0.5] text-center px-[8px]">래더점수</div>
+          <div
+            className={`flex-[0.25] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            순위
+          </div>
+          <div
+            className={`flex-[1] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            길드명
+          </div>
+          {!isMobile && (
+            <>
+              <div className={`flex-[2] text-center px-[8px] text-[16px]`}>
+                길드소개
+              </div>
+
+              <div className={`flex-[0.25] text-center px-[8px] text-[16px]`}>
+                길드원
+              </div>
+            </>
+          )}
+          <div
+            className={`flex-[0.25] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            승
+          </div>
+          <div
+            className={`flex-[0.25] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            패
+          </div>
+          <div
+            className={`flex-[0.5] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            티어
+          </div>
+          <div
+            className={`flex-[0.5] text-center ${
+              isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
+            }`}
+          >
+            래더점수
+          </div>
         </div>
         <div className="flex flex-col">
           {guilds.map((guild) => (
@@ -121,7 +168,7 @@ export default function Page() {
           ))}
         </div>
       </div>
-      <div className="notice__pagination w-full flex justify-center mt-1 p-3">
+      <div className="w-full flex justify-center mt-1 p-3">
         <Pagination
           count={totalPages}
           page={currentPage}
@@ -129,18 +176,26 @@ export default function Page() {
           boundaryCount={2}
           onChange={(event, page) => handlePageClick(event, page)}
           sx={{
+            // 다크 모드 선택된 아이템
             ".dark & .Mui-selected": {
               backgroundColor: "#4C4C4C",
-              color: "#CACACA", // 텍스트 색상
+              color: "#CACACA",
               "&:hover": {
-                backgroundColor: "#707070", // 호버 시 색상
+                backgroundColor: "#707070",
               },
             },
+            // 다크 모드 일반 아이템
             ".dark & .MuiPaginationItem-root": {
-              color: "#EEEEEE", // 선택되지 않은 아이템의 기본 텍스트 색상
+              color: "#EEEEEE",
             },
             ".dark & .MuiPaginationItem-icon": {
-              color: "#EEEEEE", // 텍스트 색상
+              color: "#EEEEEE",
+            },
+            // 모바일 / PC 반응형
+            "& .MuiPaginationItem-root": {
+              fontSize: isMobile ? "10px" : "14px", // 폰트 크기
+              minWidth: isMobile ? "24px" : "36px", // 버튼 최소 너비
+              height: isMobile ? "24px" : "36px", // 버튼 높이
             },
           }}
         />

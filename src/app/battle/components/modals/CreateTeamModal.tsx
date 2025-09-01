@@ -16,6 +16,7 @@ import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { getTierStyle } from "@/src/utils/string/string.util";
 import { useEffect, useState } from "react";
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 
@@ -24,6 +25,7 @@ interface CreateTeamModalProps {
 }
 
 export default function CreateTeamModal(props: CreateTeamModalProps) {
+  const isMobile = useIsMobile();
   const { onClose } = props;
   const { member } = useMemberStore();
   const { guildTeam, setGuildTeam } = useGuildTeamStore();
@@ -162,14 +164,20 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center"
+      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-[36px]"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white dark:bg-branddark rounded-[12px] w-[900px] h-[600px] shadow-lg flex overflow-hidden"
+        className={`bg-white dark:bg-branddark rounded-[12px] shadow-lg flex overflow-hidden ${
+          isMobile ? "flex-col" : " w-[900px] h-[600px] "
+        }`}
       >
         {/* Left Side */}
-        <div className="flex flex-col w-[50%] p-[24px] border-r border-brandborder dark:border-branddarkborder gap-[16px] bg-brandbgcolor dark:bg-brandgray overflow-y-auto">
+        <div
+          className={`flex flex-col p-[24px] border-r border-brandborder dark:border-branddarkborder gap-[16px] bg-brandbgcolor dark:bg-brandgray overflow-y-auto ${
+            isMobile ? "w-full" : "w-[50%]"
+          }`}
+        >
           <div className="flex justify-between items-center">
             <p className="text-[18px] font-semibold text-branddark dark:text-white">
               포지션 선택
@@ -272,7 +280,11 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
         </div>
 
         {/* Right Side */}
-        <div className="flex flex-col w-[50%] p-[24px] gap-[12px] overflow-y-auto">
+        <div
+          className={`flex flex-col p-[24px] gap-[12px] overflow-y-auto ${
+            isMobile ? "w-full" : "w-[50%]"
+          }`}
+        >
           <p className="text-[18px] font-semibold text-branddark dark:text-white">
             길드원 목록
           </p>

@@ -1,20 +1,30 @@
 "use client";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 const Footer = () => {
   const router = useRouter();
+  const isMobile = useIsMobile();
   return (
     <footer className="flex w-full py-[24px]">
-      <div className="flex max-w-[1200px] mx-auto justify-center items-center gap-[18px]">
+      <div
+        className={`flex max-w-[1200px] mx-auto justify-center items-center ${
+          isMobile ? "gap-[12px]" : "gap-[18px]"
+        }`}
+      >
         <img
           onClick={() => router.push("/")}
-          width={50}
-          height={50}
+          width={isMobile ? 30 : 50}
+          height={isMobile ? 30 : 50}
           src={"/LOLFIGHT_NONE_TEXT.png"}
           alt="light logo"
         />
-        <div className="flex flex-col flex text-[12px] font-normal items-center">
+        <div
+          className={`flex flex-col flex ${
+            isMobile ? "text-[10px]" : "text-[12px]"
+          } font-normal items-center`}
+        >
           <div className="flex gap-[4px]">
             <a
               className="hover:text-[#757575] hoverable"
@@ -50,7 +60,6 @@ const Footer = () => {
             height={20}
             draggable={false}
           />
-          LOLFIGHT
         </a>
       </div>
     </footer>
@@ -58,5 +67,3 @@ const Footer = () => {
 };
 
 export default Footer;
-{
-}

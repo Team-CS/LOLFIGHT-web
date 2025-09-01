@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import GuildFightBox from "./GuildFightBox";
 import { BattleTeamDTO } from "@/src/common/DTOs/battle/battle_team.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import GuildFightBoxMobile from "./GuildFightBoxMobile";
 
 interface Props {
   battleTeamData: BattleTeamDTO;
   highestDamage: number;
 }
 
-const GuildFightList = (props: Props) => {
+const GuildFightListMobile = (props: Props) => {
   const { battleTeamData, highestDamage } = props;
   const result = battleTeamData.isWinning ? "win" : "lose";
   const highestChampionDamage = highestDamage;
@@ -43,31 +44,41 @@ const GuildFightList = (props: Props) => {
     <div className="w-full h-full flex flex-col drop-shadow-md">
       {/* 1 */}
       <div
-        className={`w-full h-full flex py-[4px] px-[8px] justify-between ${
+        className={`w-full h-full flex flex-col py-[4px] px-[8px] justify-between gap-[4px] ${
           result === "win"
             ? "bg-[#9ac4fc] dark:bg-[#2d3b6e]"
             : "bg-[#fc9797] dark:bg-[#612f41]"
         }`}
       >
-        <div className="flex gap-[12px] items-center">
-          <p
-            className={`font-extrabold ${
-              result === "win"
-                ? "text-winLightText dark:winDarkText"
-                : "text-loseLightText dark:text-loseDarkText"
-            }`}
-          >
-            {result === "win" ? "승리" : "패배"}
-          </p>
-          <img
-            src={`${constant.SERVER_URL}/${battleTeamData.guild.guildIcon}`}
-            alt="GuildBanner"
-            className="w-[25px] h-[25px] rounded-[4px] object-cover"
-          />
-          <p className="font-semibold">{battleTeamData.guild.guildName}</p>
+        <div className="flex justify-between items-center">
+          <div className="flex gap-[12px] items-center">
+            <p
+              className={`font-extrabold text-[12px] ${
+                result === "win"
+                  ? "text-winLightText dark:winDarkText"
+                  : "text-loseLightText dark:text-loseDarkText"
+              }`}
+            >
+              {result === "win" ? "승리" : "패배"}
+            </p>
+            <img
+              src={`${constant.SERVER_URL}/${battleTeamData.guild.guildIcon}`}
+              alt="GuildBanner"
+              className="w-[20px] h-[20px] rounded-[4px] object-cover"
+            />
+            <p className="font-semibold text-[12px]">
+              {battleTeamData.guild.guildName}
+            </p>
+          </div>
+
+          <div className="flex gap-[12px] items-center">
+            <p className="text-[10px] text-gray-500">
+              1부리그 - {guildData?.guildRecord?.recordLadder}점
+            </p>
+          </div>
         </div>
 
-        <div className="flex gap-[12px] items-center">
+        <div className="flex gap-[8px]">
           {objectives.map(({ key, icon }) => (
             <div key={key} className="flex items-center gap-[4px]">
               <img
@@ -91,34 +102,19 @@ const GuildFightList = (props: Props) => {
               </p>
             </div>
           ))}
-          <p className="text-[14px] text-gray-500">
-            1부리그 - {guildData?.guildRecord?.recordLadder}점
-          </p>
         </div>
       </div>
 
       {/* 2 */}
-      <div className="w-full flex px-[8px] gap-[12px] text-[12px] dark:text-white">
-        <div className="flex-[2.5]">플레이어</div>
-        <div className="flex-[0.5]">S/R</div>
-        <div className="flex-[1.2]">KDA</div>
-        <div className="flex-[2.2]">피해량</div>
-        <div className="flex-[0.6]">LV/CS</div>
-        <div className="flex-[0.6]">시야점수</div>
-        <div className="flex-[3.5]">아이템</div>
-      </div>
-
-      {/* 3 */}
-
       <div
-        className={`flex flex-col gap-[4px] justify-center py-[4px] ${
+        className={`flex flex-col gap-[4px] py-[4px] ${
           result === "win"
             ? "bg-winLightColor dark:bg-winDarkColor"
             : "bg-loseLightColor dark:bg-loseDarkColor"
         }`}
       >
         {playerPositions.map((player, idx) => (
-          <GuildFightBox
+          <GuildFightBoxMobile
             key={idx}
             battlePlayerData={player}
             isResult={battleTeamData.isWinning}
@@ -131,4 +127,4 @@ const GuildFightList = (props: Props) => {
   );
 };
 
-export default GuildFightList;
+export default GuildFightListMobile;

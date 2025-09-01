@@ -6,12 +6,14 @@ import { writeReplyComment } from "@/src/api/comment.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface CommentBoxComponentProps {
   data: PostDto;
 }
 
 const CommentBoxComponent = (props: CommentBoxComponentProps) => {
+  const isMobile = useIsMobile();
   const [commentList, setCommentList] = useState<CommentDto[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [openCommentId, setOpenCommentId] = useState<string>("");
@@ -131,33 +133,51 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[8px]">
                 <img
-                  className="w-[30px] h-[30px] object-cover rounded-[12px]"
+                  className={`object-cover rounded-[12px] ${
+                    isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+                  }`}
                   src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
                   alt="memberIcon"
                 />
-                <p className="text-[14px] font-bold">
+                <p
+                  className={`font-bold ${
+                    isMobile ? "text-[12px]" : "text-[14px]"
+                  }`}
+                >
                   {comment.writer.memberName}
                 </p>
-                <p className="text-gray-400 font-normal text-[12px]">
+                <p
+                  className={`text-gray-400 font-normal ${
+                    isMobile ? "text-[10px]" : "text-[12px]"
+                  }`}
+                >
                   {getDate(comment.commentDate)}
                 </p>
               </div>
               {comment.writer.id === member?.id && (
                 <p
-                  className="text-gray-400 font-normal text-[12px] cursor-pointer hover:text-gray-500"
+                  className={`text-gray-400 font-normal cursor-pointer hover:text-gray-500 ${
+                    isMobile ? "text-[10px]" : "text-[12px]"
+                  }`}
                   onClick={() => handleDeleteComment(comment.id!)}
                 >
                   삭제하기
                 </p>
               )}
             </div>
-            <p className="text-[14px] font-normal whitespace-pre-wrap">
+            <p
+              className={`${
+                isMobile ? "text-[12px]" : "text-[14px]"
+              } font-normal whitespace-pre-wrap`}
+            >
               {comment.commentContent}
             </p>
             {comment.depth == 0 && (
               <div>
                 <button
-                  className="text-[14px] text-gray-400"
+                  className={`${
+                    isMobile ? "text-[12px]" : "text-[14px]"
+                  } text-gray-400`}
                   onClick={() => handleReplyButtonClick(comment)}
                 >
                   답글 쓰기
@@ -169,13 +189,19 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
               <div className="flex flex-col p-[24px] gap-[12px]">
                 <div className="w-full rounded-md border dark:border-gray-700 dark:bg-black">
                   <textarea
-                    className="w-full h-[100px] p-[12px] rounded-[12px] focus:outline-none dark:bg-black"
+                    className={`w-full p-[12px] rounded-[12px] focus:outline-none dark:bg-black ${
+                      isMobile
+                        ? "text-[12px] h-[50px]"
+                        : "text-[14px] h-[100px]"
+                    }`}
                     placeholder="댓글을 입력하세요."
                     onChange={(e) => setReplyCommentContent(e.target.value)}
                   />
                   <div className="flex justify-end p-[12px]">
                     <button
-                      className="border rounded-md bg-brandcolor text-white px-[12px] py-[4px] dark:border-gray-700"
+                      className={`border rounded-md bg-brandcolor text-white px-[12px] py-[4px] dark:border-gray-700 ${
+                        isMobile ? "text-[12px]" : "text-[14px]"
+                      }`}
                       onClick={handleSaveReplyButtonClick}
                     >
                       작성하기

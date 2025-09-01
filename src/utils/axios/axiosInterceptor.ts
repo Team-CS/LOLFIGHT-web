@@ -2,6 +2,8 @@ import { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import axiosService from "./axiosInstance";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { getCookie, removeCookie, setCookie } from "../cookie/cookie";
+import CustomAlert from "@/src/common/components/alert/CustomAlert";
+import dayjs from "dayjs";
 
 declare module "axios" {
   export interface InternalAxiosRequestConfig {
@@ -44,9 +46,45 @@ export const onResponse = (response: AxiosResponse) => response;
 export const onErrorResponse = async (error: AxiosError) => {
   const { setMember } = useMemberStore.getState();
   const axiosInstance = axiosService.getAxiosInstance();
-  const errorData = error.response?.data as { code?: string; message?: string };
+  const errorData = error.response?.data as {
+    code?: string;
+    message?: string;
+    reason?: string;
+    until?: string;
+  };
 
   const originalRequest = error.config!;
+
+  if (errorData.code === "USER-004") {
+    const until =
+      errorData.until !== "영구정지"
+        ? dayjs(errorData.until).format("YYYY-MM-DD HH:mm")
+        : "영구정지";
+
+    const reason = errorData.reason || "이용제한 사유가 없습니다.";
+
+    let message = "";
+
+    if (until === "영구정지") {
+      message = `
+      <b>회원님은 영구적으로 이용이 제한되었습니다.</b><br/>
+      <b>사유:</b> ${reason}
+    `;
+    } else {
+      message = `
+      <b>회원님은 ${until} 까지 이용이 제한됩니다.</b><br/>
+      <b>사유:</b> ${reason}
+    `;
+    }
+
+    CustomAlert("error", "이용제한", message);
+    setMember(null);
+
+    removeCookie("lf_atk");
+    removeCookie("lf_rtk");
+    localStorage.removeItem("member-store");
+    return;
+  }
 
   // ✅ 무한루프 방지용 플래그
   if (

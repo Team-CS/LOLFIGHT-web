@@ -4,12 +4,14 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { JudgmentDto } from "@/src/common/DTOs/judgment/judgment.dto";
 import JudgmentDataCard from "./JudgmentDataCard";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface Props {
   judgment: JudgmentDto;
 }
 const JudgmentBox = ({ judgment }: Props) => {
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const leftVoteCount = judgment.votes.filter(
     (v) => v.voteSide === "left"
@@ -36,13 +38,29 @@ const JudgmentBox = ({ judgment }: Props) => {
       onClick={handleClickJudgment}
     >
       <div className="flex items-center justify-between ">
-        <p className="font-bold text-[20px]">{judgment.judgmentTitle}</p>
+        <p className={`font-bold ${isMobile ? "text-[14px]" : "text-[20px]"}`}>
+          {judgment.judgmentTitle}
+        </p>
         <div className="flex items-center justify-center text-[14px] font-normal gap-[8px]">
-          <p className="text-[12px] text-gray-400">{`${year}.${month}.${day}`}</p>
-          <p className="text-[12px] text-gray-400">
+          <p
+            className={`text-gray-400 ${
+              isMobile ? "text-[10px]" : "text-[12px]"
+            }`}
+          >{`${year}.${month}.${day}`}</p>
+          <p
+            className={`text-gray-400 ${
+              isMobile ? "text-[10px]" : "text-[12px]"
+            }`}
+          >
             조회수: {judgment.judgmentView}
           </p>
-          <p className="text-[12px] text-gray-400">투표수: {totalVoteCount}</p>
+          <p
+            className={`text-gray-400 ${
+              isMobile ? "text-[10px]" : "text-[12px]"
+            }`}
+          >
+            투표수: {totalVoteCount}
+          </p>
         </div>
       </div>
 
