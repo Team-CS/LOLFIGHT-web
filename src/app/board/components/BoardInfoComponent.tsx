@@ -56,18 +56,16 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
   return (
     <div className="text-sm h-[32px] flex py-[2px]">
       <div
-        className={`w-1/12 flex items-center justify-center ${
+        className={`w-1/12 truncate flex items-center justify-center ${
           isMobile ? "text-[10px]" : "text-[14px]"
         }`}
       >
         {data.postLikes}
       </div>
-      <div
-        className={`w-1/12 flex items-center justify-center text-center ${
-          isMobile ? "text-[10px]" : "text-[14px]"
-        }`}
-      >
-        {data.postBoard}
+      <div className={`w-1/12 flex items-center justify-center text-center`}>
+        <p className={`${isMobile ? "truncate text-[10px]" : "text-[14px]"}`}>
+          {data.postBoard}
+        </p>
       </div>
       <div
         className={`flex pl-[16px] w-1/2 hover:underline hover:decoration-gray-400 hover:decoration-opacity-50`}
@@ -118,8 +116,8 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
           <p
             className={`truncate cursor-pointer hover:decoration-gray-400 hover:decoration-opacity-50 ${
               isMobile
-                ? "text-[12px] max-w-[100px]"
-                : "text-[14px] max-w-[350px] "
+                ? "text-[12px] max-w-[120px]"
+                : "text-[14px] max-w-[400px] "
             }`}
             onClick={handleOnClick}
           >

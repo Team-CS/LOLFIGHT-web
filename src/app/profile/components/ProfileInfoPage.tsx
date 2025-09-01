@@ -72,14 +72,24 @@ const ProfileInfoPage = () => {
   };
 
   const handleNicknameSubmit = () => {
-    if (nickname.length < 2) {
+    if (nickname.length < 2 || nickname.length > 7) {
       CustomAlert(
         "warning",
         "닉네임 변경",
-        "최소 2글자 이상 닉네임을 설정해주세요"
+        "닉네임은 2자 이상 7자 이하로 설정해주세요"
       );
       return;
     }
+
+    if (/\s/.test(nickname)) {
+      CustomAlert(
+        "warning",
+        "닉네임 변경",
+        "닉네임에는 공백을 포함할 수 없습니다"
+      );
+      return;
+    }
+
     updateNickname(nickname)
       .then((response) => {
         setMember(response.data.data);
