@@ -17,6 +17,16 @@ export default function Page() {
     window.open(`${constant.SERVER_URL}/auth/google`, "_self");
   };
 
+  const naverLogin = () => {
+    window.open(`${constant.SERVER_URL}/auth/naver`, "_self");
+  };
+
+  const buttonBaseClass = `
+    flex items-center justify-center gap-[12px] w-full
+    text-[16px] font-medium p-[12px] rounded-xl
+    transition-colors duration-200 shadow-sm
+  `;
+
   return (
     <div className="flex flex-col items-center gap-[20px] w-full">
       {/* 로고 */}
@@ -49,10 +59,10 @@ export default function Page() {
       {/* 구글 로그인 버튼 */}
       <motion.button
         onClick={googleLogin}
-        className="flex items-center justify-center gap-[12px] w-full bg-white dark:bg-brandgray border border-brandborder dark:border-branddarkborder text-gray-800 dark:text-white text-[16px] font-medium p-[12px] rounded-xl hover:bg-brandhover dark:hover:bg-brandgray transition-all duration-200 shadow-sm"
+        className={`${buttonBaseClass} bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
       >
         <img
           src={`${constant.SERVER_URL}/public/Google_Original.png`}
@@ -61,6 +71,23 @@ export default function Page() {
           height={24}
         />
         <span>Google 계정으로 로그인</span>
+      </motion.button>
+
+      {/* 네이버 로그인 버튼 */}
+      <motion.button
+        onClick={naverLogin}
+        className={`${buttonBaseClass} bg-[#03C75A] border border-[#03C75A] text-white hover:bg-[#02B051]`}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+      >
+        <img
+          src={`${constant.SERVER_URL}/public/Naver_Original.png`}
+          alt="naver-login"
+          width={24}
+          height={24}
+        />
+        <span>Naver 계정으로 로그인</span>
       </motion.button>
 
       {/* 푸터 텍스트 */}

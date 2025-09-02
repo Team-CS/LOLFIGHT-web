@@ -3,7 +3,6 @@ import { ScrimApplicationDto } from "@/src/common/DTOs/scrim/scrim_application.d
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { formatKoreanDatetime } from "@/src/utils/string/string.util";
-import dayjs from "dayjs";
 import { useState } from "react";
 
 interface MatchCardProps {
@@ -56,25 +55,29 @@ const MatchCard = (props: MatchCardProps) => {
   };
 
   // ✅ 입장 코드 표시 조건: 상태가 ACCEPTED이고 예정 시간이 5분 전 이내
-  const scheduledAt = scrim.scrimSlot?.scheduledAt
-    ? dayjs(scrim.scrimSlot.scheduledAt)
-    : null;
-  const now = dayjs();
+  const scheduledAtStr = scrim.scrimSlot?.scheduledAt || null;
+  const now = new Date();
+  const scheduledAt = scheduledAtStr ? new Date(scheduledAtStr) : null;
   const isAccepted = scrim.status === "ACCEPTED";
-  const isWithin5Min = scheduledAt && scheduledAt.diff(now, "minute") <= 5;
-  // const showEntryCode = isAccepted && isWithin5Min;
+  const isWithin5Min =
+    scheduledAt && (scheduledAt.getTime() - now.getTime()) / 1000 / 60 <= 5;
   const [showEntryCode, setShowEntryCode] = useState<boolean>(false);
   const [code, setCode] = useState<string>("");
-
   const isClosed = scrim.status === "CLOSED";
-  const finishedAt = scrim?.updatedAt;
+  const finishedAtStr = scrim?.updatedAt;
+  const finishedAt = finishedAtStr ? new Date(finishedAtStr) : null;
+
   const isWithin10MinAfterFinish =
     finishedAt &&
-    now.diff(finishedAt, "minute") <= 10 &&
-    now.isAfter(finishedAt);
-  const showRematchButton = isRecipient && isClosed && isWithin10MinAfterFinish;
+    (now.getTime() - finishedAt.getTime()) / 1000 / 60 <= 10 &&
+    now.getTime() > finishedAt.getTime();
+
+  const showRematchButton =
+    isRecipient && isClosed && Boolean(isWithin10MinAfterFinish);
 
   const showCodeClick = () => {
+    console.log(showEntryCode);
+    console.log(scrim.scrimSlot);
     if (isWithin5Min && isAccepted) {
       if (showEntryCode === false) setShowEntryCode(true);
       // const data = @TODO 실제 방 코드 요쳥 api
@@ -137,21 +140,23 @@ const MatchCard = (props: MatchCardProps) => {
         </p>
         {scrim.status === "ACCEPTED" && (
           <div className="flex items-center gap-[12px]" onClick={showCodeClick}>
-            <p className="text-[13px] text-gray-600 dark:text-gray-300">
-              입장 코드:{" "}
-            </p>
             {showEntryCode ? (
               <span
-                className="text-[14px] font-semibold text-blue-500 cursor-pointer"
+                className="text-[14px]"
                 onClick={() => {
                   navigator.clipboard.writeText(code);
                   alert("입장 코드가 복사되었습니다!");
                 }}
               >
-                {code}
+                <p className="text-[13px] text-gray-600 dark:text-gray-300">
+                  입장 코드 :{" "}
+                  <span className="font-semibold cursor-pointer text-blue-500">
+                    {code}
+                  </span>
+                </p>
               </span>
             ) : (
-              <div className="bg-brandcolor dark:bg-branddark text-white text-[12px] px-[8px] py-[2px] rounded-[12px]">
+              <div className="bg-brandcolor dark:bg-branddark text-white text-[12px] px-[8px] py-[2px] rounded-[12px] cursor-pointer">
                 코드 확인
               </div>
             )}
