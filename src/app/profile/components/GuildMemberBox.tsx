@@ -8,6 +8,7 @@ import GuildMemberContextMenu from "./context-menu/GuildMemberContextMenu";
 import { useState } from "react";
 import LineSelector from "./context-menu/LineSelector";
 import { getTierStyle } from "@/src/utils/string/string.util";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface Props {
   guildMember: MemberDto;
@@ -32,6 +33,7 @@ const GuildMemberBox = (props: Props) => {
     onChangeLine,
   } = props;
   const { member } = useMemberStore();
+  const isMobile = useIsMobile();
 
   const [contextVisible, setContextVisible] = useState(false);
   const [contextPosition, setContextPosition] = useState({ x: 0, y: 0 });
@@ -54,24 +56,38 @@ const GuildMemberBox = (props: Props) => {
       }
     >
       <div className="flex gap-x-[8px] items-center">
-        <div className="flex-[1] items-center text-[14px] font-medium">
+        <div
+          className={`flex-[1] items-center font-medium ${
+            isMobile ? "text-[12px]" : "text-[14px]"
+          }`}
+        >
           {guildMember.memberName}
         </div>
 
-        <div className="flex-[2] items-center text-[14px] font-medium">
+        <div
+          className={`flex-[2] items-center font-medium ${
+            isMobile ? "text-[12px]" : "text-[14px]"
+          }`}
+        >
           {guildMember.memberGame?.gameName}
         </div>
 
-        <div className="flex-[1] items-center text-[14px] font-medium">
+        <div
+          className={`flex-[1] items-center font-medium ${
+            isMobile ? "text-[12px]" : "text-[14px]"
+          }`}
+        >
           {guildMember.memberGame ? (
             <div className="flex gap-[4px] items-center">
-              <img
-                src={`${constant.SERVER_URL}/public/rank/${
-                  guildMember.memberGame?.gameTier.split(" ")[0]
-                }.png`}
-                alt="rank"
-                className="w-[25px] h-[25px]"
-              />
+              {!isMobile && (
+                <img
+                  src={`${constant.SERVER_URL}/public/rank/${
+                    guildMember.memberGame?.gameTier.split(" ")[0]
+                  }.png`}
+                  alt="rank"
+                  className="w-[25px] h-[25px]"
+                />
+              )}
               <span className={getTierStyle(guildMember.memberGame?.gameTier)}>
                 {guildMember.memberGame?.gameTier}
               </span>
@@ -80,7 +96,11 @@ const GuildMemberBox = (props: Props) => {
         </div>
 
         {type === "guildMember" && (
-          <div className="flex-[1] items-center text-[14px] font-medium">
+          <div
+            className={`flex-[1] items-center font-medium ${
+              isMobile ? "text-[12px]" : "text-[14px]"
+            }`}
+          >
             {guildMember.memberGame?.line ? (
               <LineSelector
                 currentLine={guildMember.memberGame.line}
@@ -116,14 +136,18 @@ const GuildMemberBox = (props: Props) => {
               <button
                 aria-label="수락"
                 onClick={() => acceptMember?.(guildMember.id, guild.id)}
-                className="flex items-center text-16px font-semibold pl-2 hover:text-blue-700"
+                className={`flex items-center font-semibold hover:text-blue-700 ${
+                  isMobile ? "text-[12px]" : "text-[16px]"
+                }`}
               >
                 수락
               </button>
               <button
                 aria-label="거절"
                 onClick={() => rejectMember?.(guildMember.id, guild.id)}
-                className="flex items-center text-16px font-semibold pl-2 hover:text-red-500"
+                className={`flex items-center text-16px font-semibold hover:text-red-500 ${
+                  isMobile ? "text-[12px]" : "text-[16px]"
+                }`}
               >
                 거절
               </button>

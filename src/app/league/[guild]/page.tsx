@@ -14,9 +14,11 @@ import {
 import { getBattleList } from "@/src/api/battle.api";
 import constant from "@/src/common/constant/constant";
 import { getTierStyle } from "@/src/utils/string/string.util";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 export default function GuildPage() {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const guildPath = usePathname();
   const [guild, setGuild] = useState<GuildDto>();
   const [currentTab, setCurrentTab] = useState("guildInfo");
@@ -70,22 +72,36 @@ export default function GuildPage() {
     <>
       <div className="w-full h-full py-[24px]">
         {guild && <GuildBanner guild={guild} />}
-        <div className="flex flex-col py-[12px] h-full max-w-[1200px] mx-auto gap-[12px]">
-          <div className="w-full bg-brandbgcolor border dark:bg-dark dark:border-gray-700">
+        <div
+          className={`flex flex-col py-[12px] h-full max-w-[1200px] mx-auto gap-[12px] ${
+            isMobile && "px-[12px]"
+          }`}
+        >
+          <div
+            className={
+              "w-full bg-brandbgcolor border dark:bg-dark dark:border-gray-700"
+            }
+          >
             <button
-              className="font-medium text-[16px] hover:bg-brandhover px-[8px] py-[4px] dark:hover:bg-gray-700 transition"
+              className={`font-medium hover:bg-brandhover px-[8px] py-[4px] dark:hover:bg-gray-700 transition ${
+                isMobile ? "text-[14px]" : "text-[16px]"
+              }`}
               onClick={() => changeTab("banner")}
             >
               길드배너
             </button>
             <button
-              className="font-medium text-[16px] hover:bg-brandhover px-[8px] py-[4px] dark:hover:bg-gray-700 transition"
+              className={`font-medium hover:bg-brandhover px-[8px] py-[4px] dark:hover:bg-gray-700 transition ${
+                isMobile ? "text-[14px]" : "text-[16px]"
+              }`}
               onClick={() => changeTab("guildInfo")}
             >
               대전기록
             </button>
             <button
-              className="font-medium text-[16px] hover:bg-brandhover px-[8px] py-[4px] dark:hover:bg-gray-700 transition"
+              className={`font-medium hover:bg-brandhover px-[8px] py-[4px] dark:hover:bg-gray-700 transition ${
+                isMobile ? "text-[14px]" : "text-[16px]"
+              }`}
               onClick={() => changeTab("members")}
             >
               길드원
@@ -96,7 +112,7 @@ export default function GuildPage() {
             <div className="flex flex-col w-full gap-[24px]">
               {/* 소개글 블럭 */}
               <div className="w-full bg-white dark:bg-dark rounded-[12px] p-[24px] shadow-md flex flex-col gap-[12px]">
-                <h2 className="text-[20px] font-bold text-brandcolor">
+                <h2 className="text-[20px] font-extrabold text-brandcolor">
                   📣 길드 소개
                 </h2>
                 <p className="text-[16px] leading-relaxed whitespace-pre-wrap dark:text-white">
@@ -124,7 +140,9 @@ export default function GuildPage() {
 
           {currentTab === "guildInfo" && (
             <div className="flex flex-col gap-[12px]">
-              <div className="flex w-full gap-[12px]">
+              <div
+                className={`flex w-full gap-[12px] ${isMobile && "flex-col"}`}
+              >
                 <GuildSummeryRecord
                   guildVictory={guild?.guildRecord?.recordVictory}
                   guildDefeat={guild?.guildRecord?.recordDefeat}
@@ -161,9 +179,9 @@ export default function GuildPage() {
             </div>
           )}
           {currentTab === "members" && (
-            <div className="flex flex-col w-full overflow-x-auto">
-              <div className="min-w-[600px]">
-                <div className="flex bg-[#7b92e0] text-white font-semibold text-[13px] p-[8px] text-center rounded-t-md">
+            <div className="flex flex-col w-full overflow-x-auto overflow-y-auto">
+              <div className="min-w-[600px] min-h-[550px]">
+                <div className="flex bg-brandcolor dark:bg-branddark text-white font-semibold text-[13px] p-[8px] text-center rounded-t-md">
                   <div className="flex-[1]">닉네임</div>
                   <div className="flex-[2]">소환사명</div>
                   <div className="flex-[1]">티어</div>

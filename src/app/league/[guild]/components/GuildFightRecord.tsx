@@ -8,12 +8,14 @@ import { BattleDto } from "@/src/common/DTOs/battle/battle.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface Props {
   battleData: BattleDto;
   guildName: string;
 }
 const GuildFightRecord = (props: Props) => {
+  const isMobile = useIsMobile();
   const { battleData, guildName } = props;
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [myTeamData, enemyTeamData] =
@@ -67,106 +69,141 @@ const GuildFightRecord = (props: Props) => {
       <div
         className={`max-w-[1200px] h-[130px] flex border shadow ${
           result === "win"
-            ? "border-blue-300 bg-blue-100"
-            : "border-red-300 bg-red-100"
-        }`}
+            ? "border-winLightBorder bg-winLightColor dark:border-winDarkBorder dark:bg-winDarkColor"
+            : "border-loseLightBorder bg-loseLightColor dark:border-loseDarkBorder dark:bg-loseDarkColor"
+        } ${isMobile && "flex-col"}`}
       >
         {/* 1 */}
-        <div className="w-[130px] flex flex-col justify-center items-center p-[12px]">
-          <p className="font-extrabold text-[16px] text-black">소환사의 협곡</p>
-          <p className="font-light text-[12px] text-black">{getPlayTime()}</p>
-          <p
-            className={`font-extrabold text-[18px] ${
-              result === "win" ? "text-blue-500" : "text-red-500"
-            }`}
-          >
-            {result === "win" ? "승리" : "패배"}
-          </p>
-          <p className="font-light text-[12px] text-black">
-            {getTimeDifference()}
-          </p>
-        </div>
-
-        {/* 2 */}
-        <div className="flex w-400px justify-between items-center text-black gap-[12px] p-[12px]">
-          <div className="flex flex-col w-full items-center gap-[8px]">
-            <div className="flex items-center gap-[8px]">
-              <img
-                src={`${constant.SERVER_URL}/${myTeamData.guild.guildIcon}`}
-                alt="GuildBanner"
-                className="w-[30px] h-[30px] rounded-[4px] object-cover"
-              />
-              <p className="font-bold text-[16px]">
-                {myTeamData.guild.guildName}
-              </p>
-            </div>
-            <p className="font-light text-gray-600 text-[12px]">
-              1부리그 {homeGuild?.guildRecord?.recordLadder}점
-            </p>
-          </div>
-
-          <p className="font-normal text-[12px]">VS</p>
-
-          <div className="flex flex-col w-full items-center gap-[8px]">
-            <div className="flex items-center gap-[8px]">
-              <img
-                src={`${constant.SERVER_URL}/${enemyTeamData.guild.guildIcon}`}
-                alt="GuildBanner"
-                className="w-[30px] h-[30px] rounded-[4px] object-cover"
-              />
+        {isMobile ? (
+          <div className={`min-w-[130px] flex justify-between p-[4px]`}>
+            <div className="flex gap-[12px] items-center">
               <p
-                className={`font-bold ${
-                  enemyTeamData.guild.guildName.length > 8
-                    ? "text-[10px]"
-                    : "text-[16px]"
+                className={`font-extrabold text-[12px] ${
+                  result === "win"
+                    ? "text-winLightText dark:text-winDarkText"
+                    : "text-loseLightText dark:text-loseDarkText"
                 }`}
               >
-                {enemyTeamData.guild.guildName}
+                {result === "win" ? "승리" : "패배"}
+              </p>
+              <p className="font-light text-[10px]">{getPlayTime()}</p>
+            </div>
+
+            <div className="flex gap-[12px] items-center">
+              <p className="font-extrabold text-[12px]">소환사의 협곡</p>
+              <p className="font-light text-[10px]">{getTimeDifference()}</p>
+              <button
+                aria-label="상세보기"
+                className=" items-center justify-center text-[12px] gap-[12px]"
+                onClick={clickDetailFight}
+              >
+                <SlArrowDown />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div
+            className={`min-w-[130px] flex flex-col justify-center items-center p-[12px]`}
+          >
+            <p className="font-extrabold text-[16px]">소환사의 협곡</p>
+            <p className="font-light text-[12px]">{getPlayTime()}</p>
+            <p
+              className={`font-extrabold text-[18px] ${
+                result === "win"
+                  ? "text-winLightText dark:text-winDarkText"
+                  : "text-loseLightText dark:text-loseDarkText"
+              }`}
+            >
+              {result === "win" ? "승리" : "패배"}
+            </p>
+            <p className="font-light text-[12px]">{getTimeDifference()}</p>
+          </div>
+        )}
+
+        {/* 2 */}
+        <div className="flex h-full">
+          <div className="flex w-[400px] justify-between items-center gap-[12px] p-[12px]">
+            <div className="flex flex-col w-full items-center gap-[8px]">
+              <div className="flex items-center gap-[8px]">
+                <img
+                  src={`${constant.SERVER_URL}/${myTeamData.guild.guildIcon}`}
+                  alt="GuildBanner"
+                  className="w-[30px] h-[30px] rounded-[4px] object-cover"
+                />
+                <p className="font-bold text-[16px]">
+                  {myTeamData.guild.guildName}
+                </p>
+              </div>
+              <p className="font-light text-gray-600 text-[12px]">
+                1부리그 {homeGuild?.guildRecord?.recordLadder}점
               </p>
             </div>
-            <p className="font-light text-gray-600 text-[12px]">
-              1부리그 {awayGuild?.guildRecord?.recordLadder}점
+
+            <p className="font-normal text-[12px]">VS</p>
+
+            <div className="flex flex-col w-full items-center gap-[8px]">
+              <div className="flex items-center gap-[8px]">
+                <img
+                  src={`${constant.SERVER_URL}/${enemyTeamData.guild.guildIcon}`}
+                  alt="GuildBanner"
+                  className="w-[30px] h-[30px] rounded-[4px] object-cover"
+                />
+                <p
+                  className={`font-bold ${
+                    enemyTeamData.guild.guildName.length > 8
+                      ? "text-[10px]"
+                      : "text-[16px]"
+                  }`}
+                >
+                  {enemyTeamData.guild.guildName}
+                </p>
+              </div>
+              <p className="font-light text-gray-600 text-[12px]">
+                1부리그 {awayGuild?.guildRecord?.recordLadder}점
+              </p>
+            </div>
+          </div>
+
+          {/* 3 */}
+          <div className="w-[120px] flex flex-col items-center justify-center">
+            <p className="font-bold">래더</p>
+            <p
+              className={`font-extrabold text-20px ${
+                result === "win"
+                  ? "text-winLightText dark:text-winDarkText"
+                  : "text-loseLightText dark:text-loseDarkText"
+              }`}
+            >
+              {result === "win"
+                ? `+${myTeamData.point}점`
+                : `${myTeamData.point}점`}
             </p>
           </div>
-        </div>
 
-        {/* 3 */}
-        <div className="w-120px flex flex-col items-center justify-center text-black">
-          <p className="font-bold">래더</p>
-          <p
-            className={`font-extrabold text-20px ${
-              result === "win" ? "text-blue-500" : "text-red-500"
-            }`}
-          >
-            {result === "win"
-              ? `+${myTeamData.point}점`
-              : `${myTeamData.point}점`}
-          </p>
-        </div>
+          {/* 4 */}
+          {!isMobile && (
+            <div className="w-[500px] p-2">
+              <GuildFightMember battleData={props.battleData} />
+            </div>
+          )}
 
-        {/* 4 */}
-        <div className="w-500px p-2 text-black">
-          <GuildFightMember battleData={props.battleData} />
-        </div>
-
-        {/* 5 */}
-        <div
-          className={`w-80px flex flex-col border-l justify-center items-center ${
-            result === "win" ? "border-blue-300" : "border-red-300 "
-          }`}
-        >
-          <button
-            aria-label="상세보기"
-            className="flex flex-col w-full h-full items-center justify-center text-black"
-            onClick={clickDetailFight}
-          >
-            상세보기
-            <SlArrowDown className="mt-5" />
-          </button>
+          {/* 5 */}
+          {!isMobile && (
+            <div
+              className={`flex flex-col min-w-[50px] mx-auto border-l justify-center items-center cursor-pointer text-[12px] ${
+                result === "win"
+                  ? "border-winLightBorder dark:border-winDarkBorder"
+                  : "border-loseLightBorder dark:border-loseDarkBorder"
+              }`}
+              onClick={clickDetailFight}
+            >
+              <SlArrowDown />
+            </div>
+          )}
         </div>
       </div>
       {showDetails && (
-        <div className="w-full h-full pb-2">
+        <div className="w-full h-full">
           <GuildFightDetail
             battleData={props.battleData}
             guildName={guildName}

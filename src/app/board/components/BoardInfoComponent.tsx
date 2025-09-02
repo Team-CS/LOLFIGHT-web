@@ -3,6 +3,7 @@
 import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import { useRouter } from "next/navigation";
 import boardNavLinks from "@/src/data/boardNavLinks";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface BoardInfoComponentProps {
   slug: string;
@@ -17,6 +18,7 @@ function getSlugFromTitle(title: string) {
 const BoardInfoComponent = (props: BoardInfoComponentProps) => {
   const { slug, data } = props;
   const router = useRouter();
+  const isMobile = useIsMobile();
   const link = `${slug}/${data.id}`;
 
   const handleOnClick = () => {
@@ -52,23 +54,33 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
   };
 
   return (
-    <div className="notice-info text-sm h-8 flex mt-1">
-      <div className="notice-info__number w-1/12 flex items-center justify-center">
+    <div className="text-sm h-[32px] flex py-[2px]">
+      <div
+        className={`w-1/12 truncate flex items-center justify-center ${
+          isMobile ? "text-[10px]" : "text-[14px]"
+        }`}
+      >
         {data.postLikes}
       </div>
-      <div className="notice-info__type w-1/12 flex items-center justify-center">
-        {data.postBoard}
+      <div className={`w-1/12 flex items-center justify-center text-center`}>
+        <p className={`${isMobile ? "truncate text-[10px]" : "text-[14px]"}`}>
+          {data.postBoard}
+        </p>
       </div>
-      <div className="flex w-1/2 pl-4">
+      <div
+        className={`flex pl-[16px] w-1/2 hover:underline hover:decoration-gray-400 hover:decoration-opacity-50`}
+      >
         {containsImage(data.postContent) ? (
-          <div className="flex items-center justify-center pr-1">
+          <div className="flex items-center justify-center pr-[4px] ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth="1.2"
               stroke="currentColor"
-              className="w-5 h-5"
+              className={`${
+                isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
+              }`}
             >
               <path
                 strokeLinecap="round"
@@ -79,14 +91,16 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
             </svg>
           </div>
         ) : (
-          <div className="flex items-center justify-center pr-1">
+          <div className="flex items-center justify-center pr-[4px]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth="1.2"
               stroke="currentColor"
-              className="w-5 h-5"
+              className={`${
+                isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
+              }`}
             >
               <path
                 strokeLinecap="round"
@@ -97,22 +111,47 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
             </svg>
           </div>
         )}
-        <div className="flex items-center hover:underline cursor-pointer">
-          <a className="notice-info__title" onClick={handleOnClick}>
+
+        <div className="flex items-center gap-[4px] min-w-0">
+          <p
+            className={`truncate cursor-pointer hover:decoration-gray-400 hover:decoration-opacity-50 ${
+              isMobile
+                ? "text-[12px] max-w-[120px]"
+                : "text-[14px] max-w-[400px] "
+            }`}
+            onClick={handleOnClick}
+          >
             {data.postTitle}
-          </a>
-          <a className="notice-info__comment flex items-center text-gray-400">
+          </p>
+          <span
+            className={`text-red-400 ${
+              isMobile ? "text-[10px]" : "text-[12px]"
+            }`}
+          >
             [{data.postComments}]
-          </a>
+          </span>
         </div>
       </div>
-      <div className="notice-info__writer w-2/12 flex items-center justify-center">
+
+      <div
+        className={`w-2/12 flex items-center justify-center ${
+          isMobile ? "text-[10px]" : "text-[14px]"
+        }`}
+      >
         {data.postWriter.memberName}
       </div>
-      <div className="notice-info__date w-1/6 flex items-center justify-center">
+      <div
+        className={`w-1/6 flex items-center justify-center ${
+          isMobile ? "text-[8px]" : "text-[14px]"
+        }`}
+      >
         {getDate(data.postDate)}
       </div>
-      <div className="notice-info__views w-1/12 flex items-center justify-center">
+      <div
+        className={`w-1/12 flex items-center justify-center ${
+          isMobile ? "text-[10px]" : "text-[14px]"
+        }`}
+      >
         {data.postViews}
       </div>
     </div>

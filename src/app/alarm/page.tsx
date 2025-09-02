@@ -25,9 +25,11 @@ import { useEffect, useState } from "react";
 import { BattleTeamModal } from "../battle/components/modals/BattleTeamModal";
 import { ScrimSlotDto } from "@/src/common/DTOs/scrim/scrim_slot.dto";
 import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 export default function Page() {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const { member } = useMemberStore();
   const { guildTeam, setGuildTeam } = useGuildTeamStore();
   const [tab, setTab] = useState<"team" | "battle">("team");
@@ -305,7 +307,11 @@ export default function Page() {
                         : "신청 대기 중입니다."}
                     </p>
                     <button
-                      className="px-[14px] py-[6px] bg-green-500 text-white rounded-md hover:opacity-90 transition"
+                      className={`bg-green-500 text-white rounded-md hover:opacity-90 transition ${
+                        isMobile
+                          ? "text-[12px] p-[6px] min-w-[50px]"
+                          : "text-[14px] px-[14px] py-[6px] "
+                      }`}
                       onClick={() => handleSelectedTeam(application)}
                     >
                       팀 보기

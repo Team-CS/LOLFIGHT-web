@@ -18,6 +18,7 @@ import CustomAlert from "./alert/CustomAlert";
 import { jwtDecode } from "jwt-decode";
 import { useMemberStore } from "../zustand/member.zustand";
 import { getCookie } from "@/src/utils/cookie/cookie";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface HeadingNode {
   level: number;
@@ -32,6 +33,7 @@ interface CodeBlockNode {
 }
 const WysiwygEditor = () => {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const { member } = useMemberStore();
   const { theme } = useTheme();
   const [isAdminUser, setIsAdminUser] = useState<boolean>(false);
@@ -145,7 +147,11 @@ const WysiwygEditor = () => {
     <div className="flex flex-col h-full px-[20px] py-[24px] gap-[12px]">
       {/* 카테고리 선택 */}
       <select
-        className="w-[160px] h-[40px] px-[10px] border border-brandborder rounded-md text-[14px] bg-white dark:bg-branddark dark:border-branddarkborder dark:text-white"
+        className={`border border-brandborder rounded-md bg-white dark:bg-branddark dark:border-branddarkborder dark:text-white ${
+          isMobile
+            ? "w-[100px] h-[30px] px-[8px] text-[12px]"
+            : "w-[160px] h-[40px] px-[10px] text-[14px]"
+        }`}
         onChange={handleCategoryChange}
       >
         {boardNavLinks
@@ -164,7 +170,11 @@ const WysiwygEditor = () => {
 
       {/* 제목 입력 */}
       <input
-        className="w-full h-[40px] px-[12px] border border-brandborder rounded-md text-[14px] bg-gray-100 dark:bg-branddark dark:border-branddarkborder dark:text-white"
+        className={`w-full border border-brandborder rounded-md bg-gray-100 dark:bg-branddark dark:border-branddarkborder dark:text-white ${
+          isMobile
+            ? "h-[30px] px-[8px] text-[12px]"
+            : "h-[40px] px-[12px] text-[14px]"
+        }`}
         type="text"
         placeholder="제목을 입력하세요"
         onChange={handleChange}
@@ -179,7 +189,7 @@ const WysiwygEditor = () => {
           placeholder="글을 작성해주세요"
           initialEditType="wysiwyg"
           previewStyle="tab"
-          height="800px"
+          height={isMobile ? "400px" : "800px"}
           plugins={[colorSyntax]}
           toolbarItems={toolbarItems}
           hooks={{ addImageBlobHook: onUploadImage }}
@@ -218,12 +228,23 @@ const WysiwygEditor = () => {
       </div>
 
       {/* 하단 버튼 */}
-      <div className="w-full flex justify-between mt-[16px]">
-        <button className="w-[80px] h-[40px] text-[14px] font-medium border border-brandborder rounded-md text-brandgray hover:bg-brandhover dark:border-branddarkborder dark:text-white dark:hover:bg-gray-600 transition">
+      <div className="w-full flex justify-between">
+        <button
+          className={`font-medium border border-brandborder rounded-md text-brandgray hover:bg-brandhover dark:border-branddarkborder dark:text-white dark:hover:bg-gray-600 transition ${
+            isMobile
+              ? "w-[60px] h-[30px] text-[12px]"
+              : "w-[80px] h-[40px] text-[14px]"
+          }`}
+          onClick={() => router.back()}
+        >
           취소
         </button>
         <button
-          className="w-[120px] h-[40px] text-[14px] font-medium bg-brandcolor text-white rounded-md hover:bg-brandhover transition"
+          className={`font-medium bg-brandcolor text-white rounded-md hover:bg-brandhover transition ${
+            isMobile
+              ? "w-[100px] h-[30px] text-[12px]"
+              : "w-[120px] h-[40px] text-[14px]"
+          }`}
           onClick={handleSaveClick}
         >
           작성하기

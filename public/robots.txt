@@ -2,8 +2,8 @@
 User-agent: *
 Allow: /
 Disallow: /profile
-Disallow: /login
 Disallow: /policies
+Disallow: /login
 
 # Host
 Host: https://lolfight.kr

@@ -19,7 +19,7 @@ export const BattleTeamCard = (props: BattleTeamCardProps) => {
 
   return (
     <div
-      className="w-full max-w-[280px] p-[16px] rounded-[12px] shadow-md bg-white dark:bg-brandgray flex flex-col gap-[12px] transform transition-transform duration-200 ease-in-out hover:scale-105"
+      className="flex flex-col w-full max-w-[280px] p-[16px] rounded-[12px] shadow-md bg-white dark:bg-brandgray gap-[12px] transform transition-transform duration-200 ease-in-out hover:scale-105"
       onClick={onClick}
     >
       {/* Guild Info */}
@@ -27,7 +27,7 @@ export const BattleTeamCard = (props: BattleTeamCardProps) => {
         <img
           src={`${constant.SERVER_URL}/${scrimSlot.hostTeam.guild.guildIcon}`}
           alt="Guild Logo"
-          className="w-[40px] h-[40px] rounded-full object-cover"
+          className="w-[40px] h-[40px] rounded-[12px] object-cover"
         />
         <div className="flex flex-col">
           <p className="text-[16px] font-semibold">{guild.guildName}</p>

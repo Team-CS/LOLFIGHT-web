@@ -1,5 +1,6 @@
 import constant from "@/src/common/constant/constant";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import React from "react";
 
 interface LeaguePodiumProps {
@@ -8,59 +9,83 @@ interface LeaguePodiumProps {
   third?: GuildDto;
 }
 
-const LeaguePodium = (props: LeaguePodiumProps) => {
-  const { first, second, third } = props;
+const LeaguePodium = ({ first, second, third }: LeaguePodiumProps) => {
+  const isMobile = useIsMobile();
 
-  const renderGuildBox = (guild: GuildDto, color: string, emoji: string) => {
-    return (
-      <div className="flex flex-col items-center h-full p-[12px] gap-[4px]">
-        <img
-          className={`object-cover w-[150px] h-[150px] rounded-[12px] border-[2px] ${color} shadow`}
-          src={`${constant.SERVER_URL}/${guild.guildIcon}`}
-          alt="길드 아이콘"
-        />
-        <div
-          className={`text-xs font-bold mt-1 ${color.replace(
-            "border-",
-            "text-"
-          )}`}
-        >
-          {emoji} {guild.guildRecord?.recordRanking}위
-        </div>
+  const renderGuildBox = (
+    guild: GuildDto,
+    borderColor: string,
+    emoji: string,
+    size: number
+  ) => (
+    <div className="flex flex-col w-full items-center gap-[4px] relative">
+      <img
+        src={`${constant.SERVER_URL}/${guild.guildIcon}`}
+        alt={guild.guildName}
+        className={`rounded-[12px] border-[2px] ${borderColor} object-cover`}
+        style={{ width: `${size}px`, height: `${size}px` }}
+      />
 
-        <div
-          className={`text-[18px] font-semibold text-center truncate w-full ${color.replace(
-            "border-",
-            "text-"
-          )}`}
-        >
-          {guild.guildName}
-        </div>
-
-        <div className="text-xs text-gray-600">
-          점수: {guild.guildRecord?.recordLadder ?? "0"}
-        </div>
+      {/* 점수 배지 */}
+      <div className="absolute -top-[8px] -right-[8px] px-[6px] py-[2px] rounded-full text-[14px] font-bold bg-gradient-to-r from-blue-400 to-blue-300 text-white shadow-sm">
+        {guild.guildRecord?.recordLadder ?? 0}점
       </div>
-    );
+
+      {/* 순위 텍스트 */}
+      <div
+        className={`text-[12px] font-bold ${borderColor.replace(
+          "border-",
+          "text-"
+        )}`}
+      >
+        {emoji} {guild.guildRecord?.recordRanking}위
+      </div>
+
+      {/* 길드 이름 */}
+      <div className="text-center font-semibold truncate w-[100px] text-[16px]">
+        {guild.guildName}
+      </div>
+    </div>
+  );
+
+  const sizeMap = {
+    first: isMobile ? 110 : 150,
+    second: isMobile ? 85 : 115,
+    third: isMobile ? 80 : 110,
+  };
+
+  const offsetMap = {
+    second: isMobile ? 35 : 55,
+    third: isMobile ? 45 : 65,
   };
 
   return (
-    <div className="flex justify-center items-end gap-[12px] h-[300px]">
+    <div
+      className={`flex justify-center items-end  max-w-[1200px] mx-auto  ${
+        isMobile ? "px-[12px] gap-[20px]" : "gap-[40px]"
+      }`}
+    >
       {second && (
-        <div className="self-end">
-          {renderGuildBox(second, "border-[#BBC6C9]", "🥈")}
+        <div
+          className="flex flex-col items-center justify-end"
+          style={{ marginTop: `${offsetMap.second}px` }}
+        >
+          {renderGuildBox(second, "border-[#BBC6C9]", "🥈", sizeMap.second)}
         </div>
       )}
 
       {first && (
-        <div className="self-start">
-          {renderGuildBox(first, "border-[#FFD700]", "🥇")}
+        <div className="flex flex-col items-center justify-end">
+          {renderGuildBox(first, "border-[#FFD700]", "🥇", sizeMap.first)}
         </div>
       )}
 
       {third && (
-        <div className="self-end">
-          {renderGuildBox(third, "border-[#B08D57]", "🥉")}
+        <div
+          className="flex flex-col items-center justify-end"
+          style={{ marginTop: `${offsetMap.third}px` }}
+        >
+          {renderGuildBox(third, "border-[#B08D57]", "🥉", sizeMap.third)}
         </div>
       )}
     </div>

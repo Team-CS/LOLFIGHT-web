@@ -17,6 +17,7 @@ export default function useFirebaseMessaging() {
   } = useFirebaseStore();
   const { member } = useMemberStore();
   const router = useRouter();
+
   useEffect(() => {
     if (!member || !messaging) {
       return;
@@ -25,7 +26,7 @@ export default function useFirebaseMessaging() {
     if (!isServiceWorkerRegistered && "serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
-        .then((registration) => {
+        .then(() => {
           setServiceWorkerRegistered(true);
         })
         .catch((error) => console.error("등록 실패 : ", error));
@@ -34,20 +35,27 @@ export default function useFirebaseMessaging() {
     const token = getCookie("lf_rtk");
 
     if (!fcmToken && token) {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          getToken(messaging as Messaging, {
-            vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY!,
+      if ("Notification" in window) {
+        Notification.requestPermission()
+          .then((permission) => {
+            if (permission === "granted") {
+              return getToken(messaging as Messaging, {
+                vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY!,
+              });
+            }
           })
-            .then((currentToken) => {
-              if (currentToken) {
-                setFcmToken(currentToken);
-                updateMemberFCMToken(currentToken);
-              }
-            })
-            .catch(console.error);
-        }
-      });
+          .then((currentToken) => {
+            if (currentToken) {
+              setFcmToken(currentToken);
+              updateMemberFCMToken(currentToken);
+            }
+          })
+          .catch((err) => {
+            console.error("FCM 토큰 발급 실패:", err);
+          });
+      } else {
+        console.log("이 브라우저는 Notification API를 지원하지 않습니다.");
+      }
     }
 
     onMessage(messaging, (payload) => {
@@ -65,7 +73,8 @@ export default function useFirebaseMessaging() {
           </div>
         );
       }
-      // if (title && body && document.visibilityState === "visible") {
+
+      // if ("Notification" in window && title && body) {
       //   new Notification(title, { body, icon: "/LOLFIGHT_NONE_TEXT.png" });
       // }
     });

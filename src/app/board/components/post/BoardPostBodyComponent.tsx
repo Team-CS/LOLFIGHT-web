@@ -11,10 +11,11 @@ import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import "@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css";
 import "@toast-ui/editor/toastui-editor-viewer.css";
 
-import { useRouter } from "next/navigation";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { useTheme } from "next-themes";
+import clsx from "clsx";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface BoardPostBodyComponentProps {
   data: PostDto | null | undefined;
@@ -27,7 +28,7 @@ const DynamicViewer = dynamic(
 
 const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
   const { data } = props;
-  const router = useRouter();
+  const isMobile = useIsMobile();
   const { member } = useMemberStore();
 
   const [like, setLike] = useState(0);
@@ -50,7 +51,6 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
   const handleOnClick = () => {
     if (member && data) {
       likePost(data, member.id).then(() => {
-        router.refresh();
         setLike((prev) => (prev === 0 ? 1 : 0));
       });
     } else {
@@ -82,21 +82,20 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
         theme={theme}
       />
       <div className="m-auto">
-        {like === 0 ? (
-          <button
-            className="border border-gray-400 h-10 text-gray-400 rounded transition hover:bg-brandcolor hover:text-white w-20 m-1"
-            onClick={handleOnClick}
-          >
-            추천
-          </button>
-        ) : (
-          <button
-            className="border border-gray-400 h-10 text-white rounded bg-brandcolor transition hover:bg-white hover:text-gray-400 w-20 m-1 dark:border-gray-700"
-            onClick={handleOnClick}
-          >
-            추천
-          </button>
-        )}
+        <button
+          className={clsx(
+            "border rounded transition font-bold",
+            isMobile
+              ? "h-[30px] w-[50px] text-[12px]"
+              : "h-[40px] w-[80px] text-[14px]",
+            like === 0
+              ? "border-gray-400 text-gray-400"
+              : "border-gray-400 text-white bg-brandcolor dark:border-gray-700"
+          )}
+          onClick={handleOnClick}
+        >
+          추천
+        </button>
       </div>
     </div>
   );

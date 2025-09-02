@@ -7,6 +7,7 @@ import BoardPostComponent from "../../components/post/BoardPostComponent";
 import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import boardNavLinks from "@/src/data/boardNavLinks";
 import { notFound } from "next/navigation";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 type PageProps = {
   slug: string;
@@ -19,6 +20,7 @@ function getTitleFromSlug(slug: string) {
 }
 
 export default function Page({ params }: { params: PageProps }) {
+  const isMobile = useIsMobile();
   const [post, setPost] = useState<PostDto>();
   const [error, setError] = useState<boolean>();
 
@@ -40,7 +42,11 @@ export default function Page({ params }: { params: PageProps }) {
 
   return (
     <>
-      <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px]">
+      <div
+        className={`flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px] ${
+          isMobile && "flex-col px-[12px]"
+        }`}
+      >
         <BoardNavComponent></BoardNavComponent>
         <BoardPostComponent data={post as PostDto}></BoardPostComponent>
       </div>

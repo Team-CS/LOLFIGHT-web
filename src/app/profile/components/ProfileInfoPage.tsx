@@ -3,19 +3,16 @@ import {
   removeIcon,
   updateMemberIcon,
   updateNickname,
-  updatePassword,
 } from "@/src/api/member.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { ProfileIconModal } from "./modals/ProfileIconModal";
-import { ProfilePasswordModal } from "./modals/profilePasswordModal";
-import { removeCookie } from "@/src/utils/cookie/cookie";
-import { useRouter } from "next/navigation";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 const ProfileInfoPage = () => {
-  const router = useRouter();
+  const isMobile = useIsMobile();
   const { member, setMember } = useMemberStore();
   const [openModal, setOpenModal] = useState<ModalType>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -75,6 +72,24 @@ const ProfileInfoPage = () => {
   };
 
   const handleNicknameSubmit = () => {
+    if (nickname.length < 2 || nickname.length > 7) {
+      CustomAlert(
+        "warning",
+        "닉네임 변경",
+        "닉네임은 2자 이상 7자 이하로 설정해주세요"
+      );
+      return;
+    }
+
+    if (/\s/.test(nickname)) {
+      CustomAlert(
+        "warning",
+        "닉네임 변경",
+        "닉네임에는 공백을 포함할 수 없습니다"
+      );
+      return;
+    }
+
     updateNickname(nickname)
       .then((response) => {
         setMember(response.data.data);
@@ -122,33 +137,41 @@ const ProfileInfoPage = () => {
   return (
     <div className="flex flex-col p-[16px] gap-[24px]">
       <div className="flex justify-between items-center pb-5 border-b border-gray-200 dark:border-branddarkborder">
-        <p className="text-[24px] font-bold">내 정보</p>
-        <div className="flex gap-[12px]">
+        <p className={`font-bold ${isMobile ? "text-[20px]" : "text-[24px]"}`}>
+          내 정보
+        </p>
+        <div className="flex gap-[12px] h-full items-center">
           {member?.memberIcon !== "public/default.png" && (
             <button
-              className="bg-red-500 text-white px-[12px] py-[8px] rounded hover:bg-red-400"
+              className={`bg-red-500 text-white rounded hover:bg-red-400 ${
+                isMobile
+                  ? "text-[12px] px-[8px] py-[4px]"
+                  : "text-[14px] px-[12px] py-[8px] "
+              }`}
               onClick={hanldeIconRemove}
             >
               프로필 사진 삭제
             </button>
           )}
           <button
-            className="bg-brandcolor text-white px-[12px] py-[8px] rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
+            className={`bg-brandcolor text-white rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray ${
+              isMobile
+                ? "text-[12px] px-[8px] py-[4px]"
+                : "text-[14px] px-[12px] py-[8px]"
+            }`}
             onClick={() => handleOpenModal("profileIcon")}
           >
             프로필 사진 변경
           </button>
-          {/* <button
-            className="bg-brandcolor text-white px-[12px] py-[8px] rounded hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
-            onClick={() => handleOpenModal("profilePassword")}
-          >
-            비밀번호 변경
-          </button> */}
         </div>
       </div>
 
       <div className="flex gap-[24px] items-center">
-        <div className="w-[150px] h-[150px] shrink-0">
+        <div
+          className={`shrink-0 ${
+            isMobile ? "w-[100px] h-[100px]" : "w-[150px] h-[150px]"
+          }`}
+        >
           <img
             className="w-full h-full rounded-[12px] object-cover object-center block"
             src={`${constant.SERVER_URL}/${member!.memberIcon}`}
@@ -157,14 +180,24 @@ const ProfileInfoPage = () => {
         </div>
         <div className="flex flex-col w-full gap-[8px]">
           <div className="flex flex-col gap-[4px]">
-            <label>이메일</label>
-            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] w-full cursor-not-allowed dark:border-branddarkborder">
+            <label className={`${isMobile ? "text-[10px]" : "text-[14px]"}`}>
+              이메일
+            </label>
+            <div
+              className={`bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded w-full cursor-not-allowed dark:border-branddarkborder ${
+                isMobile
+                  ? "text-[12px] p-[4px]"
+                  : "text-[14px] px-[12px] py-[8px]"
+              }`}
+            >
               {member!.memberId}
             </div>
           </div>
 
           <div className="flex flex-col gap-[4px]">
-            <label>닉네임</label>
+            <label className={`${isMobile ? "text-[10px]" : "text-[14px]"}`}>
+              닉네임
+            </label>
             <div className="flex gap-[12px]">
               <input
                 type="text"
@@ -172,11 +205,19 @@ const ProfileInfoPage = () => {
                 maxLength={10}
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-branddarkborder"
+                className={`border border-gray-300 rounded  w-full focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-branddarkborder ${
+                  isMobile
+                    ? "text-[12px] p-[4px]"
+                    : "text-[14px] px-[12px] py-[8px]"
+                }`}
               />
               {member?.memberName !== nickname && (
                 <button
-                  className="min-w-[100px] bg-brandcolor rounded text-white px-[14px] py-[8px] hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
+                  className={`bg-brandcolor rounded text-white hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray ${
+                    isMobile
+                      ? "min-w-[50px] text-[12px]"
+                      : "min-w-[100px] text-[14px] px-[14px] py-[8px] "
+                  }`}
                   onClick={handleNicknameSubmit}
                 >
                   확인
@@ -186,8 +227,16 @@ const ProfileInfoPage = () => {
           </div>
 
           <div className="flex flex-col gap-[4px]">
-            <label>가입일</label>
-            <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed dark:border-branddarkborder">
+            <label className={`${isMobile ? "text-[10px]" : "text-[14px]"}`}>
+              가입일
+            </label>
+            <div
+              className={`bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded cursor-not-allowed dark:border-branddarkborder ${
+                isMobile
+                  ? "text-[12px] p-[4px]"
+                  : "text-[14px] px-[12px] py-[8px]"
+              }`}
+            >
               {member!.createdAt?.toString().split("T")[0]}
             </div>
           </div>
@@ -195,19 +244,37 @@ const ProfileInfoPage = () => {
       </div>
 
       <div className="flex justify-between items-center pb-5 border-b border-gray-200 dark:border-branddarkborder">
-        <p className="text-[24px] font-bold">Riot 계정 정보</p>
+        <p className={`font-bold ${isMobile ? "text-[20px]" : "text-[24px]"}`}>
+          Riot 계정 정보
+        </p>
       </div>
 
-      <div className="flex flex-col gap-[24px]">
+      <div className="flex flex-col gap-[8px]">
         <div className="flex flex-col gap-[4px]">
-          <label>인게임 닉네임</label>
-          <div className="bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] cursor-not-allowed dark:border-branddarkborder">
+          <label className={`${isMobile ? "text-[10px]" : "text-[14px]"}`}>
+            인게임 닉네임
+          </label>
+          <div
+            className={`bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded cursor-not-allowed dark:border-branddarkborder ${
+              isMobile
+                ? "text-[12px] p-[4px]"
+                : "text-[14px] px-[12px] py-[8px]"
+            }`}
+          >
             {member!.memberGame?.gameName ?? "등록되지 않음"}
           </div>
         </div>
         <div className="flex flex-col gap-[4px]">
-          <label>티어</label>
-          <div className="flex items-center bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded px-[12px] py-[8px] gap-[12px] cursor-not-allowed dark:border-branddarkborder">
+          <label className={`${isMobile ? "text-[10px]" : "text-[14px]"}`}>
+            티어
+          </label>
+          <div
+            className={`flex items-center bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded cursor-not-allowed dark:border-branddarkborder ${
+              isMobile
+                ? "text-[12px] p-[4px] gap-[4px] "
+                : "text-[14px] px-[12px] py-[8px] gap-[12px] "
+            }`}
+          >
             {member?.memberGame?.gameTier ? (
               <>
                 <img
@@ -215,8 +282,8 @@ const ProfileInfoPage = () => {
                     member.memberGame.gameTier.split(" ")[0]
                   }.png`}
                   alt="Tier"
-                  width={25}
-                  height={25}
+                  width={isMobile ? 20 : 25}
+                  height={isMobile ? 20 : 25}
                 />
                 {member.memberGame.gameTier}
               </>
