@@ -10,7 +10,7 @@ import { useEffect, useRef } from "react";
 import { writePost } from "@/src/api/post.api";
 import constant from "@/src/common/constant/constant";
 import { useState } from "react";
-import { PostCreateDto, PostDto } from "@/src/common/DTOs/board/post.dto";
+import { PostCreateDto } from "@/src/common/DTOs/board/post.dto";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -43,15 +43,17 @@ const WysiwygEditor = () => {
   const [category, setCategory] = useState("자유");
   const [image, setImage] = useState<string>();
   const [editorHtml, setEditorHtml] = useState(""); // 현재 작성 내용 저장
-  const toolbarItems = [
-    ["heading", "bold", "italic", "strike"],
-    ["hr"],
-    ["ul", "ol", "task"],
-    ["table", "link"],
-    ["image"],
-    ["code"],
-    ["scrollSync"],
-  ];
+  const toolbarItems = isMobile
+    ? [["bold", "italic"], ["image"]]
+    : [
+        ["heading", "bold", "italic", "strike"],
+        ["hr"],
+        ["ul", "ol", "task"],
+        ["table", "link"],
+        ["image"],
+        ["code"],
+        ["scrollSync"],
+      ];
 
   useEffect(() => {
     if (editorRef.current) {

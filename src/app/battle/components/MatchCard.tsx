@@ -76,8 +76,6 @@ const MatchCard = (props: MatchCardProps) => {
     isRecipient && isClosed && Boolean(isWithin10MinAfterFinish);
 
   const showCodeClick = () => {
-    console.log(showEntryCode);
-    console.log(scrim.scrimSlot);
     if (isWithin5Min && isAccepted) {
       if (showEntryCode === false) setShowEntryCode(true);
       // const data = @TODO 실제 방 코드 요쳥 api

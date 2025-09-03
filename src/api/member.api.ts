@@ -3,6 +3,7 @@ import { MemberDto } from "../common/DTOs/member/member.dto";
 import { AxiosResponse } from "axios";
 import { ResponseDto } from "../common/DTOs/response.dto";
 import { deleteData, getData, patchData } from "../utils/axios/serverHelper";
+import { MemberGameDto } from "../common/DTOs/member/member_game.dto";
 
 const baseUrl = `${constant.SERVER_URL}/member`;
 
@@ -141,4 +142,12 @@ export const updateMemberGameLine = async (
   };
 
   return await patchData(url, body);
+};
+
+export const updateMemberSummonerInfo = async (
+  memberGameDto: MemberGameDto
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
+  let url = `${baseUrl}/riot-summoner`;
+
+  return await patchData(url, memberGameDto);
 };
