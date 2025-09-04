@@ -109,7 +109,7 @@ const GuildManagePage = () => {
   const leaveGuild = () => {
     //길드원 길드탈퇴
     if (memberChecked) {
-      leaveMember(member!.memberId).then((response) => {
+      leaveMember().then((response) => {
         CustomAlert("success", "길드탈퇴", "성공적으로 길드를 탈퇴했습니다.");
         router.push("/");
       });

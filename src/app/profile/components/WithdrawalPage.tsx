@@ -19,12 +19,14 @@ const WithdrawalPage = () => {
 
   const handleWithdrawal = () => {
     if (checked) {
-      deleteMember(member!.memberId)
+      deleteMember()
         .then((response) => {
           setMember(null);
           removeCookie("lf_atk");
           removeCookie("lf_rtk");
-          router.push("/");
+          localStorage.clear();
+          sessionStorage.clear();
+          router.replace("/");
           CustomAlert(
             "success",
             "회원탈퇴",

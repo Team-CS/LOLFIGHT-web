@@ -43,6 +43,12 @@ const ProfileInfoPage = () => {
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
+  const typeToImageMap: Record<string, string> = {
+    google: "Google_Original",
+    kakao: "Kakao_Original",
+    naver: "Naver_Original",
+  };
+  const imageName = typeToImageMap[member?.type || ""] || "default.png";
   type ModalType = "profileIcon" | "profilePassword" | null;
 
   useEffect(() => {
@@ -257,12 +263,18 @@ const ProfileInfoPage = () => {
               이메일
             </label>
             <div
-              className={`bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded w-full cursor-not-allowed dark:border-branddarkborder ${
+              className={`flex items-center gap-[4px] bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded w-full cursor-not-allowed dark:border-branddarkborder ${
                 isMobile
                   ? "text-[12px] p-[4px]"
                   : "text-[14px] px-[12px] py-[8px]"
               }`}
             >
+              <img
+                src={`${constant.SERVER_URL}/public/${imageName}.png`}
+                alt={member?.type}
+                width={15}
+                height={15}
+              />
               {member!.memberId}
             </div>
           </div>

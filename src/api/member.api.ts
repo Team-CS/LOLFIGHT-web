@@ -54,14 +54,10 @@ export const removeIcon = async (): Promise<
  * @param id
  * @returns
  */
-export const leaveMember = async (
-  memberId: string
-): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
+export const leaveMember = async (): Promise<
+  AxiosResponse<ResponseDto<MemberDto>>
+> => {
   let url = `${baseUrl}/leave`;
-
-  const queryParams = `?memberId=${memberId}`;
-
-  url += queryParams;
 
   return patchData(url);
 };
@@ -86,13 +82,11 @@ export const findMember = async (
  * @param id
  * @returns
  */
-export const deleteMember = async (
-  memberId: string
-): Promise<AxiosResponse<ResponseDto<void>>> => {
+export const deleteMember = async (): Promise<
+  AxiosResponse<ResponseDto<void>>
+> => {
   let url = `${baseUrl}`;
 
-  let queryParams = `?memberId=${memberId}`;
-  url += queryParams;
   return await deleteData(url);
 };
 
