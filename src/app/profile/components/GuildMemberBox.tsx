@@ -58,7 +58,7 @@ const GuildMemberBox = (props: Props) => {
       <div className="flex gap-x-[8px] items-center">
         <div
           className={`flex-[1] items-center font-medium ${
-            isMobile ? "text-[12px]" : "text-[14px]"
+            isMobile ? "text-[10px]" : "text-[14px]"
           }`}
         >
           {guildMember.memberName}
@@ -66,7 +66,7 @@ const GuildMemberBox = (props: Props) => {
 
         <div
           className={`flex-[2] items-center font-medium ${
-            isMobile ? "text-[12px]" : "text-[14px]"
+            isMobile ? "text-[10px]" : "text-[14px]"
           }`}
         >
           {guildMember.memberGame?.gameName}
@@ -74,23 +74,27 @@ const GuildMemberBox = (props: Props) => {
 
         <div
           className={`flex-[1] items-center font-medium ${
-            isMobile ? "text-[12px]" : "text-[14px]"
+            isMobile ? "text-[10px]" : "text-[14px]"
           }`}
         >
           {guildMember.memberGame ? (
             <div className="flex gap-[4px] items-center">
+              <img
+                src={`${constant.SERVER_URL}/public/rank/${
+                  guildMember.memberGame?.gameTier.split(" ")[0]
+                }.png`}
+                alt="rank"
+                className={`${
+                  isMobile ? "w-[20px] h-[20px]" : "w-[30px] h-[30px]"
+                } `}
+              />
               {!isMobile && (
-                <img
-                  src={`${constant.SERVER_URL}/public/rank/${
-                    guildMember.memberGame?.gameTier.split(" ")[0]
-                  }.png`}
-                  alt="rank"
-                  className="w-[25px] h-[25px]"
-                />
+                <span
+                  className={getTierStyle(guildMember.memberGame?.gameTier)}
+                >
+                  {guildMember.memberGame?.gameTier}
+                </span>
               )}
-              <span className={getTierStyle(guildMember.memberGame?.gameTier)}>
-                {guildMember.memberGame?.gameTier}
-              </span>
             </div>
           ) : null}
         </div>
@@ -98,7 +102,7 @@ const GuildMemberBox = (props: Props) => {
         {type === "guildMember" && (
           <div
             className={`flex-[1] items-center font-medium ${
-              isMobile ? "text-[12px]" : "text-[14px]"
+              isMobile ? "text-[10px]" : "text-[14px]"
             }`}
           >
             {guildMember.memberGame?.line ? (

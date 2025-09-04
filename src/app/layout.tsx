@@ -4,6 +4,7 @@ import BaseLayout from "./../layouts/BaseLayout";
 import localFont from "next/font/local";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://lolfight.kr"),
   title: "롤파이트 | LOL.FIGHT - 롤 길드 대항전, 스크림 플랫폼",
   description:
     "롤파이트(LOLFIGHT)는 리그 오브 레전드(LoL) 유저들을 위한 스크림, 길드 대항전 커뮤니티 플랫폼입니다. 롤 커스텀 매치부터 길드전까지, 롤파이트에서 만나보세요!",

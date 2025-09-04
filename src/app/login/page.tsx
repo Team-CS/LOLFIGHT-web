@@ -21,6 +21,10 @@ export default function Page() {
     window.open(`${constant.SERVER_URL}/auth/naver`, "_self");
   };
 
+  const kakaoLogin = () => {
+    window.open(`${constant.SERVER_URL}/auth/kakao`, "_self");
+  };
+
   const buttonBaseClass = `
     flex items-center justify-center gap-[12px] w-full
     text-[16px] font-medium p-[12px] rounded-xl
@@ -90,7 +94,25 @@ export default function Page() {
         <span>Naver 계정으로 로그인</span>
       </motion.button>
 
+      {/* 카카오 로그인 버튼 */}
+      <motion.button
+        onClick={kakaoLogin}
+        className={`${buttonBaseClass} bg-[#FEE500] border border-[#FEE500] text-black hover:bg-[#FFD700]`}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+      >
+        <img
+          src={`${constant.SERVER_URL}/public/Kakao_Original.png`}
+          alt="kakao-login"
+          width={28}
+          height={28}
+        />
+        <span>Kakao 계정으로 로그인</span>
+      </motion.button>
+
       {/* 푸터 텍스트 */}
+
       <motion.p
         className="text-sm text-gray-600 dark:text-gray-300 text-center leading-relaxed pt-[12px]"
         initial={{ opacity: 0 }}
