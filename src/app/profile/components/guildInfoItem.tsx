@@ -12,7 +12,7 @@ export const GuildInfoItem = (props: GuildInfoItemProps) => {
   return (
     <div className="flex flex-col gap-[8px]">
       <label
-        className={`font-bold ${isMobile ? "text-[12px]" : "text-[16px]"}`}
+        className={`font-bold ${isMobile ? "text-[10px]" : "text-[16px]"}`}
       >
         {title}
       </label>

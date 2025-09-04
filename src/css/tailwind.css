@@ -33,3 +33,92 @@
   height: 100%;
   object-fit: cover;
 }
+
+.tui-colorpicker-clearfix {
+  width: 100% !important;
+  padding: 0 !important; /* 기존 padding 제거 */
+  margin: 35px 0 15px 0 !important; /* 기존 margin 제거 */
+}
+
+ul.tui-colorpicker-clearfix {
+  display: none !important;
+}
+
+.toastui-editor-popup-body {
+  position: fixed !important; /* 화면 기준 위치 고정 */
+  top: 60% !important; /* 세로 중앙 */
+  left: 50% !important; /* 가로 중앙 */
+  transform: translate(-50%, -50%) !important; /* 중앙 정렬 */
+  z-index: 9999 !important; /* 다른 요소 위로 */
+  background: rgb(247, 247, 247);
+}
+
+.toastui-editor-popup-color button {
+  position: absolute !important;
+  top: 5px !important;
+  left: 5px !important;
+  height: 32px !important;
+  width: 165px !important;
+  color: #555 !important;
+  background: #f7f9fc !important;
+  border: 1px solid #e1e3e9 !important;
+  padding: 5px;
+}
+
+.tui-colorpicker-slider-left {
+  position: relative; /* 필요시 위치 기준 */
+  width: 100%; /* 부모 크기에 맞춤 */
+  height: 100%; /* 부모 높이 맞춤 */
+  overflow: hidden; /* 자식 SVG가 삐져나오지 않도록 */
+}
+
+.tui-colorpicker-slider-left svg {
+  width: 100%; /* SVG 크기 부모에 맞춤 */
+  height: 100%;
+  display: block; /* inline spacing 제거 */
+}
+
+.tui-colorpicker-slider-right {
+  width: 30px; /* 기존 18px → 원하는 두께 */
+  height: 100%;
+  overflow: hidden; /* 삐져나오는 부분 숨김 */
+  position: relative;
+}
+
+.tui-colorpicker-svg-huebar rect {
+  width: 100%; /* 부모 width에 맞춰 늘어나도록 */
+}
+
+.tui-colorpicker-svg-huebar {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 텍스트 입력 스타일 */
+.toastui-editor-popup-body input[type="text"].tui-colorpicker-palette-hex {
+  width: 75px !important;
+  height: 24px !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  border: 1px solid #e1e3e9 !important;
+  border-radius: 2px !important;
+  float: left !important;
+  margin: 0 !important; /* 기존 마진 제거 */
+  padding: 3px 10px !important; /* 필요 최소 padding */
+  box-sizing: border-box !important;
+}
+
+/* 컬러 동그라미 프리뷰 */
+.toastui-editor-popup-color
+  .tui-colorpicker-container
+  .tui-colorpicker-palette-preview {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  margin: 4px 0 0 8px !important; /* 입력 옆에 적절히 위치 */
+  display: inline-block !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+}
