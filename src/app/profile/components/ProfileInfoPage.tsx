@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  deleteMemberSummonerInfo,
   removeIcon,
   updateMemberIcon,
   updateMemberSummonerInfo,
@@ -174,25 +175,18 @@ const ProfileInfoPage = () => {
       return;
     }
 
-    if (summonerName.length < 3 || summonerName.length > 22) {
+    if (summonerName.length < 3) {
       CustomAlert(
         "warning",
-        "인게임 닉네임 오류",
-        "닉네임은 3~22자 사이로 작성해주세요"
+        "Riot 소환사 계정 등록",
+        "올바른 본인의 소환사명을 입력해주세요."
       );
       return;
     }
 
-    const combineTier =
-      ["MASTER", "GRANDMASTER", "CHALLENGER"].includes(summonerTierMain) ||
-      !summonerTierSub
-        ? summonerTierMain
-        : `${summonerTierMain} ${summonerTierSub}`;
-
     const memberGameDto: MemberGameDto = {
       ...(member?.memberGame?.id && { id: member.memberGame.id }),
       gameName: summonerName,
-      gameTier: combineTier,
     };
 
     updateMemberSummonerInfo(memberGameDto)
@@ -203,14 +197,26 @@ const ProfileInfoPage = () => {
       .catch((error) => {
         const code = error.response.data.code;
 
-        if (code === "USER-001") {
+        if (code === "RIOT-001") {
           CustomAlert(
             "error",
-            "Riot 계정 정보 업데이트",
-            "존재하지 않는 멤버 입니다"
+            "Riot 계정 정보",
+            "존재하지 않는 소환사명 입니다."
+          );
+        } else if (code === "COMMON-005") {
+          CustomAlert(
+            "error",
+            "Riot 계정 정보",
+            "이미 등록되어있는 소환사명 입니다."
           );
         }
       });
+  };
+
+  const handleDeleteSummonerInfo = () => {
+    deleteMemberSummonerInfo().then((response) => {
+      setMember(response.data.data);
+    });
   };
 
   return (
@@ -332,6 +338,31 @@ const ProfileInfoPage = () => {
         <p className={`font-bold ${isMobile ? "text-[20px]" : "text-[24px]"}`}>
           Riot 계정 정보
         </p>
+        <div className="flex gap-[12px] h-full items-center">
+          {member?.memberGame ? (
+            <button
+              className={`bg-red-500 text-white rounded hover:bg-red-400 ${
+                isMobile
+                  ? "text-[12px] px-[8px] py-[4px]"
+                  : "text-[14px] px-[12px] py-[8px] "
+              }`}
+              onClick={handleDeleteSummonerInfo}
+            >
+              등록 해제
+            </button>
+          ) : (
+            <button
+              className={`bg-brandcolor rounded text-white hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray ${
+                isMobile
+                  ? "min-w-[50px] text-[12px] px-[12px] py-[4px]"
+                  : "min-w-[100px] text-[14px] px-[14px] py-[8px]"
+              }`}
+              onClick={handleUpdateSummonerInfo}
+            >
+              <p>{isEdit ? "확인" : "등록하기"}</p>
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col gap-[8px]">
@@ -359,90 +390,27 @@ const ProfileInfoPage = () => {
           <label className={`${isMobile ? "text-[10px]" : "text-[14px]"}`}>
             티어
           </label>
-
-          {isEdit ? (
-            <div className="flex gap-[8px]">
-              <select
-                value={summonerTierMain}
-                onChange={(e) => {
-                  setSummonerTierMain(e.target.value);
-                  if (
-                    ["MASTER", "GRANDMASTER", "CHALLENGER"].includes(
-                      e.target.value
-                    )
-                  ) {
-                    setSummonerTierSub("");
-                  } else if (!summonerTierSub) {
-                    setSummonerTierSub("I"); // 기본값
-                  }
-                }}
-                className={`border border-[#CDCDCD] rounded dark:border-branddarkborder ${
-                  isMobile
-                    ? "text-[12px] p-[4px]"
-                    : "text-[14px] px-[12px] py-[8px]"
-                }`}
-              >
-                {tierOptions.map((tier) => (
-                  <option key={tier} value={tier}>
-                    {tier}
-                  </option>
-                ))}
-              </select>
-
-              {/* 서브 티어 선택 */}
-              <select
-                value={summonerTierSub}
-                onChange={(e) => setSummonerTierSub(e.target.value)}
-                disabled={["MASTER", "GRANDMASTER", "CHALLENGER"].includes(
-                  summonerTierMain
-                )}
-                className={`border border-[#CDCDCD] rounded dark:border-branddarkborder ${
-                  isMobile
-                    ? "text-[12px] p-[4px]"
-                    : "text-[14px] px-[12px] py-[8px]"
-                }`}
-              >
-                {subTierOptions.map((sub) => (
-                  <option key={sub} value={sub}>
-                    {sub}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ) : (
-            <div
-              className={`flex items-center bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded cursor-not-allowed dark:border-branddarkborder ${
-                isMobile
-                  ? "text-[12px] p-[4px] gap-[4px]"
-                  : "text-[14px] px-[12px] py-[8px] gap-[12px]"
-              }`}
-            >
-              {member?.memberGame?.gameTier &&
-                member.memberGame.gameTier !== "등록되지 않음" && (
-                  <img
-                    src={`${constant.SERVER_URL}/public/rank/${
-                      member.memberGame.gameTier.split(" ")[0]
-                    }.png`}
-                    alt="Tier"
-                    width={isMobile ? 20 : 25}
-                    height={isMobile ? 20 : 25}
-                  />
-                )}
-              {member?.memberGame?.gameTier || "등록되지 않음"}
-            </div>
-          )}
+          <div
+            className={`flex items-center bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded cursor-not-allowed dark:border-branddarkborder ${
+              isMobile
+                ? "text-[12px] p-[4px] gap-[4px]"
+                : "text-[14px] px-[12px] py-[8px] gap-[12px]"
+            }`}
+          >
+            {member?.memberGame?.gameTier &&
+              member.memberGame.gameTier !== "등록되지 않음" && (
+                <img
+                  src={`${constant.SERVER_URL}/public/rank/${
+                    member.memberGame.gameTier.split(" ")[0]
+                  }.png`}
+                  alt="Tier"
+                  width={isMobile ? 20 : 25}
+                  height={isMobile ? 20 : 25}
+                />
+              )}
+            {member?.memberGame?.gameTier || "등록되지 않음"}
+          </div>
         </div>
-
-        <button
-          className={`bg-brandcolor rounded text-white hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray ${
-            isMobile
-              ? "min-w-[50px] text-[12px] px-[12px] py-[4px]"
-              : "min-w-[100px] text-[14px] px-[14px] py-[8px]"
-          }`}
-          onClick={handleUpdateSummonerInfo}
-        >
-          <p>{isEdit ? "확인" : "수정하기"}</p>
-        </button>
       </div>
 
       {openModal === "profileIcon" && (
@@ -454,12 +422,6 @@ const ProfileInfoPage = () => {
           onSubmit={handleIconSubmit}
         />
       )}
-      {/* {openModal === "profilePassword" && (
-        <ProfilePasswordModal
-          onClose={handleCloseModal}
-          onSubmit={handlePasswordSubmit}
-        />
-      )} */}
     </div>
   );
 };

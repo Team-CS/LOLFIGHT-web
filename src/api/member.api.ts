@@ -145,3 +145,11 @@ export const updateMemberSummonerInfo = async (
 
   return await patchData(url, memberGameDto);
 };
+
+export const deleteMemberSummonerInfo = async (): Promise<
+  AxiosResponse<ResponseDto<MemberDto>>
+> => {
+  let url = `${baseUrl}/riot-summoner`;
+
+  return await deleteData(url);
+};
