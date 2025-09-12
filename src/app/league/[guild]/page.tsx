@@ -206,7 +206,7 @@ export default function GuildPage() {
                         <>
                           <img
                             src={`${constant.SERVER_URL}/public/rank/${
-                              member.memberGame?.gameTier.split(" ")[0]
+                              member.memberGame?.gameTier?.split(" ")[0]
                             }.png`}
                             alt="rank"
                             className="w-[25px] h-[25px]"

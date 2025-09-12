@@ -4,6 +4,10 @@ export const getTierStyle = (tier: string | undefined) => {
   const baseTier = tier.split(" ")[0].toUpperCase();
 
   switch (baseTier) {
+    case "UNRANKED":
+      return "text-[##b0b0b0] font-light";
+    case "IRON":
+      return "text-[#565656] font-medium";
     case "BRONZE":
       return "text-[#cd7f32] font-medium"; // 브론즈 (청동)
     case "SILVER":

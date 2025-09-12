@@ -81,7 +81,7 @@ const GuildMemberBox = (props: Props) => {
             <div className="flex gap-[4px] items-center">
               <img
                 src={`${constant.SERVER_URL}/public/rank/${
-                  guildMember.memberGame?.gameTier.split(" ")[0]
+                  guildMember.memberGame?.gameTier?.split(" ")[0]
                 }.png`}
                 alt="rank"
                 className={`${
