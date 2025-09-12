@@ -115,3 +115,34 @@ export function convertLineToEnglish(line: string): string {
       return "";
   }
 }
+
+export function formatElapsedTime(updatedAt: string | Date): string {
+  const now = new Date();
+  const past = new Date(updatedAt);
+  const diffMs = now.getTime() - past.getTime();
+
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+  const month = 30 * day;
+
+  if (diffMs < minute) return "방금";
+  if (diffMs < hour) {
+    const mins = Math.floor(diffMs / minute);
+    return `${mins}분 전`;
+  }
+  if (diffMs < day) {
+    const hrs = Math.floor(diffMs / hour);
+    const mins = Math.floor((diffMs % hour) / minute);
+    return `${hrs}시간 ${mins}분 전`;
+  }
+  if (diffMs < month) {
+    const days = Math.floor(diffMs / day);
+    const hrs = Math.floor((diffMs % day) / hour);
+    return `${days}일 ${hrs}시간 전`;
+  }
+  // 그 이상은 개월 단위
+  const months = Math.floor(diffMs / month);
+  const days = Math.floor((diffMs % month) / day);
+  return `${months}개월 ${days}일 전`;
+}

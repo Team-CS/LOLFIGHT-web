@@ -7,6 +7,8 @@ import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import { getCookie } from "@/src/utils/cookie/cookie";
+import { jwtDecode } from "jwt-decode";
 
 interface CommentBoxComponentProps {
   data: PostDto;
@@ -20,7 +22,9 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   const [replyCommentContent, setReplyCommentContent] = useState("");
   const [refresh, setRefresh] = useState(1);
   const { member } = useMemberStore();
-  // const [commentBoxKey, setCommentBoxKey] = useState(0);
+
+  const token = getCookie("lf_atk");
+  const isAdmin = token ? (jwtDecode(token) as any)?.role === "ADMIN" : false;
 
   useEffect(() => {
     if (props.data && props.data.id) {
@@ -154,7 +158,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                   {getDate(comment.commentDate)}
                 </p>
               </div>
-              {comment.writer.id === member?.id && (
+              {(comment.writer.id === member?.id || isAdmin) && (
                 <p
                   className={`text-gray-400 font-normal cursor-pointer hover:text-gray-500 ${
                     isMobile ? "text-[10px]" : "text-[12px]"

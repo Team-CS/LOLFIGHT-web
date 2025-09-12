@@ -130,7 +130,13 @@ const GuildFightRecord = (props: Props) => {
                   alt="GuildBanner"
                   className="w-[30px] h-[30px] rounded-[4px] object-cover"
                 />
-                <p className="font-bold text-[16px]">
+                <p
+                  className={`font-bold truncate ${
+                    isMobile
+                      ? "text-[12px] max-w-[100px]"
+                      : "text-[16px] max-w-[120px]"
+                  }`}
+                >
                   {myTeamData.guild.guildName}
                 </p>
               </div>
@@ -149,10 +155,10 @@ const GuildFightRecord = (props: Props) => {
                   className="w-[30px] h-[30px] rounded-[4px] object-cover"
                 />
                 <p
-                  className={`font-bold ${
-                    enemyTeamData.guild.guildName.length > 8
-                      ? "text-[10px]"
-                      : "text-[16px]"
+                  className={`font-bold truncate ${
+                    isMobile
+                      ? "text-[12px] max-w-[100px]"
+                      : "text-[16px] max-w-[120px]"
                   }`}
                 >
                   {enemyTeamData.guild.guildName}
@@ -182,7 +188,7 @@ const GuildFightRecord = (props: Props) => {
 
           {/* 4 */}
           {!isMobile && (
-            <div className="w-[500px] p-2">
+            <div className="w-[500px] p-[8px]">
               <GuildFightMember battleData={props.battleData} />
             </div>
           )}

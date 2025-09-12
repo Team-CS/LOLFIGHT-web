@@ -112,10 +112,18 @@ export default function GuildPage() {
             <div className="flex flex-col w-full gap-[24px]">
               {/* 소개글 블럭 */}
               <div className="w-full bg-white dark:bg-dark rounded-[12px] p-[24px] shadow-md flex flex-col gap-[12px]">
-                <h2 className="text-[20px] font-extrabold text-brandcolor">
+                <h2
+                  className={`font-extrabold text-brandcolor ${
+                    isMobile ? "text-[16px]" : "text-[20px]"
+                  }`}
+                >
                   📣 길드 소개
                 </h2>
-                <p className="text-[16px] leading-relaxed whitespace-pre-wrap dark:text-white">
+                <p
+                  className={` leading-relaxed whitespace-pre-wrap dark:text-white ${
+                    isMobile ? "text-[14px]" : "text-[16px]"
+                  }`}
+                >
                   {guild?.guildDescription ??
                     "아직 길드 소개가 작성되지 않았습니다."}
                 </p>

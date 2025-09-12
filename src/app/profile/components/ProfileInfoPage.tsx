@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   deleteMemberSummonerInfo,
   removeIcon,
   updateMemberIcon,
-  updateMemberSummonerInfo,
+  createMemberSummonerInfo,
   updateNickname,
+  refreshMemberSummonerInfo,
 } from "@/src/api/member.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
@@ -13,6 +14,7 @@ import { ProfileIconModal } from "./modals/ProfileIconModal";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { MemberGameDto } from "@/src/common/DTOs/member/member_game.dto";
+import { formatElapsedTime } from "@/src/utils/string/string.util";
 
 const ProfileInfoPage = () => {
   const isMobile = useIsMobile();
@@ -22,27 +24,9 @@ const ProfileInfoPage = () => {
   const [previewImage, setPreviewImage] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
   const [summonerName, setSummonerName] = useState<string>("");
-  const [summonerTierMain, setSummonerTierMain] = useState<string>(
-    member?.memberGame?.gameTier?.split(" ")[0] ?? "BRONZE"
-  );
-  const [summonerTierSub, setSummonerTierSub] = useState<string>(
-    member?.memberGame?.gameTier?.split(" ")[1] ?? "I"
-  );
-  const tierOptions = [
-    "BRONZE",
-    "SILVER",
-    "GOLD",
-    "PLATINUM",
-    "EMERALD",
-    "DIAMOND",
-    "MASTER",
-    "GRANDMASTER",
-    "CHALLENGER",
-  ];
-
-  const subTierOptions = ["I", "II", "III", "IV"];
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const typeToImageMap: Record<string, string> = {
     google: "Google_Original",
@@ -51,6 +35,9 @@ const ProfileInfoPage = () => {
   };
   const imageName = typeToImageMap[member?.type || ""] || "default.png";
   type ModalType = "profileIcon" | "profilePassword" | null;
+  const FIVE_MINUTES = 5 * 60 * 1000; // 5분(ms)
+  const updatedAt = member?.memberGame?.updatedAt;
+  const now = Date.now();
 
   useEffect(() => {
     if (member) {
@@ -58,6 +45,12 @@ const ProfileInfoPage = () => {
       setSummonerName(member.memberGame?.gameName || "등록되지 않음");
     }
   }, [member]);
+
+  useEffect(() => {
+    if (!updatedAt) return;
+    const diff = Date.now() - new Date(updatedAt).getTime();
+    setIsDisabled(diff < FIVE_MINUTES);
+  }, [updatedAt]);
 
   const handleOpenModal = (modal: ModalType) => {
     setOpenModal(modal);
@@ -189,7 +182,7 @@ const ProfileInfoPage = () => {
       gameName: summonerName,
     };
 
-    updateMemberSummonerInfo(memberGameDto)
+    createMemberSummonerInfo(memberGameDto)
       .then((response) => {
         setMember(response.data.data);
         setIsEdit(false);
@@ -215,6 +208,12 @@ const ProfileInfoPage = () => {
 
   const handleDeleteSummonerInfo = () => {
     deleteMemberSummonerInfo().then((response) => {
+      setMember(response.data.data);
+    });
+  };
+
+  const handleRefreshSummonerInfo = () => {
+    refreshMemberSummonerInfo().then((response) => {
       setMember(response.data.data);
     });
   };
@@ -336,7 +335,7 @@ const ProfileInfoPage = () => {
 
       <div className="flex justify-between items-center pb-5 border-b border-gray-200 dark:border-branddarkborder">
         <p className={`font-bold ${isMobile ? "text-[20px]" : "text-[24px]"}`}>
-          Riot 계정 정보
+          Riot 계정
         </p>
         <div className="flex gap-[12px] h-full items-center">
           {member?.memberGame ? (
@@ -361,6 +360,30 @@ const ProfileInfoPage = () => {
             >
               <p>{isEdit ? "확인" : "등록하기"}</p>
             </button>
+          )}
+          {member?.memberGame && (
+            <>
+              <button
+                disabled={isDisabled}
+                className={`rounded text-white ${
+                  isDisabled
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-brandcolor hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray"
+                } ${
+                  isMobile
+                    ? "text-[12px] px-[8px] py-[4px]"
+                    : "text-[14px] px-[12px] py-[8px]"
+                }`}
+                onClick={() => !isDisabled && handleRefreshSummonerInfo()}
+              >
+                새로고침
+              </button>
+              <p className="text-[10px] text-gray-500">
+                {member?.memberGame?.updatedAt
+                  ? formatElapsedTime(member.memberGame.updatedAt)
+                  : "-"}
+              </p>
+            </>
           )}
         </div>
       </div>

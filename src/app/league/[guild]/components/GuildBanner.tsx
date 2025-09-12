@@ -53,7 +53,7 @@ const GuildBanner = (props: Props) => {
       >
         <div className="flex items-center gap-[12px]">
           <img
-            className=" object-cover rounded-md"
+            className="object-cover rounded-md"
             src={`${constant.SERVER_URL}/${guild.guildIcon}`}
             width={isMobile ? 50 : 75}
             height={isMobile ? 50 : 75}
@@ -67,10 +67,16 @@ const GuildBanner = (props: Props) => {
             >
               롤파이트 공식리그 - 1부리그 -{guild.guildRecord?.recordRanking}위
             </p>
-            <div className="flex items-center gap-[12px]">
+            <div
+              className={`flex  ${
+                isMobile
+                  ? "flex-col gap-[4px] items-start"
+                  : "gap-[12px] items-center "
+              }`}
+            >
               <h2
                 className={`text-white font-extrabold ${
-                  isMobile ? "text-[20px]" : "text-[24px]"
+                  isMobile ? "text-[16px]" : "text-[24px]"
                 }`}
               >
                 {guild.guildName}

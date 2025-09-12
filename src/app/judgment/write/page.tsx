@@ -10,6 +10,7 @@ import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { Summoner } from "@/src/common/types/judgment.type";
 import SummonerInputBox from "../../board/components/write/components/SummonerInputBox";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface ChampionsMap {
   [key: string]: string;
@@ -17,6 +18,7 @@ interface ChampionsMap {
 
 export default function Page() {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const { member } = useMemberStore();
 
   const [judgment, setJudgment] = useState<JudgmentCreateDto>({
@@ -220,7 +222,11 @@ export default function Page() {
             placeholder="제목을 입력하세요"
             onChange={handleTitleChange}
           />
-          <div className="flex w-full items-center justify-between">
+          <div
+            className={`flex w-full items-center justify-between ${
+              isMobile ? "gap-[12px]" : ""
+            }`}
+          >
             {/* left */}
             <SummonerInputBox
               side="left"
@@ -231,7 +237,7 @@ export default function Page() {
               }
             />
             {/* center */}
-            <div className="px-10 text-lg font-bold">VS</div>
+            <div className="text-[14px] font-bold">VS</div>
 
             {/* right */}
             <SummonerInputBox
@@ -253,14 +259,23 @@ export default function Page() {
                 placeholder="챔피언 검색"
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <div className="grid grid-cols-12 gap-[4px]">
+              <div
+                className={`grid gap-[4px] ${
+                  isMobile ? "grid-cols-5" : "grid-cols-12"
+                }`}
+              >
                 {filteredChampions.map(([id, name]) => (
-                  <div key={id} className="flex flex-col justify-center items-center">
+                  <div
+                    key={id}
+                    className="flex flex-col justify-center items-center"
+                  >
                     <img
                       key={id}
                       src={`${constant.SERVER_URL}/public/champions/${id}.png`}
                       alt={name}
-                      className="cursor-pointer w-[70px] h-[70px] rounded-[12px]"
+                      width={isMobile ? 50 : 70}
+                      height={isMobile ? 50 : 70}
+                      className="cursor-pointer rounded-[12px]"
                       onClick={() => handleChampionSelect(id, leftShowImages)}
                     />
                     <p className="font-light text-[10px]">{name}</p>

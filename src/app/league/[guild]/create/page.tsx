@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CutsomAlert from "../../../../common/components/alert/CustomAlert";
 import { createGuild } from "@/src/api/guild.api";
 import { CreateGuildDto } from "@/src/common/DTOs/guild/guild.dto";
@@ -16,6 +16,20 @@ export default function Page() {
   const [guildName, setGuildName] = useState<string>();
   const [guildDescription, setGuildDescription] = useState<string>();
   const [guildIcon, setGuildIcon] = useState<string>();
+
+  useEffect(() => {
+    if (!member) {
+      alert("로그인 후 이용가능합니다.");
+      router.replace("/");
+      return;
+    }
+
+    if (member.memberGuild) {
+      alert("이미 길드에 속해있습니다.");
+      router.replace("/");
+      return;
+    }
+  }, [member, router]);
 
   //====================================================================//
   // Valid Check
