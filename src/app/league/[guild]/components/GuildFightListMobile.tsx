@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { BattleTeamDTO } from "@/src/common/DTOs/battle/battle_team.dto";
+import { BattleTeamDto } from "@/src/common/DTOs/battle/battle_team.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
-import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import GuildFightBoxMobile from "./GuildFightBoxMobile";
 
 interface Props {
-  battleTeamData: BattleTeamDTO;
+  battleTeamData: BattleTeamDto;
   highestDamage: number;
 }
 
@@ -78,30 +77,43 @@ const GuildFightListMobile = (props: Props) => {
           </div>
         </div>
 
-        <div className="flex gap-[8px]">
-          {objectives.map(({ key, icon }) => (
-            <div key={key} className="flex items-center gap-[4px]">
+        <div className="flex gap-[8px] justify-between">
+          <div className="flex items-center gap-[4px]">
+            {objectives.map(({ key, icon }) => (
+              <>
+                <img
+                  key={key}
+                  src={`${constant.SERVER_URL}/public/objects/${icon}-${
+                    result === "win" ? "blue" : "red"
+                  }.png`}
+                  className={`w-[15px] h-[15px]`}
+                />
+                <p className="text-[12px]">
+                  {
+                    battleTeamData[
+                      key as
+                        | "baronCount"
+                        | "dragonCount"
+                        | "riftHeraldCount"
+                        | "hordeCount"
+                        | "inhibitorCount"
+                        | "destroyedTowerCount"
+                    ]
+                  }
+                </p>
+              </>
+            ))}
+          </div>
+
+          <div className="flex gap-[4px] items-center">
+            {battleTeamData.bans.map((ban, index) => (
               <img
-                src={`${constant.SERVER_URL}/public/objects/${icon}-${
-                  result === "win" ? "blue" : "red"
-                }.png`}
-                className={`w-[15px] h-[15px]`}
+                key={index}
+                src={`${constant.SERVER_URL}/public/champions/${ban}.png`}
+                className="rounded-[4px] w-[18px] h-[18px]"
               />
-              <p className="text-[12px]">
-                {
-                  battleTeamData[
-                    key as
-                      | "baronCount"
-                      | "dragonCount"
-                      | "riftHeraldCount"
-                      | "hordeCount"
-                      | "inhibitorCount"
-                      | "destroyedTowerCount"
-                  ]
-                }
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 

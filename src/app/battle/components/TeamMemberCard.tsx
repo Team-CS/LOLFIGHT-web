@@ -1,5 +1,6 @@
 import constant from "@/src/common/constant/constant";
 import { GuildTeamMemberDto } from "@/src/common/DTOs/guild/guild_team/guild_team_member.dto";
+import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { getTierStyle } from "@/src/utils/string/string.util";
 
 interface TeamMemberCardProps {
@@ -11,6 +12,7 @@ interface TeamMemberCardProps {
 
 const TeamMemberCard = (props: TeamMemberCardProps) => {
   const { teamMember, roleTag, isEmpty = false, onAddClick } = props;
+  const isMobile = useIsMobile();
 
   if (isEmpty || !teamMember || !teamMember.member) {
     return (
@@ -49,22 +51,37 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
           <img
             src={profileImgUrl}
             alt="profile"
-            className="w-[32px] h-[32px] object-cover rounded-full "
+            width={isMobile ? 28 : 32}
+            height={isMobile ? 28 : 32}
+            className="object-cover rounded-full"
           />
           <div className="truncate min-w-0">
-            <p className="text-sm font-medium dark:text-white truncate">
+            <p className="text-[14px] font-medium dark:text-white truncate">
               {summonerName}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-[6px] whitespace-nowrap">
-          <img src={rankImageUrl} alt={tier} className="w-[24px] h-[24px]" />
-          <p className="text-sm">
+          <img
+            src={rankImageUrl}
+            alt={tier}
+            width={isMobile ? 22 : 24}
+            height={isMobile ? 22 : 24}
+          />
+          <p className={`${isMobile ? "text-[12px]" : "text-[14px]"}`}>
             <span className={getTierStyle(tier)}>{tier}</span>
           </p>
-          <div className="text-sm px-[6px] py-[2px] rounded-md bg-brandhover text-branddark font-medium select-none">
-            {roleTag}
-          </div>
+          {isMobile ? (
+            <img
+              src={`${constant.SERVER_URL}/public/ranked-positions/${roleTag}.png`}
+              width={18}
+              height={18}
+            />
+          ) : (
+            <div className="text-[14px] px-[6px] py-[2px] rounded-md bg-brandhover text-branddark font-medium select-none">
+              {roleTag}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { BaseDto } from "../base.dto";
 import { GuildDto } from "../guild/guild.dto";
 import { BattlePlayerDto } from "./battle_player.dto";
 
-export interface BattleTeamDTO extends BaseDto {
+export interface BattleTeamDto extends BaseDto {
   id: string;
   isWinning: boolean;
   point: number;

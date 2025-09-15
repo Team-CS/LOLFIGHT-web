@@ -92,7 +92,7 @@ export default function Page() {
       isGuildDescriptionValid(guildDescription)
     ) {
       const guildData: CreateGuildDto = {
-        guildMaster: member!.memberName,
+        // guildMaster: member!.memberName,
         guildName,
         guildDescription,
         guildIcon: guildIcon || "",

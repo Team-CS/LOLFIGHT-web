@@ -53,10 +53,12 @@ const GuildBanner = (props: Props) => {
       >
         <div className="flex items-center gap-[12px]">
           <img
-            className="object-cover rounded-md"
+            className={`object-cover rounded-md ${
+              isMobile ? "w-[50px] h-[50px]" : "w-[75px] h-[75px]"
+            }`}
             src={`${constant.SERVER_URL}/${guild.guildIcon}`}
-            width={isMobile ? 50 : 75}
-            height={isMobile ? 50 : 75}
+            // width={isMobile ? 50 : 75}
+            // height={isMobile ? 50 : 75}
             alt="GuildIcon"
           />
           <div className="flex flex-col gap-[4px]">
@@ -101,7 +103,7 @@ const GuildBanner = (props: Props) => {
             isMobile ? "text-[10px] gap-[2px]" : "text-[14px] gap-[4px]"
           }`}
         >
-          <p className="font-medium">길드 마스터 : {guild.guildMaster}</p>
+          <p className="font-medium">길드 마스터 : {guild.guildMasterName}</p>
           <p className="font-medium">
             길드원 : {guild.guildMembers.length}{" "}
             <span className="text-brandhover"> / {guild.maxMembers}</span>

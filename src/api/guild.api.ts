@@ -30,7 +30,7 @@ export const createGuild = async (
 
   const formData = new FormData();
 
-  formData.append("guildMaster", CreateGuildDto.guildMaster);
+  // formData.append("guildMaster", CreateGuildDto.guildMaster);
   formData.append("guildName", CreateGuildDto.guildName);
   formData.append("guildDescription", CreateGuildDto.guildDescription);
   if (guildImage) {

@@ -18,8 +18,28 @@ const LineSelector = (props: Props) => {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
-
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const filteredLines = ALL_LINES.filter((line) => line !== currentLine);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
 
   const toggleDropdown = () => {
     if (buttonRef.current && isMaster) {
@@ -53,6 +73,7 @@ const LineSelector = (props: Props) => {
       {open &&
         ReactDOM.createPortal(
           <div
+            ref={dropdownRef}
             className="absolute z-[9999] w-fit bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-600 rounded shadow-lg"
             style={{
               left: `${position.x}px`,

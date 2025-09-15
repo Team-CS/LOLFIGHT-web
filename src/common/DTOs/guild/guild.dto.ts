@@ -5,7 +5,8 @@ import { GuildRecrodDTO } from "./guild_record.dto";
 
 export interface GuildDto extends BaseDto {
   id: string;
-  guildMaster: string;
+  guildMasterId: string;
+  guildMasterName: string;
   guildName: string;
   guildMembers: MemberDto[];
   maxMembers: number;
@@ -17,7 +18,7 @@ export interface GuildDto extends BaseDto {
 }
 
 export interface CreateGuildDto extends BaseDto {
-  guildMaster: string;
+  // guildMaster: string;
   guildName: string;
   guildDescription: string;
   guildIcon: string;

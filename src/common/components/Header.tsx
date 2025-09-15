@@ -4,7 +4,6 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Navigation from "./Navigation";
-import ThemeToggler from "../components/Desktop/ThemeToggler";
 import Search from "./Search";
 import constant from "@/src/common/constant/constant";
 import { PostDto } from "../DTOs/board/post.dto";
@@ -19,6 +18,7 @@ import { useGuildTeamStore } from "../zustand/guild_team.zustand";
 import { useFirebaseStore } from "../zustand/firebase.zustand";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import Sidebar from "./sidebar";
+import ThemeToggler from "./ThemeToggler";
 const rixi = localFont({
   src: "../../fonts/RixInooAriDuriRegular.ttf",
   display: "swap",

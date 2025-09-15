@@ -49,8 +49,8 @@ const GuildMemberBox = (props: Props) => {
       className="flex flex-col p-[8px] gap-[12px] border border-[#CDCDCD] rounded-[8px] bg-[#EEEEEE] dark:bg-branddark dark:border-branddarkborder"
       onContextMenu={
         type === "guildMember" &&
-        guildMember.memberName !== guild.guildMaster &&
-        guild.guildMaster === member?.memberName
+        guildMember.id !== guild.guildMasterId &&
+        guild.guildMasterId === member?.id
           ? handleRightClick
           : undefined
       }
@@ -108,7 +108,7 @@ const GuildMemberBox = (props: Props) => {
             {guildMember.memberGame?.line ? (
               <LineSelector
                 currentLine={guildMember.memberGame.line}
-                isMaster={guild.guildMaster === member?.memberName}
+                isMaster={guild.guildMasterId === member?.id}
                 onChangeLine={(newLine) => {
                   onChangeLine?.(guildMember.id, newLine);
                 }}
@@ -123,8 +123,8 @@ const GuildMemberBox = (props: Props) => {
           } gap-[16px]`}
         >
           {type === "guildMember" ? (
-            guildMember.memberName !== guild.guildMaster &&
-            guild.guildMaster === member?.memberName && (
+            guildMember.id !== guild.guildMasterId &&
+            guild.guildMasterId === member?.id && (
               <GuildMemberContextMenu
                 visible={contextVisible}
                 position={contextPosition}

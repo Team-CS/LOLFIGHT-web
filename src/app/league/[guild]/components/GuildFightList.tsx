@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import GuildFightBox from "./GuildFightBox";
-import { BattleTeamDTO } from "@/src/common/DTOs/battle/battle_team.dto";
+import { BattleTeamDto } from "@/src/common/DTOs/battle/battle_team.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 
 interface Props {
-  battleTeamData: BattleTeamDTO;
+  battleTeamData: BattleTeamDto;
   highestDamage: number;
 }
 
@@ -15,6 +15,7 @@ const GuildFightList = (props: Props) => {
   const result = battleTeamData.isWinning ? "win" : "lose";
   const highestChampionDamage = highestDamage;
   const [guildData, setGuildData] = useState<GuildDto>();
+  console.log(battleTeamData);
 
   useEffect(() => {
     getGuildInfo(battleTeamData.guild.guildName).then((response) => {
@@ -68,29 +69,45 @@ const GuildFightList = (props: Props) => {
         </div>
 
         <div className="flex gap-[12px] items-center">
-          {objectives.map(({ key, icon }) => (
-            <div key={key} className="flex items-center gap-[4px]">
+          <div className="flex items-center gap-[4px]">
+            {objectives.map(({ key, icon }) => (
+              <>
+                <img
+                  key={key}
+                  src={`${constant.SERVER_URL}/public/objects/${icon}-${
+                    result === "win" ? "blue" : "red"
+                  }.png`}
+                  className={`w-[15px] h-[15px]`}
+                />
+                <p className="text-[12px]">
+                  {
+                    battleTeamData[
+                      key as
+                        | "baronCount"
+                        | "dragonCount"
+                        | "riftHeraldCount"
+                        | "hordeCount"
+                        | "inhibitorCount"
+                        | "destroyedTowerCount"
+                    ]
+                  }
+                </p>
+              </>
+            ))}
+          </div>
+
+          <div className="flex gap-[4px]">
+            {battleTeamData.bans.map((ban, index) => (
               <img
-                src={`${constant.SERVER_URL}/public/objects/${icon}-${
-                  result === "win" ? "blue" : "red"
-                }.png`}
-                className={`w-[15px] h-[15px]`}
+                key={index}
+                src={`${constant.SERVER_URL}/public/champions/${ban}.png`}
+                width={20}
+                height={15}
+                className="rounded-[4px]"
               />
-              <p className="text-[12px]">
-                {
-                  battleTeamData[
-                    key as
-                      | "baronCount"
-                      | "dragonCount"
-                      | "riftHeraldCount"
-                      | "hordeCount"
-                      | "inhibitorCount"
-                      | "destroyedTowerCount"
-                  ]
-                }
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
+
           <p className="text-[14px] text-gray-500">
             1부리그 - {guildData?.guildRecord?.recordLadder}점
           </p>

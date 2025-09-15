@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import constant from "@/src/common/constant/constant";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import CustomAlert from "../../../common/components/alert/CustomAlert";
 import {
   changeGuildMaster,
@@ -35,7 +35,7 @@ import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 const GuildManagePage = () => {
   const [inviteMembers, setInviteMembers] = useState<GuildInviteDTO[]>([]);
-  const [guild, setGuild] = useState<GuildDto>();
+  const [guild, setGuild] = useState<GuildDto | null>(null);
   const { member, setMember } = useMemberStore();
   const [currentTab, setCurrentTab] = useState("members");
   const [guildChecked, setGuildChecked] = useState(false);
@@ -47,10 +47,16 @@ const GuildManagePage = () => {
   const router = useRouter();
   const isMobile = useIsMobile();
 
+  // guild와 member가 모두 존재할 때만 isMaster 계산
+  const isMaster = useMemo(() => {
+    return member?.id && guild?.guildMasterId
+      ? member.id === guild.guildMasterId
+      : false;
+  }, [member, guild]);
+
   const recordDefeat = guild?.guildRecord?.recordDefeat ?? 0;
   const recordVictory = guild?.guildRecord?.recordVictory ?? 0;
   const total = recordDefeat + recordVictory;
-
   const recordString =
     total === 0
       ? `0 전 0승 0패 기록없음`
@@ -60,59 +66,41 @@ const GuildManagePage = () => {
         ).toFixed(2)}%)`;
 
   useEffect(() => {
-    if (!(member!.memberGuild === null || member!.memberGuild === undefined)) {
-      getGuildInfo(member!.memberGuild.guildName)
+    if (member?.memberGuild?.guildName) {
+      getGuildInfo(member.memberGuild.guildName)
         .then((response) => {
           setGuild(response.data.data);
         })
-        .catch((error) => {});
-      getInviteGuildList(member!.memberGuild.guildName)
+        .catch((error) => console.log(error));
+
+      getInviteGuildList(member.memberGuild.guildName)
         .then((response) => {
           setInviteMembers(response.data.data);
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => console.log(error));
     }
   }, [member]);
 
-  const changeTab = (tab: string) => {
-    setCurrentTab(tab);
-  };
-  const handleGuildCheckboxChange = () => {
-    // 길드마스터 길드해체 체크박스
-    setGuildChecked(!guildChecked);
-  };
-  const handleMemberCheckboxChange = () => {
-    //길드원 길드탈퇴 체크박스
-    setMemberChecked(!memberChecked);
-  };
+  const changeTab = (tab: string) => setCurrentTab(tab);
+  const handleGuildCheckboxChange = () => setGuildChecked(!guildChecked);
+  const handleMemberCheckboxChange = () => setMemberChecked(!memberChecked);
+
   const deleteGuild = async () => {
-    //길드마스터 길드해체
-    if (guildChecked) {
-      await destroyGuild(member!.memberGuild!.guildName).then((response) => {
-        CustomAlert("success", "길드해체", "성공적으로 길드가 해체되었습니다.");
-        getMemberData().then((response) => {
-          const memberData: MemberDto = response.data.data;
-          setMember(memberData);
-          router.push("/");
-        });
-      });
-    } else {
-      CustomAlert(
-        "warning",
-        "길드해체",
-        "주의사항 확인 체크를 활성화 시켜주십시오."
-      );
-    }
-  };
-  const leaveGuild = () => {
-    //길드원 길드탈퇴
-    if (memberChecked) {
-      leaveMember().then((response) => {
-        CustomAlert("success", "길드탈퇴", "성공적으로 길드를 탈퇴했습니다.");
-        router.push("/");
-      });
+    if (guildChecked && member?.memberGuild?.guildName) {
+      await destroyGuild(member.memberGuild.guildName)
+        .then(() => {
+          CustomAlert(
+            "success",
+            "길드해체",
+            "성공적으로 길드가 해체되었습니다."
+          );
+          getMemberData().then((response) => {
+            const memberData: MemberDto = response.data.data;
+            setMember(memberData);
+            router.push("/");
+          });
+        })
+        .catch(() => {});
     } else {
       CustomAlert(
         "warning",
@@ -122,34 +110,49 @@ const GuildManagePage = () => {
     }
   };
 
-  const expulsionMember = (member: MemberDto) => {
+  const leaveGuild = () => {
+    if (memberChecked) {
+      leaveMember()
+        .then(() => {
+          CustomAlert("success", "길드탈퇴", "성공적으로 길드를 탈퇴했습니다.");
+          router.push("/");
+        })
+        .catch(() => {});
+    } else {
+      CustomAlert(
+        "warning",
+        "길드탈퇴",
+        "주의사항 확인 체크를 활성화 시켜주십시오."
+      );
+    }
+  };
+
+  const expulsionMember = (targetMember: MemberDto) => {
     const expulsion = () => {
       if (guild) {
-        expulsionGuildMember(member.memberName, guild.guildName)
+        expulsionGuildMember(targetMember.memberName, guild.guildName)
           .then((response) => {
             CustomAlert(
               "success",
               "길드추방",
-              `${member.memberName}-길드원을 추방하였습니다.`
+              `${targetMember.memberName} 길드원을 추방하였습니다.`
             );
             setGuild(response.data.data);
           })
-          .catch((error) => {
-            console.log(error);
-          });
+          .catch(console.log);
       }
     };
 
     ButtonAlert(
       "길드추방",
-      `${member.memberName}길드원을 추방하시겠습니까?`,
+      `${targetMember.memberName} 길드원을 추방하시겠습니까?`,
       "추방",
       "닫기",
       expulsion
     );
   };
 
-  const transferGuildMaste = (memberName: string, guildName: string) => {
+  const transferGuildMaster = (memberName: string, guildName: string) => {
     const changeMaster = () => {
       changeGuildMaster(memberName, guildName)
         .then((response) => {
@@ -160,9 +163,7 @@ const GuildManagePage = () => {
           );
           setGuild(response.data.data);
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch(console.log);
     };
 
     ButtonAlert(
@@ -175,7 +176,6 @@ const GuildManagePage = () => {
   };
 
   const acceptMember = (memberId: string, guildId: string) => {
-    //길드신청 수락
     if (guild?.guildMembers.length === guild?.maxMembers) {
       CustomAlert(
         "error",
@@ -185,14 +185,14 @@ const GuildManagePage = () => {
       return;
     }
     inviteAccept(memberId, guildId)
-      .then((response) => {
+      .then(() => {
         CustomAlert("success", "신청수락", "길드 가입신청을 수락하셨습니다.");
         setInviteMembers((prev) =>
           prev.filter((invite) => invite.member?.id !== memberId)
         );
       })
-      .catch((error) => {
-        const code = error.response.data.code;
+      .catch((error: any) => {
+        const code = error.response?.data?.code;
         if (code === "COMMON-003") {
           CustomAlert(
             "error",
@@ -208,47 +208,37 @@ const GuildManagePage = () => {
         }
       });
   };
+
   const rejectMember = (memberId: string, guildId: string) => {
-    //길드신청 거절
     inviteReject(memberId, guildId)
-      .then((response) => {
-        CustomAlert("success", "신청거설", "길드 가입신청을 거절하셨습니다.");
+      .then(() => {
+        CustomAlert("success", "신청거절", "길드 가입신청을 거절하셨습니다.");
         setInviteMembers((prev) =>
           prev.filter((invite) => invite.member?.id !== memberId)
         );
       })
-      .catch((error) => {});
+      .catch(() => {});
   };
 
   const handleChangeLine = (memberId: string, newLine: string) => {
     updateMemberGameLine(memberId, newLine)
       .then((response) => {
         const updatedMember: MemberDto = response.data.data;
-
         if (!guild) return;
 
-        const updatedMembers = guild.guildMembers.map((member) =>
-          member.id === updatedMember.id ? updatedMember : member
+        const updatedMembers = guild.guildMembers.map((m) =>
+          m.id === updatedMember.id ? updatedMember : m
         );
-
-        setGuild({
-          ...guild,
-          guildMembers: updatedMembers,
-        });
+        setGuild({ ...guild, guildMembers: updatedMembers });
       })
-      .catch((error) => {
-        console.error("라인 변경 실패:", error);
-      });
+      .catch((error) => console.error("라인 변경 실패:", error));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedImage(e.target.files[0]);
-
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-      };
+      reader.onloadend = () => setPreviewImage(reader.result as string);
       reader.readAsDataURL(e.target.files[0]);
     }
   };
@@ -262,9 +252,7 @@ const GuildManagePage = () => {
           setSelectedImage(null);
           setPreviewImage("");
         })
-        .catch((error) => {
-          CustomAlert("error", "길드 배너 변경", "변경 실패");
-        });
+        .catch(() => CustomAlert("error", "길드 배너 변경", "변경 실패"));
       setOpenModal(null);
     } else {
       CustomAlert(
@@ -276,16 +264,14 @@ const GuildManagePage = () => {
   };
 
   const handleDescriptionSubmit = (desc: string) => {
-    if (newDesc.length > 0) {
+    if (desc.length > 0) {
       updateGuildDescription(desc)
         .then((response) => {
           CustomAlert("success", "길드 소개 변경", "변경이 완료되었습니다.");
           setGuild(response.data.data);
           setNewDesc("");
         })
-        .catch((error) => {
-          CustomAlert("error", "길드 소개 변경", "변경 실패");
-        });
+        .catch(() => CustomAlert("error", "길드 소개 변경", "변경 실패"));
       setOpenModal(null);
     } else {
       CustomAlert(
@@ -296,242 +282,238 @@ const GuildManagePage = () => {
     }
   };
 
+  // ========================= JSX =========================
+  if (!member) return null; // member가 없으면 렌더하지 않음
+  if (!member.memberGuild) return <GuildCreateIntro />;
+
   return (
     <div className="flex flex-col p-[16px] gap-[24px]">
-      {member!.memberGuild === null || member!.memberGuild === undefined ? (
-        <GuildCreateIntro />
-      ) : (
-        <div className="flex flex-col w-full gap-[24px] p-[8px]">
-          <div className="flex items-center gap-[16px]">
-            <img
-              src={`${constant.SERVER_URL}/${guild?.guildIcon}`}
-              alt="GuildIcon"
-              className={`object-cover rounded-[12px] ${
-                isMobile ? "w-[70px] h-[70px]" : "w-[100px] h-[100px]"
+      <div className="flex flex-col w-full gap-[24px] p-[8px]">
+        {/* 길드 헤더 */}
+        <div className="flex items-center gap-[16px]">
+          <img
+            src={`${constant.SERVER_URL}/${guild?.guildIcon}`}
+            alt="GuildIcon"
+            className={`object-cover rounded-[12px] ${
+              isMobile ? "w-[70px] h-[70px]" : "w-[100px] h-[100px]"
+            }`}
+          />
+          <div className="flex flex-col items-between">
+            <p
+              className={`font-bold ${
+                isMobile ? "text-[20px]" : "text-[28px]"
               }`}
-            />
-            <div className="flex flex-col items-between">
-              <p
-                className={`font-bold ${
-                  isMobile ? "text-[20px]" : "text-[28px]"
-                }`}
-              >
-                {guild?.guildName}
-              </p>
-              <p className={`${isMobile ? "text-[12px]" : "text-[16px]"}`}>
-                {member!.memberGuild.guildDescription}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-[12px]">
-            <GuildInfoItem title={"길드마스터"} value={guild?.guildMaster} />
-            <div className="grid grid-cols-2 gap-[12px]">
-              <GuildInfoItem
-                title="길드랭킹"
-                value={
-                  guild?.guildRecord?.recordRanking === "기록없음"
-                    ? "기록없음"
-                    : `${guild?.guildRecord?.recordRanking}위`
-                }
-              />
-              <div className="grid grid-cols-2 gap-[12px]">
-                <GuildInfoItem
-                  title={"길드인원"}
-                  value={`${guild?.guildMembers.length}명`}
-                />
-                <GuildInfoItem
-                  title={"최대 길드원 수"}
-                  value={`${guild?.maxMembers}명`}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-[12px]">
-              <GuildInfoItem title="길드티어" value={guild?.guildTier} />
-              <GuildInfoItem
-                title={"래더점수"}
-                value={`${guild?.guildRecord?.recordLadder}점`}
-              />
-            </div>
-            <GuildInfoItem title={"길드 전적"} value={recordString} />
-          </div>
-
-          <div className="flex flex-col">
-            <div className="grid grid-cols-4 gap-[4px]">
-              <ProfileHeader
-                title="길드배너"
-                onClick={() => changeTab("banner")}
-              />
-              <ProfileHeader
-                title="길드원"
-                onClick={() => changeTab("members")}
-              />
-              {member &&
-                member.memberName !== member.memberGuild.guildMaster && (
-                  <ProfileHeader
-                    title="길드탈퇴"
-                    onClick={() => changeTab("leave")}
-                  />
-                )}
-              {member &&
-                member.memberName === member.memberGuild.guildMaster && (
-                  <>
-                    <ProfileHeader
-                      title="가입신청자"
-                      onClick={() => changeTab("applicants")}
-                    />
-                    <ProfileHeader
-                      title="길드해체"
-                      onClick={() => changeTab("delete")}
-                    />
-                  </>
-                )}
-            </div>
-
-            <div className="py-[12px]">
-              {currentTab === "banner" && (
-                <div className="flex flex-col items-center justify-center w-full border rounded-[8px] p-[16px] gap-[16px] dark:border-branddarkborder">
-                  {guild?.guildBanner ? (
-                    <div className="flex flex-col items-center gap-[12px]">
-                      <div className="flex gap-[12px]">
-                        {member &&
-                          member.memberName ===
-                            member.memberGuild.guildMaster && (
-                            <button
-                              className={`bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow ${
-                                isMobile
-                                  ? "px-[8px] py-[4px] text-[12px]"
-                                  : "px-[12px] py-[8px] text-[14px]"
-                              }`}
-                              onClick={() => setOpenModal("banner")}
-                            >
-                              배너 수정하기
-                            </button>
-                          )}
-                        {member &&
-                          member.memberName ===
-                            member.memberGuild.guildMaster && (
-                            <button
-                              className={`bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow ${
-                                isMobile
-                                  ? "px-[8px] py-[4px] text-[12px]"
-                                  : "px-[12px] py-[8px] text-[14px]"
-                              }`}
-                              onClick={() => setOpenModal("description")}
-                            >
-                              길드소개 수정하기
-                            </button>
-                          )}
-                      </div>
-                      <img
-                        src={`${constant.SERVER_URL}/${guild.guildBanner}`}
-                        alt="Guild Banner"
-                        className=" rounded-[8px] shadow-md"
-                      />
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-gray-400 text-center text-[14px]">
-                        배너가 없습니다.
-                      </p>
-                      <div className="flex gap-[12px]">
-                        {member &&
-                          member.memberName ===
-                            member.memberGuild.guildMaster && (
-                            <button
-                              className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
-                              onClick={() => setOpenModal("banner")}
-                            >
-                              배너 추가하기
-                            </button>
-                          )}
-                        {member &&
-                          member.memberName ===
-                            member.memberGuild.guildMaster && (
-                            <button
-                              className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
-                              onClick={() => setOpenModal("description")}
-                            >
-                              길드소개 수정하기
-                            </button>
-                          )}
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-
-              {currentTab === "members" && (
-                <div className="flex flex-col gap-[4px] max-h-[300px]">
-                  <div
-                    className={`flex bg-brandcolor px-[8px] dark:bg-brandgray text-white ${
-                      isMobile ? "text-[10px]" : "text-[12px]"
-                    }`}
-                  >
-                    <div className="flex-[1]">닉네임</div>
-                    <div className="flex-[2]">소환사명</div>
-                    <div className="flex-[1]">티어</div>
-                    <div className="flex-[1]">라인</div>
-                  </div>
-                  <div className="flex flex-col gap-[4px] overflow-y-auto">
-                    {guild?.guildMembers.map((member) => (
-                      <GuildMemberBox
-                        key={member.id}
-                        guildMember={member}
-                        guild={guild!}
-                        type={"guildMember"}
-                        expulsionMember={expulsionMember}
-                        transferGuildMaste={transferGuildMaste}
-                        onChangeLine={handleChangeLine}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-              {currentTab === "leave" && (
-                <GuildLeaveSection
-                  isChecked={memberChecked}
-                  onChange={handleMemberCheckboxChange}
-                  onClick={leaveGuild}
-                />
-              )}
-              {currentTab === "applicants" && (
-                <div className="flex flex-col gap-[4px] max-h-[300px]">
-                  <div
-                    className={`flex bg-brandcolor px-[8px] dark:bg-brandgray text-white ${
-                      isMobile ? "text-[10px]" : "text-[12px]"
-                    }`}
-                  >
-                    <div className="flex-[1]">닉네임</div>
-                    <div className="flex-[2]">소환사명</div>
-                    <div className="flex-[1]">티어</div>
-                    <div className="flex-[1]" />
-                  </div>
-                  <div className="flex flex-col gap-[12px] overflow-y-auto">
-                    {inviteMembers?.map((invite) => (
-                      <GuildMemberBox
-                        key={invite.id}
-                        guildMember={invite.member!}
-                        guild={invite.guild!}
-                        type={"guildInvite"}
-                        acceptMember={acceptMember}
-                        rejectMember={rejectMember}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-              {currentTab === "delete" && (
-                <GuildDeleteSection
-                  isChecked={guildChecked}
-                  onChange={handleGuildCheckboxChange}
-                  onClick={deleteGuild}
-                />
-              )}
-            </div>
+            >
+              {guild?.guildName}
+            </p>
+            <p className={`${isMobile ? "text-[12px]" : "text-[16px]"}`}>
+              {member.memberGuild.guildDescription}
+            </p>
           </div>
         </div>
-      )}
+
+        {/* 길드 정보 */}
+        <div className="flex flex-col gap-[12px]">
+          <GuildInfoItem title="길드마스터" value={guild?.guildMasterName} />
+          <div className="grid grid-cols-2 gap-[12px]">
+            <GuildInfoItem
+              title="길드랭킹"
+              value={
+                guild?.guildRecord?.recordRanking === "기록없음"
+                  ? "기록없음"
+                  : `${guild?.guildRecord?.recordRanking}위`
+              }
+            />
+            <div className="grid grid-cols-2 gap-[12px]">
+              <GuildInfoItem
+                title="길드인원"
+                value={`${guild?.guildMembers.length}명`}
+              />
+              <GuildInfoItem
+                title="최대 길드원"
+                value={`${guild?.maxMembers}명`}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-[12px]">
+            <GuildInfoItem title="길드티어" value={guild?.guildTier} />
+            <GuildInfoItem
+              title="래더점수"
+              value={`${guild?.guildRecord?.recordLadder}점`}
+            />
+          </div>
+          <GuildInfoItem title="길드 전적" value={recordString} />
+        </div>
+
+        {/* 탭 */}
+        <div className="flex flex-col">
+          <div className="grid grid-cols-4 gap-[4px]">
+            <ProfileHeader
+              title="길드배너"
+              onClick={() => changeTab("banner")}
+            />
+            <ProfileHeader
+              title="길드원"
+              onClick={() => changeTab("members")}
+            />
+            {!isMaster && (
+              <ProfileHeader
+                title="길드탈퇴"
+                onClick={() => changeTab("leave")}
+              />
+            )}
+            {isMaster && (
+              <>
+                <ProfileHeader
+                  title="가입신청자"
+                  onClick={() => changeTab("applicants")}
+                />
+                <ProfileHeader
+                  title="길드해체"
+                  onClick={() => changeTab("delete")}
+                />
+              </>
+            )}
+          </div>
+
+          <div className="py-[12px]">
+            {/* 배너 */}
+            {currentTab === "banner" && guild && (
+              <div className="flex flex-col items-center justify-center w-full border rounded-[8px] p-[16px] gap-[16px] dark:border-branddarkborder">
+                {guild.guildBanner ? (
+                  <div className="flex flex-col items-center gap-[12px]">
+                    <div className="flex gap-[12px]">
+                      {isMaster && (
+                        <>
+                          <button
+                            className={`bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow ${
+                              isMobile
+                                ? "px-[8px] py-[4px] text-[12px]"
+                                : "px-[12px] py-[8px] text-[14px]"
+                            }`}
+                            onClick={() => setOpenModal("banner")}
+                          >
+                            배너 수정하기
+                          </button>
+                          <button
+                            className={`bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow ${
+                              isMobile
+                                ? "px-[8px] py-[4px] text-[12px]"
+                                : "px-[12px] py-[8px] text-[14px]"
+                            }`}
+                            onClick={() => setOpenModal("description")}
+                          >
+                            길드소개 수정하기
+                          </button>
+                        </>
+                      )}
+                    </div>
+                    <img
+                      src={`${constant.SERVER_URL}/${guild.guildBanner}`}
+                      alt="Guild Banner"
+                      className="rounded-[8px] shadow-md"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-gray-400 text-center text-[14px]">
+                      배너가 없습니다.
+                    </p>
+                    {isMaster && (
+                      <div className="flex gap-[12px]">
+                        <button
+                          className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                          onClick={() => setOpenModal("banner")}
+                        >
+                          배너 추가하기
+                        </button>
+                        <button
+                          className="px-[12px] py-[8px] text-[14px] bg-brandcolor hover:bg-opacity-80 text-white rounded-[8px] shadow"
+                          onClick={() => setOpenModal("description")}
+                        >
+                          길드소개 수정하기
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* 멤버 탭 */}
+            {currentTab === "members" && guild && (
+              <div className="flex flex-col gap-[4px] max-h-[300px] overflow-y-auto">
+                <div
+                  className={`flex bg-brandcolor px-[8px] dark:bg-brandgray text-white ${
+                    isMobile ? "text-[10px]" : "text-[12px]"
+                  }`}
+                >
+                  <div className="flex-[1]">닉네임</div>
+                  <div className="flex-[2]">소환사명</div>
+                  <div className="flex-[1]">티어</div>
+                  <div className="flex-[1]">라인</div>
+                </div>
+                {guild.guildMembers.map((m) => (
+                  <GuildMemberBox
+                    key={m.id}
+                    guildMember={m}
+                    guild={guild}
+                    type="guildMember"
+                    expulsionMember={expulsionMember}
+                    transferGuildMaste={transferGuildMaster}
+                    onChangeLine={handleChangeLine}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* 길드 탈퇴 탭 */}
+            {currentTab === "leave" && !isMaster && (
+              <GuildLeaveSection
+                isChecked={memberChecked}
+                onChange={handleMemberCheckboxChange}
+                onClick={leaveGuild}
+              />
+            )}
+
+            {/* 가입 신청자 탭 */}
+            {currentTab === "applicants" && isMaster && (
+              <div className="flex flex-col gap-[4px] max-h-[300px] overflow-y-auto">
+                <div
+                  className={`flex bg-brandcolor px-[8px] dark:bg-brandgray text-white ${
+                    isMobile ? "text-[10px]" : "text-[12px]"
+                  }`}
+                >
+                  <div className="flex-[1]">닉네임</div>
+                  <div className="flex-[2]">소환사명</div>
+                  <div className="flex-[1]">티어</div>
+                  <div className="flex-[1]"></div>
+                </div>
+                {inviteMembers.map((invite) => (
+                  <GuildMemberBox
+                    key={invite.id}
+                    guildMember={invite.member!}
+                    guild={invite.guild!}
+                    type="guildInvite"
+                    acceptMember={acceptMember}
+                    rejectMember={rejectMember}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* 길드 해체 탭 */}
+            {currentTab === "delete" && isMaster && (
+              <GuildDeleteSection
+                isChecked={guildChecked}
+                onChange={handleGuildCheckboxChange}
+                onClick={deleteGuild}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+
       {openModal === "banner" && (
         <GuildBannerModal
           selectedImage={selectedImage}
@@ -546,7 +528,8 @@ const GuildManagePage = () => {
           value={newDesc}
           onTextChange={(value: string) => setNewDesc(value)}
           onClose={() => {
-            setOpenModal(null), setNewDesc("");
+            setOpenModal(null);
+            setNewDesc("");
           }}
           onSubmit={handleDescriptionSubmit}
         />
