@@ -271,7 +271,18 @@ const GuildManagePage = () => {
           setGuild(response.data.data);
           setNewDesc("");
         })
-        .catch(() => CustomAlert("error", "길드 소개 변경", "변경 실패"));
+        .catch((error) => {
+          const code = error.response.data.code;
+          if (code === "COMMON-018") {
+            CustomAlert(
+              "error",
+              "길드 소개 변경",
+              "부적절한 단어가 포함되어 있습니다."
+            );
+          } else {
+            CustomAlert("error", "길드 소개 변경", "변경 실패");
+          }
+        });
       setOpenModal(null);
     } else {
       CustomAlert(

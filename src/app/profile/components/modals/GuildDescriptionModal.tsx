@@ -12,7 +12,7 @@ export const GuildDescriptionModal = (props: GuildDescriptionModalProps) => {
   const [charCount, setCharCount] = useState(value.length);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const val = e.target.value.slice(0, 80);
+    const val = e.target.value.slice(0, 160);
     setCharCount(val.length);
     onTextChange(val);
   };
@@ -27,14 +27,14 @@ export const GuildDescriptionModal = (props: GuildDescriptionModalProps) => {
         <textarea
           className="w-full h-[112px] resize-none rounded-[12px] border border-gray-300 px-[12px] py-[8px] text-gray-900 placeholder-gray-400
                      focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600"
-          placeholder="길드 소개글을 입력해주세요 (최대 80글자)"
+          placeholder="길드 소개글을 입력해주세요 (최대 160글자)"
           value={value}
           onChange={handleChange}
-          maxLength={80}
+          maxLength={160}
         />
 
         <div className="flex justify-between items-center text-[14px] text-gray-500 dark:text-gray-400">
-          <span>{charCount} / 80 글자</span>
+          <span>{charCount} / 160 글자</span>
           <div className="flex gap-[12px]">
             <button
               className="px-[16px] py-[8px] rounded-[8px] bg-gray-200 text-gray-800 hover:bg-gray-300 transition dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"

@@ -59,11 +59,11 @@ export default function Page() {
   };
 
   const isGuildDescriptionValid = (guildDescription: string) => {
-    if (guildDescription.length > 80) {
+    if (guildDescription.length > 160) {
       CutsomAlert(
         "warning",
         "길드생성",
-        "길드소개글은 80글자 이내로 작성해주세요."
+        "길드 소개글은 160글자 이내로 작성해주세요."
       );
       return false;
     }
@@ -103,12 +103,21 @@ export default function Page() {
           CutsomAlert("success", "길드생성", "길드생성이 완료되었습니다.");
           router.push("/");
         })
-        .catch(() => {
-          CutsomAlert(
-            "warning",
-            "길드생성",
-            "동일한 길드명이 존재하거나, 길드에 속해있습니다."
-          );
+        .catch((error) => {
+          const code = error.response.data.code;
+          if (code === "COMMON-005") {
+            CutsomAlert(
+              "warning",
+              "길드생성",
+              "동일한 길드명이 존재하거나, 길드에 속해있습니다."
+            );
+          } else if (code === "COMMON-018") {
+            CutsomAlert(
+              "warning",
+              "길드생성",
+              "부적절한 단어가 포함되어 있습니다."
+            );
+          }
         });
     }
   };
@@ -176,10 +185,18 @@ export default function Page() {
             길드 소개글
           </p>
           <textarea
-            placeholder="길드 소개글을 입력해주세요 (최대 80글자)"
+            placeholder="길드 소개글을 입력해주세요 (최대 160글자)"
             className="w-full h-[150px] px-[12px] py-[8px] rounded-[16px] border border-brandcolor bg-gray-50 dark:bg-black dark:text-gray-100 dark:border-gray-700 resize-none focus:outline-none focus:ring-2 focus:ring-brandcolor"
-            onChange={(e) => setGuildDescription(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value.slice(0, 160); // 최대 160자 제한
+              setGuildDescription(val);
+            }}
+            value={guildDescription || ""}
           />
+          {/* 글자 수 표시 */}
+          <span className="text-gray-500 text-[12px] dark:text-gray-400 text-right">
+            {guildDescription ? guildDescription.length : 0} / 160 글자
+          </span>
         </div>
 
         {/* 길드 생성 버튼 */}

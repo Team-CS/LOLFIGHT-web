@@ -121,7 +121,18 @@ const ProfileInfoPage = () => {
         CustomAlert("success", "닉네임 변경", "닉네임 변경이 완료되었습니다");
       })
       .catch((error) => {
-        CustomAlert("error", "닉네임 변경", "이미 존재하는 닉네임 입니다");
+        const code = error.response.data.code;
+        if (code === "USER-001") {
+          CustomAlert("error", "닉네임 변경", "존재하지 않는 멤버 입니다");
+        } else if (code === "COMMON-005") {
+          CustomAlert("error", "닉네임 변경", "이미 존재하는 닉네임 입니다");
+        } else if (code === "COMMON-018") {
+          CustomAlert(
+            "error",
+            "닉네임 변경",
+            "부적절한 단어가 포함되어 있습니다."
+          );
+        }
       });
   };
 

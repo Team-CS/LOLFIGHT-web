@@ -12,10 +12,10 @@ export default function Page() {
             <div>
               <p className="font-semibold">제1조 - 목적</p>
               <p>
-                본 약관은 &apos;lolfight.kr&apos;-이하 &apos;LOLFIGHT&apos;라
-                합니다가 제공하는 정보제공 서비스-이하 &apos;서비스&apos;라
-                합니다의 이용과 관련하여 LOLFIGHT와 회원과의 권리, 의무 및
-                책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
+                본 약관은 lolfight.kr-이하 LOLFIGHT라 합니다가 제공하는 정보제공
+                서비스-이하 서비스라 합니다의 이용과 관련하여 LOLFIGHT와
+                회원과의 권리, 의무 및 책임사항, 기타 필요한 사항을 규정함을
+                목적으로 합니다.
               </p>
             </div>
 
@@ -32,7 +32,7 @@ export default function Page() {
               <p className="font-semibold">제3조 - 회원 가입</p>
               <p>
                 ① 회원이 되고자 하는 자는 LOLFIGHT가 정한 양식에 따라 정보를
-                기입하고 '동의', '확인' 등의 버튼을 눌러 회원 가입을 신청합니다.
+                기입하고 동의, 확인 등의 버튼을 눌러 회원 가입을 신청합니다.
               </p>
               <p>
                 ② LOLFIGHT는 제1항에 따라 회원 가입 신청을 한 자가 아래 각 호에

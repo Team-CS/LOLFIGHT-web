@@ -90,10 +90,18 @@ export function convertBoardNameToCode(boardName: string): string {
   switch (boardName.trim()) {
     case "자유":
       return "free";
-    case "싸움":
+    case "스크림":
       return "fight";
     case "길드원 모집":
       return "rgm";
+    case "e스포츠뉴스":
+      return "esports";
+    case "전략-공략":
+      return "strategy";
+    case "공지사항":
+      return "notice";
+    case "이벤트":
+      return "event";
     default:
       return "unknown"; // 매칭되는 게 없을 경우 기본값
   }

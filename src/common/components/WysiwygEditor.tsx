@@ -108,15 +108,26 @@ const WysiwygEditor = () => {
         postBoard: category,
       };
 
-      writePost(postData).then((response) => {
-        boardNavLinks
-          .filter((link) => link.href !== "/")
-          .forEach((link) => {
-            if (link.title === category) {
-              router.replace(link.href + "/" + response.data.data.id);
-            }
-          });
-      });
+      writePost(postData)
+        .then((response) => {
+          boardNavLinks
+            .filter((link) => link.href !== "/")
+            .forEach((link) => {
+              if (link.title === category) {
+                router.replace(link.href + "/" + response.data.data.id);
+              }
+            });
+        })
+        .catch((error) => {
+          const code = error.response.data.code;
+          if (code === "COMMON-018") {
+            CustomAlert(
+              "error",
+              "글쓰기",
+              "부적절한 단어가 포함되어 있습니다."
+            );
+          }
+        });
     } else {
       CustomAlert("warning", "글쓰기", "제목과 내용을 작성해주세요.");
     }

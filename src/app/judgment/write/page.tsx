@@ -170,7 +170,14 @@ export default function Page() {
           router.replace("/judgment");
         })
         .catch((error) => {
-          console.log(error);
+          const code = error.response.data.code;
+          if (code === "COMMON-018") {
+            CustomAlert(
+              "error",
+              "롤로세움",
+              "부적절한 단어가 포함되어 있습니다."
+            );
+          }
         });
     }
   };

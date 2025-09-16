@@ -15,7 +15,6 @@ const GuildFightList = (props: Props) => {
   const result = battleTeamData.isWinning ? "win" : "lose";
   const highestChampionDamage = highestDamage;
   const [guildData, setGuildData] = useState<GuildDto>();
-  console.log(battleTeamData);
 
   useEffect(() => {
     getGuildInfo(battleTeamData.guild.guildName).then((response) => {
