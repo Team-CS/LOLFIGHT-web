@@ -39,6 +39,12 @@ export default function Page() {
   const [isMatched, setIsMatched] = useState(false);
 
   useEffect(() => {
+    if (!member) {
+      CustomAlert("warning", "알림", "로그인이 필요합니다");
+      router.replace("/");
+      return;
+    }
+
     getMyInviteList()
       .then((response) => {
         setTeamInvites(response.data.data);
