@@ -99,7 +99,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
             alt="memberIcon"
           />
           <p
-            className={`font-bold dark:text-gray-100 ${
+            className={`font-bold  ${
               isMobile ? "text-[14px]" : "text-[16px]"
             } ${isAdminWriter && "text-[#006eff] dark:text-[#006eff]"}`}
           >
