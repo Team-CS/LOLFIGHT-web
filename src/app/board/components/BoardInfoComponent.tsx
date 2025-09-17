@@ -138,7 +138,7 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
       <div
         className={`w-2/12 flex items-center justify-center ${
           isMobile ? "text-[8px]" : "text-[14px]"
-        } ${isAdminWriter && "text-[#FF0000] font-bold"}`}
+        } ${isAdminWriter && "text-[#006eff] font-bold"}`}
       >
         {data.postWriter.memberName}
       </div>

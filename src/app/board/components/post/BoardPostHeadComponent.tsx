@@ -101,7 +101,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
           <p
             className={`font-bold dark:text-gray-100 ${
               isMobile ? "text-[14px]" : "text-[16px]"
-            } ${isAdminWriter && "text-[#FF0000] dark:text-[#FF0000]"}`}
+            } ${isAdminWriter && "text-[#006eff] dark:text-[#006eff]"}`}
           >
             {post?.postWriter.memberName}
           </p>

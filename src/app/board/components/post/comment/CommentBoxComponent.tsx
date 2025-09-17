@@ -190,7 +190,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                 <p
                   className={`font-bold ${
                     isMobile ? "text-[12px]" : "text-[14px]"
-                  } ${comment.writer.role === "ADMIN" && "text-[#FF0000]"}`}
+                  } ${comment.writer.role === "ADMIN" && "text-[#006eff]"}`}
                 >
                   {comment.writer.memberName}
                 </p>
@@ -229,9 +229,9 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
               </div>
             </div>
             <p
-              className={`${
-                isMobile ? "text-[12px]" : "text-[14px]"
-              } font-normal whitespace-pre-wrap`}
+              className={`${isMobile ? "text-[12px]" : "text-[14px]"} ${
+                comment.writer.role === "ADMIN" && "font-bold"
+              }  whitespace-pre-wrap`}
             >
               {comment.commentContent}
             </p>

@@ -31,7 +31,7 @@ export const ReportModal = (props: ReportModalProps) => {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-[24px] shadow-lg w-[350px] p-[24px]"
+        className="bg-white dark:bg-gray-900 rounded-[12px] shadow-lg w-[350px] p-[24px]"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-[18px] font-semibold mb-[16px] text-center">
@@ -41,7 +41,7 @@ export const ReportModal = (props: ReportModalProps) => {
         <select
           value={selectedReason}
           onChange={(e) => setSelectedReason(e.target.value)}
-          className="w-full border border-gray-300 rounded-[12px] p-[8px] mb-[16px] focus:outline-none focus:ring-2 focus:ring-blue-400 text-[14px]"
+          className="w-full border border-gray-300 rounded-[4px] p-[8px] mb-[16px] focus:outline-none focus:ring-2 focus:ring-blue-400 text-[14px]"
         >
           {REPORT_REASONS.map((reason: string) => (
             <option key={reason} value={reason}>
@@ -61,7 +61,7 @@ export const ReportModal = (props: ReportModalProps) => {
 
         <div className="flex justify-end gap-[8px]">
           <button
-            className="px-[16px] py-[8px] bg-gray-200 rounded-[12px] hover:bg-gray-300 transition text-[14px]"
+            className="px-[16px] py-[8px] bg-gray-200 dark:bg-gray-700 rounded-[12px] hover:bg-gray-300 dark:hover:bg-gray-600 transition text-[14px]"
             onClick={onClose}
           >
             취소

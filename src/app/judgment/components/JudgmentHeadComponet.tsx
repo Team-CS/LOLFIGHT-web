@@ -125,7 +125,7 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
             조회수 : {judgment?.judgmentView}
           </p>
         </div>
-        <div className="flex gap-[8px] content-center">
+        <div className="flex gap-[8px] justify-center">
           {(!isMine || isAdmin) && (
             <button
               className={`text-gray-400 ${
@@ -137,16 +137,14 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
             </button>
           )}
           {(isMine || isAdmin) && (
-            <div className="content-center">
-              <button
-                className={`text-gray-400 ${
-                  isMobile ? "text-[10px]" : "text-[12px]"
-                }`}
-                onClick={handleDeleteButtonClick}
-              >
-                삭제
-              </button>
-            </div>
+            <button
+              className={`text-gray-400 ${
+                isMobile ? "text-[10px]" : "text-[12px]"
+              }`}
+              onClick={handleDeleteButtonClick}
+            >
+              삭제
+            </button>
           )}
         </div>
       </div>
