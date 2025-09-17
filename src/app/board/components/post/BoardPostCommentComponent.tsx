@@ -26,11 +26,22 @@ const BoardPostCommentComponent = (props: BoardPostCommentComponentProps) => {
     } else if (!commentContent || commentContent.trim() === "") {
       CustomAlert("info", "댓글", "댓글을 작성해주세요");
     } else {
-      writeComment(props.data, member.id, commentContent).then((res) => {
-        router.refresh();
-        setCommentBoxKey((prevKey) => prevKey + 1);
-        setCommentContent("");
-      });
+      writeComment(props.data, member.id, commentContent)
+        .then((res) => {
+          router.refresh();
+          setCommentBoxKey((prevKey) => prevKey + 1);
+          setCommentContent("");
+        })
+        .catch((error) => {
+          const code = error.response.data.code;
+          if (code === "COMMON-018") {
+            CustomAlert(
+              "error",
+              "롤로세움",
+              "부적절한 단어가 포함되어 있습니다."
+            );
+          }
+        });
     }
   };
 

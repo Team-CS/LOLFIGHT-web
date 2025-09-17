@@ -9,6 +9,9 @@ import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { getCookie } from "@/src/utils/cookie/cookie";
 import { jwtDecode } from "jwt-decode";
+import { ReportModal } from "@/src/common/components/modal/ReportModal";
+import { CreateReportDto } from "@/src/common/DTOs/report/report.dto";
+import { reportSubmit } from "@/src/api/report.api";
 
 interface JudgmentHeadComponetProps {
   judgment: JudgmentDto;
@@ -24,8 +27,12 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
   const year = judgmentDateTime.getFullYear();
   const month = (judgmentDateTime.getMonth() + 1).toString().padStart(2, "0");
   const day = judgmentDateTime.getDate().toString().padStart(2, "0");
+
   const token = getCookie("lf_atk");
   const isAdmin = token ? (jwtDecode(token) as any)?.role === "ADMIN" : false;
+
+  const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
+
   useEffect(() => {
     if (member) {
       if (judgment?.member.memberName === member.memberName) {
@@ -53,6 +60,33 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
       "닫기",
       onConfirmDelete
     );
+  };
+
+  const handleReport = (reason: string) => {
+    if (!member) {
+      alert("로그인이 필요합니다");
+      setReportModalOpen(false);
+      return;
+    }
+    setReportModalOpen(false);
+    const reportDto: CreateReportDto = {
+      type: "judgment",
+      targetId: judgment.id.toString(),
+      targetMemberId: judgment.member.id,
+      reporterId: member.id,
+      reason: reason,
+    };
+    reportSubmit(reportDto).then((response) => {
+      if (response.data.data) {
+        CustomAlert(
+          "success",
+          "신고",
+          "신고가 완료되었습니다. \n 빠른 검토 후 조치 취하도록 하겠습니다. \n 감사합니다."
+        );
+      } else {
+        CustomAlert("error", "신고", "에러");
+      }
+    });
   };
 
   return (
@@ -91,19 +125,37 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
             조회수 : {judgment?.judgmentView}
           </p>
         </div>
-        {(isMine || isAdmin) && (
-          <div className="content-center">
+        <div className="flex gap-[8px] content-center">
+          {(!isMine || isAdmin) && (
             <button
               className={`text-gray-400 ${
                 isMobile ? "text-[10px]" : "text-[12px]"
               }`}
-              onClick={handleDeleteButtonClick}
+              onClick={() => setReportModalOpen(!reportModalOpen)}
             >
-              삭제
+              신고하기
             </button>
-          </div>
-        )}
+          )}
+          {(isMine || isAdmin) && (
+            <div className="content-center">
+              <button
+                className={`text-gray-400 ${
+                  isMobile ? "text-[10px]" : "text-[12px]"
+                }`}
+                onClick={handleDeleteButtonClick}
+              >
+                삭제
+              </button>
+            </div>
+          )}
+        </div>
       </div>
+      {reportModalOpen && (
+        <ReportModal
+          onClose={() => setReportModalOpen(false)}
+          onSubmit={handleReport}
+        />
+      )}
     </div>
   );
 };

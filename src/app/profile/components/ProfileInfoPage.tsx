@@ -302,8 +302,8 @@ const ProfileInfoPage = () => {
             <div className="flex gap-[12px]">
               <input
                 type="text"
-                placeholder="10글자 이내로 작성해주세요"
-                maxLength={10}
+                placeholder="7글자 이내로 작성해주세요"
+                maxLength={7}
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 className={`border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-branddarkborder ${

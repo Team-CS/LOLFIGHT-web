@@ -1,5 +1,7 @@
+"use client";
+
 import { deletePost } from "@/src/api/post.api";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import { useRouter } from "next/navigation";
 import ButtonAlert from "../../../../common/components/alert/ButtonAlert";
@@ -9,6 +11,10 @@ import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { getCookie } from "@/src/utils/cookie/cookie";
 import { jwtDecode } from "jwt-decode";
+import { ReportModal } from "@/src/common/components/modal/ReportModal";
+import { convertBoardNameToCode } from "@/src/utils/string/string.util";
+import { CreateReportDto } from "@/src/common/DTOs/report/report.dto";
+import { reportSubmit } from "@/src/api/report.api";
 
 interface BoardPostHeadComponentProps {
   post: PostDto;
@@ -19,10 +25,17 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
   const { member } = useMemberStore();
   const router = useRouter();
   const isMobile = useIsMobile();
+  const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
+
   const postDateTime = new Date(post?.postDate);
   const year = postDateTime.getFullYear();
   const month = (postDateTime.getMonth() + 1).toString().padStart(2, "0");
   const day = postDateTime.getDate().toString().padStart(2, "0");
+
+  const isMine = post?.postWriter.memberName === member?.memberName;
+  const token = getCookie("lf_atk");
+  const isAdmin = token ? (jwtDecode(token) as any)?.role === "ADMIN" : false;
+  const isAdminWriter = post?.postWriter.role === "ADMIN";
 
   const handleDeleteButtonClick = () => {
     const onConfirmDelete = () => {
@@ -41,9 +54,33 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
     );
   };
 
-  const isMine = post?.postWriter.memberName === member?.memberName;
-  const token = getCookie("lf_atk");
-  const isAdmin = token ? (jwtDecode(token) as any)?.role === "ADMIN" : false;
+  const handleReport = (reason: string) => {
+    if (!member) {
+      alert("로그인이 필요합니다");
+      setReportModalOpen(false);
+      return;
+    }
+    setReportModalOpen(false);
+    const reportDto: CreateReportDto = {
+      type: "post",
+      targetId: post.id.toString(),
+      board: post.postBoard,
+      targetMemberId: post.postWriter.id,
+      reporterId: member.id,
+      reason: reason,
+    };
+    reportSubmit(reportDto).then((response) => {
+      if (response.data.data) {
+        CustomAlert(
+          "success",
+          "신고",
+          "신고가 완료되었습니다. \n 빠른 검토 후 조치 취하도록 하겠습니다. \n 감사합니다."
+        );
+      } else {
+        CustomAlert("error", "신고", "에러");
+      }
+    });
+  };
 
   return (
     <div className="flex flex-col p-[24px] gap-[12px]">
@@ -64,7 +101,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
           <p
             className={`font-bold dark:text-gray-100 ${
               isMobile ? "text-[14px]" : "text-[16px]"
-            }`}
+            } ${isAdminWriter && "text-[#FF0000] dark:text-[#FF0000]"}`}
           >
             {post?.postWriter.memberName}
           </p>
@@ -81,8 +118,18 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
             조회수 : {post?.postViews}
           </p>
         </div>
-        {(isMine || isAdmin) && (
-          <div className="head_btn content-center">
+        <div className="flex gap-[8px] content-center">
+          {(!isMine || isAdmin) && (
+            <button
+              className={`text-gray-400 ${
+                isMobile ? "text-[10px]" : "text-[12px]"
+              }`}
+              onClick={() => setReportModalOpen(!reportModalOpen)}
+            >
+              신고하기
+            </button>
+          )}
+          {(isMine || isAdmin) && (
             <button
               className={`text-gray-400 ${
                 isMobile ? "text-[10px]" : "text-[12px]"
@@ -91,9 +138,15 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
             >
               삭제
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+      {reportModalOpen && (
+        <ReportModal
+          onClose={() => setReportModalOpen(false)}
+          onSubmit={handleReport}
+        />
+      )}
     </div>
   );
 };

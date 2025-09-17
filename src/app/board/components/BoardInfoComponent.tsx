@@ -21,6 +21,8 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
   const isMobile = useIsMobile();
   const link = `${slug}/${data.id}`;
 
+  const isAdminWriter = data?.postWriter.role === "ADMIN";
+
   const handleOnClick = () => {
     if (slug == "all") {
       router.push(getSlugFromTitle(data.postBoard) + "/" + data.id);
@@ -136,7 +138,7 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
       <div
         className={`w-2/12 flex items-center justify-center ${
           isMobile ? "text-[8px]" : "text-[14px]"
-        }`}
+        } ${isAdminWriter && "text-[#FF0000] font-bold"}`}
       >
         {data.postWriter.memberName}
       </div>
