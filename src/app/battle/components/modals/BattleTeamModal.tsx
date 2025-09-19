@@ -45,7 +45,7 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
           <img
             src={`${constant.SERVER_URL}/${guild.guildIcon}`}
             alt="Guild Logo"
-            className="w-[60px] h-[60px] rounded-full object-cover"
+            className="w-[60px] h-[60px] rounded-[12px] object-cover"
           />
           <div className="flex flex-col">
             <p className="text-[22px] font-semibold">{guild.guildName}</p>

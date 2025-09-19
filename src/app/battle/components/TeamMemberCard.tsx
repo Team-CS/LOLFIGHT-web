@@ -51,9 +51,9 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
           <img
             src={profileImgUrl}
             alt="profile"
-            width={isMobile ? 28 : 32}
-            height={isMobile ? 28 : 32}
-            className="object-cover rounded-full"
+            className={`object-cover rounded-full ${
+              isMobile ? "w-[28px] h-[28px]" : "w-[34px] h-[34px]"
+            }`}
           />
           <div className="truncate min-w-0">
             <p className="text-[14px] font-medium dark:text-white truncate">
