@@ -13,7 +13,6 @@ interface TeamMemberCardProps {
 const TeamMemberCard = (props: TeamMemberCardProps) => {
   const { teamMember, roleTag, isEmpty = false, onAddClick } = props;
   const isMobile = useIsMobile();
-
   if (isEmpty || !teamMember || !teamMember.member) {
     return (
       <div
