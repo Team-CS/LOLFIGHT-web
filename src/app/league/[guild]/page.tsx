@@ -203,10 +203,10 @@ export default function GuildPage() {
                       "flex text-[14px] items-center text-center p-[8px] border-b border-[#a9bbee] dark:border-[#3b476d] bg-[#f4f6fd] dark:bg-black"
                     }
                   >
-                    <div className="flex-[1] font-bold">
+                    <div className="flex-[1] font-medium">
                       {member.memberName}
                     </div>
-                    <div className="flex-[2] font-bold">
+                    <div className="flex-[2] font-medium">
                       {member.memberGame?.gameName}
                     </div>
                     <div className="flex-[1] flex items-center justify-center gap-[6px]">

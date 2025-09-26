@@ -220,20 +220,6 @@ const GuildManagePage = () => {
       .catch(() => {});
   };
 
-  const handleChangeLine = (memberId: string, newLine: string) => {
-    updateMemberGameLine(memberId, newLine)
-      .then((response) => {
-        const updatedMember: MemberDto = response.data.data;
-        if (!guild) return;
-
-        const updatedMembers = guild.guildMembers.map((m) =>
-          m.id === updatedMember.id ? updatedMember : m
-        );
-        setGuild({ ...guild, guildMembers: updatedMembers });
-      })
-      .catch((error) => console.error("라인 변경 실패:", error));
-  };
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedImage(e.target.files[0]);
@@ -472,7 +458,6 @@ const GuildManagePage = () => {
                     type="guildMember"
                     expulsionMember={expulsionMember}
                     transferGuildMaste={transferGuildMaster}
-                    onChangeLine={handleChangeLine}
                   />
                 ))}
               </div>

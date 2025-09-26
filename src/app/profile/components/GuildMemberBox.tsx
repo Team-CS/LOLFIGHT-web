@@ -6,7 +6,6 @@ import constant from "@/src/common/constant/constant";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import GuildMemberContextMenu from "./context-menu/GuildMemberContextMenu";
 import { useState } from "react";
-import LineSelector from "./context-menu/LineSelector";
 import { getTierStyle } from "@/src/utils/string/string.util";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
@@ -18,7 +17,6 @@ interface Props {
   transferGuildMaste?: (memberName: string, guildName: string) => void;
   acceptMember?: (memberId: string, guildId: string) => void;
   rejectMember?: (memberId: string, guildId: string) => void;
-  onChangeLine?: (memberId: string, newLine: string) => void;
 }
 
 const GuildMemberBox = (props: Props) => {
@@ -30,7 +28,6 @@ const GuildMemberBox = (props: Props) => {
     transferGuildMaste,
     acceptMember,
     rejectMember,
-    onChangeLine,
   } = props;
   const { member } = useMemberStore();
   const isMobile = useIsMobile();
@@ -106,13 +103,16 @@ const GuildMemberBox = (props: Props) => {
             }`}
           >
             {guildMember.memberGame?.line ? (
-              <LineSelector
-                currentLine={guildMember.memberGame.line}
-                isMaster={guild.guildMasterId === member?.id}
-                onChangeLine={(newLine) => {
-                  onChangeLine?.(guildMember.id, newLine);
-                }}
-              />
+              <div className="flex items-center gap-[4px]">
+                <img
+                  src={`${constant.SERVER_URL}/public/ranked-positions/${guildMember.memberGame?.line}.png`}
+                  alt="line"
+                  className={`${
+                    isMobile ? "w-[15px] h-[15px]" : "w-[25px] h-[25px]"
+                  }`}
+                />
+                <span>{guildMember.memberGame?.line}</span>
+              </div>
             ) : null}
           </div>
         )}

@@ -6,6 +6,7 @@ import {
   createMemberSummonerInfo,
   updateNickname,
   refreshMemberSummonerInfo,
+  updateMemberGameLine,
 } from "@/src/api/member.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
@@ -15,6 +16,8 @@ import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { MemberGameDto } from "@/src/common/DTOs/member/member_game.dto";
 import { formatElapsedTime } from "@/src/utils/string/string.util";
+import { MemberDto } from "@/src/common/DTOs/member/member.dto";
+import LineSelector from "./context-menu/LineSelector";
 
 const ProfileInfoPage = () => {
   const isMobile = useIsMobile();
@@ -215,6 +218,20 @@ const ProfileInfoPage = () => {
           );
         }
       });
+  };
+
+  const handleChangeLine = (newLine: string) => {
+    if (member) {
+      const memberId = member.id;
+      updateMemberGameLine(memberId, newLine)
+        .then((response) => {
+          const updatedMember: MemberDto = response.data.data;
+          setMember(updatedMember);
+        })
+        .catch((error) => console.error("라인 변경 실패:", error));
+    } else {
+      alert("멤버정보가 없습니다");
+    }
   };
 
   const handleDeleteSummonerInfo = () => {
@@ -443,6 +460,29 @@ const ProfileInfoPage = () => {
                 />
               )}
             {member?.memberGame?.gameTier || "등록되지 않음"}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-[8px]">
+          <label className={`${isMobile ? "text-[10px]" : "text-[14px]"}`}>
+            라인
+          </label>
+          <div
+            className={`flex w-fit items-center bg-[#EFEFEF] dark:bg-brandgray border border-[#CDCDCD] rounded dark:border-branddarkborder ${
+              isMobile
+                ? "text-[12px] p-[4px] gap-[4px]"
+                : "text-[14px] px-[12px] py-[8px] gap-[12px]"
+            }`}
+          >
+            {member?.memberGame?.gameTier &&
+            member.memberGame.gameTier !== "등록되지 않음" ? (
+              <LineSelector
+                currentLine={member?.memberGame?.line}
+                onChangeLine={handleChangeLine}
+              />
+            ) : (
+              "등록되지 않음"
+            )}
           </div>
         </div>
       </div>

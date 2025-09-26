@@ -4,15 +4,14 @@ import constant from "@/src/common/constant/constant";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface Props {
-  currentLine: string;
-  isMaster: boolean;
+  currentLine?: string;
   onChangeLine: (line: string) => void;
 }
 
 const ALL_LINES = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 
 const LineSelector = (props: Props) => {
-  const { currentLine, isMaster, onChangeLine } = props;
+  const { currentLine, onChangeLine } = props;
 
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
@@ -42,7 +41,7 @@ const LineSelector = (props: Props) => {
   }, [open]);
 
   const toggleDropdown = () => {
-    if (buttonRef.current && isMaster) {
+    if (buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
       setPosition({ x: rect.left, y: rect.bottom });
       setOpen((prev) => !prev);
