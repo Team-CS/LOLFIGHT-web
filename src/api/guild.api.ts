@@ -7,7 +7,7 @@ import {
   GuildListResponseDto,
 } from "../common/DTOs/guild/guild.dto";
 import { MemberDto } from "../common/DTOs/member/member.dto";
-import { GuildInviteDTO } from "../common/DTOs/guild/guild_invite.dto";
+import { GuildInviteDto } from "../common/DTOs/guild/guild_invite.dto";
 import {
   deleteData,
   getData,
@@ -118,16 +118,18 @@ export const destroyGuild = async (
 
 /**
  * Guild-Invite 길드 가입신청
- * @param guildInviteDTO
+ * @param guildInviteDto
  * @returns
  */
 export const inviteGuild = async (
+  applicationText: string,
   memberId: string,
   guildId: string
-): Promise<AxiosResponse<ResponseDto<GuildInviteDTO>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildInviteDto>>> => {
   let url = `${baseUrl}/invite`;
 
   const body = {
+    applicationText: applicationText,
     memberId: memberId,
     guildId: guildId,
   };
@@ -142,7 +144,7 @@ export const inviteGuild = async (
  */
 export const getInviteGuildList = async (
   guildName: string
-): Promise<AxiosResponse<ResponseDto<GuildInviteDTO[]>>> => {
+): Promise<AxiosResponse<ResponseDto<GuildInviteDto[]>>> => {
   let url = `${baseUrl}/invite/list`;
 
   const queryParams = `?name=${guildName}`;

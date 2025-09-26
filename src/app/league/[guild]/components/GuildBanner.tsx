@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { inviteGuild } from "@/src/api/guild.api";
 import { useRouter } from "next/navigation";
 import CustomAlert from "../../../../common/components/alert/CustomAlert";
@@ -7,6 +7,7 @@ import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import constant from "@/src/common/constant/constant";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import { GuildInviteModal } from "./modals/GuildInviteModal";
 
 interface Props {
   guild: GuildDto;
@@ -17,8 +18,9 @@ const GuildBanner = (props: Props) => {
   const isMobile = useIsMobile();
   const { guild } = props;
   const { member } = useMemberStore();
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState<boolean>(false);
 
-  const handleClickInviteGuild = () => {
+  const handleClickInviteGuild = (message: string) => {
     if (member && guild.id !== null && guild.id !== undefined) {
       if (guild.guildMembers.length === guild.maxMembers) {
         CustomAlert(
@@ -28,7 +30,7 @@ const GuildBanner = (props: Props) => {
         );
         return;
       }
-      inviteGuild(member.id, guild.id)
+      inviteGuild(message, member.id, guild.id)
         .then((response) => {
           CustomAlert("success", "길드가입", "길드 가입신청이 완료되었습니다.");
         })
@@ -57,8 +59,6 @@ const GuildBanner = (props: Props) => {
               isMobile ? "w-[50px] h-[50px]" : "w-[75px] h-[75px]"
             }`}
             src={`${constant.SERVER_URL}/${guild.guildIcon}`}
-            // width={isMobile ? 50 : 75}
-            // height={isMobile ? 50 : 75}
             alt="GuildIcon"
           />
           <div className="flex flex-col gap-[4px]">
@@ -85,7 +85,7 @@ const GuildBanner = (props: Props) => {
               </h2>
               <button
                 aria-label="길드가입"
-                onClick={handleClickInviteGuild}
+                onClick={() => setIsInviteModalOpen(true)}
                 className={`bg-white font-semibold text-brandcolor rounded hover:bg-gray-100 transition ${
                   isMobile
                     ? "px-[8px] py-[2px] text-[12px]"
@@ -113,6 +113,16 @@ const GuildBanner = (props: Props) => {
           </p>
         </div>
       </div>
+      {isInviteModalOpen && (
+        <GuildInviteModal
+          guildName={guild.guildName}
+          guildIcon={guild.guildIcon}
+          guildDescription={guild.guildDescription}
+          guildMemberCount={guild.guildMembers.length}
+          onClose={() => setIsInviteModalOpen(false)}
+          onSubmit={handleClickInviteGuild}
+        />
+      )}
     </div>
   );
 };
