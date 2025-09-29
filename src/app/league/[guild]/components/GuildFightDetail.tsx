@@ -30,7 +30,7 @@ const GuildFightDetail = (props: Props) => {
 
   const highestChampionDamage = findHighestDamagePlayer(battleData);
   return (
-    <div className="max-w-[1200px] border flex flex-col shadow py-[12px] bg-white dark:bg-dark border dark:border-gray-700">
+    <div className="max-w-[1200px] border flex flex-col shadow py-[12px] bg-white dark:bg-dark border dark:border-gray-700 rounded-[12px]">
       {/* 1 */}
       <div className="flex justify-between text-[14px] items-center px-[4px]">
         <div className="flex gap-[12px]">

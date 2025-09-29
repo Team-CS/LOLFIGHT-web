@@ -7,10 +7,10 @@ import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import boardNavLinks from "@/src/data/boardNavLinks";
 import { useEffect, useRef } from "react";
-import { writePost } from "@/src/api/post.api";
+import { updatePost, writePost } from "@/src/api/post.api";
 import constant from "@/src/common/constant/constant";
 import { useState } from "react";
-import { PostCreateDto } from "@/src/common/DTOs/board/post.dto";
+import { PostCreateDto, PostDto } from "@/src/common/DTOs/board/post.dto";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -31,7 +31,13 @@ interface RenderContext {
 interface CodeBlockNode {
   info: string;
 }
-const WysiwygEditor = () => {
+
+interface WysiwygEditorProps {
+  post?: PostDto;
+  isEdit?: boolean;
+}
+
+const WysiwygEditor = ({ post, isEdit }: WysiwygEditorProps) => {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { member } = useMemberStore();
@@ -39,10 +45,10 @@ const WysiwygEditor = () => {
   const [isAdminUser, setIsAdminUser] = useState<boolean>(false);
   const editorRef = useRef<Editor>(null);
   const [editorKey, setEditorKey] = useState(0);
-  const [title, setTitle] = useState<string>();
-  const [category, setCategory] = useState("자유");
+  const [title, setTitle] = useState<string>(post?.postTitle || "");
+  const [category, setCategory] = useState(post?.postBoard || "자유");
   const [image, setImage] = useState<string>();
-  const [editorHtml, setEditorHtml] = useState(""); // 현재 작성 내용 저장
+  const [editorHtml, setEditorHtml] = useState(post?.postContent || "");
   const toolbarItems = isMobile
     ? [["bold", "italic"], ["image"]]
     : [
@@ -100,7 +106,35 @@ const WysiwygEditor = () => {
     const textContent = tempDiv.textContent?.trim() || "";
     const hasImage = tempDiv.querySelector("img") !== null;
 
-    if (title && (textContent !== "" || hasImage)) {
+    if (title && (textContent === "" || hasImage)) {
+      CustomAlert("warning", "글쓰기", "제목과 내용을 작성해주세요.");
+    }
+    if (isEdit && post) {
+      await updatePost({
+        ...post,
+        postContent: editorIns,
+      })
+        .then((response) => {
+          CustomAlert("success", "게시글 수정", "게시글이 수정되었습니다.");
+          boardNavLinks
+            .filter((link) => link.href !== "/")
+            .forEach((link) => {
+              if (link.title === category) {
+                router.replace(link.href + "/" + response.data.data.id);
+              }
+            });
+        })
+        .catch((error) => {
+          const code = error.response.data.code;
+          if (code === "COMMON-018") {
+            CustomAlert(
+              "error",
+              "글쓰기",
+              "부적절한 단어가 포함되어 있습니다."
+            );
+          }
+        });
+    } else {
       const postData: PostCreateDto = {
         postTitle: title,
         postContent: editorIns,
@@ -128,8 +162,6 @@ const WysiwygEditor = () => {
             );
           }
         });
-    } else {
-      CustomAlert("warning", "글쓰기", "제목과 내용을 작성해주세요.");
     }
   };
 
@@ -166,6 +198,8 @@ const WysiwygEditor = () => {
             : "w-[160px] h-[40px] px-[10px] text-[14px]"
         }`}
         onChange={handleCategoryChange}
+        value={post?.postBoard}
+        disabled={isEdit}
       >
         {boardNavLinks
           .filter((link) => {
@@ -187,9 +221,11 @@ const WysiwygEditor = () => {
           isMobile
             ? "h-[30px] px-[8px] text-[12px]"
             : "h-[40px] px-[12px] text-[14px]"
-        }`}
+        } ${isEdit && "cursor-not-allowed"}`}
         type="text"
         placeholder="제목을 입력하세요"
+        value={post?.postTitle}
+        disabled={isEdit}
         onChange={handleChange}
       />
 
@@ -260,7 +296,7 @@ const WysiwygEditor = () => {
           }`}
           onClick={handleSaveClick}
         >
-          작성하기
+          {isEdit ? "수정하기" : "작성하기"}
         </button>
       </div>
     </div>

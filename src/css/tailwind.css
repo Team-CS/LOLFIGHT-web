@@ -51,6 +51,13 @@ ul.tui-colorpicker-clearfix {
   transform: translate(-50%, -50%) !important; /* 중앙 정렬 */
   z-index: 9999 !important; /* 다른 요소 위로 */
   background: rgb(247, 247, 247);
+  border: #555 solid 2px !important;
+}
+
+.dark .toastui-editor-popup-body {
+  background: rgb(30, 30, 30) !important;
+  border: #888 solid 2px !important;
+  color: #f1f1f1 !important;
 }
 
 .toastui-editor-popup-color button {

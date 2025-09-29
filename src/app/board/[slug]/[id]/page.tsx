@@ -5,19 +5,14 @@ import { getPostContent } from "@/src/api/post.api";
 import BoardNavComponent from "../../components/BoardNavComponent";
 import BoardPostComponent from "../../components/post/BoardPostComponent";
 import { PostDto } from "@/src/common/DTOs/board/post.dto";
-import boardNavLinks from "@/src/data/boardNavLinks";
 import { notFound } from "next/navigation";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import { getTitleFromSlug } from "@/src/utils/string/string.util";
 
 type PageProps = {
   slug: string;
   id: string;
 };
-
-function getTitleFromSlug(slug: string) {
-  const link = boardNavLinks.find((link) => link.href === `/board/${slug}`);
-  return link?.title ?? "";
-}
 
 export default function Page({ params }: { params: PageProps }) {
   const isMobile = useIsMobile();

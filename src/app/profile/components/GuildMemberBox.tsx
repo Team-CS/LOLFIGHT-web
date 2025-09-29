@@ -6,32 +6,18 @@ import constant from "@/src/common/constant/constant";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import GuildMemberContextMenu from "./context-menu/GuildMemberContextMenu";
 import { useState } from "react";
-import LineSelector from "./context-menu/LineSelector";
 import { getTierStyle } from "@/src/utils/string/string.util";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface Props {
   guildMember: MemberDto;
   guild: GuildDto;
-  type: string;
   expulsionMember?: (member: MemberDto) => void;
-  transferGuildMaste?: (memberName: string, guildName: string) => void;
-  acceptMember?: (memberId: string, guildId: string) => void;
-  rejectMember?: (memberId: string, guildId: string) => void;
-  onChangeLine?: (memberId: string, newLine: string) => void;
+  transferGuildMaster?: (memberName: string, guildName: string) => void;
 }
 
 const GuildMemberBox = (props: Props) => {
-  const {
-    guildMember,
-    guild,
-    type,
-    expulsionMember,
-    transferGuildMaste,
-    acceptMember,
-    rejectMember,
-    onChangeLine,
-  } = props;
+  const { guildMember, guild, expulsionMember, transferGuildMaster } = props;
   const { member } = useMemberStore();
   const isMobile = useIsMobile();
 
@@ -48,7 +34,6 @@ const GuildMemberBox = (props: Props) => {
     <div
       className="flex flex-col p-[8px] gap-[12px] border border-[#CDCDCD] rounded-[8px] bg-[#EEEEEE] dark:bg-branddark dark:border-branddarkborder"
       onContextMenu={
-        type === "guildMember" &&
         guildMember.id !== guild.guildMasterId &&
         guild.guildMasterId === member?.id
           ? handleRightClick
@@ -99,31 +84,27 @@ const GuildMemberBox = (props: Props) => {
           ) : null}
         </div>
 
-        {type === "guildMember" && (
-          <div
-            className={`flex-[1] items-center font-medium ${
-              isMobile ? "text-[10px]" : "text-[14px]"
-            }`}
-          >
-            {guildMember.memberGame?.line ? (
-              <LineSelector
-                currentLine={guildMember.memberGame.line}
-                isMaster={guild.guildMasterId === member?.id}
-                onChangeLine={(newLine) => {
-                  onChangeLine?.(guildMember.id, newLine);
-                }}
-              />
-            ) : null}
-          </div>
-        )}
-
         <div
-          className={`${
-            type === "guildMember" ? "flex" : "flex flex-[1]"
-          } gap-[16px]`}
+          className={`flex-[1] items-center font-medium ${
+            isMobile ? "text-[10px]" : "text-[14px]"
+          }`}
         >
-          {type === "guildMember" ? (
-            guildMember.id !== guild.guildMasterId &&
+          {guildMember.memberGame?.line ? (
+            <div className="flex items-center gap-[4px]">
+              <img
+                src={`${constant.SERVER_URL}/public/ranked-positions/${guildMember.memberGame?.line}.png`}
+                alt="line"
+                className={`${
+                  isMobile ? "w-[15px] h-[15px]" : "w-[25px] h-[25px]"
+                }`}
+              />
+              <span>{guildMember.memberGame?.line}</span>
+            </div>
+          ) : null}
+        </div>
+
+        <div className={`flex gap-[16px]`}>
+          {guildMember.id !== guild.guildMasterId &&
             guild.guildMasterId === member?.id && (
               <GuildMemberContextMenu
                 visible={contextVisible}
@@ -132,31 +113,9 @@ const GuildMemberBox = (props: Props) => {
                 guild={guild}
                 onClose={() => setContextVisible(false)}
                 expulsionMember={expulsionMember}
-                transferGuildMaster={transferGuildMaste}
+                transferGuildMaster={transferGuildMaster}
               />
-            )
-          ) : (
-            <>
-              <button
-                aria-label="수락"
-                onClick={() => acceptMember?.(guildMember.id, guild.id)}
-                className={`flex items-center font-semibold hover:text-blue-700 ${
-                  isMobile ? "text-[12px]" : "text-[16px]"
-                }`}
-              >
-                수락
-              </button>
-              <button
-                aria-label="거절"
-                onClick={() => rejectMember?.(guildMember.id, guild.id)}
-                className={`flex items-center text-16px font-semibold hover:text-red-500 ${
-                  isMobile ? "text-[12px]" : "text-[16px]"
-                }`}
-              >
-                거절
-              </button>
-            </>
-          )}
+            )}
         </div>
       </div>
     </div>

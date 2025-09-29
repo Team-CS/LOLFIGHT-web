@@ -2,20 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { getPostList } from "@/src/api/post.api";
-import boardNavLinks from "@/src/data/boardNavLinks";
 import Pagination from "@mui/material/Pagination";
 import BoardInfoComponent from "./BoardInfoComponent";
 import BoardHeadComponent from "./BoardHeadComponent";
 import { PostDto, PostListResponseDto } from "@/src/common/DTOs/board/post.dto";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import { getTitleFromSlug } from "@/src/utils/string/string.util";
 
 interface BoardComponentProps {
   slug: string;
-}
-
-function getTitleFromSlug(slug: string) {
-  const link = boardNavLinks.find((link) => link.href === `/board/${slug}`);
-  return link?.title ?? "";
 }
 
 const BoardComponent = (props: BoardComponentProps) => {

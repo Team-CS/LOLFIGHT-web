@@ -86,10 +86,15 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
   const handleSaveTeam = () => {
     if (!member) return;
 
-    const leaderId = member.id;
+    const leaderId = isEditMode ? guildTeam?.leader.id : member.id;
     const guildId = member.memberGuild?.id;
 
     if (!guildId) return;
+
+    if (leaderId !== member.id) {
+      CustomAlert("warning", "팀 수정", "팀 리더만 수정 가능합니다");
+      return;
+    }
 
     // 포지션에 할당된 멤버 배열로 변환
     const members: CreateGuildTeamMemberDto[] = Object.entries(assignedMembers)

@@ -15,12 +15,8 @@ import {
 } from "@/src/api/guild.api";
 import GuildMemberBox from "./GuildMemberBox";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
-import { GuildInviteDTO } from "@/src/common/DTOs/guild/guild_invite.dto";
-import {
-  getMemberData,
-  leaveMember,
-  updateMemberGameLine,
-} from "@/src/api/member.api";
+import { GuildInviteDto } from "@/src/common/DTOs/guild/guild_invite.dto";
+import { getMemberData, leaveMember } from "@/src/api/member.api";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { GuildInfoItem } from "./guildInfoItem";
 import { ProfileHeader } from "./profileHeader";
@@ -32,9 +28,13 @@ import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import { GuildBannerModal } from "./modals/GuildBannerModal";
 import { GuildDescriptionModal } from "./modals/GuildDescriptionModal";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import { GuildInviteReviewModal } from "./modals/GuildInviteReviewModal";
+import { getTierStyle } from "@/src/utils/string/string.util";
 
 const GuildManagePage = () => {
-  const [inviteMembers, setInviteMembers] = useState<GuildInviteDTO[]>([]);
+  const [inviteMembers, setInviteMembers] = useState<GuildInviteDto[]>([]);
+  const [selectedInviteMember, setSelectedInviteMember] =
+    useState<GuildInviteDto | null>();
   const [guild, setGuild] = useState<GuildDto | null>(null);
   const { member, setMember } = useMemberStore();
   const [currentTab, setCurrentTab] = useState("members");
@@ -139,7 +139,9 @@ const GuildManagePage = () => {
             );
             setGuild(response.data.data);
           })
-          .catch(console.log);
+          .catch((error) => {
+            console.log(error);
+          });
       }
     };
 
@@ -163,7 +165,9 @@ const GuildManagePage = () => {
           );
           setGuild(response.data.data);
         })
-        .catch(console.log);
+        .catch((error) => {
+          console.log(error);
+        });
     };
 
     ButtonAlert(
@@ -218,20 +222,6 @@ const GuildManagePage = () => {
         );
       })
       .catch(() => {});
-  };
-
-  const handleChangeLine = (memberId: string, newLine: string) => {
-    updateMemberGameLine(memberId, newLine)
-      .then((response) => {
-        const updatedMember: MemberDto = response.data.data;
-        if (!guild) return;
-
-        const updatedMembers = guild.guildMembers.map((m) =>
-          m.id === updatedMember.id ? updatedMember : m
-        );
-        setGuild({ ...guild, guildMembers: updatedMembers });
-      })
-      .catch((error) => console.error("라인 변경 실패:", error));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -469,10 +459,8 @@ const GuildManagePage = () => {
                     key={m.id}
                     guildMember={m}
                     guild={guild}
-                    type="guildMember"
                     expulsionMember={expulsionMember}
-                    transferGuildMaste={transferGuildMaster}
-                    onChangeLine={handleChangeLine}
+                    transferGuildMaster={transferGuildMaster}
                   />
                 ))}
               </div>
@@ -489,26 +477,64 @@ const GuildManagePage = () => {
 
             {/* 가입 신청자 탭 */}
             {currentTab === "applicants" && isMaster && (
-              <div className="flex flex-col gap-[4px] max-h-[300px] overflow-y-auto">
-                <div
-                  className={`flex bg-brandcolor px-[8px] dark:bg-brandgray text-white ${
-                    isMobile ? "text-[10px]" : "text-[12px]"
-                  }`}
-                >
-                  <div className="flex-[1]">닉네임</div>
-                  <div className="flex-[2]">소환사명</div>
-                  <div className="flex-[1]">티어</div>
-                  <div className="flex-[1]"></div>
-                </div>
+              <div className="flex flex-col max-h-[300px] overflow-y-auto">
                 {inviteMembers.map((invite) => (
-                  <GuildMemberBox
+                  <div
                     key={invite.id}
-                    guildMember={invite.member!}
-                    guild={invite.guild!}
-                    type="guildInvite"
-                    acceptMember={acceptMember}
-                    rejectMember={rejectMember}
-                  />
+                    onClick={() => {
+                      setSelectedInviteMember(invite), setOpenModal("invite");
+                    }}
+                    className="flex gap-[12px] items-center justify-between px-[12px] py-[10px] border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-[#EFEFEF] dark:hover:bg-brandgray transition"
+                  >
+                    {/* 닉네임 */}
+                    <div className="flex items-center gap-[6px]">
+                      <img
+                        src={`${constant.SERVER_URL}/${invite.member?.memberIcon}`}
+                        alt="line"
+                        className={`rounded-[12px] ${
+                          isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
+                        }`}
+                      />
+                      <span className="text-[13px] font-semibold text-gray-900 dark:text-white truncate">
+                        {invite.member?.memberName}
+                      </span>
+                    </div>
+
+                    {/* 소환사명 */}
+                    <span className="text-[12px] text-gray-500 dark:text-gray-300 italic truncate">
+                      {invite.member?.memberGame?.gameName}
+                    </span>
+
+                    {/* 티어 */}
+                    <div className="flex items-center justify-end gap-[6px] text-[12px] text-gray-700 dark:text-gray-400">
+                      <img
+                        src={`${constant.SERVER_URL}/public/rank/${invite.member?.memberGame?.gameTier}.png`}
+                        alt="line"
+                        className={`${
+                          isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
+                        }`}
+                      />
+                      <span
+                        className={getTierStyle(
+                          invite.member?.memberGame?.gameTier
+                        )}
+                      >
+                        {invite.member?.memberGame?.gameTier}
+                      </span>
+                    </div>
+
+                    {/* 라인 */}
+                    <div className="flex items-center justify-end gap-[6px] text-[12px] text-gray-700 dark:text-gray-400">
+                      <img
+                        src={`${constant.SERVER_URL}/public/ranked-positions/${invite.member?.memberGame?.line}.png`}
+                        alt="line"
+                        className={`${
+                          isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
+                        }`}
+                      />
+                      <span>{invite.member?.memberGame?.line}</span>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
@@ -543,6 +569,17 @@ const GuildManagePage = () => {
             setNewDesc("");
           }}
           onSubmit={handleDescriptionSubmit}
+        />
+      )}
+      {openModal === "invite" && (
+        <GuildInviteReviewModal
+          inviteData={selectedInviteMember!}
+          onAccept={acceptMember}
+          onReject={rejectMember}
+          onClose={() => {
+            setOpenModal(null);
+            setSelectedInviteMember(null);
+          }}
         />
       )}
     </div>
