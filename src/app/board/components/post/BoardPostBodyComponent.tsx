@@ -30,7 +30,6 @@ const BoardPostBodyComponent = (props: BoardPostBodyComponentProps) => {
   const { data } = props;
   const isMobile = useIsMobile();
   const { member } = useMemberStore();
-
   const [like, setLike] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 

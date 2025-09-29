@@ -1,3 +1,5 @@
+import boardNavLinks from "@/src/data/boardNavLinks";
+
 export const getTierStyle = (tier: string | undefined) => {
   if (!tier) return "";
 
@@ -153,4 +155,9 @@ export function formatElapsedTime(updatedAt: string | Date): string {
   const months = Math.floor(diffMs / month);
   const days = Math.floor((diffMs % month) / day);
   return `${months}개월 ${days}일 전`;
+}
+
+export function getTitleFromSlug(slug: string) {
+  const link = boardNavLinks.find((link) => link.href === `/board/${slug}`);
+  return link?.title ?? "";
 }

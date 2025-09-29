@@ -1,5 +1,6 @@
 import constant from "@/src/common/constant/constant";
 import { GuildInviteDto } from "@/src/common/DTOs/guild/guild_invite.dto";
+import { getTierStyle } from "@/src/utils/string/string.util";
 
 interface GuildInviteReviewModalProps {
   inviteData: GuildInviteDto;
@@ -35,20 +36,35 @@ export const GuildInviteReviewModal = (props: GuildInviteReviewModalProps) => {
             alt="tier"
             className="w-[48px] h-[48px] rounded-full "
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-[4px]">
             <span className="text-[16px] font-bold text-gray-900 dark:text-white">
               {inviteData.member?.memberName}
             </span>
-            <span className="text-[14px] text-gray-600 dark:text-gray-300">
-              {inviteData.member?.memberGame?.gameName}
-            </span>
-            <div className="flex items-center gap-[6px] mt-[4px]">
+            <div className="flex items-center gap-[6px]">
+              <span className="text-[14px] text-gray-600 dark:text-gray-300">
+                {inviteData.member?.memberGame?.gameName}
+              </span>
+              <img
+                src={`${constant.SERVER_URL}/public/rank/${inviteData.member?.memberGame?.gameTier}.png`}
+                alt="tier"
+                className="w-[20px] h-[20px]"
+              />
+              <span
+                className={`text-[14px] ${getTierStyle(
+                  inviteData.member?.memberGame?.gameTier
+                )}`}
+              >
+                {inviteData.member?.memberGame?.gameTier}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-[6px]">
               <img
                 src={`${constant.SERVER_URL}/public/ranked-positions/${inviteData.member?.memberGame?.line}.png`}
                 alt="tier"
                 className="w-[20px] h-[20px]"
               />
-              <span className="text-[13px] text-gray-700 dark:text-gray-400">
+              <span className="text-[12px] text-gray-700 dark:text-gray-400">
                 {inviteData.member?.memberGame?.line}
               </span>
             </div>

@@ -7,7 +7,7 @@ import {
 } from "../common/DTOs/board/post.dto";
 import { ResponseDto } from "../common/DTOs/response.dto";
 import { LikeDTO } from "../common/DTOs/board/like.dto";
-import { getData, postData } from "../utils/axios/serverHelper";
+import { getData, patchData, postData } from "../utils/axios/serverHelper";
 
 const baseUrl = `${constant.SERVER_URL}/post`;
 
@@ -137,4 +137,12 @@ export const getPopularPosts = async (
     url += `&keyword=${encodeURIComponent(keyword)}`;
   }
   return await getData(url);
+};
+
+export const updatePost = async (
+  postDto: PostDto
+): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
+  let url = `${baseUrl}`;
+
+  return await patchData(url, postDto);
 };

@@ -12,6 +12,7 @@ export interface PostDto extends BaseDto {
   postLikes: number;
   postComments: number;
   postBoard: string;
+  isEdited: boolean;
 }
 
 export interface PostCreateDto extends BaseDto {

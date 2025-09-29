@@ -1,11 +1,11 @@
 "use client";
 import { FaSearch } from "react-icons/fa";
-import boardNavLinks from "@/src/data/boardNavLinks";
 import { useRouter } from "next/navigation";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { useState } from "react";
+import { getTitleFromSlug } from "@/src/utils/string/string.util";
 
 interface BoardHeadComponentProps {
   head: { slug: string };
@@ -14,11 +14,6 @@ interface BoardHeadComponentProps {
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   searchTarget: string;
   setSearchTarget: React.Dispatch<React.SetStateAction<string>>;
-}
-
-function getTitleFromSlug(slug: string) {
-  const link = boardNavLinks.find((link) => link.href === `/board/${slug}`);
-  return link?.title ?? "";
 }
 
 const BoardHeadComponent = (props: BoardHeadComponentProps) => {

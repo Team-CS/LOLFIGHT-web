@@ -29,6 +29,7 @@ import { GuildBannerModal } from "./modals/GuildBannerModal";
 import { GuildDescriptionModal } from "./modals/GuildDescriptionModal";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { GuildInviteReviewModal } from "./modals/GuildInviteReviewModal";
+import { getTierStyle } from "@/src/utils/string/string.util";
 
 const GuildManagePage = () => {
   const [inviteMembers, setInviteMembers] = useState<GuildInviteDto[]>([]);
@@ -138,7 +139,9 @@ const GuildManagePage = () => {
             );
             setGuild(response.data.data);
           })
-          .catch(console.log);
+          .catch((error) => {
+            console.log(error);
+          });
       }
     };
 
@@ -162,7 +165,9 @@ const GuildManagePage = () => {
           );
           setGuild(response.data.data);
         })
-        .catch(console.log);
+        .catch((error) => {
+          console.log(error);
+        });
     };
 
     ButtonAlert(
@@ -479,7 +484,7 @@ const GuildManagePage = () => {
                     onClick={() => {
                       setSelectedInviteMember(invite), setOpenModal("invite");
                     }}
-                    className="flex items-center justify-between px-[12px] py-[10px] border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-[#EFEFEF] dark:hover:bg-brandgray transition"
+                    className="flex gap-[12px] items-center justify-between px-[12px] py-[10px] border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-[#EFEFEF] dark:hover:bg-brandgray transition"
                   >
                     {/* 닉네임 */}
                     <div className="flex items-center gap-[6px]">
@@ -509,7 +514,13 @@ const GuildManagePage = () => {
                           isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
                         }`}
                       />
-                      <span>{invite.member?.memberGame?.gameTier}</span>
+                      <span
+                        className={getTierStyle(
+                          invite.member?.memberGame?.gameTier
+                        )}
+                      >
+                        {invite.member?.memberGame?.gameTier}
+                      </span>
                     </div>
 
                     {/* 라인 */}

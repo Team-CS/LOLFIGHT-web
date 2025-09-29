@@ -15,6 +15,7 @@ import { ReportModal } from "@/src/common/components/modal/ReportModal";
 import { convertBoardNameToCode } from "@/src/utils/string/string.util";
 import { CreateReportDto } from "@/src/common/DTOs/report/report.dto";
 import { reportSubmit } from "@/src/api/report.api";
+import BoardWriteComponent from "../write/BoardWriteComponent";
 
 interface BoardPostHeadComponentProps {
   post: PostDto;
@@ -26,6 +27,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
   const router = useRouter();
   const isMobile = useIsMobile();
   const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   const postDateTime = new Date(post?.postDate);
   const year = postDateTime.getFullYear();
@@ -82,11 +84,18 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
     });
   };
 
+  const handleEditClick = () => {
+    router.push(
+      `/board/${convertBoardNameToCode(post.postBoard)}/${post.id}/edit`
+    );
+  };
+
   return (
     <div className="flex flex-col p-[24px] gap-[12px]">
       <p className={`font-bold ${isMobile ? "text-[20px]" : "text-[24px]"}`}>
         {post?.postTitle}
       </p>
+
       <div className="flex justify-between pb-[12px] border-b dark:border-gray-700">
         <div className="flex items-center gap-[8px]">
           <img
@@ -117,6 +126,15 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
           >
             조회수 : {post?.postViews}
           </p>
+          {post?.isEdited && (
+            <span
+              className={`px-2 py-0.5 rounded-full bg-gray-200 text-gray-600 
+      dark:bg-gray-700 dark:text-gray-300 
+      ${isMobile ? "text-[10px]" : "text-[12px]"}`}
+            >
+              수정됨
+            </span>
+          )}
         </div>
         <div className="flex gap-[8px] content-center">
           {(!isMine || isAdmin) && (
@@ -127,6 +145,16 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
               onClick={() => setReportModalOpen(!reportModalOpen)}
             >
               신고하기
+            </button>
+          )}
+          {(isMine || isAdmin) && (
+            <button
+              className={`text-gray-400 ${
+                isMobile ? "text-[10px]" : "text-[12px]"
+              }`}
+              onClick={handleEditClick}
+            >
+              편집
             </button>
           )}
           {(isMine || isAdmin) && (
