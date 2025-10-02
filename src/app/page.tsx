@@ -22,7 +22,7 @@ export default function Page() {
   useEffect(() => {
     try {
       setIsLoading(true);
-      getPopularPosts(1, 5).then((response) => {
+      getPopularPosts(1, 10).then((response) => {
         const data = response.data.data as PostListResponseDto;
         if (Array.isArray(data.postList)) {
           setPosts(data.postList);
