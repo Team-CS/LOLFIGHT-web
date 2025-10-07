@@ -44,7 +44,10 @@ export const useAlarmStore = create<AlarmState>((set) => ({
       const invites = inviteRes.data.data || [];
       const scrims = scrimRes.data.data || [];
 
-      const hasInvite = invites.length > 0;
+      const hasPendingInvite = invites.some(
+        (invite) => invite.status === "PENDING"
+      );
+      const hasPendingScrim = scrims.some((app) => app.status === "PENDING");
       const hasAcceptedScrim = scrims.some(
         (app: ScrimApplicationDto) => app.status === "ACCEPTED"
       );
@@ -53,7 +56,7 @@ export const useAlarmStore = create<AlarmState>((set) => ({
         teamInvites: invites,
         applications: scrims,
         isMatched: hasAcceptedScrim,
-        hasAlarm: hasInvite || hasAcceptedScrim,
+        hasAlarm: hasPendingInvite || hasPendingScrim,
       });
     } catch (error) {
       console.error("🔔 알림 조회 실패:", error);

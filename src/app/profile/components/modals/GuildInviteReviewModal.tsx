@@ -45,7 +45,9 @@ export const GuildInviteReviewModal = (props: GuildInviteReviewModalProps) => {
                 {inviteData.member?.memberGame?.gameName}
               </span>
               <img
-                src={`${constant.SERVER_URL}/public/rank/${inviteData.member?.memberGame?.gameTier}.png`}
+                src={`${constant.SERVER_URL}/public/rank/${
+                  inviteData.member?.memberGame?.gameTier?.split(" ")[0]
+                }.png`}
                 alt="tier"
                 className="w-[20px] h-[20px]"
               />
@@ -85,21 +87,21 @@ export const GuildInviteReviewModal = (props: GuildInviteReviewModalProps) => {
         <div className="flex gap-[12px] mt-[8px]">
           <button
             onClick={() => {
-              onReject(inviteData.member!.id, inviteData.guild!.id);
-              onClose();
-            }}
-            className="flex-1 px-[12px] py-[10px] rounded-[8px] border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            거절
-          </button>
-          <button
-            onClick={() => {
               onAccept(inviteData.member!.id, inviteData.guild!.id);
               onClose();
             }}
             className="flex-1 px-[12px] py-[10px] rounded-[8px] bg-blue-600 text-white hover:bg-blue-700"
           >
             수락
+          </button>
+          <button
+            onClick={() => {
+              onReject(inviteData.member!.id, inviteData.guild!.id);
+              onClose();
+            }}
+            className="flex-1 px-[12px] py-[10px] rounded-[8px] border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            거절
           </button>
         </div>
       </div>

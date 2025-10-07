@@ -45,7 +45,6 @@ export const Header = () => {
   const noticeBoardId = 4;
   const eventBoardId = 5;
 
-  const hasNotification = false;
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -231,8 +230,8 @@ export const Header = () => {
                             className="w-[30px] h-[30px] absolute top-[5px] right-[5px] cursor-pointer"
                             onClick={() => router.push("/alarm")}
                           />
-                          {hasNotification && (
-                            <span className="absolute top-[5px] right-[5px] w-[10px] h-[10px] rounded-full bg-red-500 border-2 border-white" />
+                          {hasAlarm && (
+                            <span className="absolute top-[5px] right-[5px] block w-[12px] h-[12px] bg-red-500 rounded-full border-[2px] border-white" />
                           )}
                         </div>
 

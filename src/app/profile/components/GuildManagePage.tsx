@@ -508,7 +508,9 @@ const GuildManagePage = () => {
                     {/* 티어 */}
                     <div className="flex items-center justify-end gap-[6px] text-[12px] text-gray-700 dark:text-gray-400">
                       <img
-                        src={`${constant.SERVER_URL}/public/rank/${invite.member?.memberGame?.gameTier}.png`}
+                        src={`${constant.SERVER_URL}/public/rank/${
+                          invite.member?.memberGame?.gameTier?.split(" ")[0]
+                        }.png`}
                         alt="line"
                         className={`${
                           isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
