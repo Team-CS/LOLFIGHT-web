@@ -16,7 +16,6 @@ export default function Page() {
   const isMobile = useIsMobile();
   const [guilds, setGuilds] = useState<GuildDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
   const [posts, setPosts] = useState<PostDto[]>([]);
 
   useEffect(() => {

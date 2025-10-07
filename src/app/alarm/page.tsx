@@ -3,16 +3,13 @@
 import {
   acceptGuildTeamInvite,
   getMyGuildTeam,
-  getMyInviteList,
   rejectGuildTeamInvite,
 } from "@/src/api/guild_team.api";
 import {
   acceptScrimApplcation,
-  getScrimApplicationList,
   rejectScrimApplcation,
 } from "@/src/api/scrim.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
-import { GuildTeamInviteDto } from "@/src/common/DTOs/guild/guild_team/guild_team_invite.dto";
 import {
   ScrimApplicationDecisionDto,
   ScrimApplicationDto,
@@ -23,20 +20,25 @@ import { formatKoreanDatetime } from "@/src/utils/string/string.util";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BattleTeamModal } from "../battle/components/modals/BattleTeamModal";
-import { ScrimSlotDto } from "@/src/common/DTOs/scrim/scrim_slot.dto";
 import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import { useAlarmStore } from "@/src/common/zustand/alarm.zustand";
 
 export default function Page() {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { member } = useMemberStore();
   const { guildTeam, setGuildTeam } = useGuildTeamStore();
+  const {
+    teamInvites,
+    setTeamInvites,
+    applications,
+    setApplications,
+    checkAlarms,
+    isMatched,
+  } = useAlarmStore();
   const [tab, setTab] = useState<"team" | "battle">("team");
-  const [teamInvites, setTeamInvites] = useState<GuildTeamInviteDto[]>([]);
-  const [applications, setApplications] = useState<ScrimApplicationDto[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<GuildTeamDto | null>(null);
-  const [isMatched, setIsMatched] = useState(false);
 
   useEffect(() => {
     if (!member) {
@@ -44,26 +46,8 @@ export default function Page() {
       router.replace("/");
       return;
     }
+    checkAlarms();
 
-    getMyInviteList()
-      .then((response) => {
-        setTeamInvites(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    getScrimApplicationList()
-      .then((response) => {
-        setApplications(response.data.data);
-
-        const matched = response.data.data.some(
-          (app: ScrimApplicationDto) => app.status === "ACCEPTED"
-        );
-        setIsMatched(matched);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
     getMyGuildTeam()
       .then((response) => {
         setGuildTeam(response.data.data);
@@ -77,7 +61,11 @@ export default function Page() {
     acceptGuildTeamInvite(inviteId)
       .then((response) => {
         CustomAlert("success", "팀 초대", "팀 초대를 수락 하셨습니다.");
-        router.refresh();
+        setTeamInvites((prev) =>
+          prev.map((invite) =>
+            invite.id === inviteId ? { ...invite, status: "ACCEPTED" } : invite
+          )
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -87,8 +75,12 @@ export default function Page() {
   const handleReject = (inviteId: string) => {
     rejectGuildTeamInvite(inviteId)
       .then((response) => {
+        setTeamInvites((prev) =>
+          prev.map((invite) =>
+            invite.id === inviteId ? { ...invite, status: "REJECTED" } : invite
+          )
+        );
         CustomAlert("success", "팀 초대", "팀 초대를 거절 하셨습니다.");
-        router.refresh();
       })
       .catch((error) => {
         console.log(error);

@@ -19,6 +19,8 @@ import { useFirebaseStore } from "../zustand/firebase.zustand";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import Sidebar from "./sidebar";
 import ThemeToggler from "./ThemeToggler";
+import { toast } from "react-toastify";
+import { useAlarmStore } from "../zustand/alarm.zustand";
 const rixi = localFont({
   src: "../../fonts/RixInooAriDuriRegular.ttf",
   display: "swap",
@@ -30,12 +32,11 @@ export const Header = () => {
   const pathname = usePathname();
   const isMobile = useIsMobile();
   const { member, setMember } = useMemberStore();
-
+  const { checkAlarms, hasAlarm } = useAlarmStore();
   const [noticePostList, setNoticePostList] = useState<PostDto[]>([]);
   const [eventPostList, setEventPostList] = useState<PostDto[]>([]);
   const [freePostList, setFreePostList] = useState<PostDto[]>([]);
   const [joinPostList, setJoinPostList] = useState<PostDto[]>([]);
-
   const [activeTabLeft, setActiveTabLeft] = useState("공지사항");
   const [activeTabRight, setActiveTabRight] = useState("자유게시판");
 
@@ -67,9 +68,25 @@ export const Header = () => {
         // 필요 시 에러 상태 설정 or 사용자 알림
       }
     };
-
     fetchPosts();
+    checkAlarms();
   }, []);
+
+  useEffect(() => {
+    if (hasAlarm) {
+      toast.info(
+        <div
+          onClick={() => {
+            router.push("/alarm");
+          }}
+          className="cursor-pointer"
+        >
+          <strong>{"새로운 소식이에요 🔔"}</strong>
+          <p>{"알림이 도착했습니다"}</p>
+        </div>
+      );
+    }
+  }, [hasAlarm]);
 
   const handleLogoutClick = async () => {
     setMember(null);

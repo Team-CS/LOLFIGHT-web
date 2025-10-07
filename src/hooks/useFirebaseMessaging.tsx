@@ -61,9 +61,10 @@ export default function useFirebaseMessaging() {
     onMessage(messaging, (payload) => {
       const { title, body } = payload.notification || {};
       if (title && body && document.visibilityState === "visible") {
-        toast.info(
+        const toastId = toast.info(
           <div
             onClick={() => {
+              toast.dismiss(toastId);
               router.push("/alarm");
             }}
             className="cursor-pointer"
