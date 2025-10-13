@@ -4,6 +4,7 @@ Allow: /
 Disallow: /profile
 Disallow: /policies
 Disallow: /login
+Disallow: /alarm
 
 # Host
 Host: https://lolfight.kr
