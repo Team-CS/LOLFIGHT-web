@@ -13,3 +13,11 @@ export interface MemberDto extends BaseDto {
   memberGuild: GuildDto | null;
   memberGame: MemberGameDto | null;
 }
+
+export interface MemberPublicDto extends BaseDto {
+  id: string;
+  memberName: string;
+  memberIcon: string;
+  memberGuild: GuildDto | null;
+  memberGame: MemberGameDto | null;
+}

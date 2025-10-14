@@ -90,6 +90,10 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
     );
   };
 
+  const handleMemberClick = (name: string) => {
+    router.push(`/members/${name}`);
+  };
+
   return (
     <div className="flex flex-col p-[24px] gap-[12px]">
       <p className={`font-bold ${isMobile ? "text-[20px]" : "text-[24px]"}`}>
@@ -98,22 +102,27 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
 
       <div className="flex justify-between pb-[12px] border-b dark:border-gray-700">
         <div className="flex items-center gap-[8px]">
-          <img
-            className={`object-cover rounded-[12px] ${
-              isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
-            }`}
-            src={`${constant.SERVER_URL}/${
-              post?.postWriter.memberIcon || "public/default.png"
-            }`}
-            alt="memberIcon"
-          />
-          <p
-            className={`font-bold  ${
-              isMobile ? "text-[14px]" : "text-[16px]"
-            } ${isAdminWriter && "text-[#006eff] dark:text-[#006eff]"}`}
+          <div
+            className="flex items-center gap-[8px] cursor-pointer"
+            onClick={() => handleMemberClick(post.postWriter.memberName)}
           >
-            {post?.postWriter.memberName}
-          </p>
+            <img
+              className={`object-cover rounded-[12px] ${
+                isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+              }`}
+              src={`${constant.SERVER_URL}/${
+                post?.postWriter.memberIcon || "public/default.png"
+              }`}
+              alt="memberIcon"
+            />
+            <p
+              className={`font-bold  ${
+                isMobile ? "text-[14px]" : "text-[16px]"
+              } ${isAdminWriter && "text-[#006eff] dark:text-[#006eff]"}`}
+            >
+              {post?.postWriter.memberName}
+            </p>
+          </div>
           <p
             className={`text-gray-400 ${
               isMobile ? "text-[10px]" : "text-[12px]"

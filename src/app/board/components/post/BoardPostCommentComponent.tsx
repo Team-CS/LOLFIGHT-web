@@ -35,11 +35,7 @@ const BoardPostCommentComponent = (props: BoardPostCommentComponentProps) => {
         .catch((error) => {
           const code = error.response.data.code;
           if (code === "COMMON-018") {
-            CustomAlert(
-              "error",
-              "롤로세움",
-              "부적절한 단어가 포함되어 있습니다."
-            );
+            CustomAlert("error", "댓글", "부적절한 단어가 포함되어 있습니다.");
           }
         });
     }

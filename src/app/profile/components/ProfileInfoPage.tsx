@@ -241,9 +241,11 @@ const ProfileInfoPage = () => {
   };
 
   const handleRefreshSummonerInfo = () => {
-    refreshMemberSummonerInfo().then((response) => {
-      setMember(response.data.data);
-    });
+    if (member) {
+      refreshMemberSummonerInfo(member.id).then((response) => {
+        setMember(response.data.data);
+      });
+    }
   };
 
   return (

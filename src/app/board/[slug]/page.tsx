@@ -4,7 +4,6 @@ import BoardComponent from "../components/BoardComponent";
 import boardNavLinks from "@/src/data/boardNavLinks"; // slug 정의된 곳
 import { Metadata } from "next";
 
-// 정적 경로 생성
 export async function generateStaticParams() {
   return boardNavLinks.map((link) => ({
     slug: link.slug,
@@ -15,13 +14,11 @@ type PageProps = {
   slug: string;
 };
 
-// 동적 메타데이터 생성 (메모리 최적화)
 export async function generateMetadata({
   params,
 }: {
   params: PageProps;
 }): Promise<Metadata> {
-  // 메모리 효율적인 slug 검증
   const isValidSlug = boardNavLinks.some((link) => link.slug === params.slug);
 
   if (!isValidSlug) {
@@ -34,14 +31,12 @@ export async function generateMetadata({
     };
   }
 
-  // 메모리 효율적인 보드 정보 조회
   const boardInfo = boardNavLinks.find((link) => link.slug === params.slug);
   const boardTitle = boardInfo?.title || "게시판";
 
   const title = `${boardTitle} | 롤파이트`;
   const description = `롤파이트(LOLFIGHT) ${boardTitle}에서 롤 관련 정보를 공유하고 소통해보세요.`;
 
-  // URL과 이미지 URL을 변수로 저장하여 메모리 중복 사용 방지
   const baseUrl = `https://lolfight.kr/board/${params.slug}`;
   const imageUrl = "https://lolfight.kr/LOLFIGHT_NONE_TEXT.png";
 

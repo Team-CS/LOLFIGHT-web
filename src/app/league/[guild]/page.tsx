@@ -68,6 +68,10 @@ export default function GuildPage() {
     });
   };
 
+  const handleMemberClick = (name: string) => {
+    router.push(`/members/${name}`);
+  };
+
   return (
     <>
       <div className="w-full h-full py-[24px]">
@@ -200,11 +204,19 @@ export default function GuildPage() {
                   <div
                     key={idx}
                     className={
-                      "flex text-[14px] items-center text-center p-[8px] border-b border-[#a9bbee] dark:border-[#3b476d] bg-[#f4f6fd] dark:bg-black"
+                      "flex text-[14px] items-center text-center p-[8px] border-b border-[#a9bbee] dark:border-[#3b476d] bg-[#f4f6fd] dark:bg-black cursor-pointer"
                     }
+                    onClick={() => handleMemberClick(member.memberName)}
                   >
-                    <div className="flex-[1] font-medium">
-                      {member.memberName}
+                    <div className="flex gap-[8px] flex-[1] font-medium justify-center min-w-0">
+                      {!isMobile && (
+                        <img
+                          className="object-cover rounded-[12px] w-[25px] h-[25px]"
+                          src={`${constant.SERVER_URL}/${member.memberIcon}`}
+                          alt="member-icon"
+                        />
+                      )}
+                      <span>{member.memberName}</span>
                     </div>
                     <div className="flex-[2] font-medium">
                       {member.memberGame?.gameName}

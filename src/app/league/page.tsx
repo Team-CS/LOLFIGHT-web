@@ -106,7 +106,9 @@ export default function Page() {
         onSearch={handleSearch}
         onKeyDown={handleKeyDown}
       />
-      <div className="flex flex-col px-[12px] rounded-t-[12px]">
+      <div
+        className={`flex flex-col rounded-t-[12px] ${isMobile && "px-[12px]"}`}
+      >
         <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[12px] w-full whitespace-nowrap">
           <div
             className={`flex-[0.25] text-center ${

@@ -24,7 +24,7 @@ const LeagueHeaderComponent = ({
   return (
     <>
       <div
-        className={`flex items-center justify-between  ${
+        className={`flex items-center justify-between gap-[12px] ${
           isMobile && "px-[12px]"
         }`}
       >
@@ -55,7 +55,7 @@ const LeagueHeaderComponent = ({
           <div className="flex justify-center">
             <div
               className={`bg-gray-100 flex flex-wrap justify-center content-center dark:bg-dark rounded-l-md ${
-                isMobile ? " p-[8px]" : "p-[12px]"
+                isMobile ? "p-[8px]" : "p-[12px]"
               }`}
               onClick={onSearch}
             >
@@ -66,7 +66,7 @@ const LeagueHeaderComponent = ({
               />
             </div>
             <input
-              className={`min-w-[100px] bg-gray-100 focus:outline-none dark:bg-dark font-normal rounded-r-md ${
+              className={`max-w-[150px] bg-gray-100 focus:outline-none dark:bg-dark font-normal rounded-r-md ${
                 isMobile
                   ? "px-[12px] py-[4px] text-[12px]"
                   : "px-[12px] py-[8px] text-[14px]"
