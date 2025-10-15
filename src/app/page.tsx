@@ -11,12 +11,16 @@ import BoardInfoComponent from "./board/components/BoardInfoComponent";
 import { convertBoardNameToCode } from "../utils/string/string.util";
 import { showDoNotTouch } from "../utils/string/doNotTouch";
 import { useIsMobile } from "../hooks/useMediaQuery";
+import LCKStandingsComponent from "../common/components/LCKStandingComponents";
+import { getStandings } from "../api/riot.api";
+import { StandingsResponseDto } from "../common/DTOs/league_standing.dto";
 
 export default function Page() {
   const isMobile = useIsMobile();
   const [guilds, setGuilds] = useState<GuildDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [posts, setPosts] = useState<PostDto[]>([]);
+  const [standing, setStanding] = useState<StandingsResponseDto>();
 
   useEffect(() => {
     try {
@@ -41,6 +45,9 @@ export default function Page() {
         .catch((error) => {
           console.log(error);
         });
+      getStandings().then((response) => {
+        setStanding(response.data.data);
+      });
       showDoNotTouch();
     } catch (error) {
       console.log("Guild fetch error");
@@ -53,80 +60,94 @@ export default function Page() {
     <>
       {/* <Slider></Slider> */}
       <div className="flex flex-col max-w-[1200px] mx-auto py-[28px] gap-[24px]">
-        <div className="flex flex-col gap-[12px]">
-          <LeagueHeaderComponent guildLength={guilds.length} />
-          <div className={`flex flex-col ${isMobile && "px-[12px]"} `}>
-            <div className="flex bg-brandcolor text-white dark:bg-dark font-thin rounded-t-[12px] w-full whitespace-nowrap">
-              <div
-                className={`flex-[0.25] text-center ${
-                  isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
-                }`}
-              >
-                순위
-              </div>
-              <div
-                className={`flex-[1] text-center ${
-                  isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
-                }`}
-              >
-                길드명
-              </div>
-              {!isMobile && (
-                <>
-                  <div className={`flex-[2] text-center px-[8px] text-[16px]`}>
-                    길드소개
-                  </div>
+        {/* 롤파이트 리그 길드 랭킹 */}
+        <div
+          className={`flex flex-col gap-[12px] ${
+            isMobile ? "p-[12px]" : "py-[12px]"
+          }`}
+        >
+          <div
+            className={`flex flex-col shadow-md rounded-[12px] bg-white dark:bg-dark ${
+              isMobile ? "py-[12px]" : "p-[12px]"
+            }`}
+          >
+            <LeagueHeaderComponent guildLength={guilds.length} />
+            <div className={`flex flex-col ${isMobile && "px-[12px]"}`}>
+              <div className="flex w-full whitespace-nowrap py-[8px] bg-[#f4f7ff] dark:bg-branddark border-t border-b border-brandborder dark:border-branddarkborder text-brandcolor font-semibold">
+                <div
+                  className={`flex-[0.25] text-center ${
+                    isMobile ? "px-[8px] text-[12px]" : "px-[8px] text-[14px]"
+                  }`}
+                >
+                  순위
+                </div>
+                <div
+                  className={`flex-[1] text-center ${
+                    isMobile ? "px-[8px] text-[12px]" : "px-[8px] text-[14px]"
+                  }`}
+                >
+                  길드명
+                </div>
+                {!isMobile && (
+                  <>
+                    <div
+                      className={`flex-[2] text-center px-[8px] text-[14px]`}
+                    >
+                      길드소개
+                    </div>
 
-                  <div
-                    className={`flex-[0.25] text-center px-[8px] text-[16px]`}
-                  >
-                    길드원
-                  </div>
-                </>
+                    <div
+                      className={`flex-[0.25] text-center px-[8px] text-[14px]`}
+                    >
+                      길드원
+                    </div>
+                  </>
+                )}
+                <div
+                  className={`flex-[0.25] text-center ${
+                    isMobile ? "px-[4px] text-[12px]" : "px-[8px] text-[14px]"
+                  }`}
+                >
+                  승
+                </div>
+                <div
+                  className={`flex-[0.25] text-center ${
+                    isMobile ? "px-[4px] text-[12px]" : "px-[8px] text-[14px]"
+                  }`}
+                >
+                  패
+                </div>
+                <div
+                  className={`flex-[0.5] text-center ${
+                    isMobile ? "px-[8px] text-[12px]" : "px-[8px] text-[14px]"
+                  }`}
+                >
+                  티어
+                </div>
+                <div
+                  className={`flex-[0.5] text-center ${
+                    isMobile ? "px-[8px] text-[12px]" : "px-[8px] text-[14px]"
+                  }`}
+                >
+                  래더점수
+                </div>
+              </div>
+              {isLoading ? (
+                <div className="flex justify-center items-center py-[28px]">
+                  <p>로딩 중...</p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-[4px] pt-[8px]">
+                  {guilds.map((guild) => (
+                    <GuildInfoComponent key={guild.id} guild={guild} />
+                  ))}
+                </div>
               )}
-              <div
-                className={`flex-[0.25] text-center ${
-                  isMobile ? "px-[4px] text-[14px]" : "px-[8px] text-[16px]"
-                }`}
-              >
-                승
-              </div>
-              <div
-                className={`flex-[0.25] text-center ${
-                  isMobile ? "px-[4px] text-[14px]" : "px-[8px] text-[16px]"
-                }`}
-              >
-                패
-              </div>
-              <div
-                className={`flex-[0.5] text-center ${
-                  isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
-                }`}
-              >
-                티어
-              </div>
-              <div
-                className={`flex-[0.5] text-center ${
-                  isMobile ? "px-[8px] text-[14px]" : "px-[8px] text-[16px]"
-                }`}
-              >
-                래더점수
-              </div>
             </div>
-            {isLoading ? (
-              <div className="flex justify-center items-center py-[28px]">
-                <p>로딩 중...</p>
-              </div>
-            ) : (
-              <>
-                {guilds.map((guild) => (
-                  <GuildInfoComponent key={guild.id} guild={guild} />
-                ))}
-              </>
-            )}
           </div>
         </div>
 
+        {/* 인기 게시글 */}
         <div
           className={`flex flex-col gap-[12px] ${
             isMobile ? "p-[12px]" : "py-[12px]"
@@ -186,6 +207,26 @@ export default function Page() {
             </div>
           </div>
         </div>
+
+        {isLoading ? (
+          <div className="flex justify-center items-center py-[28px]">
+            <p>로딩 중...</p>
+          </div>
+        ) : standing ? (
+          <div
+            className={`flex w-full gap-[24px] ${
+              isMobile && "flex-col p-[12px]"
+            }`}
+          >
+            <div className="flex-[1]">
+              <LCKStandingsComponent data={standing!} />
+            </div>
+
+            <div className="flex-[1] bg-white dark:bg-dark rounded-[12px] px-[12px] py-[12px] shadow-md"></div>
+          </div>
+        ) : (
+          <div />
+        )}
       </div>
     </>
   );

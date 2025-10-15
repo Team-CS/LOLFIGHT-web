@@ -67,7 +67,7 @@ const GuildFightRecord = (props: Props) => {
   return (
     <div>
       <div
-        className={`w-[1200px] h-[130px] flex border shadow rounded-[12px] ${
+        className={`w-full h-[130px] flex border shadow rounded-[12px] ${
           result === "win"
             ? "border-winLightBorder bg-winLightColor dark:border-winDarkBorder dark:bg-winDarkColor"
             : "border-loseLightBorder bg-loseLightColor dark:border-loseDarkBorder dark:bg-loseDarkColor"

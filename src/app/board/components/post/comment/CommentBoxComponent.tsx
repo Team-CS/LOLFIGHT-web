@@ -183,7 +183,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[8px]">
                 <div
-                  className="flex items-center gap-[8px] cursor-pointer"
+                  className="flex items-center gap-[8px] cursor-pointer hover:underline"
                   onClick={() => handleMemberClick(comment.writer.memberName)}
                 >
                   <img

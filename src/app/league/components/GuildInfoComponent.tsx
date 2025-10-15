@@ -20,7 +20,7 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
 
   return (
     <div
-      className="flex items-center py-[6px] border-b bg-brandbgcolor dark:border-dark dark:bg-branddark hover:cursor-pointer"
+      className="flex items-center py-[6px] rounded-[12px] bg-white dark:border-dark dark:bg-dark hover:bg-brandhover dark:hover:bg-branddarkborder cursor-pointer"
       onClick={handleGuildInfo}
     >
       <div className="flex flex-[0.25] px-[8px] items-center justify-center">

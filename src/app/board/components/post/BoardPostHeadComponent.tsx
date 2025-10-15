@@ -103,7 +103,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
       <div className="flex justify-between pb-[12px] border-b dark:border-gray-700">
         <div className="flex items-center gap-[8px]">
           <div
-            className="flex items-center gap-[8px] cursor-pointer"
+            className="flex items-center gap-[8px] cursor-pointer hover:underline"
             onClick={() => handleMemberClick(post.postWriter.memberName)}
           >
             <img
