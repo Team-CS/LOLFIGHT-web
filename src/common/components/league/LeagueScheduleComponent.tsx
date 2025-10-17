@@ -20,8 +20,6 @@ export default function LeagueScheduleComponent(
   const isMobile = useIsMobile();
   const today = new Date();
 
-  const todayRef = useRef<HTMLDivElement | null>(null);
-
   const scheduleByDate = useMemo(() => {
     if (!data?.data?.schedule?.events) return [];
 
@@ -76,12 +74,6 @@ export default function LeagueScheduleComponent(
       .sort((a, b) => a.date.localeCompare(b.date));
   }, [data]);
 
-  useEffect(() => {
-    if (todayRef.current) {
-      todayRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [scheduleByDate]);
-
   return (
     <div className="w-full flex flex-col h-full bg-white dark:bg-dark rounded-[16px] p-[12px] shadow-lg gap-[8px]">
       <h2
@@ -101,11 +93,6 @@ export default function LeagueScheduleComponent(
                   className={`flex gap-[4px] font-normal items-center ${
                     isMobile ? "text-[12px]" : "text-[14px]"
                   }`}
-                  ref={
-                    day.dateObj?.toDateString() === today.toDateString()
-                      ? todayRef
-                      : null
-                  }
                 >
                   <p>{day.date}</p>
                   {day.dateObj?.toDateString() === today.toDateString() && (
