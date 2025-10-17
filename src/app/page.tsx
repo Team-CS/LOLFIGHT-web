@@ -11,9 +11,11 @@ import BoardInfoComponent from "./board/components/BoardInfoComponent";
 import { convertBoardNameToCode } from "../utils/string/string.util";
 import { showDoNotTouch } from "../utils/string/doNotTouch";
 import { useIsMobile } from "../hooks/useMediaQuery";
-import LCKStandingsComponent from "../common/components/LCKStandingComponents";
-import { getStandings } from "../api/riot.api";
-import { StandingsResponseDto } from "../common/DTOs/league_standing.dto";
+import LCKStandingsComponent from "../common/components/league/LCKStandingComponents";
+import { getSchedule, getStandings } from "../api/riot.api";
+import { StandingsResponseDto } from "../common/DTOs/league/league_standing.dto";
+import LeagueScheduleComponent from "../common/components/league/LeagueScheduleComponent";
+import { ScheduleResponseDto } from "../common/DTOs/league/league_schedule.dto";
 
 export default function Page() {
   const isMobile = useIsMobile();
@@ -21,6 +23,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [posts, setPosts] = useState<PostDto[]>([]);
   const [standing, setStanding] = useState<StandingsResponseDto>();
+  const [schedule, setSchedule] = useState<ScheduleResponseDto>();
 
   useEffect(() => {
     try {
@@ -47,6 +50,10 @@ export default function Page() {
         });
       getStandings().then((response) => {
         setStanding(response.data.data);
+      });
+      getSchedule().then((response) => {
+        console.log(response);
+        setSchedule(response.data.data);
       });
       showDoNotTouch();
     } catch (error) {
@@ -212,20 +219,20 @@ export default function Page() {
           <div className="flex justify-center items-center py-[28px]">
             <p>로딩 중...</p>
           </div>
-        ) : standing ? (
+        ) : (
           <div
             className={`flex w-full gap-[24px] ${
               isMobile && "flex-col p-[12px]"
             }`}
           >
             <div className="flex-[1]">
-              <LCKStandingsComponent data={standing!} />
+              <LCKStandingsComponent data={standing} />
             </div>
 
-            <div className="flex-[1] bg-white dark:bg-dark rounded-[12px] px-[12px] py-[12px] shadow-md"></div>
+            <div className="flex-[1]">
+              <LeagueScheduleComponent data={schedule} />
+            </div>
           </div>
-        ) : (
-          <div />
         )}
       </div>
     </>

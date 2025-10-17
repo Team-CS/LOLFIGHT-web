@@ -67,7 +67,7 @@ const GuildFightRecord = (props: Props) => {
   return (
     <div>
       <div
-        className={`w-full h-[130px] flex border shadow rounded-[12px] ${
+        className={`w-full h-[130px] flex border shadow rounded-[12px] p-[4px] ${
           result === "win"
             ? "border-winLightBorder bg-winLightColor dark:border-winDarkBorder dark:bg-winDarkColor"
             : "border-loseLightBorder bg-loseLightColor dark:border-loseDarkBorder dark:bg-loseDarkColor"
@@ -128,12 +128,12 @@ const GuildFightRecord = (props: Props) => {
                 <img
                   src={`${constant.SERVER_URL}/${myTeamData.guild.guildIcon}`}
                   alt="GuildBanner"
-                  className="w-[30px] h-[30px] rounded-[4px] object-cover"
+                  className="w-[30px] h-[30px] rounded-[4px] object-cover shrink-0"
                 />
                 <p
                   className={`font-bold truncate ${
                     isMobile
-                      ? "text-[12px] max-w-[100px]"
+                      ? "text-[12px] max-w-[60px]"
                       : "text-[16px] max-w-[120px]"
                   }`}
                 >
@@ -152,12 +152,12 @@ const GuildFightRecord = (props: Props) => {
                 <img
                   src={`${constant.SERVER_URL}/${enemyTeamData.guild.guildIcon}`}
                   alt="GuildBanner"
-                  className="w-[30px] h-[30px] rounded-[4px] object-cover"
+                  className="w-[30px] h-[30px] rounded-[4px] object-cover shrink-0"
                 />
                 <p
                   className={`font-bold truncate ${
                     isMobile
-                      ? "text-[12px] max-w-[100px]"
+                      ? "text-[12px] max-w-[60px]"
                       : "text-[16px] max-w-[120px]"
                   }`}
                 >
@@ -196,7 +196,7 @@ const GuildFightRecord = (props: Props) => {
           {/* 5 */}
           {!isMobile && (
             <div
-              className={`flex flex-col min-w-[50px] mx-auto border-l justify-center items-center cursor-pointer text-[12px] ${
+              className={`flex min-w-[45px] border-l justify-center items-center cursor-pointer text-[12px] ${
                 result === "win"
                   ? "border-winLightBorder dark:border-winDarkBorder"
                   : "border-loseLightBorder dark:border-loseDarkBorder"

@@ -3,16 +3,16 @@ import React from "react";
 import {
   StandingsResponseDto,
   MatchTeamDto,
-} from "../DTOs/league_standing.dto";
+} from "../../DTOs/league/league_standing.dto";
 import localFont from "next/font/local";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface LCKStandingsComponentProps {
-  data: StandingsResponseDto;
+  data: StandingsResponseDto | undefined;
 }
 
 const sacheon = localFont({
-  src: "../../fonts/SacheonHangGong-Regular.ttf",
+  src: "../../../fonts/SacheonHangGong-Regular.ttf",
   display: "swap",
 });
 
@@ -21,8 +21,14 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
   const standings = data?.data?.standings;
   if (!standings?.length) {
     return (
-      <div className="flex justify-center items-center py-[64px] text-gray-400">
-        현재 순위 정보가 없습니다 😅
+      <div className="flex flex-col justify-center w-full h-full bg-white dark:bg-dark rounded-[16px] p-[12px] shadow-lg gap-[8px]">
+        <div className="flex justify-center items-center py-[28px] bg-[#f0f4ff] dark:bg-[#1e1e2f] rounded-[12px] shadow-md">
+          <p
+            className={`${sacheon.className} font-medium text-gray-700 dark:text-gray-200 text-center`}
+          >
+            현재 순위 정보가 없습니다 😅
+          </p>
+        </div>
       </div>
     );
   }
@@ -42,7 +48,7 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
                   {/* 스테이지 이름 */}
                   <h2
                     className={`${
-                      isMobile ? "text-[14px]" : "text-[20px]"
+                      isMobile ? "text-[14px]" : "text-[16px]"
                     } font-medium ${
                       sacheon.className
                     } text-gray-800 dark:text-gray-100`}
@@ -69,13 +75,13 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
                     ranking.teams.map((team: MatchTeamDto, idx) => (
                       <div
                         key={team.code || idx}
-                        className="grid grid-cols-[0.5fr_3fr_0.5fr_0.5fr] items-center gap-[12px] py-[8px] px-[8px] rounded-[8px]"
+                        className="grid grid-cols-[0.5fr_3fr_0.5fr_0.5fr] items-center gap-[12px] rounded-[8px]"
                       >
                         {/* 순위 배지 */}
                         <div className="flex justify-center items-center">
                           <span
                             className={`flex justify-center items-center ${
-                              isMobile ? "text-[18px]" : "text-[24px]"
+                              isMobile ? "text-[16px]" : "text-[20px]"
                             } ${sacheon.className}`}
                           >
                             {ranking.ordinal + idx}
@@ -88,9 +94,9 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
                             <div
                               className={`${
                                 isMobile
-                                  ? "w-[36px] h-[36px]"
-                                  : "w-[48px] h-[48px]"
-                              } rounded-[12px] bg-black dark:bg-[#334155] flex justify-center items-center p-[6px] shadow-md`}
+                                  ? "w-[24px] h-[24px] rounded-[4px]"
+                                  : "w-[36px] h-[36px] rounded-[8px] "
+                              } bg-black dark:bg-black flex justify-center items-center p-[4px] shadow-md`}
                             >
                               <img
                                 src={team.image}
@@ -101,7 +107,7 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
                           )}
                           <span
                             className={`${
-                              isMobile ? "text-[12px]" : "text-[16px]"
+                              isMobile ? "text-[12px]" : "text-[14px]"
                             } font-medium`}
                           >
                             {team.name}
@@ -111,14 +117,14 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
                         {/* 승/패 컬러 */}
                         <div
                           className={`${
-                            isMobile ? "text-[12px]" : "text-[16px]"
+                            isMobile ? "text-[12px]" : "text-[14px]"
                           } text-center text-green-600 dark:text-green-400 font-semibold`}
                         >
                           {team.record?.wins ?? "-"}
                         </div>
                         <div
                           className={`${
-                            isMobile ? "text-[12px]" : "text-[16px]"
+                            isMobile ? "text-[12px]" : "text-[14px]"
                           } text-center text-red-600 dark:text-red-400 font-semibold`}
                         >
                           {team.record?.losses ?? "-"}

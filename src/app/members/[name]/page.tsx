@@ -61,7 +61,7 @@ export default function Page({ params }: { params: PageProps }) {
         <div className="w-full h-[280px] relative">
           <img
             src="/images/banner-default.png"
-            alt="banner"
+            alt="member-banner"
             className="w-full h-full object-cover rounded-[12px] opacity-80"
           />
         </div>
@@ -160,7 +160,7 @@ export default function Page({ params }: { params: PageProps }) {
         </div>
 
         {member.memberGuild && (
-          <div className="flex items-center w-full gap-[12px] p-[12px] rounded-[12px] dark:bg-dark border dark:border-branddarkborder shadow-sm hover:shadow-md">
+          <div className="flex items-center w-full gap-[12px] p-[12px] rounded-[12px] dark:bg-dark border dark:border-branddarkborder shadow-lg">
             <img
               src={`${constant.SERVER_URL}/${member.memberGuild.guildIcon}`}
               alt="guild icon"
@@ -218,7 +218,7 @@ export default function Page({ params }: { params: PageProps }) {
         )}
 
         {/* 🎖 배지 섹션 */}
-        <div className="w-full flex flex-col items-center justify-center p-[12px] border border-dashed border-gray-300 dark:border-branddarkborder rounded-[12px] text-gray-500 dark:text-gray-400 bg-transparent mt-[8px]">
+        <div className="w-full flex flex-col items-center justify-center p-[12px] border border-dashed border-gray-300 dark:border-branddarkborder rounded-[12px] text-gray-500 dark:text-gray-400 bg-transparent">
           <p className="text-center text-[14px] leading-[20px]">
             🏅 아직 획득한 배지가 없습니다.
             <br />
