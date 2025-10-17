@@ -64,11 +64,6 @@ const pretendard = localFont({
   variable: "--font-pretendard",
 });
 
-// export const viewport: Viewport = {
-//   width: "1280",
-//   initialScale: 1.0,
-// };
-
 export default function RootLayout({
   children,
 }: {

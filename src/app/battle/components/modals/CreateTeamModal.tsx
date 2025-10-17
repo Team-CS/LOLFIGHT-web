@@ -156,15 +156,13 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
     }
   };
 
-  // 이미 배치된 멤버 이름 목록
   const assignedNames = Object.values(assignedMembers)
     .filter((m): m is MemberDto => m !== null)
     .map((m) => m.memberName);
 
-  // 배치 가능한 길드원 목록 (팀에 속하지 않은 길드원 + 기존 팀 멤버(수정 모드 시))
-  const availableGuildMembers = memberList
-    // 팀에 속하지 않은 길드원 중 assignedNames에 없는 사람 필터링
-    .filter((m) => !assignedNames.includes(m.memberName));
+  const availableGuildMembers = memberList.filter(
+    (m) => !assignedNames.includes(m.memberName)
+  );
 
   return (
     <div
@@ -173,14 +171,14 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white dark:bg-branddark rounded-[12px] shadow-lg flex overflow-hidden ${
-          isMobile ? "flex-col" : " w-[900px] h-[600px] "
+        className={`bg-white dark:bg-branddark rounded-[12px] shadow-lg flex overflow-hidden overflow-y-auto ${
+          isMobile ? "flex-col h-[600px]" : " w-[900px] h-[600px] "
         }`}
       >
         {/* Left Side */}
         <div
           className={`flex flex-col p-[24px] border-r border-brandborder dark:border-branddarkborder gap-[16px] bg-brandbgcolor dark:bg-brandgray overflow-y-auto ${
-            isMobile ? "w-full" : "w-[50%]"
+            isMobile ? "w-full h-[50%]" : "w-[50%]"
           }`}
         >
           <div className="flex justify-between items-center">
@@ -287,7 +285,7 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
         {/* Right Side */}
         <div
           className={`flex flex-col p-[24px] gap-[12px] overflow-y-auto ${
-            isMobile ? "w-full" : "w-[50%]"
+            isMobile ? "w-full h-[50%]" : "w-[50%]"
           }`}
         >
           <p className="text-[18px] font-semibold text-branddark dark:text-white">

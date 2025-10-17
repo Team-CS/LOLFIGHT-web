@@ -241,9 +241,11 @@ const ProfileInfoPage = () => {
   };
 
   const handleRefreshSummonerInfo = () => {
-    refreshMemberSummonerInfo().then((response) => {
-      setMember(response.data.data);
-    });
+    if (member) {
+      refreshMemberSummonerInfo(member.id).then((response) => {
+        setMember(response.data.data);
+      });
+    }
   };
 
   return (
@@ -425,7 +427,7 @@ const ProfileInfoPage = () => {
             type="text"
             value={summonerName ?? "등록되지 않음"}
             disabled={!isEdit}
-            placeholder="태양같은사나이#KR1"
+            placeholder="LOLFIGHT#롤파이트"
             onChange={(e) => setSummonerName(e.target.value)}
             className={`border border-[#CDCDCD] rounded dark:border-branddarkborder ${
               isMobile

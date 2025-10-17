@@ -12,6 +12,7 @@ import { jwtDecode } from "jwt-decode";
 import { ReportModal } from "@/src/common/components/modal/ReportModal";
 import { CreateReportDto } from "@/src/common/DTOs/report/report.dto";
 import { reportSubmit } from "@/src/api/report.api";
+import { useRouter } from "next/navigation";
 
 interface CommentBoxComponentProps {
   data: PostDto;
@@ -19,6 +20,7 @@ interface CommentBoxComponentProps {
 
 const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   const isMobile = useIsMobile();
+  const router = useRouter();
   const [commentList, setCommentList] = useState<CommentDto[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [openCommentId, setOpenCommentId] = useState<string>("");
@@ -66,11 +68,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
         .catch((error) => {
           const code = error.response.data.code;
           if (code === "COMMON-018") {
-            CustomAlert(
-              "error",
-              "롤로세움",
-              "부적절한 단어가 포함되어 있습니다."
-            );
+            CustomAlert("error", "답글", "부적절한 단어가 포함되어 있습니다.");
           }
         });
     }
@@ -166,6 +164,10 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
     };
   };
 
+  const handleMemberClick = (name: string) => {
+    router.push(`/members/${name}`);
+  };
+
   return (
     <div className="flex flex-col gap-[8px]">
       {commentList.map((comment) => (
@@ -180,20 +182,25 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
           <div className="flex flex-col w-full gap-[8px]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[8px]">
-                <img
-                  className={`object-cover rounded-[12px] ${
-                    isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
-                  }`}
-                  src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
-                  alt="memberIcon"
-                />
-                <p
-                  className={`font-bold ${
-                    isMobile ? "text-[12px]" : "text-[14px]"
-                  } ${comment.writer.role === "ADMIN" && "text-[#006eff]"}`}
+                <div
+                  className="flex items-center gap-[8px] cursor-pointer hover:underline"
+                  onClick={() => handleMemberClick(comment.writer.memberName)}
                 >
-                  {comment.writer.memberName}
-                </p>
+                  <img
+                    className={`object-cover rounded-[12px] ${
+                      isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+                    }`}
+                    src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
+                    alt="memberIcon"
+                  />
+                  <p
+                    className={`font-bold ${
+                      isMobile ? "text-[12px]" : "text-[14px]"
+                    } ${comment.writer.role === "ADMIN" && "text-[#006eff]"}`}
+                  >
+                    {comment.writer.memberName}
+                  </p>
+                </div>
                 <p
                   className={`text-gray-400 font-normal ${
                     isMobile ? "text-[10px]" : "text-[12px]"
