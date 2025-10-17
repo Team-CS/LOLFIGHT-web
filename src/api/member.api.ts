@@ -1,5 +1,5 @@
 import constant from "../common/constant/constant";
-import { MemberDto } from "../common/DTOs/member/member.dto";
+import { MemberDto, MemberPublicDto } from "../common/DTOs/member/member.dto";
 import { AxiosResponse } from "axios";
 import { ResponseDto } from "../common/DTOs/response.dto";
 import {
@@ -159,10 +159,24 @@ export const deleteMemberSummonerInfo = async (): Promise<
   return await deleteData(url);
 };
 
-export const refreshMemberSummonerInfo = async (): Promise<
-  AxiosResponse<ResponseDto<MemberDto>>
-> => {
+export const refreshMemberSummonerInfo = async (
+  id: string
+): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/riot-summoner/refresh`;
 
-  return await patchData(url);
+  const body = {
+    memberId: id,
+  };
+
+  return await patchData(url, body);
+};
+
+export const findMemberByName = async (
+  name: string
+): Promise<AxiosResponse<ResponseDto<MemberPublicDto>>> => {
+  let url = `${baseUrl}/public`;
+
+  let queryParams = `?name=${name}`;
+  url += queryParams;
+  return await getData(url);
 };

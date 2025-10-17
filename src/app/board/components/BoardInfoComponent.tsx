@@ -55,6 +55,10 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
     return /<img\s+[^>]*src=/.test(content);
   };
 
+  const handleMemberClick = (name: string) => {
+    router.push(`/members/${name}`);
+  };
+
   return (
     <div className="text-sm h-[32px] flex py-[2px]">
       <div
@@ -136,9 +140,10 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
       </div>
 
       <div
-        className={`w-2/12 flex items-center justify-center ${
+        className={`w-2/12 flex items-center justify-center hover:underline cursor-pointer ${
           isMobile ? "text-[8px]" : "text-[14px]"
         } ${isAdminWriter && "text-[#006eff] font-bold"}`}
+        onClick={() => handleMemberClick(data.postWriter.memberName)}
       >
         {data.postWriter.memberName}
       </div>

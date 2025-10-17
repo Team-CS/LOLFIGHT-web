@@ -32,7 +32,7 @@ const Search = () => {
       <input
         className="w-full px-2 bg-gray-100 focus:outline-none dark:bg-dark"
         type="text"
-        placeholder="태양같은사나이#KR1"
+        placeholder="LOLFIGHT#롤파이트"
         onKeyDown={handleKeyPress}
         onChange={handleInputText}
       />

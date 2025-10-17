@@ -89,6 +89,10 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
     });
   };
 
+  const handleMemberClick = (name: string) => {
+    router.push(`/members/${name}`);
+  };
+
   return (
     <div className="flex flex-col px-[24px] py-[12px] gap-[12px]">
       <span className={`font-bold ${isMobile ? "text-[20px]" : "text-[24px]"}`}>
@@ -104,9 +108,10 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
             alt="memberIcon"
           />
           <p
-            className={`font-bold dark:text-gray-400 ${
+            className={`font-bold dark:text-gray-400 cursor-pointer hover:underline ${
               isMobile ? "text-[14px]" : "text-[16px]"
             }`}
+            onClick={() => handleMemberClick(judgment.member.memberName)}
           >
             {judgment?.member.memberName}
           </p>
