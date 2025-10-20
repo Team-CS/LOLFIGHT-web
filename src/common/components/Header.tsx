@@ -9,7 +9,7 @@ import constant from "@/src/common/constant/constant";
 import { PostDto } from "../DTOs/board/post.dto";
 import { getRecentPostList } from "@/src/api/post.api";
 import { useMemberStore } from "../zustand/member.zustand";
-import { removeCookie } from "@/src/utils/cookie/cookie";
+import { getCookie, removeCookie } from "@/src/utils/cookie/cookie";
 import BoardSection from "./header/boardSection";
 import localFont from "next/font/local";
 import CustomAlert from "./alert/CustomAlert";
@@ -57,18 +57,23 @@ export const Header = () => {
           getRecentPostList(eventBoardId),
         ]);
 
-        // 데이터 유효성 검사 및 fallback 처리
         setFreePostList(freeRes?.data?.data ?? []);
         setJoinPostList(rgmRes?.data?.data ?? []);
         setNoticePostList(noticeRes?.data?.data ?? []);
         setEventPostList(eventRes?.data?.data ?? []);
       } catch (error) {
         console.error("게시판 목록 로드 실패:", error);
-        // 필요 시 에러 상태 설정 or 사용자 알림
       }
     };
+
     fetchPosts();
-    checkAlarms();
+
+    const accessToken = getCookie("lf_atk");
+    const refreshToken = getCookie("lf_rtk");
+
+    if (accessToken && refreshToken) {
+      checkAlarms();
+    }
   }, []);
 
   useEffect(() => {
