@@ -42,7 +42,11 @@ export default function Page({ params }: { params: PageProps }) {
   const handleRefreshSummonerInfo = () => {
     if (member) {
       refreshMemberSummonerInfo(member.id).then((response) => {
-        setMember(response.data.data);
+        const { memberGuild: _, ...newData } = response.data.data;
+        setMember({
+          ...newData,
+          memberGuild: member.memberGuild,
+        });
       });
     }
   };

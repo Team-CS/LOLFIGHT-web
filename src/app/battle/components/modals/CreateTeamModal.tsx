@@ -1,6 +1,10 @@
 "use client";
 
-import { createGuildTeam, guildTeamUpdate } from "@/src/api/guild_team.api";
+import {
+  createGuildTeam,
+  guildTeamUpdate,
+  deleteTeamInvite,
+} from "@/src/api/guild_team.api";
 import { getMembersNotInTeam } from "@/src/api/guild.api";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import constant from "@/src/common/constant/constant";
@@ -10,6 +14,7 @@ import {
   UpdateGuildTeamDto,
 } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
 import { CreateGuildTeamMemberDto } from "@/src/common/DTOs/guild/guild_team/guild_team_member.dto";
+import { GuildTeamInviteDto } from "@/src/common/DTOs/guild/guild_team/guild_team_invite.dto";
 import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import { Position } from "@/src/common/types/enums/position.enum";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
@@ -22,11 +27,13 @@ const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 
 interface CreateTeamModalProps {
   onClose: () => void;
+  teamInvites?: GuildTeamInviteDto[];
+  onInviteRemoved?: () => void;
 }
 
 export default function CreateTeamModal(props: CreateTeamModalProps) {
   const isMobile = useIsMobile();
-  const { onClose } = props;
+  const { onClose, teamInvites = [], onInviteRemoved } = props;
   const { member } = useMemberStore();
   const { guildTeam, setGuildTeam } = useGuildTeamStore();
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
@@ -43,6 +50,7 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
 
   // 수정 모드 판단
   const isEditMode = !!guildTeam;
+  const isLeader = guildTeam?.leader.id === member?.id;
 
   // 기존 팀 멤버 있을 시 assignedMembers 초기화
   useEffect(() => {
@@ -55,7 +63,6 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
         SUPPORT: null,
       };
       guildTeam.members.forEach((m) => {
-        // m.member는 MemberDto 타입이라고 가정
         initialAssigned[m.position] = m.member;
       });
       setAssignedMembers(initialAssigned);
@@ -80,6 +87,26 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
   const handleAssign = (member: MemberDto) => {
     if (!selectedPosition) return;
     setAssignedMembers({ ...assignedMembers, [selectedPosition]: member });
+  };
+
+  // 초대 중인 멤버 제거
+  const handleRemoveInvite = async (memberId: string) => {
+    try {
+      await deleteTeamInvite(memberId);
+      CustomAlert("success", "초대 취소", "초대가 취소되었습니다.");
+
+      // 부모 컴포넌트에서 초대 목록을 다시 불러오도록 콜백 호출
+      if (onInviteRemoved) {
+        onInviteRemoved();
+      }
+    } catch (error) {
+      console.error("초대 취소 실패:", error);
+      CustomAlert(
+        "error",
+        "초대 취소 실패",
+        "초대 취소 중 오류가 발생했습니다."
+      );
+    }
   };
 
   // 팀 생성 or 수정 처리 함수
@@ -128,6 +155,14 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
           onClose();
         })
         .catch((error) => {
+          const code = error.response.data.code;
+          if (code === "COMMON-005") {
+            CustomAlert(
+              "warning",
+              "팀 수정",
+              "이미 초대 되어있는 길드원이 존재합니다"
+            );
+          }
           console.log(error);
         });
     } else {
@@ -160,8 +195,14 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
     .filter((m): m is MemberDto => m !== null)
     .map((m) => m.memberName);
 
+  const invitedMemberNames = teamInvites
+    ?.filter((invite) => invite.status === "PENDING")
+    .map((invite) => invite.member.memberName);
+
   const availableGuildMembers = memberList.filter(
-    (m) => !assignedNames.includes(m.memberName)
+    (m) =>
+      !assignedNames?.includes(m.memberName) &&
+      !invitedMemberNames?.includes(m.memberName)
   );
 
   return (
@@ -211,39 +252,40 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
                   }
                 }}
               >
-                {assignedMembers[pos] && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const removed = assignedMembers[pos]; // 제거할 멤버
-
-                      setAssignedMembers((prev) => ({
-                        ...prev,
-                        [pos]: null,
-                      }));
-
-                      if (
-                        removed &&
-                        !memberList.some((m) => m.id === removed.id)
-                      ) {
-                        setMemberList((prev) => [...prev, removed]);
-                      }
-                    }}
-                    className="absolute top-[8px] right-[8px] text-gray-400 hover:text-red-500 text-sm"
+                <div className="flex justify-between">
+                  <p
+                    className={`text-[14px] font-semibold transition-colors ${
+                      selectedPosition === pos
+                        ? "text-brandcolor"
+                        : "text-branddark dark:text-white"
+                    }`}
                   >
-                    ✕
-                  </button>
-                )}
+                    {pos}
+                  </p>
+                  {isLeader && assignedMembers[pos] && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const removed = assignedMembers[pos]; // 제거할 멤버
 
-                <p
-                  className={`text-[14px] font-semibold transition-colors ${
-                    selectedPosition === pos
-                      ? "text-brandcolor"
-                      : "text-branddark dark:text-white"
-                  }`}
-                >
-                  {pos}
-                </p>
+                        setAssignedMembers((prev) => ({
+                          ...prev,
+                          [pos]: null,
+                        }));
+
+                        if (
+                          removed &&
+                          !memberList.some((m) => m.id === removed.id)
+                        ) {
+                          setMemberList((prev) => [...prev, removed]);
+                        }
+                      }}
+                      className=" text-gray-400 hover:text-red-500 text-sm"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
 
                 {assignedMembers[pos] ? (
                   <div className="text-[13px] text-gray-600 dark:text-gray-300">
@@ -273,9 +315,50 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-[13px] text-gray-400">
-                    아직 배치되지 않음
-                  </p>
+                  <div>
+                    {(() => {
+                      const invitedMember = teamInvites?.find(
+                        (invite) =>
+                          invite.position === pos && invite.status === "PENDING"
+                      );
+                      if (invitedMember) {
+                        return (
+                          <div className="relative text-[13px] text-orange-600 dark:text-orange-300">
+                            <p>초대 중: {invitedMember.member.memberName}</p>
+                            <p>
+                              게임이름:{" "}
+                              {invitedMember.member.memberGame?.gameName}
+                            </p>
+                            <p>
+                              티어:{" "}
+                              <span
+                                className={getTierStyle(
+                                  invitedMember.member.memberGame?.gameTier
+                                )}
+                              >
+                                {invitedMember.member.memberGame?.gameTier}
+                              </span>
+                            </p>
+                            <div className="flex gap-[4px] items-center">
+                              <p>
+                                라인: {invitedMember.member.memberGame?.line}
+                              </p>
+                              <img
+                                src={`${constant.SERVER_URL}/public/ranked-positions/${invitedMember.member.memberGame?.line}.png`}
+                                alt={invitedMember.member.memberGame?.line}
+                                className="w-[15px] h-[15px]"
+                              />
+                            </div>
+                          </div>
+                        );
+                      }
+                      return (
+                        <p className="text-[13px] text-gray-400">
+                          아직 배치되지 않음
+                        </p>
+                      );
+                    })()}
+                  </div>
                 )}
               </div>
             ))}
@@ -294,6 +377,61 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
           <p className="text-sm text-gray-400">
             Riot 계정 연동이 되어있으며 팀에 속하지 않는 길드원의 목록입니다
           </p>
+
+          {/* 초대 중인 멤버 섹션 */}
+          {teamInvites?.filter((invite) => invite.status === "PENDING").length >
+            0 && (
+            <div className="mb-[16px]">
+              <p className="text-[16px] font-semibold text-orange-600 dark:text-orange-300 mb-[8px]">
+                📨 초대 중인 멤버
+              </p>
+              <div className="flex flex-col gap-[8px]">
+                {teamInvites
+                  .filter((invite) => invite.status === "PENDING")
+                  .map((invite, i) => (
+                    <div
+                      key={i}
+                      className="relative p-[12px] rounded-lg border border-orange-300 dark:border-orange-600 bg-orange-50 dark:bg-orange-900/20"
+                    >
+                      {isLeader && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveInvite(invite.member.id);
+                          }}
+                          className="absolute top-[8px] right-[8px] text-gray-400 text-[14px] hover:text-red-500 rounded-full w-[20px] h-[20px] flex items-center justify-center"
+                        >
+                          ✕
+                        </button>
+                      )}
+                      <p className="text-[14px] font-medium text-orange-800 dark:text-orange-200">
+                        {invite.member.memberName} ({invite.position})
+                      </p>
+                      <p className="text-[13px] text-orange-600 dark:text-orange-300">
+                        소환사 명: {invite.member.memberGame?.gameName}
+                      </p>
+                      <div className="flex items-center gap-[4px] text-[13px] text-orange-600 dark:text-orange-300">
+                        티어:
+                        <span
+                          className={getTierStyle(
+                            invite.member.memberGame?.gameTier
+                          )}
+                        >
+                          {invite.member.memberGame?.gameTier}
+                        </span>{" "}
+                        | 라인: {invite.member.memberGame?.line}
+                        <img
+                          src={`${constant.SERVER_URL}/public/ranked-positions/${invite.member.memberGame?.line}.png`}
+                          alt={invite.member.memberGame?.line}
+                          className="w-[15px] h-[15px]"
+                        />
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col gap-[12px]">
             {availableGuildMembers.length > 0 ? (
               availableGuildMembers.map((member, i) => (
