@@ -1,5 +1,6 @@
 import { BaseDto } from "../base.dto";
 import { GuildDto } from "../guild/guild.dto";
+import { WalletDto } from "../wallet/wallet.dto";
 import { MemberGameDto } from "./member_game.dto";
 
 export interface MemberDto extends BaseDto {
@@ -12,6 +13,7 @@ export interface MemberDto extends BaseDto {
   role: string;
   memberGuild: GuildDto | null;
   memberGame: MemberGameDto | null;
+  memberWallet: WalletDto;
 }
 
 export interface MemberPublicDto extends BaseDto {

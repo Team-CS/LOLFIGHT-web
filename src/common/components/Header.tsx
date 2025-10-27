@@ -230,6 +230,16 @@ export const Header = () => {
                             <p className="font-light text-base">
                               {member.memberId}
                             </p>
+                            <div className="flex items-center gap-[4px]">
+                              <p className="font-light text-[12px]">
+                                {member.memberWallet.point}
+                              </p>
+                              <img
+                                className="object-cover w-[15px] h-[15px]"
+                                src={`/images/point.png`}
+                                alt="포인트"
+                              />
+                            </div>
                           </div>
                           <CiBellOn
                             className="w-[30px] h-[30px] absolute top-[5px] right-[5px] cursor-pointer"

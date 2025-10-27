@@ -18,6 +18,7 @@ import { MemberGameDto } from "@/src/common/DTOs/member/member_game.dto";
 import { formatElapsedTime } from "@/src/utils/string/string.util";
 import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import LineSelector from "./context-menu/LineSelector";
+import { checkAttendance } from "@/src/api/wallet.api";
 
 const ProfileInfoPage = () => {
   const isMobile = useIsMobile();
@@ -30,6 +31,7 @@ const ProfileInfoPage = () => {
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [hasCheckedToday, setHasCheckedToday] = useState(false);
 
   const typeToImageMap: Record<string, string> = {
     google: "Google_Original",
@@ -54,6 +56,23 @@ const ProfileInfoPage = () => {
     const diff = Date.now() - new Date(updatedAt).getTime();
     setIsDisabled(diff < FIVE_MINUTES);
   }, [updatedAt]);
+
+  useEffect(() => {
+    if (!member?.memberWallet?.lastAttendance) {
+      setHasCheckedToday(false);
+      return;
+    }
+
+    const last = new Date(member.memberWallet.lastAttendance);
+    const today = new Date();
+
+    // 오늘 0시 기준으로 비교
+    today.setHours(0, 0, 0, 0);
+    const lastDate = new Date(last);
+    lastDate.setHours(0, 0, 0, 0);
+
+    setHasCheckedToday(lastDate.getTime() === today.getTime());
+  }, [member?.memberWallet?.lastAttendance]);
 
   const handleOpenModal = (modal: ModalType) => {
     setOpenModal(modal);
@@ -248,6 +267,28 @@ const ProfileInfoPage = () => {
     }
   };
 
+  const handleAttendanceCheck = () => {
+    checkAttendance()
+      .then((response) => {
+        if (member) {
+          setMember({
+            ...member,
+            memberWallet: response.data.data,
+          });
+        }
+      })
+      .catch((error) => {
+        const code = error.response.data.code;
+        if (code === "COMMON-002") {
+          CustomAlert(
+            "warning",
+            "출석체크",
+            "오늘 이미 출석체크를 완료했습니다."
+          );
+        }
+      });
+  };
+
   return (
     <div className="flex flex-col p-[16px] gap-[24px]">
       <div className="flex justify-between items-center pb-5 border-b border-gray-200 dark:border-branddarkborder">
@@ -281,17 +322,57 @@ const ProfileInfoPage = () => {
       </div>
 
       <div className="flex gap-[24px] items-center">
-        <div
-          className={`shrink-0 ${
-            isMobile ? "w-[100px] h-[100px]" : "w-[150px] h-[150px]"
-          }`}
-        >
-          <img
-            className="w-full h-full rounded-[12px] object-cover object-center block"
-            src={`${constant.SERVER_URL}/${member!.memberIcon}`}
-            alt="memberIcon"
-          />
+        <div className="flex flex-col gap-[12px] items-center justify-center">
+          {/* 프로필 이미지 */}
+          <div
+            className={`shrink-0 ${
+              isMobile ? "w-[100px] h-[100px]" : "w-[150px] h-[150px]"
+            }`}
+          >
+            <img
+              className="w-full h-full rounded-[12px] object-cover object-center block"
+              src={`${constant.SERVER_URL}/${member!.memberIcon}`}
+              alt="memberIcon"
+            />
+          </div>
+
+          {/* 포인트 & 출석체크 버튼 */}
+          <div className={`flex items-center gap-[8px] `}>
+            <div className="flex items-center gap-[4px]">
+              <p
+                className={`font-semibold ${
+                  isMobile ? "text-[12px]" : "text-[14px]"
+                }`}
+              >
+                {member!.memberWallet.point}
+              </p>
+              <img
+                className="w-[15px] h-[15px] object-cover"
+                src="/images/point.png"
+                alt="포인트"
+              />
+            </div>
+
+            <button
+              disabled={hasCheckedToday}
+              onClick={() => !hasCheckedToday && handleAttendanceCheck()}
+              className={`rounded-[4px] font-normal text-white
+                ${
+                  hasCheckedToday
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : " bg-brandcolor  hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray shadow-md"
+                }
+                ${
+                  isMobile
+                    ? "text-[12px] px-[8px] py-[4px]"
+                    : "text-[14px] px-[12px] py-[6px]"
+                }`}
+            >
+              {isMobile ? "출석" : "출석체크"}
+            </button>
+          </div>
         </div>
+
         <div className="flex flex-col w-full gap-[8px]">
           <div className="flex flex-col gap-[4px]">
             <label className={`${isMobile ? "text-[10px]" : "text-[14px]"}`}>
