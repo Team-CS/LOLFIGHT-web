@@ -36,10 +36,11 @@ export default function Page() {
       {/* 로고 */}
       <motion.img
         src="/LOLFIGHT_NONE_TEXT.png"
-        className="w-[100px] h-[100px] drop-shadow-lg"
+        className="w-[100px] h-[100px] drop-shadow-lg cursor-pointer"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
+        onClick={() => router.replace("/")}
       />
 
       {/* 타이틀 */}

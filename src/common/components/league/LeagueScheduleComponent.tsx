@@ -20,7 +20,8 @@ export default function LeagueScheduleComponent(
   const isMobile = useIsMobile();
   const today = new Date();
 
-  const todayRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const todayRef = useRef<HTMLDivElement>(null);
 
   const scheduleByDate = useMemo(() => {
     if (!data?.data?.schedule?.events) return [];
@@ -77,8 +78,16 @@ export default function LeagueScheduleComponent(
   }, [data]);
 
   useEffect(() => {
-    if (todayRef.current) {
-      todayRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (containerRef.current && todayRef.current) {
+      const container = containerRef.current;
+      const todayEl = todayRef.current;
+
+      const relativeTop = todayEl.offsetTop - container.offsetTop;
+
+      container.scrollTo({
+        top: relativeTop,
+        behavior: "smooth",
+      });
     }
   }, [scheduleByDate]);
 
@@ -92,20 +101,26 @@ export default function LeagueScheduleComponent(
         경기 일정
       </h2>
 
-      <div className="flex-[1] w-full overflow-y-scroll max-h-[580px] pr-[12px]">
+      <div
+        className="flex-[1] w-full overflow-y-scroll max-h-[580px] pr-[12px]"
+        ref={containerRef}
+      >
         <div className="flex flex-col gap-[16px]">
           {scheduleByDate.length > 0 ? (
             scheduleByDate.map((day, i) => (
-              <div className="flex flex-col gap-[8px]" key={i}>
+              <div
+                className="flex flex-col gap-[8px]"
+                key={i}
+                ref={
+                  day.dateObj?.toDateString() === today.toDateString()
+                    ? todayRef
+                    : null
+                }
+              >
                 <div
                   className={`flex gap-[4px] font-normal items-center ${
                     isMobile ? "text-[12px]" : "text-[14px]"
                   }`}
-                  ref={
-                    day.dateObj?.toDateString() === today.toDateString()
-                      ? todayRef
-                      : null
-                  }
                 >
                   <p>{day.date}</p>
                   {day.dateObj?.toDateString() === today.toDateString() && (

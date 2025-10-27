@@ -11,7 +11,6 @@ import ProfileInfoPage from "../profile/components/ProfileInfoPage";
 import WithdrawalPage from "./components/WithdrawalPage";
 import GuildManagePage from "./components/GuildManagePage";
 import { ProfileHeader } from "./components/profileHeader";
-import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 type ProfileSection = "profile" | "guild" | "withdrawal";
 

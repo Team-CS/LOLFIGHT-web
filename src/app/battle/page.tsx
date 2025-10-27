@@ -9,8 +9,10 @@ import constant from "@/src/common/constant/constant";
 import {
   deleteGuildTeam,
   getMyGuildTeam,
+  getMyTeamInviteList,
   leaveGuildTeam,
 } from "@/src/api/guild_team.api";
+import { GuildTeamInviteDto } from "@/src/common/DTOs/guild/guild_team/guild_team_invite.dto";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { useRouter } from "next/navigation";
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
@@ -57,6 +59,7 @@ export default function Page() {
   const [myTeamSlot, setMyTeamSlot] = useState<ScrimSlotDto | null>();
   const [scrimSlots, setScrimSlots] = useState<ScrimSlotDto[]>([]);
   const [applications, setApplications] = useState<ScrimApplicationDto[]>([]);
+  const [teamInvites, setTeamInvites] = useState<GuildTeamInviteDto[]>([]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(10); // 총 페이지 수
@@ -98,11 +101,23 @@ export default function Page() {
     getScrimSlot(guildTeam.id)
       .then((response) => {
         const data = response.data.data;
-        if (data.status !== "CLOSED") setMyTeamSlot(response.data.data);
+        if (data && data.status !== "CLOSED") setMyTeamSlot(response.data.data);
       })
       .catch((error) => {
         console.log(error);
       });
+  }, [guildTeam]);
+
+  useEffect(() => {
+    if (guildTeam) {
+      getMyTeamInviteList(guildTeam.id)
+        .then((response) => {
+          setTeamInvites(response.data.data);
+        })
+        .catch((error) => {
+          console.log("팀 초대 목록 조회 실패:", error);
+        });
+    }
   }, [guildTeam]);
 
   useEffect(() => {
@@ -469,6 +484,19 @@ export default function Page() {
     setIsRegisterTeamOpen(true);
   };
 
+  const handleInviteRemoved = () => {
+    // 초대 목록을 다시 불러오기
+    if (guildTeam) {
+      getMyTeamInviteList(guildTeam.id)
+        .then((response) => {
+          setTeamInvites(response.data.data);
+        })
+        .catch((error) => {
+          console.log("팀 초대 목록 조회 실패:", error);
+        });
+    }
+  };
+
   return (
     <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
       {guildTeam && member ? (
@@ -577,6 +605,13 @@ export default function Page() {
                       teamMember={member}
                       roleTag={pos}
                       onAddClick={() => setIsCreateTeamOpen(true)}
+                      invitedMember={
+                        teamInvites?.find(
+                          (invite) =>
+                            invite.position === pos &&
+                            invite.status === "PENDING"
+                        )?.member
+                      }
                     />
                   );
                 })}
@@ -823,7 +858,11 @@ export default function Page() {
         />
       )}
       {isCreateTeamOpen && (
-        <CreateTeamModal onClose={() => setIsCreateTeamOpen(false)} />
+        <CreateTeamModal
+          onClose={() => setIsCreateTeamOpen(false)}
+          teamInvites={teamInvites}
+          onInviteRemoved={handleInviteRemoved}
+        />
       )}
 
       {isRegisterTeamOpen && (
