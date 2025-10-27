@@ -20,6 +20,9 @@ export default function LeagueScheduleComponent(
   const isMobile = useIsMobile();
   const today = new Date();
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const todayRef = useRef<HTMLDivElement>(null);
+
   const scheduleByDate = useMemo(() => {
     if (!data?.data?.schedule?.events) return [];
 
@@ -74,6 +77,20 @@ export default function LeagueScheduleComponent(
       .sort((a, b) => a.date.localeCompare(b.date));
   }, [data]);
 
+  useEffect(() => {
+    if (containerRef.current && todayRef.current) {
+      const container = containerRef.current;
+      const todayEl = todayRef.current;
+
+      const relativeTop = todayEl.offsetTop - container.offsetTop;
+
+      container.scrollTo({
+        top: relativeTop,
+        behavior: "smooth",
+      });
+    }
+  }, [scheduleByDate]);
+
   return (
     <div className="w-full flex flex-col h-full bg-white dark:bg-dark rounded-[16px] p-[12px] shadow-lg gap-[8px]">
       <h2
@@ -84,11 +101,22 @@ export default function LeagueScheduleComponent(
         경기 일정
       </h2>
 
-      <div className="flex-[1] w-full overflow-y-scroll max-h-[580px] pr-[12px]">
+      <div
+        className="flex-[1] w-full overflow-y-scroll max-h-[580px] pr-[12px]"
+        ref={containerRef}
+      >
         <div className="flex flex-col gap-[16px]">
           {scheduleByDate.length > 0 ? (
             scheduleByDate.map((day, i) => (
-              <div className="flex flex-col gap-[8px]" key={i}>
+              <div
+                className="flex flex-col gap-[8px]"
+                key={i}
+                ref={
+                  day.dateObj?.toDateString() === today.toDateString()
+                    ? todayRef
+                    : null
+                }
+              >
                 <div
                   className={`flex gap-[4px] font-normal items-center ${
                     isMobile ? "text-[12px]" : "text-[14px]"

@@ -40,6 +40,22 @@ export const getMyInviteList = async (): Promise<
   return await getData(url);
 };
 
+export const getMyTeamInviteList = async (
+  teamId: string
+): Promise<AxiosResponse<ResponseDto<GuildTeamInviteDto[]>>> => {
+  let url = `${baseUrl}/invite/team?teamId=${teamId}`;
+
+  return await getData(url);
+};
+
+export const deleteTeamInvite = async (
+  memberId: string
+): Promise<AxiosResponse<ResponseDto<void>>> => {
+  let url = `${baseUrl}/invite/delete?memberId=${memberId}`;
+
+  return await deleteData(url);
+};
+
 export const acceptGuildTeamInvite = async (
   inviteId: string
 ): Promise<void> => {

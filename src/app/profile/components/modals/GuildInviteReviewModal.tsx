@@ -40,36 +40,40 @@ export const GuildInviteReviewModal = (props: GuildInviteReviewModalProps) => {
             <span className="text-[16px] font-bold text-gray-900 dark:text-white">
               {inviteData.member?.memberName}
             </span>
-            <div className="flex items-center gap-[6px]">
-              <span className="text-[14px] text-gray-600 dark:text-gray-300">
-                {inviteData.member?.memberGame?.gameName}
-              </span>
-              <img
-                src={`${constant.SERVER_URL}/public/rank/${
-                  inviteData.member?.memberGame?.gameTier?.split(" ")[0]
-                }.png`}
-                alt="tier"
-                className="w-[20px] h-[20px]"
-              />
-              <span
-                className={`text-[14px] ${getTierStyle(
-                  inviteData.member?.memberGame?.gameTier
-                )}`}
-              >
-                {inviteData.member?.memberGame?.gameTier}
-              </span>
-            </div>
+            {inviteData.member?.memberGame && (
+              <>
+                <div className="flex items-center gap-[6px]">
+                  <span className="text-[14px] text-gray-600 dark:text-gray-300">
+                    {inviteData.member?.memberGame?.gameName}
+                  </span>
+                  <img
+                    src={`${constant.SERVER_URL}/public/rank/${
+                      inviteData.member?.memberGame?.gameTier?.split(" ")[0]
+                    }.png`}
+                    alt="tier"
+                    className="w-[20px] h-[20px]"
+                  />
+                  <span
+                    className={`text-[14px] ${getTierStyle(
+                      inviteData.member?.memberGame?.gameTier
+                    )}`}
+                  >
+                    {inviteData.member?.memberGame?.gameTier}
+                  </span>
+                </div>
 
-            <div className="flex items-center gap-[6px]">
-              <img
-                src={`${constant.SERVER_URL}/public/ranked-positions/${inviteData.member?.memberGame?.line}.png`}
-                alt="tier"
-                className="w-[20px] h-[20px]"
-              />
-              <span className="text-[12px] text-gray-700 dark:text-gray-400">
-                {inviteData.member?.memberGame?.line}
-              </span>
-            </div>
+                <div className="flex items-center gap-[6px]">
+                  <img
+                    src={`${constant.SERVER_URL}/public/ranked-positions/${inviteData.member?.memberGame?.line}.png`}
+                    alt="tier"
+                    className="w-[20px] h-[20px]"
+                  />
+                  <span className="text-[12px] text-gray-700 dark:text-gray-400">
+                    {inviteData.member?.memberGame?.line}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

@@ -23,7 +23,6 @@ import { BattleTeamModal } from "../battle/components/modals/BattleTeamModal";
 import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { useAlarmStore } from "@/src/common/zustand/alarm.zustand";
-import { getCookie } from "@/src/utils/cookie/cookie";
 
 export default function Page() {
   const router = useRouter();

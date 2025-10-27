@@ -1,5 +1,6 @@
 import constant from "@/src/common/constant/constant";
 import { GuildTeamMemberDto } from "@/src/common/DTOs/guild/guild_team/guild_team_member.dto";
+import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { getTierStyle } from "@/src/utils/string/string.util";
 
@@ -8,16 +9,88 @@ interface TeamMemberCardProps {
   roleTag: "TOP" | "JUNGLE" | "MID" | "ADC" | "SUPPORT";
   isEmpty?: boolean;
   onAddClick?: () => void;
+  invitedMember?: MemberDto;
 }
 
 const TeamMemberCard = (props: TeamMemberCardProps) => {
-  const { teamMember, roleTag, isEmpty = false, onAddClick } = props;
+  const {
+    teamMember,
+    roleTag,
+    isEmpty = false,
+    onAddClick,
+    invitedMember,
+  } = props;
   const isMobile = useIsMobile();
+
+  // 초대 중인 멤버가 있는 경우 초대 상태 표시
+  if (invitedMember && !teamMember) {
+    const summonerName = invitedMember.memberGame?.gameName || "Unknown";
+    const tier = invitedMember.memberGame?.gameTier || "UNRANKED";
+    const rankImageUrl = `${constant.SERVER_URL}/public/rank/${
+      tier.split(" ")[0]
+    }.png`;
+    const profileImgUrl = `${constant.SERVER_URL}/${invitedMember.memberIcon}`;
+
+    return (
+      <div
+        className="flex w-full items-center justify-center border border-orange-300 rounded-[8px] bg-no-repeat bg-orange-50 dark:border-orange-600 dark:bg-orange-900/20"
+        style={{
+          backgroundImage: `url(${rankImageUrl})`,
+          backgroundColor: "#f0f6fd",
+          backgroundSize: "50%",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="flex w-full items-center justify-between bg-orange-100/80 rounded-md px-[12px] py-[8px] gap-[8px] shadow-sm dark:bg-orange-800/30">
+          <div className="flex items-center gap-[8px] min-w-0">
+            <img
+              src={profileImgUrl}
+              alt="profile"
+              className={`object-cover rounded-full ${
+                isMobile ? "w-[28px] h-[28px]" : "w-[34px] h-[34px]"
+              }`}
+            />
+            <div className="truncate min-w-0">
+              <p className="text-[14px] font-medium dark:text-white truncate">
+                {summonerName}
+              </p>
+              <p className="text-[12px] text-orange-600 dark:text-orange-300">
+                초대 중...
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-[6px] whitespace-nowrap">
+            <img
+              src={rankImageUrl}
+              alt={tier}
+              width={isMobile ? 22 : 24}
+              height={isMobile ? 22 : 24}
+            />
+            <p className={`${isMobile ? "text-[12px]" : "text-[14px]"}`}>
+              <span className={getTierStyle(tier)}>{tier}</span>
+            </p>
+            {isMobile ? (
+              <img
+                src={`${constant.SERVER_URL}/public/ranked-positions/${roleTag}.png`}
+                width={18}
+                height={18}
+              />
+            ) : (
+              <div className="text-[14px] px-[6px] py-[2px] rounded-md bg-orange-200 text-orange-800 font-medium select-none dark:bg-orange-700 dark:text-orange-200">
+                {roleTag}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (isEmpty || !teamMember || !teamMember.member) {
     return (
       <div
         onClick={onAddClick}
-        className="cursor-pointer flex items-center justify-center h-[60px] px-[8px] py-[12px] border border-dashed border-brandborder dark:border-branddarkborder rounded-lg bg-white/60 dark:bg-brandgray text-branddark dark:text-white hover:bg-brandhover transition"
+        className="cursor-pointer flex items-center justify-center h-[60px] px-[8px] py-[12px] border border-dashed border-brandborder dark:border-branddarkborder rounded-[8px] bg-white/60 dark:bg-brandgray text-branddark dark:text-white hover:bg-brandhover transition"
       >
         <div className="flex items-center gap-[4px]">
           <span className="text-[14px]">+</span>

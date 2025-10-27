@@ -153,6 +153,26 @@ export default function Page() {
           </div>
         </div>
 
+        {isLoading ? (
+          <div className="flex justify-center items-center py-[28px]">
+            <p>로딩 중...</p>
+          </div>
+        ) : (
+          <div
+            className={`flex w-full gap-[24px] ${
+              isMobile && "flex-col p-[12px]"
+            }`}
+          >
+            <div className="flex-[1]">
+              <LCKStandingsComponent data={standing} />
+            </div>
+
+            <div className="flex-[1]">
+              <LeagueScheduleComponent data={schedule} />
+            </div>
+          </div>
+        )}
+
         {/* 인기 게시글 */}
         <div
           className={`flex flex-col gap-[12px] ${
@@ -213,26 +233,6 @@ export default function Page() {
             </div>
           </div>
         </div>
-
-        {isLoading ? (
-          <div className="flex justify-center items-center py-[28px]">
-            <p>로딩 중...</p>
-          </div>
-        ) : (
-          <div
-            className={`flex w-full gap-[24px] ${
-              isMobile && "flex-col p-[12px]"
-            }`}
-          >
-            <div className="flex-[1]">
-              <LCKStandingsComponent data={standing} />
-            </div>
-
-            <div className="flex-[1]">
-              <LeagueScheduleComponent data={schedule} />
-            </div>
-          </div>
-        )}
       </div>
     </>
   );

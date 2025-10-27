@@ -117,7 +117,16 @@ const GuildManagePage = () => {
           CustomAlert("success", "길드탈퇴", "성공적으로 길드를 탈퇴했습니다.");
           router.push("/");
         })
-        .catch(() => {});
+        .catch((error) => {
+          const code = error.response.data.code;
+          if (code === "COMMON-002") {
+            CustomAlert(
+              "warning",
+              "길드탈퇴",
+              "속한 길드팀이 존재합니다. \n 길드팀을 먼저 탈퇴후 재시도 해주세요"
+            );
+          }
+        });
     } else {
       CustomAlert(
         "warning",
@@ -500,42 +509,47 @@ const GuildManagePage = () => {
                       </span>
                     </div>
 
-                    {/* 소환사명 */}
-                    <span className="text-[12px] text-gray-500 dark:text-gray-300 italic truncate">
-                      {invite.member?.memberGame?.gameName}
-                    </span>
+                    {invite.member?.memberGame && (
+                      <>
+                        <span className="text-[12px] text-gray-500 dark:text-gray-300 italic truncate">
+                          {invite.member?.memberGame?.gameName}
+                        </span>
 
-                    {/* 티어 */}
-                    <div className="flex items-center justify-end gap-[6px] text-[12px] text-gray-700 dark:text-gray-400">
-                      <img
-                        src={`${constant.SERVER_URL}/public/rank/${
-                          invite.member?.memberGame?.gameTier?.split(" ")[0]
-                        }.png`}
-                        alt="line"
-                        className={`${
-                          isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
-                        }`}
-                      />
-                      <span
-                        className={getTierStyle(
-                          invite.member?.memberGame?.gameTier
-                        )}
-                      >
-                        {invite.member?.memberGame?.gameTier}
-                      </span>
-                    </div>
+                        <div className="flex items-center justify-end gap-[6px] text-[12px] text-gray-700 dark:text-gray-400">
+                          <img
+                            src={`${constant.SERVER_URL}/public/rank/${
+                              invite.member?.memberGame?.gameTier?.split(" ")[0]
+                            }.png`}
+                            alt="line"
+                            className={`${
+                              isMobile
+                                ? "w-[15px] h-[15px]"
+                                : "w-[20px] h-[20px]"
+                            }`}
+                          />
+                          <span
+                            className={getTierStyle(
+                              invite.member?.memberGame?.gameTier
+                            )}
+                          >
+                            {invite.member?.memberGame?.gameTier}
+                          </span>
+                        </div>
 
-                    {/* 라인 */}
-                    <div className="flex items-center justify-end gap-[6px] text-[12px] text-gray-700 dark:text-gray-400">
-                      <img
-                        src={`${constant.SERVER_URL}/public/ranked-positions/${invite.member?.memberGame?.line}.png`}
-                        alt="line"
-                        className={`${
-                          isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
-                        }`}
-                      />
-                      <span>{invite.member?.memberGame?.line}</span>
-                    </div>
+                        <div className="flex items-center justify-end gap-[6px] text-[12px] text-gray-700 dark:text-gray-400">
+                          <img
+                            src={`${constant.SERVER_URL}/public/ranked-positions/${invite.member?.memberGame?.line}.png`}
+                            alt="line"
+                            className={`${
+                              isMobile
+                                ? "w-[15px] h-[15px]"
+                                : "w-[20px] h-[20px]"
+                            }`}
+                          />
+                          <span>{invite.member?.memberGame?.line}</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 ))}
               </div>

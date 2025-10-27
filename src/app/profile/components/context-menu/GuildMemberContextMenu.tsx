@@ -38,6 +38,7 @@ const GuildMemberContextMenu = ({
   return (
     <div
       ref={menuRef}
+      onClick={(e) => e.stopPropagation()}
       className="absolute z-50 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 rounded shadow-md"
       style={{
         top: position.y,
