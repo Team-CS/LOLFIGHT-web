@@ -1,0 +1,68 @@
+/* ======================================== */
+/* 닉네임 화려한 애니메이션 효과 - flare-name */
+/* ======================================== */
+
+/* 배경 불꽃 폭발 애니메이션 */
+@keyframes flare-name-flare {
+  0% {
+    background-position: 0% 0%;
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+  50% {
+    background-position: 60% 40%;
+    transform: scale(1.05) rotate(1deg);
+    filter: brightness(1.5);
+  }
+  100% {
+    background-position: 0% 0%;
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+}
+
+/* 테두리 깜빡임 + 광선 효과 */
+@keyframes flare-name-glow {
+  0% {
+    border-color: #ff7d2b;
+    box-shadow: 0 0 40px #ff7d2b, 0 0 80px rgba(255, 69, 0, 0.6),
+      inset 0 0 30px rgba(255, 140, 0, 0.3);
+  }
+  50% {
+    border-color: #ff4500;
+    box-shadow: 0 0 60px #ff9500, 0 0 100px rgba(255, 99, 0, 0.8),
+      inset 0 0 40px rgba(255, 140, 0, 0.5);
+  }
+  100% {
+    border-color: #ff7d2b;
+    box-shadow: 0 0 40px #ff7d2b, 0 0 80px rgba(255, 69, 0, 0.6),
+      inset 0 0 30px rgba(255, 140, 0, 0.3);
+  }
+}
+
+/* 닉네임 강조 스타일 */
+.flare-name {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 4px;
+  border-radius: 6px;
+  background: radial-gradient(
+    ellipse at center,
+    #fff100 0%,
+    #ffb700 25%,
+    #ff4500 50%,
+    #b22222 75%,
+    #4b0000 100%
+  );
+  background-size: 200% 200%;
+  color: #ffffff;
+  text-shadow: 0 0 6px #fff100, 0 0 12px #ffb700, 0 0 18px #ff4500,
+    0 0 24px #b22222;
+  border: 2px solid #ff9500;
+  position: relative;
+  overflow: hidden;
+  animation: flare-name-flare 2s ease-in-out infinite,
+    flare-name-glow 3.5s linear infinite;
+  box-shadow: 0 0 50px rgba(255, 165, 0, 0.9), 0 0 90px rgba(255, 69, 0, 0.7),
+    inset 0 0 30px rgba(255, 200, 0, 0.4);
+}

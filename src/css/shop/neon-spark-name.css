@@ -1,0 +1,83 @@
+/* ======================================== */
+/* 닉네임 네온 스파크 - 청록/보라 중심 - neon-spark-name */
+/* ======================================== */
+
+/* 네온 색상 애니메이션 */
+@keyframes neon-spark-colors {
+  0% {
+    text-shadow: 0 0 4px #0ff, 0 0 8px #0ff, 0 0 12px #00f;
+    color: #0ff;
+  }
+  25% {
+    text-shadow: 0 0 6px #8a2be2, 0 0 12px #9370db, 0 0 18px #00f;
+    color: #8a2be2;
+  }
+  50% {
+    text-shadow: 0 0 8px #00f, 0 0 16px #0ff, 0 0 24px #7fffd4;
+    color: #00f;
+  }
+  75% {
+    text-shadow: 0 0 6px #7fffd4, 0 0 12px #00f, 0 0 18px #8a2be2;
+    color: #7fffd4;
+  }
+  100% {
+    text-shadow: 0 0 4px #0ff, 0 0 8px #0ff, 0 0 12px #00f;
+    color: #0ff;
+  }
+}
+
+/* 전기 스파크 흔들림 애니메이션 */
+@keyframes neon-spark-shake {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  10% {
+    transform: translate(-1px, 1px) rotate(-1deg) scale(1.02);
+  }
+  20% {
+    transform: translate(1px, -1px) rotate(1deg) scale(0.98);
+  }
+  30% {
+    transform: translate(-1px, 1px) rotate(-1deg) scale(1.01);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg) scale(0.99);
+  }
+  50% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  60% {
+    transform: translate(-1px, 1px) rotate(1deg) scale(1.02);
+  }
+  70% {
+    transform: translate(1px, -1px) rotate(-1deg) scale(0.98);
+  }
+  80% {
+    transform: translate(-1px, 1px) rotate(1deg) scale(1.01);
+  }
+  90% {
+    transform: translate(1px, -1px) rotate(-1deg) scale(0.99);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+}
+
+/* 닉네임 강조 스타일 */
+.neon-spark-name {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0ff 0%, #8a2be2 50%, #7fffd4 100%);
+  background-size: 300% 300%;
+  color: #fff;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  animation: neon-spark-colors 3s linear infinite,
+    neon-spark-shake 2s ease-in-out infinite;
+  box-shadow: 0 0 10px #0ff, 0 0 20px #8a2be2, 0 0 30px #7fffd4,
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
+}

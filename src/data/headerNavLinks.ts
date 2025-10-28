@@ -4,7 +4,7 @@ const headerNavLinks = [
   { href: "/league", title: "리그" },
   { href: "/board/all", title: "게시판" },
   { href: "/battle", title: "스크림" },
-  // { href: "/desktop", title: "Desktop" },
+  { href: "/shop", title: "상점" },
 ];
 
 export default headerNavLinks;

@@ -181,9 +181,9 @@ export default function Page() {
         <button
           className={`px-[20px] py-[10px] font-semibold transition-colors ${
             tab === "team"
-              ? "border-b-[4px] border-brandcolor text-brandcolor"
+              ? "border-b-[2px] border-brandcolor text-brandcolor"
               : "text-gray-500 hover:text-brandcolor"
-          }`}
+          } ${isMobile ? "text-[12px]" : "text-[16px]"}`}
           onClick={() => setTab("team")}
           aria-selected={tab === "team"}
           role="tab"
@@ -193,9 +193,9 @@ export default function Page() {
         <button
           className={`px-[20px] py-[10px] font-semibold transition-colors ${
             tab === "battle"
-              ? "border-b-[4px] border-brandcolor text-brandcolor"
+              ? "border-b-[2px] border-brandcolor text-brandcolor"
               : "text-gray-500 hover:text-brandcolor"
-          }`}
+          } ${isMobile ? "text-[12px]" : "text-[16px]"}`}
           onClick={() => setTab("battle")}
           aria-selected={tab === "battle"}
           role="tab"

@@ -15,7 +15,6 @@ import { ReportModal } from "@/src/common/components/modal/ReportModal";
 import { convertBoardNameToCode } from "@/src/utils/string/string.util";
 import { CreateReportDto } from "@/src/common/DTOs/report/report.dto";
 import { reportSubmit } from "@/src/api/report.api";
-import BoardWriteComponent from "../write/BoardWriteComponent";
 
 interface BoardPostHeadComponentProps {
   post: PostDto;
@@ -27,7 +26,6 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
   const router = useRouter();
   const isMobile = useIsMobile();
   const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   const postDateTime = new Date(post?.postDate);
   const year = postDateTime.getFullYear();
@@ -116,7 +114,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
               alt="memberIcon"
             />
             <p
-              className={`font-bold  ${
+              className={`font-bold ${
                 isMobile ? "text-[14px]" : "text-[16px]"
               } ${isAdminWriter && "text-[#006eff] dark:text-[#006eff]"}`}
             >
