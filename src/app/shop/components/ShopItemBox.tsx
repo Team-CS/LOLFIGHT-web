@@ -31,11 +31,19 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
       case "EFFECT":
         return (
           <div className={`flex items-center justify-center w-full h-full`}>
-            <p className="neon-spark-name text-center">LOLFIGHT</p>
+            <p className={`${item.cssClass} text-center`}>LOLFIGHT</p>
           </div>
         );
       case "BANNER":
-        return <div className="gradient-banner">최고급 레전드 배너</div>;
+        return (
+          <div className="w-full h-full rounded-[8px] overflow-hidden">
+            <img
+              className="object-cover w-full h-full"
+              src={`${constant.SERVER_URL}/${item.imageUrl}`}
+              alt={item.name}
+            />
+          </div>
+        );
       default:
         return (
           <img

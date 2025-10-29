@@ -2,17 +2,15 @@ import { Category } from "@/src/common/types/enums/category.enum";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface ShopNavComponentProps {
-  onSetCategory: (category: Category) => void;
-  selectedCategory: Category;
+  onSetCategory: (category: Category | "ALL") => void;
+  selectedCategory: Category | string;
 }
 
-const categories: { value: Category; label: string }[] = [
-  { value: Category.ALL, label: "전체" },
+const categories: { value: Category | "ALL"; label: string }[] = [
+  { value: "ALL", label: "전체" },
   { value: Category.BANNER, label: "배너" },
   { value: Category.BORDER, label: "테두리" },
   { value: Category.EFFECT, label: "효과" },
-  { value: Category.SKIN, label: "스킨" },
-  { value: Category.EMOJI, label: "이모지" },
 ];
 
 export const ShopNavComponent = (props: ShopNavComponentProps) => {
