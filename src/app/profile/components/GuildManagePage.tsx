@@ -304,7 +304,7 @@ const GuildManagePage = () => {
           <img
             src={`${constant.SERVER_URL}/${guild?.guildIcon}`}
             alt="GuildIcon"
-            className={`object-cover rounded-[12px] ${
+            className={`object-cover rounded-[12px] shrink-0 ${
               isMobile ? "w-[70px] h-[70px]" : "w-[100px] h-[100px]"
             }`}
           />

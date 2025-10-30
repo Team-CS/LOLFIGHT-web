@@ -19,7 +19,7 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
           <div
             className={`relative rounded-[12px] ${
               isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
-            } flame-border`}
+            } ${item.cssClass}`}
           >
             <img
               className="object-cover w-full h-full rounded-[12px]"

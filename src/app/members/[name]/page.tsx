@@ -64,7 +64,7 @@ export default function Page({ params }: { params: PageProps }) {
       <div className="w-full flex flex-col items-center gap-[12px] p-[12px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder relative overflow-hidden">
         <div className="w-full h-[280px] relative">
           <img
-            src="/images/banner-default.png"
+            src={`${constant.SERVER_URL}/public/default-banner.png`}
             alt="member-banner"
             className="w-full h-full object-cover rounded-[12px] opacity-80"
           />

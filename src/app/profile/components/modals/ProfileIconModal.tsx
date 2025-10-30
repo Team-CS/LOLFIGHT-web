@@ -10,6 +10,7 @@ export const ProfileIconModal = (props: ProfileIconModalProps) => {
   const { selectedImage, previewImage, onClose, onImageChange, onSubmit } =
     props;
 
+  console.log(previewImage);
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="flex flex-col bg-white dark:bg-gray-900 rounded-[16px] p-[24px] gap-[16px] w-[90%] max-w-[400px] shadow-lg">

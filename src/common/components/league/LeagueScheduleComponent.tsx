@@ -98,7 +98,7 @@ export default function LeagueScheduleComponent(
           sacheon.className
         } text-gray-800 dark:text-gray-100 font-medium border-b border-gray-300`}
       >
-        경기 일정
+        {(today.getMonth() + 1).toString()}월 경기 일정
       </h2>
 
       <div
