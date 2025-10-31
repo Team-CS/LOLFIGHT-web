@@ -21,6 +21,7 @@ import Sidebar from "./sidebar";
 import ThemeToggler from "./ThemeToggler";
 import { toast } from "react-toastify";
 import { useAlarmStore } from "../zustand/alarm.zustand";
+
 const rixi = localFont({
   src: "../../fonts/RixInooAriDuriRegular.ttf",
   display: "swap",
@@ -217,15 +218,22 @@ export const Header = () => {
                   <div className="bg-brandbgcolor dark:bg-branddark h-[150px] border dark:border-branddarkborder">
                     {member ? (
                       <div className="flex flex-col h-full">
-                        <div className="flex items-center p-[12px] gap-[14px] relative">
-                          <img
-                            className="object-cover rounded-[12px] w-[70px] h-[70px]"
-                            src={`${constant.SERVER_URL}/${member.memberIcon}`}
-                            alt="member-icon"
-                          />
+                        <div
+                          className={`flex items-center p-[12px] gap-[14px] relative`}
+                        >
+                          <div className={`${member.memberItem?.border}`}>
+                            <img
+                              className="object-cover rounded-[12px] w-[70px] h-[70px]"
+                              src={`${constant.SERVER_URL}/${member.memberIcon}`}
+                              alt="member-icon"
+                            />
+                          </div>
                           <div className="flex flex-col">
-                            <p className="font-extrabold text-[18px]">
-                              {member.memberName} 님
+                            <p className={`font-extrabold text-[18px] `}>
+                              <span className={`${member.memberItem?.effect}`}>
+                                {member.memberName}
+                              </span>{" "}
+                              님
                             </p>
                             <p className="font-light text-base">
                               {member.memberId}

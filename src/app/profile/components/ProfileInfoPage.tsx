@@ -21,10 +21,13 @@ import {
   formatElapsedTime,
 } from "@/src/utils/string/string.util";
 import LineSelector from "./context-menu/LineSelector";
+import { getMyItems, toggleActiveItems } from "@/src/api/member_item.api";
+import { MemberItemDto } from "@/src/common/DTOs/member/member_item.dto";
 
 export default function ProfileInfoPage() {
   const isMobile = useIsMobile();
   const { member, setMember } = useMemberStore();
+  const [myItems, setMyItems] = useState<MemberItemDto[] | null>(null);
   const [openModal, setOpenModal] = useState<"profileIcon" | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>("");
@@ -49,6 +52,10 @@ export default function ProfileInfoPage() {
     if (member) {
       setNickname(member.memberName);
       setSummonerName(member.memberGame?.gameName || "");
+
+      getMyItems().then((response) => {
+        setMyItems(response.data.data);
+      });
     }
   }, [member]);
 
@@ -200,6 +207,47 @@ export default function ProfileInfoPage() {
       );
   };
 
+  const handleActivateItem = async (clickedItem: MemberItemDto) => {
+    if (!myItems) return;
+
+    const updatedItems = myItems.map((item) => {
+      if (item.shop.category === clickedItem.shop.category) {
+        if (item.id === clickedItem.id) {
+          return { ...item, isActive: !item.isActive };
+        }
+        return { ...item, isActive: false };
+      }
+      return item;
+    });
+
+    setMyItems(updatedItems);
+
+    const isNowActive = !clickedItem.isActive;
+
+    await toggleActiveItems(clickedItem.shop.id)
+      .then((response) => {
+        setMember({
+          ...member!,
+          memberItem: response.data.data,
+        });
+        CustomAlert(
+          "success",
+          "아이템 상태 변경",
+          `${clickedItem.shop.name}이(가) ${
+            isNowActive ? "활성화" : "비활성화"
+          }되었습니다!`
+        );
+      })
+      .catch((error) => {
+        CustomAlert(
+          "error",
+          "아이템 상태 변경 실패",
+          "잠시 후 다시 시도해주세요."
+        );
+        setMyItems(myItems);
+      });
+  };
+
   if (!member) return <div>Loading...</div>;
 
   return (
@@ -208,7 +256,11 @@ export default function ProfileInfoPage() {
         {/* 배너 */}
         <div className="w-full h-[240px] relative">
           <img
-            src={`${constant.SERVER_URL}/public/default-banner.png`}
+            src={`${
+              member.memberItem?.banner
+                ? `${constant.SERVER_URL}/${member.memberItem.banner}`
+                : `${constant.SERVER_URL}/public/default-banner.png`
+            }`}
             alt="banner"
             className="w-full h-full object-cover rounded-[12px] opacity-80"
           />
@@ -217,11 +269,13 @@ export default function ProfileInfoPage() {
         {/* 프로필 카드 */}
         <div className="flex flex-col sm:flex-row w-full items-center  justify-between gap-[16px] p-[16px] rounded-[12px] mt-[-60px] relative z-10 bg-white/90 dark:bg-dark shadow-md backdrop-blur-sm border dark:border-branddarkborder">
           <div className="flex flex-col gap-[12px]">
-            <img
-              src={`${constant.SERVER_URL}/${member.memberIcon}`}
-              alt="profile"
-              className="w-[130px] h-[130px] rounded-[12px] object-cover"
-            />
+            <div className={member.memberItem?.border}>
+              <img
+                src={`${constant.SERVER_URL}/${member.memberIcon}`}
+                alt="profile"
+                className="w-[130px] h-[130px] rounded-[12px] object-cover"
+              />
+            </div>
             <div className="flex justify-center gap-[8px]">
               <button
                 onClick={() => setOpenModal("profileIcon")}
@@ -246,7 +300,9 @@ export default function ProfileInfoPage() {
                 isMobile && "flex-col"
               }`}
             >
-              <p className="text-[22px] font-bold text-gray-900 dark:text-gray-100">
+              <p
+                className={`text-[22px] font-bold text-gray-900 dark:text-gray-100 ${member.memberItem?.effect}`}
+              >
                 {member.memberName}
               </p>
               <button
@@ -402,6 +458,80 @@ export default function ProfileInfoPage() {
           <p className="text-center text-[14px]">
             🏅 아직 획득한 배지가 없습니다.
           </p>
+        </div>
+
+        <div className="w-full flex flex-col gap-[16px] p-[16px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder overflow-hidden">
+          <p className="text-[14px] font-semibold text-gray-700 dark:text-gray-200">
+            보유중인 아이템
+          </p>
+
+          {(!myItems || myItems.length === 0) && (
+            <p className="text-gray-500 text-sm">
+              아직 구매한 아이템이 없습니다.
+            </p>
+          )}
+
+          <div
+            className={`grid ${
+              isMobile ? "grid-cols-2" : "grid-cols-6"
+            } gap-[12px]`}
+          >
+            {myItems?.map((item) => (
+              <div
+                key={item.id}
+                className={`flex flex-col items-center justify-between p-[10px] aspect-square border rounded-[10px] bg-gray-50 dark:bg-branddark dark:border-branddarkborder transition-transform duration-200 hover:scale-[1.03] ${
+                  item.isActive ? "border-2 border-brandcolor" : ""
+                } ${isMobile ? "w-[100px] h-[150px]" : "w-[150px] h-[180px]"}`}
+                onClick={() => handleActivateItem(item)}
+              >
+                <div className="flex items-center justify-center w-full h-[70%]">
+                  {item.shop.category === "BORDER" && (
+                    <div
+                      className={`relative w-[60px] h-[60px] rounded-[12px] ${item.shop.cssClass}`}
+                    >
+                      <img
+                        className="object-cover w-full h-full rounded-[12px]"
+                        src={`${constant.SERVER_URL}/${member.memberIcon}`}
+                        alt={item.shop.name}
+                      />
+                    </div>
+                  )}
+
+                  {item.shop.category === "EFFECT" && (
+                    <div className="flex items-center justify-center w-[60px] h-[60px]">
+                      <span
+                        className={`${item.shop.cssClass} text-xs font-bold`}
+                      >
+                        {member.memberName}
+                      </span>
+                    </div>
+                  )}
+
+                  {item.shop.category === "BANNER" && (
+                    <img
+                      src={`${constant.SERVER_URL}/${item.shop.imageUrl}`}
+                      alt={item.shop.name}
+                      className="w-[60px] h-[60px] rounded-md object-cover"
+                    />
+                  )}
+                </div>
+
+                <p className="text-[12px] font-semibold text-center truncate w-full h-[18px] leading-[18px]">
+                  {item.shop.name}
+                </p>
+
+                <div className="h-[20px] flex items-end justify-center">
+                  {item.isActive ? (
+                    <span className="text-[12px] text-brandcolor font-medium">
+                      활성화됨
+                    </span>
+                  ) : (
+                    <span className="text-[12px] text-gray-400">비활성</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

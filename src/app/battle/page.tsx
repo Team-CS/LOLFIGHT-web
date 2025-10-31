@@ -502,7 +502,7 @@ export default function Page() {
       {guildTeam && member ? (
         // ✅ 팀이 있을 때
         <div
-          className={`flex p-[32px] shadow-md rounded-[12px] gap-[24px] dark:bg-branddark ${
+          className={`flex p-[32px] shadow-md rounded-[12px] gap-[24px] dark:bg-dark ${
             isMobile ? "flex-col h-[940px]" : "h-[470px]"
           }`}
         >
@@ -658,7 +658,7 @@ export default function Page() {
         </div>
       ) : member?.memberGuild ? (
         // member.memberGuild는 있지만 guildTeam이 없을 때
-        <div className="flex flex-col items-center justify-center h-[470px] gap-[16px] py-[60px] rounded-[12px] dark:bg-branddark shadow-md">
+        <div className="flex flex-col items-center justify-center h-[470px] gap-[16px] py-[60px] rounded-[12px] dark:bg-dark shadow-md">
           <p className="text-[14px] text-gray-400">
             😓 아직 팀에 가입하지 않았습니다
           </p>
@@ -673,7 +673,7 @@ export default function Page() {
         </div>
       ) : (
         // member.memberGuild도 없을 때 (완전 없는 상태)
-        <div className="flex flex-col items-center justify-center h-[470px] gap-[16px] py-[60px] rounded-[12px] dark:bg-branddark shadow-md">
+        <div className="flex flex-col items-center justify-center h-[470px] gap-[16px] py-[60px] rounded-[12px] dark:bg-dark shadow-md">
           <p className="text-[14px] text-gray-400">
             ❌ 아직 속한 길드가 없습니다.
           </p>
@@ -681,7 +681,7 @@ export default function Page() {
       )}
 
       {/* Battle Team List */}
-      <div className="flex flex-col w-full p-[32px] gap-[24px] shadow-md rounded-[12px] dark:bg-branddark">
+      <div className="flex flex-col w-full p-[32px] gap-[24px] shadow-md rounded-[12px] dark:bg-dark">
         <div className="flex justify-between">
           <p
             className={`${

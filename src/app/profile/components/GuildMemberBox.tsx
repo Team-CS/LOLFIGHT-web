@@ -54,14 +54,18 @@ const GuildMemberBox = (props: Props) => {
           }`}
         >
           {!isMobile && (
-            <img
-              className="object-cover rounded-[12px] w-[25px] h-[25px]"
-              src={`${constant.SERVER_URL}/${guildMember.memberIcon}`}
-              alt="member-icon"
-            />
+            <div className={`${guildMember.memberItem?.border}`}>
+              <img
+                className="object-cover rounded-[12px] w-[25px] h-[25px]"
+                src={`${constant.SERVER_URL}/${guildMember.memberIcon}`}
+                alt="member-icon"
+              />
+            </div>
           )}
 
-          <span className="truncate">{guildMember.memberName}</span>
+          <span className={`truncate ${guildMember?.memberItem?.effect}`}>
+            {guildMember.memberName}
+          </span>
         </div>
 
         <div

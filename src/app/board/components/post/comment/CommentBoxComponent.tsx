@@ -186,17 +186,21 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                   className="flex items-center gap-[8px] cursor-pointer hover:underline"
                   onClick={() => handleMemberClick(comment.writer.memberName)}
                 >
-                  <img
-                    className={`object-cover rounded-[12px] ${
-                      isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
-                    }`}
-                    src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
-                    alt="memberIcon"
-                  />
+                  <div className={`${comment.writer.memberItem?.border}`}>
+                    <img
+                      className={`object-cover rounded-[12px] ${
+                        isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+                      }`}
+                      src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
+                      alt="memberIcon"
+                    />
+                  </div>
                   <p
                     className={`font-bold ${
                       isMobile ? "text-[12px]" : "text-[14px]"
-                    } ${comment.writer.role === "ADMIN" && "text-[#006eff]"}`}
+                    } ${comment.writer.role === "ADMIN" && "text-[#006eff]"} ${
+                      comment.writer.memberItem?.effect
+                    }`}
                   >
                     {comment.writer.memberName}
                   </p>

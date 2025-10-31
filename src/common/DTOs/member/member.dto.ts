@@ -2,6 +2,7 @@ import { BaseDto } from "../base.dto";
 import { GuildDto } from "../guild/guild.dto";
 import { WalletDto } from "../wallet/wallet.dto";
 import { MemberGameDto } from "./member_game.dto";
+import { MemberActiveItemDto, MemberItemDto } from "./member_item.dto";
 
 export interface MemberDto extends BaseDto {
   id: string;
@@ -14,6 +15,7 @@ export interface MemberDto extends BaseDto {
   memberGuild: GuildDto | null;
   memberGame: MemberGameDto | null;
   memberWallet: WalletDto;
+  memberItem: MemberActiveItemDto | null;
 }
 
 export interface MemberPublicDto extends BaseDto {
@@ -22,4 +24,5 @@ export interface MemberPublicDto extends BaseDto {
   memberIcon: string;
   memberGuild: GuildDto | null;
   memberGame: MemberGameDto | null;
+  memberItem: MemberActiveItemDto | null;
 }

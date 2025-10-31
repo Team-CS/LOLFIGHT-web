@@ -210,13 +210,17 @@ export default function GuildPage() {
                   >
                     <div className="flex gap-[8px] flex-[1] font-medium justify-center min-w-0">
                       {!isMobile && (
-                        <img
-                          className="object-cover rounded-[12px] w-[25px] h-[25px]"
-                          src={`${constant.SERVER_URL}/${member.memberIcon}`}
-                          alt="member-icon"
-                        />
+                        <div className={`${member.memberItem?.border}`}>
+                          <img
+                            className="object-cover rounded-[12px] w-[25px] h-[25px]"
+                            src={`${constant.SERVER_URL}/${member.memberIcon}`}
+                            alt="member-icon"
+                          />
+                        </div>
                       )}
-                      <span>{member.memberName}</span>
+                      <span className={`${member.memberItem?.effect}`}>
+                        {member.memberName}
+                      </span>
                     </div>
                     <div className="flex-[2] font-medium">
                       {member.memberGame?.gameName}

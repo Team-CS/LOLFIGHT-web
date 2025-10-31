@@ -9,6 +9,8 @@ import { ShopNavComponent } from "./components/ShopNavComponent";
 import { ShopItemBox } from "./components/ShopItemBox";
 import { getShopItems } from "@/src/api/shop.api";
 import { Pagination } from "@mui/material";
+import { getMyItems } from "@/src/api/member_item.api";
+import { MemberItemDto } from "@/src/common/DTOs/member/member_item.dto";
 
 export default function Page() {
   const isMobile = useIsMobile();
@@ -19,10 +21,17 @@ export default function Page() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0); // 총 페이지 수
-  const [searchTerm, setSearchTerm] = useState<string>(""); // 검색어
-  const [shopItems, setshopItems] = useState<ShopDto[]>([]); // API 호출 시 초기화
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [shopItems, setshopItems] = useState<ShopDto[]>([]);
+  const [myItems, setMyItems] = useState<MemberItemDto[] | null>(null);
   const shopItemsPerPage = 10;
+
+  useEffect(() => {
+    getMyItems().then((response) => {
+      setMyItems(response.data.data);
+    });
+  }, []);
 
   useEffect(() => {
     fetchShopItems(currentPage);
@@ -86,7 +95,7 @@ export default function Page() {
         onSetCategory={setSelectedCategory}
       />
 
-      <div className="flex flex-col gap-[12px] w-full bg-white dark:bg-branddark rounded-[12px] shadow-md p-[24px]">
+      <div className="flex flex-col gap-[12px] w-full bg-white dark:bg-dark rounded-[12px] shadow-md p-[24px]">
         {/* 상점 헤드 + 검색 */}
         <div className="flex justify-between items-center w-full">
           <p
@@ -165,7 +174,7 @@ export default function Page() {
               }`}
             >
               {shopItems.map((item, index) => (
-                <ShopItemBox key={index} item={item} />
+                <ShopItemBox key={index} item={item} hasItems={myItems} />
               ))}
             </div>
           ) : (

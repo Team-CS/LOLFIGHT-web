@@ -145,7 +145,9 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
         } ${isAdminWriter && "text-[#006eff] font-bold"}`}
         onClick={() => handleMemberClick(data.postWriter.memberName)}
       >
-        {data.postWriter.memberName}
+        <p className={`${data.postWriter.memberItem?.effect}`}>
+          {data.postWriter.memberName}
+        </p>
       </div>
       <div
         className={`w-1/6 flex items-center justify-center ${

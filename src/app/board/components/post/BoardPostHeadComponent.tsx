@@ -15,6 +15,7 @@ import { ReportModal } from "@/src/common/components/modal/ReportModal";
 import { convertBoardNameToCode } from "@/src/utils/string/string.util";
 import { CreateReportDto } from "@/src/common/DTOs/report/report.dto";
 import { reportSubmit } from "@/src/api/report.api";
+import "@/src/css/index.ts";
 
 interface BoardPostHeadComponentProps {
   post: PostDto;
@@ -104,19 +105,23 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
             className="flex items-center gap-[8px] cursor-pointer hover:underline"
             onClick={() => handleMemberClick(post.postWriter.memberName)}
           >
-            <img
-              className={`object-cover rounded-[12px] ${
-                isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
-              }`}
-              src={`${constant.SERVER_URL}/${
-                post?.postWriter.memberIcon || "public/default.png"
-              }`}
-              alt="memberIcon"
-            />
+            <div className={`${post.postWriter.memberItem?.border}`}>
+              <img
+                className={`object-cover rounded-[12px] ${
+                  isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+                }`}
+                src={`${constant.SERVER_URL}/${
+                  post?.postWriter.memberIcon || "public/default.png"
+                }`}
+                alt="memberIcon"
+              />
+            </div>
             <p
               className={`font-bold ${
                 isMobile ? "text-[14px]" : "text-[16px]"
-              } ${isAdminWriter && "text-[#006eff] dark:text-[#006eff]"}`}
+              } ${isAdminWriter && "text-[#006eff] dark:text-[#006eff]"} ${
+                post.postWriter.memberItem?.effect
+              }`}
             >
               {post?.postWriter.memberName}
             </p>

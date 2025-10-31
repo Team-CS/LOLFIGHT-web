@@ -62,9 +62,13 @@ export default function Page({ params }: { params: PageProps }) {
   return (
     <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px] ">
       <div className="w-full flex flex-col items-center gap-[12px] p-[12px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder relative overflow-hidden">
-        <div className="w-full h-[280px] relative">
+        <div className={"w-full h-[280px] relative"}>
           <img
-            src={`${constant.SERVER_URL}/public/default-banner.png`}
+            src={`${
+              member.memberItem?.banner
+                ? `${constant.SERVER_URL}/${member.memberItem.banner}`
+                : `${constant.SERVER_URL}/public/default-banner.png`
+            }`}
             alt="member-banner"
             className="w-full h-full object-cover rounded-[12px] opacity-80"
           />
@@ -74,18 +78,20 @@ export default function Page({ params }: { params: PageProps }) {
           <div className="flex flex-col gap-[16px] flex-[1]">
             <div className="flex items-center justify-between gap-[12px] w-full">
               <div className="flex items-center gap-[12px]">
-                <img
-                  src={`${constant.SERVER_URL}/${member.memberIcon}`}
-                  alt={member.memberName}
-                  className={`${
-                    isMobile ? "w-[100px] h-[100px]" : "w-[130px] h-[130px]"
-                  } object-cover rounded-[12px]`}
-                />
+                <div className={`${member.memberItem?.border}`}>
+                  <img
+                    src={`${constant.SERVER_URL}/${member.memberIcon}`}
+                    alt={member.memberName}
+                    className={`${
+                      isMobile ? "w-[100px] h-[100px]" : "w-[130px] h-[130px]"
+                    } object-cover rounded-[12px]`}
+                  />
+                </div>
                 <div className="flex flex-col gap-[4px]">
                   <p
                     className={`font-bold text-gray-900 dark:text-gray-100 ${
                       isMobile ? "text-[20px]" : "text-[26px]"
-                    }`}
+                    } ${member.memberItem?.effect}`}
                   >
                     {member.memberName}
                   </p>

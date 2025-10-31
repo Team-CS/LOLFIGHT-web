@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "../css/tailwind.css";
 import BaseLayout from "./../layouts/BaseLayout";
 import localFont from "next/font/local";
+import "@/src/css/index.ts";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://lolfight.kr"),

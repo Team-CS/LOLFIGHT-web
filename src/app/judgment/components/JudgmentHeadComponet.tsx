@@ -32,7 +32,6 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
   const isAdmin = token ? (jwtDecode(token) as any)?.role === "ADMIN" : false;
 
   const [reportModalOpen, setReportModalOpen] = useState<boolean>(false);
-
   useEffect(() => {
     if (member) {
       if (judgment?.member.memberName === member.memberName) {
@@ -100,17 +99,19 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
       </span>
       <div className=" flex justify-between">
         <div className="flex gap-[8px] items-center">
-          <img
-            className={`object-cover rounded-[12px] ${
-              isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
-            }`}
-            src={`${constant.SERVER_URL}/${judgment.member.memberIcon}`}
-            alt="memberIcon"
-          />
+          <div className={`${judgment.member.memberItem?.border}`}>
+            <img
+              className={`object-cover rounded-[12px] ${
+                isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+              }`}
+              src={`${constant.SERVER_URL}/${judgment.member.memberIcon}`}
+              alt="memberIcon"
+            />
+          </div>
           <p
             className={`font-bold dark:text-gray-400 cursor-pointer hover:underline ${
               isMobile ? "text-[14px]" : "text-[16px]"
-            }`}
+            } ${judgment.member.memberItem?.effect}`}
             onClick={() => handleMemberClick(judgment.member.memberName)}
           >
             {judgment?.member.memberName}
