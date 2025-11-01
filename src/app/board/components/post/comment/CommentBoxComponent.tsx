@@ -205,7 +205,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                   {comment.writer.role === "ADMIN" && (
                     <img
                       src="/icon_verificated.svg"
-                      alt="discord icon"
+                      alt="verificated icon"
                       width={15}
                       height={15}
                       draggable={false}

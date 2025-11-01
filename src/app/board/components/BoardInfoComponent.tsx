@@ -151,9 +151,9 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
         {isAdminWriter && (
           <img
             src="/icon_verificated.svg"
-            alt="discord icon"
-            width={15}
-            height={15}
+            alt="verificated icon"
+            width={isMobile ? 10 : 15}
+            height={isMobile ? 10 : 15}
             draggable={false}
           />
         )}
