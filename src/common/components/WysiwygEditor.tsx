@@ -106,8 +106,9 @@ const WysiwygEditor = ({ post, isEdit }: WysiwygEditorProps) => {
     const textContent = tempDiv.textContent?.trim() || "";
     const hasImage = tempDiv.querySelector("img") !== null;
 
-    if (title && (textContent === "" || hasImage)) {
+    if (!title || (textContent === "" && !hasImage)) {
       CustomAlert("warning", "글쓰기", "제목과 내용을 작성해주세요.");
+      return;
     }
     if (isEdit && post) {
       await updatePost({

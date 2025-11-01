@@ -44,7 +44,6 @@ const BoardComponent = (props: BoardComponentProps) => {
       );
       const data = response.data.data as PostListResponseDto;
       if (Array.isArray(data.postList)) {
-        console.log(data.postList);
         setPosts(data.postList);
       } else {
         setPosts([]);

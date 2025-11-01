@@ -4,7 +4,7 @@ import { MemberDto } from "./member.dto";
 
 export interface MemberItemDto extends BaseDto {
   id?: string;
-  member: MemberDto;
+  member: string;
   shop: ShopDto;
   isActive?: boolean;
 }

@@ -301,9 +301,11 @@ export default function ProfileInfoPage() {
               }`}
             >
               <p
-                className={`text-[22px] font-bold text-gray-900 dark:text-gray-100 ${member.memberItem?.effect}`}
+                className={`text-[22px] font-bold text-gray-900 dark:text-gray-100 `}
               >
-                {member.memberName}
+                <span className={`${member.memberItem?.effect}`}>
+                  {member.memberName}
+                </span>
               </p>
               <button
                 onClick={() => setIsEditingNickname(!isEditingNickname)}
@@ -472,16 +474,16 @@ export default function ProfileInfoPage() {
           )}
 
           <div
-            className={`grid ${
+            className={`grid items-center justify-center ${
               isMobile ? "grid-cols-2" : "grid-cols-6"
             } gap-[12px]`}
           >
             {myItems?.map((item) => (
               <div
                 key={item.id}
-                className={`flex flex-col items-center justify-between p-[10px] aspect-square border rounded-[10px] bg-gray-50 dark:bg-branddark dark:border-branddarkborder transition-transform duration-200 hover:scale-[1.03] ${
+                className={`flex flex-col w-full items-center justify-between p-[10px] aspect-square border rounded-[10px] bg-gray-50 dark:bg-branddark dark:border-branddarkborder transition-transform duration-200 hover:scale-[1.03] ${
                   item.isActive ? "border-2 border-brandcolor" : ""
-                } ${isMobile ? "w-[100px] h-[150px]" : "w-[150px] h-[180px]"}`}
+                } ${isMobile ? "h-[150px]" : "h-[180px]"}`}
                 onClick={() => handleActivateItem(item)}
               >
                 <div className="flex items-center justify-center w-full h-[70%]">

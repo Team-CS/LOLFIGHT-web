@@ -116,15 +116,24 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
                 alt="memberIcon"
               />
             </div>
-            <p
-              className={`font-bold ${
-                isMobile ? "text-[14px]" : "text-[16px]"
-              } ${isAdminWriter && "text-[#006eff] dark:text-[#006eff]"} ${
-                post.postWriter.memberItem?.effect
-              }`}
-            >
-              {post?.postWriter.memberName}
-            </p>
+            <div className="flex gap-[4px]">
+              <p
+                className={`font-bold ${
+                  isMobile ? "text-[14px]" : "text-[16px]"
+                } `}
+              >
+                {post?.postWriter.memberName}
+              </p>
+              {isAdminWriter && (
+                <img
+                  src="/icon_verificated.svg"
+                  alt="discord icon"
+                  width={15}
+                  height={15}
+                  draggable={false}
+                />
+              )}
+            </div>
           </div>
           <p
             className={`text-gray-400 ${

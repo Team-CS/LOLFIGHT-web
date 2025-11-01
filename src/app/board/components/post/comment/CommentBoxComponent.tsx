@@ -198,12 +198,19 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                   <p
                     className={`font-bold ${
                       isMobile ? "text-[12px]" : "text-[14px]"
-                    } ${comment.writer.role === "ADMIN" && "text-[#006eff]"} ${
-                      comment.writer.memberItem?.effect
-                    }`}
+                    } ${comment.writer.memberItem?.effect}`}
                   >
                     {comment.writer.memberName}
                   </p>
+                  {comment.writer.role === "ADMIN" && (
+                    <img
+                      src="/icon_verificated.svg"
+                      alt="discord icon"
+                      width={15}
+                      height={15}
+                      draggable={false}
+                    />
+                  )}
                 </div>
                 <p
                   className={`text-gray-400 font-normal ${

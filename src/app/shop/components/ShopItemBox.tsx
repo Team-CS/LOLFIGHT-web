@@ -11,10 +11,11 @@ import CustomAlert from "@/src/common/components/alert/CustomAlert";
 interface ShopItemBoxProps {
   item: ShopDto;
   hasItems: MemberItemDto[] | null;
+  onPurchase: (newItem: MemberItemDto) => void;
 }
 
 export const ShopItemBox = (props: ShopItemBoxProps) => {
-  const { item, hasItems } = props;
+  const { item, hasItems, onPurchase } = props;
   const { member, setMember } = useMemberStore();
   const isMobile = useIsMobile();
 
@@ -58,7 +59,7 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
   const handlePurchase = (item: ShopDto) => {
     if (member) {
       const memberItemDto: MemberItemDto = {
-        member: member,
+        member: member.id,
         shop: item,
       };
       purchaseItem(memberItemDto)
@@ -68,6 +69,7 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
             "아이템 구매",
             `구매가 완료되었습니다! <br/> 내정보에서 구매한 아이템을 활성화 시켜주세요!`
           );
+          onPurchase(response.data.data);
         })
         .catch((error) => {
           const code = error.response.data.code;

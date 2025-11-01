@@ -1,0 +1,20 @@
+.green-color-effect {
+  font-weight: bold;
+  color: #2bff00 !important;
+  text-shadow: 0.5px 0.5px 0 #004d00, -0.5px 0.5px 0 #004d00,
+    0.5px -0.5px 0 #004d00, -0.5px -0.5px 0 #004d00;
+}
+
+.blue-color-effect {
+  font-weight: bold;
+  color: #1e90ff !important;
+  text-shadow: 0.5px 0.5px 0 #003366, -0.5px 0.5px 0 #003366,
+    0.5px -0.5px 0 #003366, -0.5px -0.5px 0 #003366;
+}
+
+.purple-color-effect {
+  font-weight: bold;
+  color: #da70d6 !important;
+  text-shadow: 0.5px 0.5px 0 #660066, -0.5px 0.5px 0 #660066,
+    0.5px -0.5px 0 #660066, -0.5px -0.5px 0 #660066;
+}

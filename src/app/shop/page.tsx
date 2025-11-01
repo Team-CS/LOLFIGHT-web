@@ -174,7 +174,16 @@ export default function Page() {
               }`}
             >
               {shopItems.map((item, index) => (
-                <ShopItemBox key={index} item={item} hasItems={myItems} />
+                <ShopItemBox
+                  key={index}
+                  item={item}
+                  hasItems={myItems}
+                  onPurchase={(newItem: MemberItemDto) =>
+                    setMyItems((prev) =>
+                      prev ? [...prev, newItem] : [newItem]
+                    )
+                  }
+                />
               ))}
             </div>
           ) : (

@@ -142,12 +142,21 @@ const BoardInfoComponent = (props: BoardInfoComponentProps) => {
       <div
         className={`w-2/12 flex items-center justify-center hover:underline cursor-pointer ${
           isMobile ? "text-[8px]" : "text-[14px]"
-        } ${isAdminWriter && "text-[#006eff] font-bold"}`}
+        } `}
         onClick={() => handleMemberClick(data.postWriter.memberName)}
       >
         <p className={`${data.postWriter.memberItem?.effect}`}>
           {data.postWriter.memberName}
         </p>
+        {isAdminWriter && (
+          <img
+            src="/icon_verificated.svg"
+            alt="discord icon"
+            width={15}
+            height={15}
+            draggable={false}
+          />
+        )}
       </div>
       <div
         className={`w-1/6 flex items-center justify-center ${
