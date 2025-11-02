@@ -160,12 +160,12 @@ export const deleteMemberSummonerInfo = async (): Promise<
 };
 
 export const refreshMemberSummonerInfo = async (
-  id: string
+  gameName: string
 ): Promise<AxiosResponse<ResponseDto<MemberDto>>> => {
   let url = `${baseUrl}/riot-summoner/refresh`;
 
   const body = {
-    memberId: id,
+    gameName: gameName,
   };
 
   return await patchData(url, body);

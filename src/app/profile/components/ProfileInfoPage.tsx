@@ -33,7 +33,6 @@ export default function ProfileInfoPage() {
   const [previewImage, setPreviewImage] = useState<string>("");
   const [nickname, setNickname] = useState<string>("");
   const [summonerName, setSummonerName] = useState<string>("");
-  const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState(false);
   const [hasCheckedToday, setHasCheckedToday] = useState(false);
   const [isEditingNickname, setIsEditingNickname] = useState(false);
@@ -143,7 +142,6 @@ export default function ProfileInfoPage() {
 
   // --- Riot 계정 ---
   const handleCreateOrEditSummoner = () => {
-    if (!isEdit) return setIsEdit(true);
     if (!summonerName)
       return CustomAlert("warning", "Riot 계정", "소환사명을 입력해주세요");
 
@@ -151,7 +149,6 @@ export default function ProfileInfoPage() {
     createMemberSummonerInfo(dto)
       .then((res) => {
         setMember(res.data.data);
-        setIsEdit(false);
         CustomAlert("success", "Riot 계정 등록", "성공적으로 등록되었습니다");
       })
       .catch((error) => {
@@ -184,8 +181,15 @@ export default function ProfileInfoPage() {
 
   const handleRefreshSummoner = () => {
     if (!member) return;
-    refreshMemberSummonerInfo(member.id)
-      .then((res) => setMember(res.data.data))
+
+    refreshMemberSummonerInfo(member.memberGame?.gameName!)
+      .then((res) => {
+        const updatedMember = {
+          ...member,
+          memberGame: res.data.data.memberGame,
+        };
+        setMember(updatedMember);
+      })
       .catch(() =>
         CustomAlert("error", "소환사 정보", "새로고침에 실패했습니다.")
       );

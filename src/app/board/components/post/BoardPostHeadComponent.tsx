@@ -105,7 +105,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
             className="flex items-center gap-[8px] cursor-pointer hover:underline"
             onClick={() => handleMemberClick(post.postWriter.memberName)}
           >
-            <div className={`${post?.postWriter?.memberItem?.border || ""}`}>
+            <div className={`${post?.postWriter?.memberItem?.border}`}>
               <img
                 className={`object-cover rounded-[12px] ${
                   isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"

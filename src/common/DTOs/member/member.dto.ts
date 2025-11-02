@@ -19,7 +19,6 @@ export interface MemberDto extends BaseDto {
 }
 
 export interface MemberPublicDto extends BaseDto {
-  id: string;
   memberName: string;
   memberIcon: string;
   memberGuild: GuildDto | null;

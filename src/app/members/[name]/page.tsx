@@ -22,7 +22,7 @@ export default function Page({ params }: { params: PageProps }) {
   const name = decodeURIComponent(params.name);
   const [member, setMember] = useState<MemberPublicDto>();
   const [isDisabled, setIsDisabled] = useState(false);
-  const FIVE_MINUTES = 5 * 60 * 1000; // 5분(ms)
+  const FIVE_MINUTES = 5 * 60 * 1000;
   const updatedAt = member?.memberGame?.updatedAt;
 
   useEffect(() => {
@@ -41,13 +41,15 @@ export default function Page({ params }: { params: PageProps }) {
 
   const handleRefreshSummonerInfo = () => {
     if (member) {
-      refreshMemberSummonerInfo(member.id).then((response) => {
-        const { memberGuild: _, ...newData } = response.data.data;
-        setMember({
-          ...newData,
-          memberGuild: member.memberGuild,
-        });
-      });
+      refreshMemberSummonerInfo(member.memberGame!.gameName!).then(
+        (response) => {
+          const updatedMember = {
+            ...member,
+            memberGame: response.data.data.memberGame,
+          };
+          setMember(updatedMember);
+        }
+      );
     }
   };
 
@@ -102,21 +104,23 @@ export default function Page({ params }: { params: PageProps }) {
                   >
                     가입일 : {member.createdAt?.toString().split("T")[0]}
                   </p>
-                  <button
-                    disabled={isDisabled}
-                    onClick={() => !isDisabled && handleRefreshSummonerInfo()}
-                    className={`rounded-[8px] font-medium transition-all duration-200 ${
-                      isDisabled
-                        ? "bg-gray-400 text-white cursor-not-allowed"
-                        : "bg-brandcolor hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray text-white shadow-md hover:shadow-lg"
-                    } ${
-                      isMobile
-                        ? "text-[12px] px-[8px] py-[4px]"
-                        : "text-[14px] px-[12px] py-[4px]"
-                    }`}
-                  >
-                    티어 갱신
-                  </button>
+                  {member.memberGame && (
+                    <button
+                      disabled={isDisabled}
+                      onClick={() => !isDisabled && handleRefreshSummonerInfo()}
+                      className={`rounded-[8px] font-medium transition-all duration-200 ${
+                        isDisabled
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-brandcolor hover:bg-brandhover dark:bg-branddark dark:hover:bg-brandgray text-white shadow-md hover:shadow-lg"
+                      } ${
+                        isMobile
+                          ? "text-[12px] px-[8px] py-[4px]"
+                          : "text-[14px] px-[12px] py-[4px]"
+                      }`}
+                    >
+                      티어 갱신
+                    </button>
+                  )}
                   <p className="text-[10px] text-gray-500">
                     {member?.memberGame?.updatedAt
                       ? formatElapsedTime(member.memberGame.updatedAt)
