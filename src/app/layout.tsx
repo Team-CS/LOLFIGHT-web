@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "../css/tailwind.css";
 import BaseLayout from "./../layouts/BaseLayout";
 import localFont from "next/font/local";
+import { Providers } from "./providers";
+import GoogleAnalytics from "../lib/GoogleAnalytics";
+import StructuredData from "../common/components/StructuredData";
 import "@/src/css/index.ts";
 
 export const metadata: Metadata = {
@@ -90,7 +93,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-import { Providers } from "./providers";
-import GoogleAnalytics from "../lib/GoogleAnalytics";
-import StructuredData from "../common/components/StructuredData";

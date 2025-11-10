@@ -120,7 +120,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
               <p
                 className={`font-bold ${
                   isMobile ? "text-[14px]" : "text-[16px]"
-                } `}
+                } ${post?.postWriter?.memberItem?.effect} `}
               >
                 {post?.postWriter.memberName}
               </p>
