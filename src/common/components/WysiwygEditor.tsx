@@ -111,7 +111,7 @@ const WysiwygEditor = ({ post, isEdit }: WysiwygEditorProps) => {
       return;
     }
     if (isEdit && post) {
-      await updatePost({
+      updatePost({
         ...post,
         postContent: editorIns,
       })
