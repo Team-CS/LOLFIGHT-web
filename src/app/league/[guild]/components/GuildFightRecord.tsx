@@ -188,7 +188,7 @@ const GuildFightRecord = (props: Props) => {
 
           {/* 4 */}
           {!isMobile && (
-            <div className="w-[500px] p-[8px]">
+            <div className="flex justify-center items-center w-[500px]">
               <GuildFightMember battleData={props.battleData} />
             </div>
           )}
