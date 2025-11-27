@@ -4,6 +4,7 @@ import { BattleTeamDto } from "@/src/common/DTOs/battle/battle_team.dto";
 import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
+import Image from "next/image";
 
 interface Props {
   battleTeamData: BattleTeamDto;
@@ -59,9 +60,11 @@ const GuildFightList = (props: Props) => {
           >
             {result === "win" ? "승리" : "패배"}
           </p>
-          <img
+          <Image
             src={`${constant.SERVER_URL}/${battleTeamData.guild.guildIcon}`}
             alt="GuildBanner"
+            width={25}
+            height={25}
             className="w-[25px] h-[25px] rounded-[4px] object-cover"
           />
           <p className="font-semibold">{battleTeamData.guild.guildName}</p>
@@ -71,11 +74,14 @@ const GuildFightList = (props: Props) => {
           <div className="flex items-center gap-[4px]">
             {objectives.map(({ key, icon }) => (
               <>
-                <img
+                <Image
                   key={key}
                   src={`${constant.SERVER_URL}/public/objects/${icon}-${
                     result === "win" ? "blue" : "red"
                   }.png`}
+                  alt="object-icon"
+                  width={15}
+                  height={15}
                   className={`w-[15px] h-[15px]`}
                 />
                 <p className="text-[12px]">
@@ -97,9 +103,10 @@ const GuildFightList = (props: Props) => {
 
           <div className="flex gap-[4px]">
             {battleTeamData.bans.map((ban, index) => (
-              <img
+              <Image
                 key={index}
                 src={`${constant.SERVER_URL}/public/champions/${ban}.png`}
+                alt="ban-champion"
                 width={20}
                 height={15}
                 className="rounded-[4px]"

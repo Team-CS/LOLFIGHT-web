@@ -1,5 +1,6 @@
 import { BattleDto } from "@/src/common/DTOs/battle/battle.dto";
 import constant from "@/src/common/constant/constant";
+import Image from "next/image";
 import React from "react";
 
 interface Props {
@@ -15,7 +16,7 @@ const renderPlayerInfo = (
   }
   return (
     <div className="w-full flex gap-1">
-      <img
+      <Image
         src={`${constant.SERVER_URL}/public/champions/${championId}.png`}
         alt="Champion"
         width={20}

@@ -21,6 +21,7 @@ import Sidebar from "./sidebar";
 import ThemeToggler from "./ThemeToggler";
 import { toast } from "react-toastify";
 import { useAlarmStore } from "../zustand/alarm.zustand";
+import Image from "next/image";
 
 const rixi = localFont({
   src: "../../fonts/RixInooAriDuriRegular.ttf",
@@ -148,24 +149,28 @@ export const Header = () => {
             }`}
           >
             {isMobile && (
-              <img
-                className="hoverable"
-                alt="menu"
-                width={isMobile ? 20 : 30}
-                height={isMobile ? 20 : 30}
+              <Image
                 src={"/textalign.svg"}
+                alt="menu"
+                width={30}
+                height={30}
+                className={`${
+                  isMobile ? "w-[20px] h-[20px]" : "w-[30px] h-[30px]"
+                } hoverable`}
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               />
             )}
             <div className={`flex items-center gap-[32px]`}>
               <div className="flex gap-[4px] items-center">
-                <img
-                  onClick={() => router.push("/")}
-                  width={isMobile ? 40 : 50}
-                  height={isMobile ? 40 : 50}
+                <Image
                   src="/LOLFIGHT_NONE_TEXT.png"
                   alt="logo"
-                  className="cursor-pointer"
+                  width={50}
+                  height={50}
+                  className={`${
+                    isMobile ? "w-[40px] h-[40px]" : "w-[50px] h-[50px]"
+                  } cursor-pointer"`}
+                  onClick={() => router.push("/")}
                 />
                 <p
                   className={`text-white ${
@@ -222,10 +227,12 @@ export const Header = () => {
                           className={`flex items-center p-[12px] gap-[14px] relative`}
                         >
                           <div className={`${member.memberItem?.border}`}>
-                            <img
-                              className="object-cover rounded-[12px] w-[70px] h-[70px]"
+                            <Image
                               src={`${constant.SERVER_URL}/${member.memberIcon}`}
                               alt="member-icon"
+                              width={70}
+                              height={70}
+                              className="object-cover rounded-[12px] w-[70px] h-[70px]"
                             />
                           </div>
                           <div className="flex flex-col">
@@ -242,10 +249,12 @@ export const Header = () => {
                               <p className="font-light text-[12px]">
                                 {member.memberWallet.point}
                               </p>
-                              <img
-                                className="object-cover w-[15px] h-[15px]"
+                              <Image
                                 src={`/images/point.png`}
                                 alt="포인트"
+                                width={15}
+                                height={15}
+                                className="object-cover w-[15px] h-[15px]"
                               />
                             </div>
                           </div>

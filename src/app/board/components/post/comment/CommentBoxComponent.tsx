@@ -13,6 +13,7 @@ import { ReportModal } from "@/src/common/components/modal/ReportModal";
 import { CreateReportDto } from "@/src/common/DTOs/report/report.dto";
 import { reportSubmit } from "@/src/api/report.api";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface CommentBoxComponentProps {
   data: PostDto;
@@ -187,12 +188,14 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                   onClick={() => handleMemberClick(comment.writer.memberName)}
                 >
                   <div className={`${comment.writer.memberItem?.border}`}>
-                    <img
+                    <Image
+                      src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
+                      alt="memberIcon"
+                      width={30}
+                      height={30}
                       className={`object-cover rounded-[12px] ${
                         isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
                       }`}
-                      src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
-                      alt="memberIcon"
                     />
                   </div>
                   <p
@@ -203,7 +206,7 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                     {comment.writer.memberName}
                   </p>
                   {comment.writer.role === "ADMIN" && (
-                    <img
+                    <Image
                       src="/icon_verificated.svg"
                       alt="verificated icon"
                       width={15}

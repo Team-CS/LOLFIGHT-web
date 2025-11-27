@@ -8,6 +8,7 @@ import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import constant from "@/src/common/constant/constant";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { GuildInviteModal } from "./modals/GuildInviteModal";
+import Image from "next/image";
 
 interface Props {
   guild: GuildDto;
@@ -54,12 +55,14 @@ const GuildBanner = (props: Props) => {
         }`}
       >
         <div className="flex items-center gap-[12px]">
-          <img
+          <Image
+            src={`${constant.SERVER_URL}/${guild.guildIcon}`}
+            alt="GuildIcon"
+            width={75}
+            height={75}
             className={`object-cover rounded-md ${
               isMobile ? "w-[50px] h-[50px]" : "w-[75px] h-[75px]"
             }`}
-            src={`${constant.SERVER_URL}/${guild.guildIcon}`}
-            alt="GuildIcon"
           />
           <div className="flex flex-col gap-[4px]">
             <p

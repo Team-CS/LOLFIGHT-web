@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import React, { useEffect, useMemo, useRef } from "react";
 import { ScheduleResponseDto } from "../../DTOs/league/league_schedule.dto";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 
 interface LeagueScheduleComponentProps {
   data: ScheduleResponseDto | undefined;
@@ -177,9 +178,11 @@ export default function LeagueScheduleComponent(
                                     : "w-[36px] h-[36px] rounded-[8px]"
                                 } bg-black flex justify-center items-center p-[4px] shadow-md`}
                               >
-                                <img
+                                <Image
                                   src={match.team1.image}
-                                  alt={match.team1.name}
+                                  alt="match-team-name"
+                                  width={35}
+                                  height={35}
                                   className="w-full h-full object-contain"
                                 />
                               </div>
@@ -238,9 +241,11 @@ export default function LeagueScheduleComponent(
                                     : "w-[36px] h-[36px] rounded-[8px]"
                                 } bg-black flex justify-center items-center p-[4px] shadow-md`}
                               >
-                                <img
+                                <Image
                                   src={match.team2.image}
-                                  alt={match.team2.name}
+                                  alt="match-team-name"
+                                  width={35}
+                                  height={35}
                                   className="w-full h-full object-contain"
                                 />
                               </div>

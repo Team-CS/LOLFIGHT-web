@@ -1,6 +1,7 @@
 import constant from "@/src/common/constant/constant";
 import { GuildInviteDto } from "@/src/common/DTOs/guild/guild_invite.dto";
 import { getTierStyle } from "@/src/utils/string/string.util";
+import Image from "next/image";
 
 interface GuildInviteReviewModalProps {
   inviteData: GuildInviteDto;
@@ -31,9 +32,11 @@ export const GuildInviteReviewModal = (props: GuildInviteReviewModalProps) => {
 
         {/* 헤더 - 유저 기본 정보 */}
         <div className="flex items-center gap-[16px]">
-          <img
+          <Image
             src={`${constant.SERVER_URL}/${inviteData.member?.memberIcon}`}
             alt="tier"
+            width={48}
+            height={48}
             className="w-[48px] h-[48px] rounded-full "
           />
           <div className="flex flex-col gap-[4px]">
@@ -46,11 +49,13 @@ export const GuildInviteReviewModal = (props: GuildInviteReviewModalProps) => {
                   <span className="text-[14px] text-gray-600 dark:text-gray-300">
                     {inviteData.member?.memberGame?.gameName}
                   </span>
-                  <img
+                  <Image
                     src={`${constant.SERVER_URL}/public/rank/${
                       inviteData.member?.memberGame?.gameTier?.split(" ")[0]
                     }.png`}
                     alt="tier"
+                    width={20}
+                    height={20}
                     className="w-[20px] h-[20px]"
                   />
                   <span
@@ -63,9 +68,11 @@ export const GuildInviteReviewModal = (props: GuildInviteReviewModalProps) => {
                 </div>
 
                 <div className="flex items-center gap-[6px]">
-                  <img
+                  <Image
                     src={`${constant.SERVER_URL}/public/ranked-positions/${inviteData.member?.memberGame?.line}.png`}
                     alt="tier"
+                    width={20}
+                    height={20}
                     className="w-[20px] h-[20px]"
                   />
                   <span className="text-[12px] text-gray-700 dark:text-gray-400">

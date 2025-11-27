@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import constant from "@/src/common/constant/constant";
 import localFont from "next/font/local";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const rixi = localFont({
   src: "../../fonts/RixInooAriDuriRegular.ttf",
@@ -69,7 +70,7 @@ export default function Page() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
-        <img
+        <Image
           src={`${constant.SERVER_URL}/public/Google_Original.png`}
           alt="google-login"
           width={24}
@@ -86,7 +87,7 @@ export default function Page() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
       >
-        <img
+        <Image
           src={`${constant.SERVER_URL}/public/Naver_Original.png`}
           alt="naver-login"
           width={24}
@@ -103,7 +104,7 @@ export default function Page() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
       >
-        <img
+        <Image
           src={`${constant.SERVER_URL}/public/Kakao_Original.png`}
           alt="kakao-login"
           width={28}

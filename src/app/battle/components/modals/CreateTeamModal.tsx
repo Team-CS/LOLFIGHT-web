@@ -22,6 +22,7 @@ import { getTierStyle } from "@/src/utils/string/string.util";
 import { useEffect, useState } from "react";
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"];
 
@@ -305,11 +306,13 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
                     </p>
                     <div className="flex gap-[4px] items-center">
                       <p>라인: {assignedMembers[pos]!.memberGame?.line}</p>
-                      <img
+                      <Image
                         src={`${constant.SERVER_URL}/public/ranked-positions/${
                           assignedMembers[pos]!.memberGame?.line
                         }.png`}
-                        alt={assignedMembers[pos]!.memberGame?.line}
+                        alt="line"
+                        width={15}
+                        height={15}
                         className="w-[15px] h-[15px]"
                       />
                     </div>
@@ -343,9 +346,11 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
                               <p>
                                 라인: {invitedMember.member.memberGame?.line}
                               </p>
-                              <img
+                              <Image
                                 src={`${constant.SERVER_URL}/public/ranked-positions/${invitedMember.member.memberGame?.line}.png`}
-                                alt={invitedMember.member.memberGame?.line}
+                                alt="line"
+                                width={15}
+                                height={15}
                                 className="w-[15px] h-[15px]"
                               />
                             </div>
@@ -420,9 +425,11 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
                           {invite.member.memberGame?.gameTier}
                         </span>{" "}
                         | 라인: {invite.member.memberGame?.line}
-                        <img
+                        <Image
                           src={`${constant.SERVER_URL}/public/ranked-positions/${invite.member.memberGame?.line}.png`}
-                          alt={invite.member.memberGame?.line}
+                          alt="line"
+                          width={15}
+                          height={15}
                           className="w-[15px] h-[15px]"
                         />
                       </div>
@@ -452,9 +459,11 @@ export default function CreateTeamModal(props: CreateTeamModalProps) {
                       {member.memberGame?.gameTier}
                     </span>{" "}
                     | 라인: {member.memberGame?.line}
-                    <img
+                    <Image
                       src={`${constant.SERVER_URL}/public/ranked-positions/${member.memberGame?.line}.png`}
-                      alt={member.memberGame?.line}
+                      alt="line"
+                      width={15}
+                      height={15}
                       className="w-[15px] h-[15px]"
                     />
                   </div>

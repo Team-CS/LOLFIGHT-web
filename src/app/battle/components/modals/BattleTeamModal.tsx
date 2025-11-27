@@ -11,6 +11,7 @@ import constant from "@/src/common/constant/constant";
 import { useGuildTeamStore } from "@/src/common/zustand/guild_team.zustand";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { GuildTeamDto } from "@/src/common/DTOs/guild/guild_team/guild_team.dto";
+import Image from "next/image";
 
 interface BattleTeamModalProps {
   team: GuildTeamDto;
@@ -42,9 +43,11 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
         className="flex flex-col max-w-[600px] w-full bg-white dark:bg-branddark rounded-[12px] p-[32px] gap-[24px] overflow-y-auto shadow-lg"
       >
         <div className="flex items-center gap-[16px] ">
-          <img
+          <Image
             src={`${constant.SERVER_URL}/${guild.guildIcon}`}
             alt="Guild Logo"
+            width={60}
+            height={60}
             className="w-[60px] h-[60px] rounded-[12px] object-cover"
           />
           <div className="flex flex-col">

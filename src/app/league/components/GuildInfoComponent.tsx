@@ -2,6 +2,7 @@ import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import constant from "@/src/common/constant/constant";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { getTierStyle } from "@/src/utils/string/string.util";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -27,12 +28,15 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
         {props.guild.guildRecord?.recordRanking === "1" ||
         props.guild.guildRecord?.recordRanking === "2" ||
         props.guild.guildRecord?.recordRanking === "3" ? (
-          <img
-            className="object-fit"
-            width={isMobile ? 24 : 32}
-            height={isMobile ? 24 : 32}
+          <Image
             src={`/images/ranking${props.guild.guildRecord.recordRanking}.png`}
             alt="랭킹아이콘"
+            width={24}
+            height={24}
+            quality={100}
+            className={`${
+              isMobile ? "w-[24px] h-[24px]" : "w-[32px] h-[32px]"
+            } rounded-[12px] object-cover`}
           />
         ) : props.guild.guildRecord?.recordRanking === "기록없음" ? null : (
           <div className="text-[14px] font-bold">
@@ -42,13 +46,17 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
       </div>
 
       <div className="flex flex-[1] px-[8px] gap-[12px] items-center">
-        <img
-          className={`object-cover rounded-md ${
-            isMobile ? "w-[25px] h-[25px]" : "w-[35px] h-[35px]"
-          }`}
+        <Image
           src={`${constant.SERVER_URL}/${props.guild.guildIcon}`}
           alt="길드 아이콘"
+          width={35}
+          height={35}
+          quality={100}
+          className={`${
+            isMobile ? "w-[25px] h-[25px]" : "w-[35px] h-[35px]"
+          } rounded-[4px] object-cover`}
         />
+
         <div
           className={`font-semibold truncate ${
             isMobile ? "text-[10px] max-w-[100px]" : "text-[16px]"

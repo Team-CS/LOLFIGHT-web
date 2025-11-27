@@ -30,6 +30,7 @@ import { GuildDescriptionModal } from "./modals/GuildDescriptionModal";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { GuildInviteReviewModal } from "./modals/GuildInviteReviewModal";
 import { getTierStyle } from "@/src/utils/string/string.util";
+import Image from "next/image";
 
 const GuildManagePage = () => {
   const [inviteMembers, setInviteMembers] = useState<GuildInviteDto[]>([]);
@@ -301,9 +302,11 @@ const GuildManagePage = () => {
       <div className="flex flex-col w-full gap-[24px] p-[8px]">
         {/* 길드 헤더 */}
         <div className="flex items-center gap-[16px]">
-          <img
+          <Image
             src={`${constant.SERVER_URL}/${guild?.guildIcon}`}
             alt="GuildIcon"
+            width={100}
+            height={100}
             className={`object-cover rounded-[12px] shrink-0 ${
               isMobile ? "w-[70px] h-[70px]" : "w-[100px] h-[100px]"
             }`}
@@ -418,10 +421,12 @@ const GuildManagePage = () => {
                         </>
                       )}
                     </div>
-                    <img
+                    <Image
                       src={`${constant.SERVER_URL}/${guild.guildBanner}`}
                       alt="Guild Banner"
-                      className="rounded-[8px] shadow-md"
+                      width={700}
+                      height={500}
+                      className="rounded-[12px]"
                     />
                   </div>
                 ) : (
@@ -460,8 +465,12 @@ const GuildManagePage = () => {
                 >
                   <div className="flex-[1]">닉네임</div>
                   <div className="flex-[2]">소환사명</div>
-                  <div className="flex-[1]">티어</div>
-                  <div className="flex-[1]">라인</div>
+                  <div className={`${isMobile ? "flex-[0.5]" : "flex-[1]"}`}>
+                    티어
+                  </div>
+                  <div className={`${isMobile ? "flex-[1.5]" : "flex-[1]"}`}>
+                    라인
+                  </div>
                 </div>
                 {guild.guildMembers.map((m) => (
                   <GuildMemberBox
@@ -497,9 +506,11 @@ const GuildManagePage = () => {
                   >
                     {/* 닉네임 */}
                     <div className="flex items-center gap-[6px]">
-                      <img
+                      <Image
                         src={`${constant.SERVER_URL}/${invite.member?.memberIcon}`}
                         alt="line"
+                        width={20}
+                        height={20}
                         className={`rounded-[12px] ${
                           isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
                         }`}
@@ -516,11 +527,13 @@ const GuildManagePage = () => {
                         </span>
 
                         <div className="flex items-center justify-end gap-[6px] text-[12px] text-gray-700 dark:text-gray-400">
-                          <img
+                          <Image
                             src={`${constant.SERVER_URL}/public/rank/${
                               invite.member?.memberGame?.gameTier?.split(" ")[0]
                             }.png`}
                             alt="line"
+                            width={20}
+                            height={20}
                             className={`${
                               isMobile
                                 ? "w-[15px] h-[15px]"
@@ -537,9 +550,11 @@ const GuildManagePage = () => {
                         </div>
 
                         <div className="flex items-center justify-end gap-[6px] text-[12px] text-gray-700 dark:text-gray-400">
-                          <img
+                          <Image
                             src={`${constant.SERVER_URL}/public/ranked-positions/${invite.member?.memberGame?.line}.png`}
                             alt="line"
+                            width={20}
+                            height={20}
                             className={`${
                               isMobile
                                 ? "w-[15px] h-[15px]"

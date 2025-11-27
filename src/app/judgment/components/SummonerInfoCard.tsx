@@ -6,6 +6,7 @@ import {
   convertLineToEnglish,
   getTierStyle,
 } from "@/src/utils/string/string.util";
+import Image from "next/image";
 
 interface SummonerInfoCardProps {
   name: string;
@@ -26,22 +27,26 @@ export const SummonerInfoCard = (props: SummonerInfoCardProps) => {
     >
       <div className="flex items-end gap-[4px]">
         {championId && (
-          <img
+          <Image
             src={`${constant.SERVER_URL}/public/champions/${championId}.png`}
+            alt="champion"
+            width={70}
+            height={70}
             className={`rounded-[12px] ${
               isMobile ? "w-[45px] h-[45px]" : "w-[70px] h-[70px]"
             }`}
-            alt="champion"
           />
         )}
 
         {isMobile && (
-          <img
+          <Image
             src={`${
               constant.SERVER_URL
             }/public/ranked-positions/${convertLineToEnglish(line)}.png`}
-            className={`rounded-[12px] w-[30px] h-[30px] items-end`}
             alt="champion"
+            width={30}
+            height={30}
+            className={`rounded-[12px] w-[30px] h-[30px] items-end`}
           />
         )}
       </div>
@@ -91,14 +96,16 @@ export const SummonerInfoCard = (props: SummonerInfoCardProps) => {
           >
             {tier}
             {tier && (
-              <img
+              <Image
                 src={`${constant.SERVER_URL}/public/rank/${
                   tier.split(" ")[0]
                 }.png`}
+                alt="tier"
+                width={24}
+                height={24}
                 className={`${
                   isMobile ? "w-[20px] h-[20px]" : "w-[24px] h-[24px]"
                 }`}
-                alt="tier"
               />
             )}
           </div>

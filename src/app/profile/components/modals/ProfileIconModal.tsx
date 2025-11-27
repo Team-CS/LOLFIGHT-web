@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface ProfileIconModalProps {
   selectedImage: File | null;
   previewImage: string;
@@ -18,15 +20,19 @@ export const ProfileIconModal = (props: ProfileIconModalProps) => {
         <div className="flex justify-center">
           <div className="flex justify-center items-center h-[80px] w-[80px] rounded-[12px] overflow-hidden border border-dashed border-gray-300 bg-gray-50 dark:bg-gray-800">
             {selectedImage ? (
-              <img
+              <Image
                 src={previewImage}
                 alt="프로필 사진 미리보기"
+                width={80}
+                height={80}
                 className="w-[80px] h-[80px] object-cover"
               />
             ) : (
-              <img
-                src="https://placehold.co/50x50"
+              <Image
+                src="https://placehold.co/50x50.png"
                 alt="기본 이미지"
+                width={50}
+                height={50}
                 className="w-[50px] h-[50px]"
               />
             )}

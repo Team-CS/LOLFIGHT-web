@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { BattlePlayerDto } from "@/src/common/DTOs/battle/battle_player.dto";
 import constant from "@/src/common/constant/constant";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
+import Image from "next/image";
 interface Props {
   battlePlayerData: BattlePlayerDto;
   isResult: boolean;
@@ -45,34 +46,44 @@ const GuildFightBoxMobile = (props: Props) => {
     <div className={`w-full h-[45px] flex text-[12px] px-[8px] gap-[8px]`}>
       {/* 플레이어 & 룬 & 스펠 */}
       <div className="flex-[1] flex h-full font-medium text-[12px] items-center gap-[2px]">
-        <img
+        <Image
           src={`${constant.SERVER_URL}/public/champions/${battlePlayerData.championId}.png`}
           alt="Champion"
+          width={25}
+          height={25}
           className="w-[25px] h-[25px] rounded-[4px]"
         />
 
         <div className="flex gap-[2px] flex-shrink-0">
           <div className="flex flex-col">
-            <img
+            <Image
               src={`${constant.SERVER_URL}/public/spell/${battlePlayerData.spell1Id}.png`}
               alt="spell1"
+              width={13}
+              height={13}
               className="rounded-full w-[13px] h-[13px]"
             />
-            <img
+            <Image
               src={`${constant.SERVER_URL}/public/spell/${battlePlayerData.spell2Id}.png`}
               alt="spell2"
+              width={13}
+              height={13}
               className="rounded-full w-[13px] h-[13px]"
             />
           </div>
           <div className="flex flex-col">
-            <img
+            <Image
               src={`${constant.SERVER_URL}/public/rune/${primayRune}.png`}
               alt="rune"
+              width={13}
+              height={13}
               className="rounded-full w-[13px] h-[13px]"
             />
-            <img
+            <Image
               src={`${constant.SERVER_URL}/public/rune/${subRune}.png`}
               alt="sub_rune"
+              width={13}
+              height={13}
               className="rounded-full w-[13px] h-[13px]"
             />
           </div>
@@ -149,11 +160,13 @@ const GuildFightBoxMobile = (props: Props) => {
               return <div key={key} className={`${IMG_SIZE} shrink-0`} />;
             }
             return itemNumber !== 0 ? (
-              <img
+              <Image
                 key={key}
                 src={`${constant.SERVER_URL}/public/items/${itemNumber}.png`}
-                className={`object-contain ${IMG_SIZE} shrink-0 rounded-[4px]`}
                 alt={`Item${itemNumber}`}
+                width={15}
+                height={15}
+                className={`object-contain ${IMG_SIZE} shrink-0 rounded-[4px]`}
               />
             ) : (
               <div

@@ -3,6 +3,7 @@
 import constant from "@/src/common/constant/constant";
 import { Summoner } from "@/src/common/types/judgment.type";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 import React from "react";
 
 interface SummonerInputBoxProps {
@@ -32,12 +33,14 @@ export default function SummonerInputBox({
             isMobile ? "py-[12px]" : "min-w-[100px]"
           }`}
         >
-          <img
+          <Image
             src={`${constant.SERVER_URL}/public/champions/${selectedChampionId}.png`}
             alt="Champion Icon"
-            width={isMobile ? 52 : 72}
-            height={isMobile ? 52 : 72}
-            className="rounded-full cursor-pointer hover:ring-[2px] hover:ring-brandcolor"
+            width={72}
+            height={72}
+            className={`${
+              isMobile ? "w-[52px] h-[52px]" : "w-[72px] h-[72px]"
+            } rounded-full cursor-pointer hover:ring-[2px] hover:ring-brandcolor`}
             onClick={onChampionClick}
           />
         </div>
@@ -49,10 +52,14 @@ export default function SummonerInputBox({
             isMobile ? "py-[12px]" : "min-w-[100px]"
           }`}
         >
-          <img
+          <Image
             src={`${constant.SERVER_URL}/public/champions/${selectedChampionId}.png`}
             alt="Champion Icon"
-            className="rounded-full cursor-pointer hover:ring-[2px] hover:ring-brandcolor"
+            width={72}
+            height={72}
+            className={`${
+              isMobile ? "w-[52px] h-[52px]" : "w-[72px] h-[72px]"
+            } rounded-full cursor-pointer hover:ring-[2px] hover:ring-brandcolor`}
             onClick={onChampionClick}
           />
         </div>
@@ -148,9 +155,11 @@ export default function SummonerInputBox({
 
       {side === "right" && !isMobile && (
         <div className="flex items-center justify-center w-[130px] bg-red-300">
-          <img
+          <Image
             src={`${constant.SERVER_URL}/public/champions/${selectedChampionId}.png`}
             alt="Champion Icon"
+            width={72}
+            height={72}
             className="rounded-full cursor-pointer w-[72px] h-[72px] hover:ring-[2px] hover:ring-brandcolor"
             onClick={onChampionClick}
           />

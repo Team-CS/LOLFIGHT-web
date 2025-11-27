@@ -9,8 +9,9 @@ import { JudgmentCreateDto } from "@/src/common/DTOs/judgment/judgment.dto";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { Summoner } from "@/src/common/types/judgment.type";
-import SummonerInputBox from "../../board/components/write/components/SummonerInputBox";
+import SummonerInputBox from "../components/SummonerInputBox";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 
 interface ChampionsMap {
   [key: string]: string;
@@ -276,13 +277,15 @@ export default function Page() {
                     key={id}
                     className="flex flex-col justify-center items-center"
                   >
-                    <img
+                    <Image
                       key={id}
                       src={`${constant.SERVER_URL}/public/champions/${id}.png`}
                       alt={name}
-                      width={isMobile ? 50 : 70}
-                      height={isMobile ? 50 : 70}
-                      className="cursor-pointer rounded-[12px]"
+                      width={70}
+                      height={70}
+                      className={`${
+                        isMobile ? "w-[50px] h-[50px]" : "w-[70px] h-[70px]"
+                      } cursor-pointer rounded-[12px]`}
                       onClick={() => handleChampionSelect(id, leftShowImages)}
                     />
                     <p className="font-light text-[10px]">{name}</p>

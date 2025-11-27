@@ -9,6 +9,7 @@ import { useState } from "react";
 import { getTierStyle } from "@/src/utils/string/string.util";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Props {
   guildMember: MemberDto;
@@ -55,10 +56,12 @@ const GuildMemberBox = (props: Props) => {
         >
           {!isMobile && (
             <div className={`${guildMember.memberItem?.border}`}>
-              <img
-                className="object-cover rounded-[12px] w-[25px] h-[25px]"
+              <Image
                 src={`${constant.SERVER_URL}/${guildMember.memberIcon}`}
                 alt="member-icon"
+                width={25}
+                height={25}
+                className="object-cover rounded-[4px] w-[25px] h-[25px]"
               />
             </div>
           )}
@@ -77,17 +80,19 @@ const GuildMemberBox = (props: Props) => {
         </div>
 
         <div
-          className={`flex-[1] items-center font-medium ${
-            isMobile ? "text-[10px]" : "text-[14px]"
+          className={`items-center font-medium ${
+            isMobile ? "text-[10px] flex-[0.5]" : "text-[14px] flex-[1]"
           }`}
         >
           {guildMember.memberGame ? (
             <div className="flex gap-[4px] items-center">
-              <img
+              <Image
                 src={`${constant.SERVER_URL}/public/rank/${
                   guildMember.memberGame?.gameTier?.split(" ")[0]
                 }.png`}
                 alt="rank"
+                width={30}
+                height={30}
                 className={`${
                   isMobile ? "w-[20px] h-[20px]" : "w-[30px] h-[30px]"
                 } `}
@@ -104,15 +109,17 @@ const GuildMemberBox = (props: Props) => {
         </div>
 
         <div
-          className={`flex-[1] items-center font-medium ${
-            isMobile ? "text-[10px]" : "text-[14px]"
+          className={`items-center font-medium ${
+            isMobile ? "text-[10px] flex-[1.5]" : "text-[14px] flex-[1]"
           }`}
         >
           {guildMember.memberGame?.line ? (
             <div className="flex items-center gap-[4px]">
-              <img
+              <Image
                 src={`${constant.SERVER_URL}/public/ranked-positions/${guildMember.memberGame?.line}.png`}
                 alt="line"
+                width={25}
+                height={25}
                 className={`${
                   isMobile ? "w-[15px] h-[15px]" : "w-[25px] h-[25px]"
                 }`}

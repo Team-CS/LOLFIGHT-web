@@ -1,4 +1,5 @@
 import constant from "@/src/common/constant/constant";
+import Image from "next/image";
 import { useState } from "react";
 
 interface GuildInviteModalProps {
@@ -46,10 +47,12 @@ export const GuildInviteModal = (props: GuildInviteModalProps) => {
 
         {/* 헤더: 길드마크 + 길드명 + 정보 */}
         <div className="flex items-center gap-[16px]">
-          <img
+          <Image
             src={`${constant.SERVER_URL}/${guildIcon}`}
             alt="Guild Mark"
-            className="w-[56px] h-[56px] rounded-full border shadow-sm"
+            width={56}
+            height={56}
+            className="w-[56px] h-[56px] rounded-full"
           />
           <div className="flex flex-col">
             <h2 className="text-[20px] font-bold text-gray-900 dark:text-white">

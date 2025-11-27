@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import constant from "@/src/common/constant/constant";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 
 interface Props {
   currentLine?: string;
@@ -43,7 +44,10 @@ const LineSelector = (props: Props) => {
   const toggleDropdown = () => {
     if (buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
-      setPosition({ x: rect.left, y: rect.bottom });
+      setPosition({
+        x: rect.left + window.scrollX,
+        y: rect.bottom + window.scrollY,
+      });
       setOpen((prev) => !prev);
     }
   };
@@ -61,9 +65,11 @@ const LineSelector = (props: Props) => {
           isMobile ? "text-[10px]" : "text-[14px]"
         }`}
       >
-        <img
+        <Image
           src={`${constant.SERVER_URL}/public/ranked-positions/${currentLine}.png`}
-          alt={currentLine}
+          alt="curentLine"
+          width={25}
+          height={25}
           className={`${isMobile ? "w-[15px] h-[15px]" : "w-[25px] h-[25px]"}`}
         />
         {currentLine}
@@ -92,9 +98,11 @@ const LineSelector = (props: Props) => {
                     : "px-[12px] py-[8px] text-[14px]"
                 }`}
               >
-                <img
+                <Image
                   src={`${constant.SERVER_URL}/public/ranked-positions/${line}.png`}
-                  alt={line}
+                  alt="line"
+                  width={20}
+                  height={20}
                   className={`${
                     isMobile ? "w-[15px] h-[15px]" : "w-[20px] h-[20px]"
                   }`}

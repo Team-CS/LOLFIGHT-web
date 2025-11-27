@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-module.exports = nextConfig;
-
-module.exports = {
+const nextConfig = {
   images: {
-    domains: ["localhost"],
+    domains: [
+      "localhost",
+      "placehold.co",
+      "lolfight.kr",
+      "static.lolesports.com",
+    ],
   },
 };
+
+module.exports = nextConfig;

@@ -23,6 +23,7 @@ import {
 import LineSelector from "./context-menu/LineSelector";
 import { getMyItems, toggleActiveItems } from "@/src/api/member_item.api";
 import { MemberItemDto } from "@/src/common/DTOs/member/member_item.dto";
+import Image from "next/image";
 
 export default function ProfileInfoPage() {
   const isMobile = useIsMobile();
@@ -259,13 +260,15 @@ export default function ProfileInfoPage() {
       <div className="w-full flex flex-col items-center gap-[16px] p-[16px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder relative overflow-hidden">
         {/* 배너 */}
         <div className="w-full h-[240px] relative">
-          <img
+          <Image
             src={`${
               member.memberItem?.banner
                 ? `${constant.SERVER_URL}/${member.memberItem.banner}`
                 : `${constant.SERVER_URL}/public/default-banner.png`
             }`}
             alt="banner"
+            width={1000}
+            height={1000}
             className="w-full h-full object-cover rounded-[12px] opacity-80"
           />
         </div>
@@ -274,9 +277,11 @@ export default function ProfileInfoPage() {
         <div className="flex flex-col sm:flex-row w-full items-center  justify-between gap-[16px] p-[16px] rounded-[12px] mt-[-60px] relative z-10 bg-white/90 dark:bg-dark shadow-md backdrop-blur-sm border dark:border-branddarkborder">
           <div className="flex flex-col gap-[12px]">
             <div className={member.memberItem?.border}>
-              <img
+              <Image
                 src={`${constant.SERVER_URL}/${member.memberIcon}`}
                 alt="profile"
+                width={130}
+                height={130}
                 className="w-[130px] h-[130px] rounded-[12px] object-cover"
               />
             </div>
@@ -344,7 +349,7 @@ export default function ProfileInfoPage() {
             <div
               className={`flex items-center gap-[4px] text-[14px] text-gray-500`}
             >
-              <img
+              <Image
                 src={`${constant.SERVER_URL}/public/${imageName}.png`}
                 alt={member?.type}
                 width={15}
@@ -360,9 +365,11 @@ export default function ProfileInfoPage() {
             <div className="flex gap-[8px]">
               <div className="text-[13px] text-gray-700 dark:text-gray-300 flex items-center gap-[4px]">
                 {member.memberWallet.point}P
-                <img
+                <Image
                   src="/images/point.png"
                   alt="point"
+                  width={14}
+                  height={14}
                   className="w-[14px] h-[14px]"
                 />
               </div>
@@ -390,11 +397,13 @@ export default function ProfileInfoPage() {
           {member.memberGame ? (
             <>
               <div className="flex items-center gap-[12px]">
-                <img
+                <Image
                   src={`${constant.SERVER_URL}/public/rank/${
                     member.memberGame.gameTier!.split(" ")[0]
                   }.png`}
                   alt="tier"
+                  width={70}
+                  height={70}
                   className="w-[70px] h-[70px] object-contain"
                 />
                 <div className="flex flex-col gap-[4px]">
@@ -495,10 +504,12 @@ export default function ProfileInfoPage() {
                     <div
                       className={`relative w-[60px] h-[60px] rounded-[12px] ${item.shop.cssClass}`}
                     >
-                      <img
-                        className="object-cover w-full h-full rounded-[12px]"
+                      <Image
                         src={`${constant.SERVER_URL}/${member.memberIcon}`}
                         alt={item.shop.name}
+                        width={50}
+                        height={50}
+                        className="object-cover w-full h-full rounded-[12px]"
                       />
                     </div>
                   )}
@@ -514,9 +525,11 @@ export default function ProfileInfoPage() {
                   )}
 
                   {item.shop.category === "BANNER" && (
-                    <img
+                    <Image
                       src={`${constant.SERVER_URL}/${item.shop.imageUrl}`}
                       alt={item.shop.name}
+                      width={60}
+                      height={60}
                       className="w-[60px] h-[60px] rounded-md object-cover"
                     />
                   )}
@@ -545,7 +558,10 @@ export default function ProfileInfoPage() {
         <ProfileIconModal
           selectedImage={selectedImage}
           previewImage={previewImage}
-          onClose={() => setOpenModal(null)}
+          onClose={() => {
+            setOpenModal(null);
+            setSelectedImage(null);
+          }}
           onImageChange={handleImageChange}
           onSubmit={handleIconSubmit}
         />

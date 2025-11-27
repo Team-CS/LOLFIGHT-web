@@ -11,6 +11,7 @@ import {
   formatElapsedTime,
   getTierStyle,
 } from "@/src/utils/string/string.util";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 type PageProps = {
@@ -65,13 +66,15 @@ export default function Page({ params }: { params: PageProps }) {
     <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px] ">
       <div className="w-full flex flex-col items-center gap-[12px] p-[12px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder relative overflow-hidden">
         <div className={"w-full h-[280px] relative"}>
-          <img
+          <Image
             src={`${
               member.memberItem?.banner
                 ? `${constant.SERVER_URL}/${member.memberItem.banner}`
                 : `${constant.SERVER_URL}/public/default-banner.png`
             }`}
             alt="member-banner"
+            width={1000}
+            height={1000}
             className="w-full h-full object-cover rounded-[12px] opacity-80"
           />
         </div>
@@ -81,9 +84,11 @@ export default function Page({ params }: { params: PageProps }) {
             <div className="flex items-center justify-between gap-[12px] w-full">
               <div className="flex items-center gap-[12px]">
                 <div className={`${member.memberItem?.border}`}>
-                  <img
+                  <Image
                     src={`${constant.SERVER_URL}/${member.memberIcon}`}
                     alt={member.memberName}
+                    width={130}
+                    height={130}
                     className={`${
                       isMobile ? "w-[100px] h-[100px]" : "w-[130px] h-[130px]"
                     } object-cover rounded-[12px]`}
@@ -132,11 +137,13 @@ export default function Page({ params }: { params: PageProps }) {
 
             {member.memberGame && (
               <div className="flex items-center gap-[12px] p-[12px] rounded-[12px] bg-gray-50 dark:bg-branddark border dark:border-branddarkborder shadow-sm">
-                <img
+                <Image
                   src={`${constant.SERVER_URL}/public/rank/${
                     member.memberGame.gameTier!.split(" ")[0]
                   }.png`}
                   alt="Tier"
+                  width={80}
+                  height={80}
                   className={`object-contain ${
                     isMobile ? "w-[60px] h-[60px]" : "w-[80px] h-[80px]"
                   }`}
@@ -175,9 +182,11 @@ export default function Page({ params }: { params: PageProps }) {
 
         {member.memberGuild && (
           <div className="flex items-center w-full gap-[12px] p-[12px] rounded-[12px] dark:bg-dark border dark:border-branddarkborder shadow-lg">
-            <img
+            <Image
               src={`${constant.SERVER_URL}/${member.memberGuild.guildIcon}`}
               alt="guild icon"
+              width={130}
+              height={130}
               className={`${
                 isMobile ? "w-[100px] h-[100px]" : "w-[130px] h-[130px]"
               } object-cover rounded-[12px]`}

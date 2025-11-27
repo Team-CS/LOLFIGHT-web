@@ -9,6 +9,7 @@ import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 
 interface Props {
   battleData: BattleDto;
@@ -125,9 +126,11 @@ const GuildFightRecord = (props: Props) => {
           <div className="flex w-[400px] justify-between items-center gap-[12px] p-[12px]">
             <div className="flex flex-col w-full items-center gap-[8px]">
               <div className="flex items-center gap-[8px]">
-                <img
+                <Image
                   src={`${constant.SERVER_URL}/${myTeamData.guild.guildIcon}`}
                   alt="GuildBanner"
+                  width={30}
+                  height={30}
                   className="w-[30px] h-[30px] rounded-[4px] object-cover shrink-0"
                 />
                 <p
@@ -149,9 +152,11 @@ const GuildFightRecord = (props: Props) => {
 
             <div className="flex flex-col w-full items-center gap-[8px]">
               <div className="flex items-center gap-[8px]">
-                <img
+                <Image
                   src={`${constant.SERVER_URL}/${enemyTeamData.guild.guildIcon}`}
                   alt="GuildBanner"
+                  width={30}
+                  height={30}
                   className="w-[30px] h-[30px] rounded-[4px] object-cover shrink-0"
                 />
                 <p

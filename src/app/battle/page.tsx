@@ -47,6 +47,7 @@ import { getMemberData } from "@/src/api/member.api";
 import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { BattleTeamCardMobile } from "./components/BattleTeamCardMobile";
+import Image from "next/image";
 
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
@@ -514,12 +515,15 @@ export default function Page() {
             {/* Header */}
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-[16px]">
-                <img
+                <Image
                   src={`${constant.SERVER_URL}/${guildTeam.guild.guildIcon}`}
                   alt="logo"
-                  className={`rounded-[12px] object-cover ${
-                    isMobile ? "w-[50px] h-[50px]" : "w-[60px] h-[60px]"
+                  width={60}
+                  height={60}
+                  className={`rounded-[12px] object-corver ${
+                    isMobile ? "w-[50px] h-[60px]" : "w-[60px] h-[60px]"
                   }`}
+                  quality={100}
                 />
                 <div className="flex flex-col">
                   <p

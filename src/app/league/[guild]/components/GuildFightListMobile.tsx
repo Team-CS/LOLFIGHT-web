@@ -4,6 +4,7 @@ import constant from "@/src/common/constant/constant";
 import { getGuildInfo } from "@/src/api/guild.api";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import GuildFightBoxMobile from "./GuildFightBoxMobile";
+import Image from "next/image";
 
 interface Props {
   battleTeamData: BattleTeamDto;
@@ -60,9 +61,11 @@ const GuildFightListMobile = (props: Props) => {
             >
               {result === "win" ? "승리" : "패배"}
             </p>
-            <img
+            <Image
               src={`${constant.SERVER_URL}/${battleTeamData.guild.guildIcon}`}
               alt="GuildBanner"
+              width={20}
+              height={20}
               className="w-[20px] h-[20px] rounded-[4px] object-cover"
             />
             <p className="font-semibold text-[12px]">
@@ -81,11 +84,14 @@ const GuildFightListMobile = (props: Props) => {
           <div className="flex items-center gap-[4px]">
             {objectives.map(({ key, icon }) => (
               <>
-                <img
+                <Image
                   key={key}
                   src={`${constant.SERVER_URL}/public/objects/${icon}-${
                     result === "win" ? "blue" : "red"
                   }.png`}
+                  alt="object-icon"
+                  width={15}
+                  height={15}
                   className={`w-[15px] h-[15px]`}
                 />
                 <p className="text-[12px]">
@@ -107,9 +113,12 @@ const GuildFightListMobile = (props: Props) => {
 
           <div className="flex gap-[4px] items-center">
             {battleTeamData.bans.map((ban, index) => (
-              <img
+              <Image
                 key={index}
                 src={`${constant.SERVER_URL}/public/champions/${ban}.png`}
+                alt="ban-champions"
+                width={18}
+                height={18}
                 className="rounded-[4px] w-[18px] h-[18px]"
               />
             ))}

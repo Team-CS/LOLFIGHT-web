@@ -15,6 +15,7 @@ import { getBattleList } from "@/src/api/battle.api";
 import constant from "@/src/common/constant/constant";
 import { getTierStyle } from "@/src/utils/string/string.util";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 
 export default function GuildPage() {
   const router = useRouter();
@@ -136,8 +137,10 @@ export default function GuildPage() {
               {/* 배너 이미지 블럭 */}
               <div className="w-full bg-white dark:bg-dark rounded-[12px] p-[24px] shadow-md flex justify-center items-center min-h-[200px]">
                 {guild?.guildBanner ? (
-                  <img
+                  <Image
                     src={`${constant.SERVER_URL}/${guild.guildBanner}`}
+                    width={700}
+                    height={500}
                     alt="Guild Banner"
                     className="rounded-[12px]"
                   />
@@ -211,10 +214,12 @@ export default function GuildPage() {
                     <div className="flex gap-[8px] flex-[1] font-medium justify-center min-w-0">
                       {!isMobile && (
                         <div className={`${member.memberItem?.border}`}>
-                          <img
-                            className="object-cover rounded-[12px] w-[25px] h-[25px]"
+                          <Image
                             src={`${constant.SERVER_URL}/${member.memberIcon}`}
                             alt="member-icon"
+                            width={25}
+                            height={25}
+                            className="object-cover rounded-[12px] w-[25px] h-[25px]"
                           />
                         </div>
                       )}
@@ -228,11 +233,13 @@ export default function GuildPage() {
                     <div className="flex-[1] flex items-center justify-center gap-[6px]">
                       {member.memberGame && (
                         <>
-                          <img
+                          <Image
                             src={`${constant.SERVER_URL}/public/rank/${
                               member.memberGame?.gameTier?.split(" ")[0]
                             }.png`}
                             alt="rank"
+                            width={25}
+                            height={25}
                             className="w-[25px] h-[25px]"
                           />
                           <span
@@ -248,9 +255,11 @@ export default function GuildPage() {
                     <div className="flex-[1] flex items-center gap-[4px] justify-center">
                       {member.memberGame && (
                         <>
-                          <img
+                          <Image
                             src={`${constant.SERVER_URL}/public/ranked-positions/${member.memberGame?.line}.png`}
                             alt="line"
+                            width={25}
+                            height={25}
                             className="w-[25px] h-[25px]"
                           />
                           <span>{member.memberGame?.line}</span>

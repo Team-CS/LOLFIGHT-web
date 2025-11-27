@@ -6,6 +6,7 @@ import {
 } from "../../DTOs/league/league_standing.dto";
 import localFont from "next/font/local";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 
 interface LCKStandingsComponentProps {
   data: StandingsResponseDto | undefined;
@@ -98,9 +99,11 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
                                   : "w-[36px] h-[36px] rounded-[8px] "
                               } bg-black dark:bg-black flex justify-center items-center p-[4px] shadow-md`}
                             >
-                              <img
+                              <Image
                                 src={team.image}
-                                alt={team.name}
+                                alt="team-name"
+                                width={35}
+                                height={35}
                                 className="w-full h-full object-contain"
                               />
                             </div>

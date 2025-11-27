@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface GuildBannerModalProps {
   selectedImage: File | null;
   previewImage: string;
@@ -19,10 +21,12 @@ export const GuildBannerModal = (props: GuildBannerModalProps) => {
           {selectedImage === null ? (
             <span className="text-[14px] text-gray-400">미리보기 없음</span>
           ) : (
-            <img
+            <Image
               src={previewImage}
               alt="배너 미리보기"
-              className="max-h-[200px] object-contain"
+              width={200}
+              height={100}
+              className="w-full max-h-[200px] object-contain"
             />
           )}
         </div>

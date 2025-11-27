@@ -5,6 +5,7 @@ import {
   formatKoreanDatetime,
   getTierStyle,
 } from "@/src/utils/string/string.util";
+import Image from "next/image";
 
 interface BattleTeamCardProps {
   scrimSlot: ScrimSlotDto;
@@ -24,9 +25,11 @@ export const BattleTeamCard = (props: BattleTeamCardProps) => {
     >
       {/* Guild Info */}
       <div className="flex items-center gap-[12px]">
-        <img
+        <Image
           src={`${constant.SERVER_URL}/${scrimSlot.hostTeam.guild.guildIcon}`}
           alt="Guild Logo"
+          width={40}
+          height={40}
           className="w-[40px] h-[40px] rounded-[12px] object-cover"
         />
         <div className="flex flex-col">

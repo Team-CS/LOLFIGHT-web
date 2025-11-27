@@ -7,6 +7,7 @@ import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { purchaseItem } from "@/src/api/member_item.api";
 import { MemberItemDto } from "@/src/common/DTOs/member/member_item.dto";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
+import Image from "next/image";
 
 interface ShopItemBoxProps {
   item: ShopDto;
@@ -28,10 +29,12 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
               isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
             } ${item.cssClass}`}
           >
-            <img
-              className="object-cover w-full h-full rounded-[12px]"
+            <Image
               src={`${constant.SERVER_URL}/public/default.png`}
               alt={item.name}
+              width={30}
+              height={30}
+              className="object-cover w-full h-full rounded-[12px]"
             />
           </div>
         );
@@ -44,10 +47,12 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
       case "BANNER":
         return (
           <div className="w-full h-full rounded-[8px] overflow-hidden">
-            <img
-              className="object-cover w-full h-full"
+            <Image
               src={`${constant.SERVER_URL}/${item.imageUrl}`}
               alt={item.name}
+              width={30}
+              height={30}
+              className="object-cover w-full h-full"
             />
           </div>
         );
@@ -150,10 +155,12 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
             >
               {item.price.toLocaleString()}
             </span>
-            <img
-              className="w-[15px] h-[15px] object-cover"
+            <Image
               src="/images/point.png"
               alt="포인트"
+              width={15}
+              height={15}
+              className="w-[15px] h-[15px] object-cover"
             />
           </div>
           {!hasPurchased(item) && (

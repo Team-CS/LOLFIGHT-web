@@ -6,6 +6,7 @@ import { CreateGuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { useRouter } from "next/navigation";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 
 export default function Page() {
   const router = useRouter();
@@ -135,15 +136,19 @@ export default function Page() {
           <div className="flex flex-col items-center gap-[8px]">
             <div className="relative w-[100px] h-[100px] border-2 border-dashed border-brandcolor rounded-[16px] flex items-center justify-center overflow-hidden hover:border-brandcolor/70 transition-colors duration-200">
               {guildImage ? (
-                <img
+                <Image
                   src={previewImage}
                   alt="Guild Icon"
+                  width={50}
+                  height={50}
                   className="w-full h-full object-cover rounded-[16px]"
                 />
               ) : (
-                <img
-                  src="https://placehold.co/50x50"
-                  alt="placeholder"
+                <Image
+                  src="https://placehold.co/50x50.png"
+                  alt="기본 이미지"
+                  width={50}
+                  height={50}
                   className="w-[50px] h-[50px]"
                 />
               )}

@@ -1,5 +1,6 @@
 "use client";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -13,12 +14,13 @@ const Footer = () => {
           isMobile ? "gap-[12px]" : "gap-[18px]"
         }`}
       >
-        <img
-          onClick={() => router.push("/")}
-          width={isMobile ? 30 : 50}
-          height={isMobile ? 30 : 50}
+        <Image
           src={"/LOLFIGHT_NONE_TEXT.png"}
-          alt="light logo"
+          alt="logo"
+          width={50}
+          height={50}
+          className={`${isMobile ? "w-[30px] h-[30px]" : "w-[50px] h-[50px]"}`}
+          onClick={() => router.push("/")}
         />
         <div
           className={`flex flex-col flex ${
@@ -53,7 +55,7 @@ const Footer = () => {
           rel="noopener noreferrer"
           className="flex items-center font-bold text-[12px] gap-[8px] text-brandcolor hover:text-primary transition-colors cursor-pointer"
         >
-          <img
+          <Image
             src="/discord.svg"
             alt="discord icon"
             width={20}

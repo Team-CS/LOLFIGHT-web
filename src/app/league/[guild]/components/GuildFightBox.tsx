@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { BattlePlayerDto } from "@/src/common/DTOs/battle/battle_player.dto";
 import constant from "@/src/common/constant/constant";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
+import Image from "next/image";
 interface Props {
   battlePlayerData: BattlePlayerDto;
   isResult: boolean;
@@ -45,14 +46,18 @@ const GuildFightBox = (props: Props) => {
     <div className={`w-full h-[45px] flex text-[14px] px-[8px] gap-[12px]`}>
       {/* 플레이어 */}
       <div className="flex flex-[2.5] h-full font-medium text-[14px] items-center gap-[8px]">
-        <img
+        <Image
           src={`${constant.SERVER_URL}/${guild.guildIcon}`}
           alt="GuildBanner"
+          width={25}
+          height={25}
           className="w-[25px] h-[25px] rounded-[4px] object-cover"
         />
-        <img
+        <Image
           src={`${constant.SERVER_URL}/public/champions/${battlePlayerData.championId}.png`}
           alt="Champion"
+          width={25}
+          height={25}
           className="w-[25px] h-[25px]"
         />
         <div className="flex items-center">
@@ -67,28 +72,32 @@ const GuildFightBox = (props: Props) => {
 
       {/* Spell/Rune */}
       <div className="flex flex-[0.5] gap-[4px]">
-        <div className="flex flex-col">
-          <img
+        <div className="flex flex-col items-center justify-center">
+          <Image
             src={`${constant.SERVER_URL}/public/spell/${battlePlayerData.spell1Id}.png`}
             alt="spell1"
             width={20}
+            height={20}
           />
-          <img
+          <Image
             src={`${constant.SERVER_URL}/public/spell/${props.battlePlayerData.spell2Id}.png`}
             alt="spell2"
             width={20}
+            height={20}
           />
         </div>
-        <div className="flex flex-col">
-          <img
+        <div className="flex flex-col items-center justify-center">
+          <Image
             src={`${constant.SERVER_URL}/public/rune/${primayRune}.png`}
             alt="rune"
             width={20}
+            height={20}
           />
-          <img
+          <Image
             src={`${constant.SERVER_URL}/public/rune/${subRune}.png`}
             alt="sub_rune"
-            width={18}
+            width={17}
+            height={17}
           />
         </div>
       </div>
@@ -159,11 +168,13 @@ const GuildFightBox = (props: Props) => {
 
           return paddedItems.map((itemNumber, index) =>
             itemNumber !== 0 ? (
-              <img
+              <Image
                 key={index}
                 src={`${constant.SERVER_URL}/public/items/${itemNumber}.png`}
-                className={`object-contain ${IMG_SIZE} rounded-[4px]`}
                 alt={`Item${itemNumber}`}
+                width={30}
+                height={30}
+                className={`object-contain ${IMG_SIZE} rounded-[4px]`}
               />
             ) : (
               <div

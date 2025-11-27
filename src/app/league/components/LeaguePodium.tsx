@@ -1,6 +1,7 @@
 import constant from "@/src/common/constant/constant";
 import { GuildDto } from "@/src/common/DTOs/guild/guild.dto";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
+import Image from "next/image";
 import React from "react";
 
 interface LeaguePodiumProps {
@@ -19,9 +20,11 @@ const LeaguePodium = ({ first, second, third }: LeaguePodiumProps) => {
     size: number
   ) => (
     <div className="flex flex-col w-full items-center gap-[4px] relative">
-      <img
+      <Image
         src={`${constant.SERVER_URL}/${guild.guildIcon}`}
         alt={guild.guildName}
+        width={size}
+        height={size}
         className={`rounded-[12px] border-[2px] ${borderColor} object-cover`}
         style={{ width: `${size}px`, height: `${size}px` }}
       />

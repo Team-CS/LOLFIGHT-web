@@ -3,6 +3,7 @@ import { GuildTeamMemberDto } from "@/src/common/DTOs/guild/guild_team/guild_tea
 import { MemberDto } from "@/src/common/DTOs/member/member.dto";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { getTierStyle } from "@/src/utils/string/string.util";
+import Image from "next/image";
 
 interface TeamMemberCardProps {
   teamMember: GuildTeamMemberDto | undefined;
@@ -43,12 +44,14 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
       >
         <div className="flex w-full items-center justify-between bg-orange-100/80 rounded-md px-[12px] py-[8px] gap-[8px] shadow-sm dark:bg-orange-800/30">
           <div className="flex items-center gap-[8px] min-w-0">
-            <img
+            <Image
               src={profileImgUrl}
               alt="profile"
-              className={`object-cover rounded-full ${
+              width={34}
+              height={34}
+              className={`${
                 isMobile ? "w-[28px] h-[28px]" : "w-[34px] h-[34px]"
-              }`}
+              } rounded-full object-cover`}
             />
             <div className="truncate min-w-0">
               <p className="text-[14px] font-medium dark:text-white truncate">
@@ -60,18 +63,20 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
             </div>
           </div>
           <div className="flex items-center gap-[6px] whitespace-nowrap">
-            <img
+            <Image
               src={rankImageUrl}
               alt={tier}
-              width={isMobile ? 22 : 24}
-              height={isMobile ? 22 : 24}
+              width={24}
+              height={24}
+              style={{ width: isMobile ? 22 : 24, height: isMobile ? 22 : 24 }}
             />
             <p className={`${isMobile ? "text-[12px]" : "text-[14px]"}`}>
               <span className={getTierStyle(tier)}>{tier}</span>
             </p>
             {isMobile ? (
-              <img
+              <Image
                 src={`${constant.SERVER_URL}/public/ranked-positions/${roleTag}.png`}
+                alt="roleTag"
                 width={18}
                 height={18}
               />
@@ -120,9 +125,11 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
     >
       <div className="flex w-full items-center justify-between bg-white/70 rounded-md px-[12px] py-[8px] gap-[8px] shadow-sm dark:bg-black/70">
         <div className="flex items-center gap-[8px] min-w-0">
-          <img
+          <Image
             src={profileImgUrl}
             alt="profile"
+            width={34}
+            height={34}
             className={`object-cover rounded-full ${
               isMobile ? "w-[28px] h-[28px]" : "w-[34px] h-[34px]"
             }`}
@@ -134,18 +141,22 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
           </div>
         </div>
         <div className="flex items-center gap-[6px] whitespace-nowrap">
-          <img
+          <Image
             src={rankImageUrl}
             alt={tier}
-            width={isMobile ? 22 : 24}
-            height={isMobile ? 22 : 24}
+            width={24}
+            height={24}
+            className={`${
+              isMobile ? "w-[22px] h-[22px]" : "w-[24px] h-[24px]"
+            }`}
           />
           <p className={`${isMobile ? "text-[12px]" : "text-[14px]"}`}>
             <span className={getTierStyle(tier)}>{tier}</span>
           </p>
           {isMobile ? (
-            <img
+            <Image
               src={`${constant.SERVER_URL}/public/ranked-positions/${roleTag}.png`}
+              alt="roleTag"
               width={18}
               height={18}
             />

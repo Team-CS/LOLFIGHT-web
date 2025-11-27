@@ -16,6 +16,7 @@ import { convertBoardNameToCode } from "@/src/utils/string/string.util";
 import { CreateReportDto } from "@/src/common/DTOs/report/report.dto";
 import { reportSubmit } from "@/src/api/report.api";
 import "@/src/css/index.ts";
+import Image from "next/image";
 
 interface BoardPostHeadComponentProps {
   post: PostDto;
@@ -106,14 +107,16 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
             onClick={() => handleMemberClick(post.postWriter.memberName)}
           >
             <div className={`${post?.postWriter?.memberItem?.border}`}>
-              <img
-                className={`object-cover rounded-[12px] ${
-                  isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
-                }`}
+              <Image
                 src={`${constant.SERVER_URL}/${
                   post?.postWriter.memberIcon || "public/default.png"
                 }`}
                 alt="memberIcon"
+                width={30}
+                height={30}
+                className={`object-cover rounded-[12px] ${
+                  isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+                }`}
               />
             </div>
             <div className="flex gap-[4px]">
@@ -125,7 +128,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
                 {post?.postWriter.memberName}
               </p>
               {isAdminWriter && (
-                <img
+                <Image
                   src="/icon_verificated.svg"
                   alt="verificated icon"
                   width={15}

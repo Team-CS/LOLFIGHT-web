@@ -12,6 +12,7 @@ import { jwtDecode } from "jwt-decode";
 import { ReportModal } from "@/src/common/components/modal/ReportModal";
 import { CreateReportDto } from "@/src/common/DTOs/report/report.dto";
 import { reportSubmit } from "@/src/api/report.api";
+import Image from "next/image";
 
 interface JudgmentHeadComponetProps {
   judgment: JudgmentDto;
@@ -100,12 +101,14 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
       <div className=" flex justify-between">
         <div className="flex gap-[8px] items-center">
           <div className={`${judgment.member.memberItem?.border}`}>
-            <img
+            <Image
+              src={`${constant.SERVER_URL}/${judgment.member.memberIcon}`}
+              alt="memberIcon"
+              width={30}
+              height={30}
               className={`object-cover rounded-[12px] ${
                 isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
               }`}
-              src={`${constant.SERVER_URL}/${judgment.member.memberIcon}`}
-              alt="memberIcon"
             />
           </div>
           <p
