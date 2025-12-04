@@ -4,6 +4,7 @@ import BaseLayout from "./../layouts/BaseLayout";
 import localFont from "next/font/local";
 import { Providers } from "./providers";
 import GoogleAnalytics from "../lib/GoogleAnalytics";
+import GoogleAdSense from "../lib/GoogleAdSense";
 import StructuredData from "../common/components/StructuredData";
 import "@/src/css/index.ts";
 
@@ -86,6 +87,7 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
+        <GoogleAdSense publisherId="ca-pub-9861327972888599" />
         <Providers>
           <BaseLayout>{children}</BaseLayout>
         </Providers>
