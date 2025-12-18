@@ -87,7 +87,6 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
-        <GoogleAdSense publisherId="ca-pub-9861327972888599" />
         <Providers>
           <BaseLayout>{children}</BaseLayout>
         </Providers>

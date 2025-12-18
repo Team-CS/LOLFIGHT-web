@@ -11,6 +11,7 @@ import { getShopItems } from "@/src/api/shop.api";
 import { Pagination } from "@mui/material";
 import { getMyItems } from "@/src/api/member_item.api";
 import { MemberItemDto } from "@/src/common/DTOs/member/member_item.dto";
+import { getCookie } from "@/src/utils/cookie/cookie";
 
 export default function Page() {
   const isMobile = useIsMobile();
@@ -28,9 +29,12 @@ export default function Page() {
   const shopItemsPerPage = 10;
 
   useEffect(() => {
-    getMyItems().then((response) => {
-      setMyItems(response.data.data);
-    });
+    const accessToken = getCookie("lf_atk");
+    if (accessToken) {
+      getMyItems().then((response) => {
+        setMyItems(response.data.data);
+      });
+    }
   }, []);
 
   useEffect(() => {

@@ -11,7 +11,7 @@ import Image from "next/image";
 
 interface ShopItemBoxProps {
   item: ShopDto;
-  hasItems: MemberItemDto[] | null;
+  hasItems?: MemberItemDto[] | null;
   onPurchase: (newItem: MemberItemDto) => void;
 }
 
@@ -88,6 +88,8 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
             CustomAlert("warning", "아이템 구매", "보유한 포인트가 부족합니다");
           }
         });
+    } else {
+      CustomAlert("warning", "아이템 구매", "로그인 후 이용가능 합니다.");
     }
   };
 
