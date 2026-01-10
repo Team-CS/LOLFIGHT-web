@@ -20,7 +20,7 @@ const GuildFightRecord = (props: Props) => {
   const { battleData, guildName } = props;
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [myTeamData, enemyTeamData] =
-    battleData.redTeam.guild.guildName === guildName
+    battleData.redTeam.guild?.guildName === guildName
       ? [battleData.redTeam, battleData.blueTeam]
       : [battleData.blueTeam, battleData.redTeam];
   const result = myTeamData.isWinning ? "win" : "lose";
@@ -28,12 +28,16 @@ const GuildFightRecord = (props: Props) => {
   const [awayGuild, setawayGuild] = useState<GuildDto>();
 
   useEffect(() => {
-    getGuildInfo(myTeamData.guild.guildName).then((response) => {
-      setHomeGuild(response.data.data);
-    });
-    getGuildInfo(enemyTeamData.guild.guildName).then((response) => {
-      setawayGuild(response.data.data);
-    });
+    if (myTeamData.guild?.guildName) {
+      getGuildInfo(myTeamData.guild.guildName).then((response) => {
+        setHomeGuild(response.data.data);
+      });
+    }
+    if (enemyTeamData.guild?.guildName) {
+      getGuildInfo(enemyTeamData.guild.guildName).then((response) => {
+        setawayGuild(response.data.data);
+      });
+    }
   }, []);
 
   const clickDetailFight = () => {
@@ -126,13 +130,19 @@ const GuildFightRecord = (props: Props) => {
           <div className="flex w-[400px] justify-between items-center gap-[12px] p-[12px]">
             <div className="flex flex-col w-full items-center gap-[8px]">
               <div className="flex items-center gap-[8px]">
-                <Image
-                  src={`${constant.SERVER_URL}/${myTeamData.guild.guildIcon}`}
-                  alt="GuildBanner"
-                  width={30}
-                  height={30}
-                  className="w-[30px] h-[30px] rounded-[4px] object-cover shrink-0"
-                />
+                {myTeamData.guild?.guildIcon ? (
+                  <Image
+                    src={`${constant.SERVER_URL}/${myTeamData.guild.guildIcon}`}
+                    alt="GuildBanner"
+                    width={30}
+                    height={30}
+                    className="w-[30px] h-[30px] rounded-[4px] object-cover shrink-0"
+                  />
+                ) : (
+                  <div className="w-[30px] h-[30px] rounded-[4px] bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[14px] shrink-0">
+                    🏛️
+                  </div>
+                )}
                 <p
                   className={`font-bold truncate ${
                     isMobile
@@ -140,11 +150,11 @@ const GuildFightRecord = (props: Props) => {
                       : "text-[16px] max-w-[120px]"
                   }`}
                 >
-                  {myTeamData.guild.guildName}
+                  {myTeamData.guild?.guildName || "해체된 길드"}
                 </p>
               </div>
               <p className="font-light text-gray-600 text-[12px]">
-                1부리그 {homeGuild?.guildRecord?.recordLadder}점
+                1부리그 {homeGuild?.guildRecord?.recordLadder || myTeamData.guild?.guildRecord?.recordLadder || 0}점
               </p>
             </div>
 
@@ -152,13 +162,19 @@ const GuildFightRecord = (props: Props) => {
 
             <div className="flex flex-col w-full items-center gap-[8px]">
               <div className="flex items-center gap-[8px]">
-                <Image
-                  src={`${constant.SERVER_URL}/${enemyTeamData.guild.guildIcon}`}
-                  alt="GuildBanner"
-                  width={30}
-                  height={30}
-                  className="w-[30px] h-[30px] rounded-[4px] object-cover shrink-0"
-                />
+                {enemyTeamData.guild?.guildIcon ? (
+                  <Image
+                    src={`${constant.SERVER_URL}/${enemyTeamData.guild.guildIcon}`}
+                    alt="GuildBanner"
+                    width={30}
+                    height={30}
+                    className="w-[30px] h-[30px] rounded-[4px] object-cover shrink-0"
+                  />
+                ) : (
+                  <div className="w-[30px] h-[30px] rounded-[4px] bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[14px] shrink-0">
+                    🏛️
+                  </div>
+                )}
                 <p
                   className={`font-bold truncate ${
                     isMobile
@@ -166,11 +182,11 @@ const GuildFightRecord = (props: Props) => {
                       : "text-[16px] max-w-[120px]"
                   }`}
                 >
-                  {enemyTeamData.guild.guildName}
+                  {enemyTeamData.guild?.guildName || "해체된 길드"}
                 </p>
               </div>
               <p className="font-light text-gray-600 text-[12px]">
-                1부리그 {awayGuild?.guildRecord?.recordLadder}점
+                1부리그 {awayGuild?.guildRecord?.recordLadder || enemyTeamData.guild?.guildRecord?.recordLadder || 0}점
               </p>
             </div>
           </div>
