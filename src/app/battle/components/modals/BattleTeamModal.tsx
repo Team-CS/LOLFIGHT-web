@@ -17,7 +17,7 @@ interface BattleTeamModalProps {
   team: GuildTeamDto;
   scheduledAt?: Date;
   note?: string;
-  totalGameCount: number;
+  totalGameCount?: number;
   scrimSlotId?: string;
   mode?: "apply" | "view";
   onClose: () => void;
