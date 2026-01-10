@@ -133,6 +133,7 @@ export default function Page() {
         searchTerm
       );
       const data = response.data.data as ScrimSlotListDto;
+      console.log(data);
       if (Array.isArray(data.scrimSlotList)) {
         setScrimSlots(data.scrimSlotList);
       } else {
@@ -251,13 +252,14 @@ export default function Page() {
     );
   };
 
-  const handleSumbit = (datetime: string, note: string) => {
+  const handleSumbit = (datetime: string, note: string, count: number) => {
     if (guildTeam) {
       const date = new Date(datetime);
       const createScrimSlotDto: CreateScrimSlotDto = {
         hostTeam: guildTeam,
         scheduledAt: date,
         note: note,
+        totalGameCount: count,
       };
       createScrimSlot(createScrimSlotDto)
         .then((response) => {
@@ -409,67 +411,6 @@ export default function Page() {
       "취소",
       "닫기",
       onConfirmCancel
-    );
-  };
-
-  const handleRematchScrim = (
-    scrimSlotId: string,
-    applicationTeamId: string
-  ) => {
-    const onConfirmRematch = () => {
-      if (guildTeam) {
-        const scrimApplicationRematchDto: ScrimApplicationRematchDto = {
-          scrimSlotId: scrimSlotId,
-          applicationTeamId: applicationTeamId,
-        };
-        rematchScrim(scrimApplicationRematchDto)
-          .then((response) => {
-            setApplications((prev) =>
-              prev.map((app) =>
-                app.scrimSlot.id === scrimSlotId
-                  ? { ...app, status: "PENDING" }
-                  : app
-              )
-            );
-            CustomAlert(
-              "success",
-              "재경기 요청 완료",
-              "재경기 요청을 보냈습니다."
-            );
-          })
-          .catch((error) => {
-            const code = error?.response?.data?.code;
-            if (code === "COMMON-003") {
-              CustomAlert(
-                "error",
-                "재경기 요청 실패",
-                "존재하지 않는 스크림입니다."
-              );
-            } else if (code === "COMMON-002") {
-              CustomAlert(
-                "error",
-                "권한 없음",
-                "재경기를 요청할 권한이 없습니다."
-              );
-            } else if (code === "COMMON-005") {
-              CustomAlert(
-                "error",
-                "재경기 요청 실패",
-                "이미 재경기 요청이 진행 중입니다."
-              );
-            } else {
-              CustomAlert("error", "요청 실패", "잠시 후 다시 시도해주세요.");
-            }
-          });
-      }
-    };
-
-    ButtonAlert(
-      "재경기 요청",
-      "재경기를 요청하시겠습니까?\n 상대팀의 응답을 기다려 주세요",
-      "요청",
-      "닫기",
-      onConfirmRematch
     );
   };
 
@@ -654,7 +595,6 @@ export default function Page() {
                     key={data.id}
                     scrim={data}
                     onCancel={handleCancelScrim}
-                    onRematch={handleRematchScrim}
                   />
                 ))}
             </div>
@@ -855,6 +795,7 @@ export default function Page() {
           team={selectedTeam.hostTeam}
           scheduledAt={selectedTeam.scheduledAt}
           note={selectedTeam.note}
+          totalGameCount={selectedTeam.totalGameCount}
           scrimSlotId={selectedTeam.id}
           mode="apply"
           onClose={() => setSelectedTeam(null)}

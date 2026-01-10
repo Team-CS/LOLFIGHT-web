@@ -2,7 +2,7 @@ import { useState } from "react";
 
 interface BattleRegisterModalProps {
   onClose: () => void;
-  onSubmit: (datetime: string, note: string) => void;
+  onSubmit: (datetime: string, note: string, count: number) => void;
 }
 
 const BattleRegisterModal = ({
@@ -11,6 +11,7 @@ const BattleRegisterModal = ({
 }: BattleRegisterModalProps) => {
   const [datetime, setDatetime] = useState("");
   const [note, setNote] = useState("");
+  const [count, setCount] = useState(1);
 
   const handleSubmit = () => {
     if (!datetime) {
@@ -29,7 +30,7 @@ const BattleRegisterModal = ({
       return;
     }
 
-    onSubmit(datetime, note);
+    onSubmit(datetime, note, count);
     onClose();
   };
 
@@ -66,6 +67,21 @@ const BattleRegisterModal = ({
             placeholder="예) 피드백 주고받는 스크림 원해요"
             className="p-[12px] border border-brandborder rounded-[8px] bg-brandbgcolor dark:bg-brandgray dark:border-branddarkborder focus:outline-none text-[14px] text-brandgray dark:text-brandhover"
           />
+        </label>
+
+        <label className="flex flex-col mb-[24px] text-brandgray dark:text-brandhover">
+          <span className="mb-[8px]">스크림 횟수 (최대 10회)</span>
+          <select
+            value={count}
+            onChange={(e) => setCount(Number(e.target.value))}
+            className="p-[12px] border border-brandborder rounded-[8px] bg-brandbgcolor dark:bg-brandgray dark:border-branddarkborder focus:outline-none text-[14px] text-brandgray dark:text-brandhover appearance-none"
+          >
+            {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+              <option key={num} value={num}>
+                {num}회
+              </option>
+            ))}
+          </select>
         </label>
 
         <div className="flex justify-end gap-[12px]">
