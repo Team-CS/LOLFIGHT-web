@@ -6,7 +6,7 @@ import Image from "next/image";
 interface Props {
   battlePlayerData: BattlePlayerDto;
   isResult: boolean;
-  guild: GuildDto;
+  guild: GuildDto | null;
   highestDamage: number;
 }
 
@@ -46,13 +46,19 @@ const GuildFightBox = (props: Props) => {
     <div className={`w-full h-[45px] flex text-[14px] px-[8px] gap-[12px]`}>
       {/* 플레이어 */}
       <div className="flex flex-[2.5] h-full font-medium text-[14px] items-center gap-[8px]">
-        <Image
-          src={`${constant.SERVER_URL}/${guild.guildIcon}`}
-          alt="GuildBanner"
-          width={25}
-          height={25}
-          className="w-[25px] h-[25px] rounded-[4px] object-cover"
-        />
+        {guild?.guildIcon ? (
+          <Image
+            src={`${constant.SERVER_URL}/${guild.guildIcon}`}
+            alt="GuildBanner"
+            width={25}
+            height={25}
+            className="w-[25px] h-[25px] rounded-[4px] object-cover"
+          />
+        ) : (
+          <div className="w-[25px] h-[25px] rounded-[4px] bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[12px]">
+            🏛️
+          </div>
+        )}
         <Image
           src={`${constant.SERVER_URL}/public/champions/${battlePlayerData.championId}.png`}
           alt="Champion"

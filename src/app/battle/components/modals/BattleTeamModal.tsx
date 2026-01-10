@@ -40,7 +40,9 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
   const { guildTeam } = useGuildTeamStore();
   const { member } = useMemberStore();
   const guild = team.guild;
-  const guildTier = calGuildTier(guild.guildRecord!.recordLadder);
+  const guildTier = guild?.guildRecord?.recordLadder
+    ? calGuildTier(guild.guildRecord.recordLadder)
+    : "없음";
 
   return (
     <div
@@ -52,28 +54,44 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
         className="flex flex-col max-w-[600px] max-h-[710px] w-full bg-white dark:bg-branddark rounded-[12px] p-[32px] gap-[24px] overflow-y-auto shadow-lg"
       >
         <div className="flex items-center gap-[16px] ">
-          <Image
-            src={`${constant.SERVER_URL}/${guild.guildIcon}`}
-            alt="Guild Logo"
-            width={60}
-            height={60}
-            className="w-[60px] h-[60px] rounded-[12px] object-cover"
-          />
+          {guild?.guildIcon ? (
+            <Image
+              src={`${constant.SERVER_URL}/${guild.guildIcon}`}
+              alt="Guild Logo"
+              width={60}
+              height={60}
+              className="w-[60px] h-[60px] rounded-[12px] object-cover"
+            />
+          ) : (
+            <div className="w-[60px] h-[60px] rounded-[12px] bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[30px]">
+              🏛️
+            </div>
+          )}
           <div className="flex flex-col">
-            <p className="text-[22px] font-semibold">{guild.guildName}</p>
+            <p className="text-[22px] font-semibold">
+              {guild?.guildName || "해체된 길드"}
+            </p>
             <p className="text-[14px] dark:text-gray-300">
               리더: {team.leader.memberName}
             </p>
-            <p className="text-[14px] dark:text-gray-300">
-              🏆 래더 점수: {guild.guildRecord?.recordLadder}점
-            </p>
-            <p className="text-[14px] dark:text-gray-300">
-              📈 전체 순위: {guild.guildRecord?.recordRanking}위
-            </p>
-            <p className="text-[14px] dark:text-gray-300">
-              💠 길드티어:{" "}
-              <span className={getTierStyle(guildTier)}>{guildTier}</span>
-            </p>
+            {guild ? (
+              <>
+                <p className="text-[14px] dark:text-gray-300">
+                  🏆 래더 점수: {guild.guildRecord?.recordLadder || 0}점
+                </p>
+                <p className="text-[14px] dark:text-gray-300">
+                  📈 전체 순위: {guild.guildRecord?.recordRanking || "-"}위
+                </p>
+                <p className="text-[14px] dark:text-gray-300">
+                  💠 길드티어:{" "}
+                  <span className={getTierStyle(guildTier)}>{guildTier}</span>
+                </p>
+              </>
+            ) : (
+              <p className="text-[14px] dark:text-gray-300 text-gray-400">
+                길드 정보 없음
+              </p>
+            )}
             {scheduledAt && (
               <p className="text-[14px] dark:text-gray-300">
                 🕒 스크림 일시: {formatKoreanDatetime(scheduledAt.toString())}
@@ -121,7 +139,7 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
 
         {mode === "apply" ? (
           guildTeam ? (
-            team.guild.id !== guildTeam.guild.id ? (
+            team.guild && guildTeam.guild && team.guild.id !== guildTeam.guild.id ? (
               <div className="flex justify-between">
                 {guildTeam.leader.id === member?.id && scrimSlotId ? (
                   <button

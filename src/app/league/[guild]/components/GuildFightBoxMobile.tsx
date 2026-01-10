@@ -6,7 +6,7 @@ import Image from "next/image";
 interface Props {
   battlePlayerData: BattlePlayerDto;
   isResult: boolean;
-  guild: GuildDto;
+  guild: GuildDto | null;
   highestDamage: number;
 }
 

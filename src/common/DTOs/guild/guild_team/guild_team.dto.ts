@@ -9,7 +9,7 @@ import {
 
 export interface GuildTeamDto extends BaseDto {
   id: string;
-  guild: GuildDto;
+  guild: GuildDto | null;
   leader: MemberDto;
   members: GuildTeamMemberDto[];
 }

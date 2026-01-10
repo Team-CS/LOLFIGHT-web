@@ -456,16 +456,26 @@ export default function Page() {
             {/* Header */}
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-[16px]">
-                <Image
-                  src={`${constant.SERVER_URL}/${guildTeam.guild.guildIcon}`}
-                  alt="logo"
-                  width={60}
-                  height={60}
-                  className={`rounded-[12px] object-corver ${
-                    isMobile ? "w-[50px] h-[60px]" : "w-[60px] h-[60px]"
-                  }`}
-                  quality={100}
-                />
+                {guildTeam.guild?.guildIcon ? (
+                  <Image
+                    src={`${constant.SERVER_URL}/${guildTeam.guild.guildIcon}`}
+                    alt="logo"
+                    width={60}
+                    height={60}
+                    className={`rounded-[12px] object-corver ${
+                      isMobile ? "w-[50px] h-[60px]" : "w-[60px] h-[60px]"
+                    }`}
+                    quality={100}
+                  />
+                ) : (
+                  <div
+                    className={`rounded-[12px] bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[30px] ${
+                      isMobile ? "w-[50px] h-[60px]" : "w-[60px] h-[60px]"
+                    }`}
+                  >
+                    🏛️
+                  </div>
+                )}
                 <div className="flex flex-col">
                   <p
                     className={`font-semibold ${
