@@ -463,14 +463,14 @@ export default function Page() {
                     width={60}
                     height={60}
                     className={`rounded-[12px] object-corver ${
-                      isMobile ? "w-[50px] h-[60px]" : "w-[60px] h-[60px]"
+                      isMobile ? "w-[50px] h-[50px]" : "w-[60px] h-[60px]"
                     }`}
                     quality={100}
                   />
                 ) : (
                   <div
                     className={`rounded-[12px] bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[30px] ${
-                      isMobile ? "w-[50px] h-[60px]" : "w-[60px] h-[60px]"
+                      isMobile ? "w-[50px] h-[50px]" : "w-[60px] h-[60px]"
                     }`}
                   >
                     🏛️
@@ -508,7 +508,11 @@ export default function Page() {
                     스크림 등록 취소
                   </button>
                 ) : (
-                  <div className="flex gap-[12px]">
+                  <div
+                    className={`flex  ${
+                      isMobile ? "flex-col gap-[8px]" : "gap-[12px]"
+                    }`}
+                  >
                     <button
                       onClick={handleUpdateClick}
                       className={`bg-brandcolor text-white rounded-md hover:opacity-90 ${

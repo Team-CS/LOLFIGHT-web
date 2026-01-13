@@ -17,6 +17,7 @@ type ProfileSection = "profile" | "guild" | "withdrawal";
 export default function Page() {
   const router = useRouter();
   const { member, setMember } = useMemberStore();
+
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState<ProfileSection>("profile");
 
@@ -25,6 +26,7 @@ export default function Page() {
       try {
         const response = await getMemberData();
         const memberData: MemberDto = response.data.data;
+
         setMember(memberData);
       } catch (error) {
         console.error(error);

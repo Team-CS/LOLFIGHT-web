@@ -52,6 +52,7 @@ export default function Page() {
         setStanding(response.data.data);
       });
       getSchedule().then((response) => {
+        console.log(response.data.data);
         setSchedule(response.data.data);
       });
       showDoNotTouch();
