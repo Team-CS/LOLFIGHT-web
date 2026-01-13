@@ -17,6 +17,8 @@ export default function BetHistoryItem(props: BetHistoryItemProps) {
   const isBetOnTeamA = bet.betTeamCode === proMatch.teamACode;
   const betTeamName = isBetOnTeamA ? proMatch.teamAName : proMatch.teamBName;
 
+  const betOdds = isBetOnTeamA ? proMatch.teamAOdds : proMatch.teamBOdds;
+
   const statusLabel = {
     [BetStatus.PENDING]: "대기 중",
     [BetStatus.WON]: "승리",
@@ -137,7 +139,7 @@ export default function BetHistoryItem(props: BetHistoryItemProps) {
             </span>
           </div>
           <span className="text-[12px] font-mono font-semibold text-gray-600">
-            x{bet.oddsAtBet.toFixed(2)}
+            x{betOdds}
           </span>
         </div>
 
