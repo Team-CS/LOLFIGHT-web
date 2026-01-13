@@ -24,11 +24,17 @@ import LineSelector from "./context-menu/LineSelector";
 import { getMyItems, toggleActiveItems } from "@/src/api/member_item.api";
 import { MemberItemDto } from "@/src/common/DTOs/member/member_item.dto";
 import Image from "next/image";
+import { BetDto, BetListResponseDto } from "@/src/common/DTOs/bet/bet.dto";
+import { cancelBet, getMyBets } from "@/src/api/bet.api";
+import BetHistoryItem from "./BetHistoryItem";
+import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
+import { Pagination } from "@mui/material";
 
 export default function ProfileInfoPage() {
   const isMobile = useIsMobile();
-  const { member, setMember } = useMemberStore();
+  const { member, setMember, updateMember } = useMemberStore();
   const [myItems, setMyItems] = useState<MemberItemDto[] | null>(null);
+  const [bets, setBets] = useState<BetDto[]>([]);
   const [openModal, setOpenModal] = useState<"profileIcon" | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string>("");
@@ -38,6 +44,10 @@ export default function ProfileInfoPage() {
   const [hasCheckedToday, setHasCheckedToday] = useState(false);
   const [isEditingNickname, setIsEditingNickname] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0); // 총 페이지 수
+  const [searchTerm, setSearchTerm] = useState<string>(""); // 검색어
+  const betsPerPage = 6;
   const FIVE_MINUTES = 5 * 60 * 1000;
   const updatedAt = member?.memberGame?.updatedAt;
 
@@ -60,6 +70,10 @@ export default function ProfileInfoPage() {
   }, [member]);
 
   useEffect(() => {
+    fetchBets(currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
     if (!updatedAt) return;
     const diff = Date.now() - new Date(updatedAt).getTime();
     setIsDisabled(diff < FIVE_MINUTES);
@@ -73,6 +87,71 @@ export default function ProfileInfoPage() {
     last.setHours(0, 0, 0, 0);
     setHasCheckedToday(last.getTime() === today.getTime());
   }, [member?.memberWallet?.lastAttendance]);
+
+  // --- 배팅 관련 ---
+  const fetchBets = async (page: number) => {
+    try {
+      const response = await getMyBets(page, betsPerPage, searchTerm);
+      const data = response.data.data as BetListResponseDto;
+      if (Array.isArray(data.betList)) {
+        setBets(data.betList);
+      } else {
+        setBets([]);
+      }
+
+      if (data.pagination) {
+        const { totalPage } = data.pagination;
+        const pages = Math.ceil(totalPage! / betsPerPage);
+        setTotalPages(Math.max(1, pages));
+      }
+    } catch (error) {
+      console.error("배팅 목록 조회 실패 :", error);
+      setBets([]);
+      setTotalPages(1);
+    }
+  };
+  const handleCancelBet = (betId: string) => {
+    const deleteBet = () => {
+      cancelBet(betId)
+        .then((response) => {
+          const targetBet = bets.find((bet) => bet.id === betId);
+          if (member && targetBet) {
+            updateMember({
+              memberWallet: {
+                ...member.memberWallet,
+                point: member.memberWallet.point + targetBet.betAmount,
+              },
+            });
+            setBets((prevBets) => prevBets.filter((bet) => bet.id !== betId));
+          }
+        })
+        .catch((error) => {
+          const code = error.response.data.code;
+          if (code === "COMMON-002") {
+            CustomAlert("warning", "배팅 취소", "취소할 수 없는 경기 입니다.");
+          }
+        });
+    };
+    ButtonAlert(
+      "배팅 취소",
+      "해당 경기의 배팅을 취소하시겠습니까? \n 진행중인 경기는 취소가 불가능합니다.",
+      "배팅 취소",
+      "아니오",
+      deleteBet
+    );
+  };
+
+  const handlePageClick = (
+    event: React.ChangeEvent<unknown>,
+    pageNumber: number
+  ) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchBets(1);
+  };
 
   // --- 프로필 아이콘 관련 ---
   const handleIconSubmit = () => {
@@ -212,6 +291,7 @@ export default function ProfileInfoPage() {
       );
   };
 
+  // --- 아이템 ---
   const handleActivateItem = async (clickedItem: MemberItemDto) => {
     if (!myItems) return;
 
@@ -551,6 +631,75 @@ export default function ProfileInfoPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="w-full flex flex-col gap-[16px] p-[16px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder overflow-hidden">
+          <p className="text-[14px] font-semibold text-gray-700 dark:text-gray-200">
+            배팅 내역
+          </p>
+          <div className="flex items-center gap-[8px]">
+            <input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch();
+              }}
+              placeholder="팀 코드 검색 (예: KT)"
+              className="flex-1 px-[10px] py-[6px] text-[13px] border rounded-[8px] dark:bg-brandgray dark:border-branddarkborder"
+            />
+            <button
+              onClick={handleSearch}
+              className="bg-brandcolor hover:bg-brandhover text-white rounded-[8px] px-[12px] py-[6px] text-[12px]"
+            >
+              검색
+            </button>
+          </div>
+
+          {bets.length === 0 && (
+            <p className="text-sm text-gray-500">아직 배팅 내역이 없습니다.</p>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[12px]">
+            {bets.map((bet) => (
+              <BetHistoryItem
+                key={bet.id}
+                bet={bet}
+                onCancel={handleCancelBet}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="w-full flex justify-center mt-1 p-3">
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            shape="rounded"
+            boundaryCount={2}
+            onChange={(event, page) => handlePageClick(event, page)}
+            sx={{
+              // 다크 모드 선택된 아이템
+              ".dark & .Mui-selected": {
+                backgroundColor: "#4C4C4C",
+                color: "#CACACA",
+                "&:hover": {
+                  backgroundColor: "#707070",
+                },
+              },
+              // 다크 모드 일반 아이템
+              ".dark & .MuiPaginationItem-root": {
+                color: "#EEEEEE",
+              },
+              ".dark & .MuiPaginationItem-icon": {
+                color: "#EEEEEE",
+              },
+              // 모바일 / PC 반응형
+              "& .MuiPaginationItem-root": {
+                fontSize: isMobile ? "10px" : "14px", // 폰트 크기
+                minWidth: isMobile ? "24px" : "36px", // 버튼 최소 너비
+                height: isMobile ? "24px" : "36px", // 버튼 높이
+              },
+            }}
+          />
         </div>
       </div>
 

@@ -7,7 +7,7 @@ const Navigation = () => {
   return (
     <div className="flex items-center">
       <div
-        className={`flex font-bold items-center gap-[18px] ${
+        className={`flex font-bold items-center ${
           isMobile ? "text-[14px]" : "text-[16px]"
         }`}
       >
@@ -17,7 +17,8 @@ const Navigation = () => {
             <Link
               key={link.title}
               href={link.href}
-              className=" text-white dark:text-gray-100 "
+              className="text-white dark:text-gray-100 px-[12px] py-[4px] rounded-[12px] transition-colors
+  hover:bg-black/10"
             >
               {link.title}
             </Link>

@@ -1,9 +1,15 @@
 "use client";
 import localFont from "next/font/local";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ScheduleResponseDto } from "../../DTOs/league/league_schedule.dto";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import Image from "next/image";
+import BetModal from "./modal/betModal";
+import { CreateBetDto } from "../../DTOs/bet/bet.dto";
+import { createBet } from "@/src/api/bet.api";
+import CustomAlert from "../alert/CustomAlert";
+import { useMemberStore } from "../../zustand/member.zustand";
+import { getCookie } from "@/src/utils/cookie/cookie";
 
 interface LeagueScheduleComponentProps {
   data: ScheduleResponseDto | undefined;
@@ -19,6 +25,9 @@ export default function LeagueScheduleComponent(
 ) {
   const { data } = props;
   const isMobile = useIsMobile();
+  const { member, updateMember } = useMemberStore();
+  const [open, setOpen] = useState<boolean>(false);
+  const [selectedMatch, setSelectedMatch] = useState<string>("");
   const today = new Date();
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -46,6 +55,7 @@ export default function LeagueScheduleComponent(
       if (!map[dateKey]) map[dateKey] = [];
 
       map[dateKey].push({
+        id: event.match.id,
         time: `${String(d.getHours()).padStart(2, "0")}:${String(
           d.getMinutes()
         ).padStart(2, "0")}`,
@@ -91,6 +101,50 @@ export default function LeagueScheduleComponent(
       });
     }
   }, [scheduleByDate]);
+
+  const handleClickSchedule = (riotMatchId: string) => {
+    setSelectedMatch(riotMatchId);
+    setOpen(true);
+  };
+
+  const handleSumbitBet = async (
+    riotMatchId: string,
+    teamCode: string,
+    betAmount: number
+  ) => {
+    const accessToken = getCookie("lf_atk");
+    if (!member || !accessToken) {
+      CustomAlert("warning", "승부예측", "로그인이 필요한 서비스입니다.");
+      return;
+    }
+    const dto: CreateBetDto = {
+      proMatchId: riotMatchId,
+      betTeamCode: teamCode,
+      betAmount: betAmount,
+    };
+
+    await createBet(dto)
+      .then((res) => {
+        updateMember({
+          memberWallet: {
+            ...member.memberWallet,
+            point: member.memberWallet.point - betAmount, // 기존 포인트에서 차감
+          },
+        });
+        CustomAlert("success", "승부예측", "배팅이 완료되었습니다!");
+        setOpen(false);
+      })
+      .catch((error) => {
+        const code = error?.response?.data?.code;
+        if (code === "COMMON-005") {
+          CustomAlert(
+            "warning",
+            "승부예측",
+            "이미 배팅한 경기입니다. \n 내정보에서 상세정보와 취소가 가능합니다."
+          );
+        }
+      });
+  };
 
   return (
     <div className="w-full flex flex-col h-full bg-white dark:bg-dark rounded-[16px] p-[12px] shadow-lg gap-[8px]">
@@ -140,6 +194,7 @@ export default function LeagueScheduleComponent(
                     <div
                       key={j}
                       className="flex justify-between items-center rounded-[8px] px-[12px] py-[8px] border border-brandborder dark:border-branddarkborder"
+                      onClick={() => handleClickSchedule(match.id)}
                     >
                       <div className="flex justify-start">
                         <span
@@ -286,6 +341,15 @@ export default function LeagueScheduleComponent(
           )}
         </div>
       </div>
+      {open && (
+        <BetModal
+          riotMatchId={selectedMatch}
+          onClose={() => {
+            setOpen(false), setSelectedMatch("");
+          }}
+          onSumbit={handleSumbitBet}
+        />
+      )}
     </div>
   );
 }

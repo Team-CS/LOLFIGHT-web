@@ -168,13 +168,13 @@ export const Header = () => {
                   width={50}
                   height={50}
                   className={`${
-                    isMobile ? "w-[40px] h-[40px]" : "w-[50px] h-[50px]"
+                    isMobile ? "w-[30px] h-[30px]" : "w-[40px] h-[40px]"
                   } cursor-pointer"`}
                   onClick={() => router.push("/")}
                 />
                 <p
                   className={`text-white ${
-                    isMobile ? "text-[20px]" : "text-[24px]"
+                    isMobile ? "text-[20px]" : "text-[20px]"
                   } tracking-[1px] leading-none  ${rixi.className}`}
                 >
                   <Link key="home" href="/">

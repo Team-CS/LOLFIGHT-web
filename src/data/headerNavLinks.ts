@@ -1,10 +1,10 @@
 const headerNavLinks = [
   { href: "/", title: "Home" },
-  { href: "/judgment", title: "롤로세움" },
   { href: "/league", title: "리그" },
-  { href: "/board/all", title: "게시판" },
   { href: "/battle", title: "스크림" },
+  { href: "/board/all", title: "게시판" },
   { href: "/shop", title: "상점" },
+  { href: "/judgment", title: "롤로세움" },
 ];
 
 export default headerNavLinks;
