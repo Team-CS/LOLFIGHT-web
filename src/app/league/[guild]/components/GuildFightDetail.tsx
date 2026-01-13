@@ -24,7 +24,7 @@ const GuildFightDetail = (props: Props) => {
   const isMobile = useIsMobile();
   const { battleData, guildName } = props;
   const [myTeamData, enemyTeamData] =
-    battleData.redTeam.guild.guildName === guildName
+    battleData.redTeam.guild?.guildName === guildName
       ? [battleData.redTeam, battleData.blueTeam]
       : [battleData.blueTeam, battleData.redTeam];
 

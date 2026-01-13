@@ -18,9 +18,11 @@ const GuildFightListMobile = (props: Props) => {
   const [guildData, setGuildData] = useState<GuildDto>();
 
   useEffect(() => {
-    getGuildInfo(battleTeamData.guild.guildName).then((response) => {
-      setGuildData(response.data.data);
-    });
+    if (battleTeamData.guild?.guildName) {
+      getGuildInfo(battleTeamData.guild.guildName).then((response) => {
+        setGuildData(response.data.data);
+      });
+    }
   }, []);
 
   const objectives = [
@@ -61,21 +63,27 @@ const GuildFightListMobile = (props: Props) => {
             >
               {result === "win" ? "승리" : "패배"}
             </p>
-            <Image
-              src={`${constant.SERVER_URL}/${battleTeamData.guild.guildIcon}`}
-              alt="GuildBanner"
-              width={20}
-              height={20}
-              className="w-[20px] h-[20px] rounded-[4px] object-cover"
-            />
+            {battleTeamData.guild?.guildIcon ? (
+              <Image
+                src={`${constant.SERVER_URL}/${battleTeamData.guild.guildIcon}`}
+                alt="GuildBanner"
+                width={20}
+                height={20}
+                className="w-[20px] h-[20px] rounded-[4px] object-cover"
+              />
+            ) : (
+              <div className="w-[20px] h-[20px] rounded-[4px] bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[10px]">
+                🏛️
+              </div>
+            )}
             <p className="font-semibold text-[12px]">
-              {battleTeamData.guild.guildName}
+              {battleTeamData.guild?.guildName || "해체된 길드"}
             </p>
           </div>
 
           <div className="flex gap-[12px] items-center">
             <p className="text-[10px] text-gray-500">
-              1부리그 - {guildData?.guildRecord?.recordLadder}점
+              1부리그 - {guildData?.guildRecord?.recordLadder || battleTeamData.guild?.guildRecord?.recordLadder || 0}점
             </p>
           </div>
         </div>
@@ -139,7 +147,7 @@ const GuildFightListMobile = (props: Props) => {
             key={idx}
             battlePlayerData={player}
             isResult={battleTeamData.isWinning}
-            guild={battleTeamData.guild}
+            guild={battleTeamData.guild || null}
             highestDamage={highestChampionDamage}
           />
         ))}

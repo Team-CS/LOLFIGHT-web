@@ -17,6 +17,7 @@ interface BattleTeamModalProps {
   team: GuildTeamDto;
   scheduledAt?: Date;
   note?: string;
+  totalGameCount?: number;
   scrimSlotId?: string;
   mode?: "apply" | "view";
   onClose: () => void;
@@ -26,12 +27,22 @@ interface BattleTeamModalProps {
 const POSITIONS = ["TOP", "JUNGLE", "MID", "ADC", "SUPPORT"] as const;
 
 export const BattleTeamModal = (props: BattleTeamModalProps) => {
-  const { team, scheduledAt, note, scrimSlotId, mode, onClose, onApply } =
-    props;
+  const {
+    team,
+    scheduledAt,
+    note,
+    scrimSlotId,
+    mode,
+    totalGameCount,
+    onClose,
+    onApply,
+  } = props;
   const { guildTeam } = useGuildTeamStore();
   const { member } = useMemberStore();
   const guild = team.guild;
-  const guildTier = calGuildTier(guild.guildRecord!.recordLadder);
+  const guildTier = guild?.guildRecord?.recordLadder
+    ? calGuildTier(guild.guildRecord.recordLadder)
+    : "없음";
 
   return (
     <div
@@ -40,31 +51,47 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="flex flex-col max-w-[600px] w-full bg-white dark:bg-branddark rounded-[12px] p-[32px] gap-[24px] overflow-y-auto shadow-lg"
+        className="flex flex-col max-w-[600px] max-h-[710px] w-full bg-white dark:bg-branddark rounded-[12px] p-[32px] gap-[24px] overflow-y-auto shadow-lg"
       >
         <div className="flex items-center gap-[16px] ">
-          <Image
-            src={`${constant.SERVER_URL}/${guild.guildIcon}`}
-            alt="Guild Logo"
-            width={60}
-            height={60}
-            className="w-[60px] h-[60px] rounded-[12px] object-cover"
-          />
+          {guild?.guildIcon ? (
+            <Image
+              src={`${constant.SERVER_URL}/${guild.guildIcon}`}
+              alt="Guild Logo"
+              width={60}
+              height={60}
+              className="w-[60px] h-[60px] rounded-[12px] object-cover"
+            />
+          ) : (
+            <div className="w-[60px] h-[60px] rounded-[12px] bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[30px]">
+              🏛️
+            </div>
+          )}
           <div className="flex flex-col">
-            <p className="text-[22px] font-semibold">{guild.guildName}</p>
+            <p className="text-[22px] font-semibold">
+              {guild?.guildName || "해체된 길드"}
+            </p>
             <p className="text-[14px] dark:text-gray-300">
               리더: {team.leader.memberName}
             </p>
-            <p className="text-[14px] dark:text-gray-300">
-              🏆 래더 점수: {guild.guildRecord?.recordLadder}점
-            </p>
-            <p className="text-[14px] dark:text-gray-300">
-              📈 전체 순위: {guild.guildRecord?.recordRanking}위
-            </p>
-            <p className="text-[14px] dark:text-gray-300">
-              💠 길드티어:{" "}
-              <span className={getTierStyle(guildTier)}>{guildTier}</span>
-            </p>
+            {guild ? (
+              <>
+                <p className="text-[14px] dark:text-gray-300">
+                  🏆 래더 점수: {guild.guildRecord?.recordLadder || 0}점
+                </p>
+                <p className="text-[14px] dark:text-gray-300">
+                  📈 전체 순위: {guild.guildRecord?.recordRanking || "-"}위
+                </p>
+                <p className="text-[14px] dark:text-gray-300">
+                  💠 길드티어:{" "}
+                  <span className={getTierStyle(guildTier)}>{guildTier}</span>
+                </p>
+              </>
+            ) : (
+              <p className="text-[14px] dark:text-gray-300 text-gray-400">
+                길드 정보 없음
+              </p>
+            )}
             {scheduledAt && (
               <p className="text-[14px] dark:text-gray-300">
                 🕒 스크림 일시: {formatKoreanDatetime(scheduledAt.toString())}
@@ -73,13 +100,23 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
           </div>
         </div>
         {note && (
-          <div className="flex flex-col gap-[8px]">
-            <h3 className="text-[16px] font-semibold flex items-center gap-[6px]">
-              <span className="text-xl">💬</span> 한 마디
-            </h3>
-
-            <div className="p-[12px] rounded-md bg-gray-100 dark:bg-[#2f2f2f] text-[14px] text-gray-800 dark:text-gray-200 whitespace-pre-line border border-gray-300 dark:border-gray-600">
-              {note || "팀 소개가 등록되지 않았습니다."}
+          <div className="grid grid-cols-2 gap-[20px]">
+            <div className="flex flex-col gap-[8px]">
+              <h3 className="text-[16px] font-semibold flex items-center gap-[6px]">
+                <span className="text-xl">💬</span> 한 마디
+              </h3>
+              <div className="p-[12px] rounded-md bg-gray-100 dark:bg-[#2f2f2f] text-[14px] text-gray-800 dark:text-gray-200 whitespace-pre-line border border-gray-300 dark:border-gray-600">
+                {note || "팀 소개가 등록되지 않았습니다."}
+              </div>
+            </div>
+            {/* 오른쪽 구역: 스크림 횟수 */}
+            <div className="flex flex-col gap-[8px]">
+              <h3 className="text-[16px] font-semibold flex items-center gap-[6px]">
+                <span className="text-xl">🎮</span> 스크림 횟수
+              </h3>
+              <div className="p-[12px] rounded-md bg-gray-100 dark:bg-[#2f2f2f] text-[14px] text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600">
+                {totalGameCount}회
+              </div>
             </div>
           </div>
         )}
@@ -102,7 +139,7 @@ export const BattleTeamModal = (props: BattleTeamModalProps) => {
 
         {mode === "apply" ? (
           guildTeam ? (
-            team.guild.id !== guildTeam.guild.id ? (
+            team.guild && guildTeam.guild && team.guild.id !== guildTeam.guild.id ? (
               <div className="flex justify-between">
                 {guildTeam.leader.id === member?.id && scrimSlotId ? (
                   <button

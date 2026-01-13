@@ -7,6 +7,8 @@ export interface ScrimSlotDto {
   hostTeam: GuildTeamDto;
   scheduledAt: Date;
   note: string;
+  totalGameCount: number;
+  currentGameCount: number;
   status: string;
   code: string;
   applications: ScrimApplicationDto[];
@@ -16,6 +18,7 @@ export interface CreateScrimSlotDto {
   hostTeam: GuildTeamDto;
   scheduledAt: Date;
   note: string;
+  totalGameCount: number;
 }
 
 export interface ScrimSlotListDto {

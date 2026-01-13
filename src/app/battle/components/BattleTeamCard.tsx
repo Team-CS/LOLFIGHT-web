@@ -16,7 +16,9 @@ export const BattleTeamCard = (props: BattleTeamCardProps) => {
   const { scrimSlot, onClick } = props;
   const team = scrimSlot.hostTeam;
   const guild = scrimSlot.hostTeam.guild;
-  const guildTier = calGuildTier(guild.guildRecord!.recordLadder);
+  const guildTier = guild?.guildRecord?.recordLadder
+    ? calGuildTier(guild.guildRecord.recordLadder)
+    : "없음";
 
   return (
     <div
@@ -25,15 +27,23 @@ export const BattleTeamCard = (props: BattleTeamCardProps) => {
     >
       {/* Guild Info */}
       <div className="flex items-center gap-[12px]">
-        <Image
-          src={`${constant.SERVER_URL}/${scrimSlot.hostTeam.guild.guildIcon}`}
-          alt="Guild Logo"
-          width={40}
-          height={40}
-          className="w-[40px] h-[40px] rounded-[12px] object-cover"
-        />
+        {guild?.guildIcon ? (
+          <Image
+            src={`${constant.SERVER_URL}/${guild.guildIcon}`}
+            alt="Guild Logo"
+            width={40}
+            height={40}
+            className="w-[40px] h-[40px] rounded-[12px] object-cover"
+          />
+        ) : (
+          <div className="w-[40px] h-[40px] rounded-[12px] bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[20px]">
+            🏛️
+          </div>
+        )}
         <div className="flex flex-col">
-          <p className="text-[16px] font-semibold">{guild.guildName}</p>
+          <p className="text-[16px] font-semibold">
+            {guild?.guildName || "해체된 길드"}
+          </p>
           <p className="text-[12px] text-gray-400">
             리더: {team.leader.memberName}
           </p>
@@ -42,12 +52,18 @@ export const BattleTeamCard = (props: BattleTeamCardProps) => {
 
       {/* Ladder Info */}
       <div className="text-[13px] dark:text-gray-300 flex flex-col gap-[2px]">
-        <p>🏆 래더 점수: {guild.guildRecord?.recordLadder}점</p>
-        <p>📈 전체 순위: {guild.guildRecord?.recordRanking}위</p>
-        <p>
-          💠 길드티어:{" "}
-          <span className={getTierStyle(guildTier)}>{guildTier}</span>
-        </p>
+        {guild ? (
+          <>
+            <p>🏆 래더 점수: {guild.guildRecord?.recordLadder || 0}점</p>
+            <p>📈 전체 순위: {guild.guildRecord?.recordRanking || "-"}위</p>
+            <p>
+              💠 길드티어:{" "}
+              <span className={getTierStyle(guildTier)}>{guildTier}</span>
+            </p>
+          </>
+        ) : (
+          <p className="text-gray-400">길드 정보 없음</p>
+        )}
         <p>
           👥 멤버:{" "}
           {team.members

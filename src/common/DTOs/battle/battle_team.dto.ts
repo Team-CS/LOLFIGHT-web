@@ -6,7 +6,7 @@ export interface BattleTeamDto extends BaseDto {
   id: string;
   isWinning: boolean;
   point: number;
-  guild: GuildDto;
+  guild: GuildDto | null;
   bans: number[];
   destroyedTowerCount: number; // 부순 타워 개수
   dragonCount: number; // 먹은 드래곤 개수
