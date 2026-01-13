@@ -19,6 +19,13 @@ export default function BetHistoryItem(props: BetHistoryItemProps) {
 
   const betOdds = isBetOnTeamA ? proMatch.teamAOdds : proMatch.teamBOdds;
 
+  let betExpectedPayout = 0;
+  if (betOdds !== null) {
+    betExpectedPayout = Math.round(bet.betAmount * betOdds);
+  } else {
+    betExpectedPayout = 0;
+  }
+
   const statusLabel = {
     [BetStatus.PENDING]: "대기 중",
     [BetStatus.WON]: "승리",
@@ -161,7 +168,7 @@ export default function BetHistoryItem(props: BetHistoryItemProps) {
                 isWin ? "text-green-600" : "text-gray-700 dark:text-gray-300"
               }`}
             >
-              {(bet.actualPayout ?? bet.expectedPayout).toLocaleString()}
+              {(bet.actualPayout ?? betExpectedPayout).toLocaleString()}
               <span className="text-[11px] font-normal ml-[2px]">P</span>
             </span>
           </div>
