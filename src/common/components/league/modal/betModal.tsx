@@ -69,7 +69,7 @@ export const BetModal = (props: BetModalProps) => {
 
   const statusColor = {
     [ProMatchStatus.UPCOMING]: "text-green-500",
-    [ProMatchStatus.LIVE]: "text-red-500 animate-pulse", // 진행 중일 때 깜빡임 효과
+    [ProMatchStatus.LIVE]: "text-red-500 animate-pulse",
     [ProMatchStatus.COMPLETED]: "text-gray-500",
     [ProMatchStatus.CANCELLED]: "text-red-700",
   };

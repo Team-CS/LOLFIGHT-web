@@ -125,14 +125,13 @@ export default function LeagueScheduleComponent(
 
     await createBet(dto)
       .then((res) => {
-        console.log(res);
         updateMember({
           memberWallet: {
             ...member.memberWallet,
             point: member.memberWallet.point - betAmount, // 기존 포인트에서 차감
           },
         });
-        CustomAlert("success", "승부예측", "배팅성공");
+        CustomAlert("success", "승부예측", "배팅이 완료되었습니다!");
         setOpen(false);
       })
       .catch((error) => {

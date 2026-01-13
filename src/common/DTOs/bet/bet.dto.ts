@@ -1,4 +1,6 @@
 import { BetStatus, ProMatchStatus } from "../../types/enums/bet.enum";
+import { BaseDto } from "../base.dto";
+import { PaginationDto } from "../pagination.dto";
 
 export interface ProMatchDto {
   id: string;
@@ -25,7 +27,7 @@ export interface ProMatchDto {
 
 export interface BetDto {
   id: string;
-  proMatchId: string;
+  proMatch: ProMatchDto;
   memberId: string;
   betTeamCode: string;
   betAmount: number;
@@ -43,4 +45,9 @@ export interface CreateBetDto {
 
 export interface ProMatchWithBetsDto extends ProMatchDto {
   bets: BetDto[];
+}
+
+export interface BetListResponseDto extends BaseDto {
+  betList: BetDto[];
+  pagination: PaginationDto;
 }
