@@ -105,7 +105,7 @@ export default function ProfileInfoPage() {
         setTotalPages(Math.max(1, pages));
       }
     } catch (error) {
-      console.error("배팅 목록 조회 실패 :", error);
+      console.error("목록 조회 실패 :", error);
       setBets([]);
       setTotalPages(1);
     }
@@ -654,7 +654,7 @@ export default function ProfileInfoPage() {
           </div>
 
           {bets.length === 0 && (
-            <p className="text-sm text-gray-500">아직 배팅 내역이 없습니다.</p>
+            <p className="text-sm text-gray-500">내역이 없습니다.</p>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[12px]">

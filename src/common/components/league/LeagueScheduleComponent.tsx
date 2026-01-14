@@ -125,7 +125,7 @@ export default function LeagueScheduleComponent(
 
     await createBet(dto)
       .then((res) => {
-        CustomAlert("success", "승부예측", "배팅이 완료되었습니다!");
+        CustomAlert("success", "승부예측", "완료되었습니다!");
         setOpen(false);
       })
       .catch((error) => {
