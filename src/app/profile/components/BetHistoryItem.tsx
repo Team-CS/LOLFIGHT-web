@@ -17,15 +17,6 @@ export default function BetHistoryItem(props: BetHistoryItemProps) {
   const isBetOnTeamA = bet.betTeamCode === proMatch.teamACode;
   const betTeamName = isBetOnTeamA ? proMatch.teamAName : proMatch.teamBName;
 
-  const betOdds = isBetOnTeamA ? proMatch.teamAOdds : proMatch.teamBOdds;
-
-  let betExpectedPayout = 0;
-  if (betOdds !== null) {
-    betExpectedPayout = Math.round(bet.betAmount * betOdds);
-  } else {
-    betExpectedPayout = 0;
-  }
-
   const statusLabel = {
     [BetStatus.PENDING]: "대기 중",
     [BetStatus.WON]: "승리",
@@ -86,7 +77,7 @@ export default function BetHistoryItem(props: BetHistoryItemProps) {
               onClick={() => onCancel(bet.id)}
               className="text-[11px] font-medium text-red-500 hover:text-red-700 underline underline-offset-[2px] transition-colors"
             >
-              베팅 취소
+              취소
             </button>
           )}
         </div>
@@ -143,33 +134,6 @@ export default function BetHistoryItem(props: BetHistoryItemProps) {
             <span className="text-[12px] font-medium">
               선택:{" "}
               <span className="text-brandcolor font-bold">{betTeamName}</span>
-            </span>
-          </div>
-          <span className="text-[12px] font-mono font-semibold text-gray-600">
-            x{betOdds}
-          </span>
-        </div>
-
-        <div className="flex justify-between items-end px-[4px]">
-          <div className="flex flex-col">
-            <span className="text-[10px] text-gray-400">베팅 금액</span>
-            <span className="text-[13px] font-bold text-gray-700 dark:text-gray-200">
-              {bet.betAmount.toLocaleString()}{" "}
-              <span className="text-[11px] font-normal">P</span>
-            </span>
-          </div>
-
-          <div className="flex flex-col items-end">
-            <span className="text-[10px] text-gray-400">
-              {bet.actualPayout !== null ? "실제 획득" : "예상 당첨"}
-            </span>
-            <span
-              className={`text-[15px] font-black ${
-                isWin ? "text-green-600" : "text-gray-700 dark:text-gray-300"
-              }`}
-            >
-              {(bet.actualPayout ?? betExpectedPayout).toLocaleString()}
-              <span className="text-[11px] font-normal ml-[2px]">P</span>
             </span>
           </div>
         </div>

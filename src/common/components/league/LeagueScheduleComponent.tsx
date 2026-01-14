@@ -109,8 +109,8 @@ export default function LeagueScheduleComponent(
 
   const handleSumbitBet = async (
     riotMatchId: string,
-    teamCode: string,
-    betAmount: number
+    teamCode: string
+    // betAmount: number
   ) => {
     const accessToken = getCookie("lf_atk");
     if (!member || !accessToken) {
@@ -120,17 +120,11 @@ export default function LeagueScheduleComponent(
     const dto: CreateBetDto = {
       proMatchId: riotMatchId,
       betTeamCode: teamCode,
-      betAmount: betAmount,
+      // betAmount: betAmount,
     };
 
     await createBet(dto)
       .then((res) => {
-        updateMember({
-          memberWallet: {
-            ...member.memberWallet,
-            point: member.memberWallet.point - betAmount, // 기존 포인트에서 차감
-          },
-        });
         CustomAlert("success", "승부예측", "배팅이 완료되었습니다!");
         setOpen(false);
       })
@@ -140,7 +134,7 @@ export default function LeagueScheduleComponent(
           CustomAlert(
             "warning",
             "승부예측",
-            "이미 배팅한 경기입니다. \n 내정보에서 상세정보와 취소가 가능합니다."
+            "이미 예측한 경기입니다. \n 내정보에서 상세정보와 취소가 가능합니다."
           );
         }
       });

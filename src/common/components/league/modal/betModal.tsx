@@ -6,29 +6,27 @@ import { motion } from "framer-motion";
 import { ProMatchStatus } from "@/src/common/types/enums/bet.enum";
 import { ProMatchDto } from "@/src/common/DTOs/bet/bet.dto";
 import { getMatch } from "@/src/api/bet.api";
-import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import { getCookie } from "@/src/utils/cookie/cookie";
 
 interface BetModalProps {
   riotMatchId: string;
   onClose: () => void;
-  onSumbit: (id: string, teamCode: string, betAmount: number) => void;
+  onSumbit: (id: string, teamCode: string) => void;
 }
 
 export const BetModal = (props: BetModalProps) => {
   const { riotMatchId, onClose, onSumbit } = props;
-  const [matchData, setMatchData] = useState<ProMatchDto>(); // 실제Dto 타입에 맞춰 수정 가능
+  const [matchData, setMatchData] = useState<ProMatchDto>();
   const [selectedTeam, setSelectedTeam] = useState<"teamA" | "teamB" | null>(
     null
   );
-  const [betAmount, setBetAmount] = useState("");
-  const { member } = useMemberStore();
   const accessToken = getCookie("lf_atk");
   const isLoggedIn = Boolean(accessToken);
 
   useEffect(() => {
     getMatch(riotMatchId)
       .then((res) => {
+        console.log(res);
         setMatchData(res.data.data);
       })
       .catch((error) => console.error(error));
@@ -55,10 +53,8 @@ export const BetModal = (props: BetModalProps) => {
     hour12: false,
   });
 
-  const totalAmount = matchData.totalBetAmount || 1; // 0나누기 방지
-  const teamARatio = (matchData.teamABetAmount / totalAmount) * 100;
-
-  const myCoins = member?.memberWallet.point;
+  const totalCount = matchData.totalVoteCount || 1; // 0나누기 방지
+  const teamARatio = (matchData.teamAVoteCount / totalCount) * 100;
 
   const statusLabel = {
     [ProMatchStatus.UPCOMING]: "경기 예정",
@@ -74,26 +70,7 @@ export const BetModal = (props: BetModalProps) => {
     [ProMatchStatus.CANCELLED]: "text-red-700",
   };
 
-  const isBetDisabled =
-    !selectedTeam || Number(betAmount) <= 0 || Number(betAmount) > myCoins!;
-
-  const calculateOdds = (teamBet: number, total: number) => {
-    if (teamBet === 0 || total === 0) return 2.0;
-    const odds = (total * 0.9) / teamBet;
-    return Math.max(1.1, Math.min(100, Number(odds.toFixed(2))));
-  };
-
-  const handleBetAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-    if (!/^\d*$/.test(value)) return;
-    const numericValue = Number(value);
-    if (numericValue < 0) return;
-    if (myCoins !== undefined && numericValue > myCoins) {
-      value = myCoins.toString();
-    }
-    setBetAmount(value);
-  };
-
+  const isBetDisabled = !selectedTeam;
   //===========================================================================//
 
   const TeamCard = ({
@@ -101,20 +78,8 @@ export const BetModal = (props: BetModalProps) => {
     teamName,
     teamCode,
     teamLogo,
-    odds, // 서버에서 온 odds (null 가능성 있음)
     isWinner,
   }: any) => {
-    // 1. 서버 배당률이 null이면 직접 계산한 배당률 사용
-    const displayOdds =
-      odds ??
-      (teamKey === "teamA"
-        ? calculateOdds(matchData.teamABetAmount, matchData.totalBetAmount)
-        : calculateOdds(matchData.teamBBetAmount, matchData.totalBetAmount));
-
-    // 2. 키 접근을 안전하게 처리
-    const teamBetAmount =
-      teamKey === "teamA" ? matchData.teamABetAmount : matchData.teamBBetAmount;
-
     return (
       <motion.button
         whileHover={matchData.status === "upcoming" ? { scale: 1.03 } : {}}
@@ -145,14 +110,6 @@ export const BetModal = (props: BetModalProps) => {
           <span className="text-xs font-bold text-center leading-tight h-8 flex items-center">
             {teamName}
           </span>
-          <div className="flex flex-col items-center">
-            <span className="text-xl font-black text-blue-600">
-              {displayOdds}x
-            </span>
-            <span className="text-[10px] text-gray-400">
-              {teamBetAmount.toLocaleString()}
-            </span>
-          </div>
         </div>
       </motion.button>
     );
@@ -174,7 +131,7 @@ export const BetModal = (props: BetModalProps) => {
         {/* Header */}
         <div className="text-center space-y-1">
           <div className="inline-flex items-center gap-[2px] px-[6px] py-[2px] rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-[12px] font-bold">
-            {matchData.leagueName} · {matchData.blockName}
+            {matchData.leagueName} · {matchData.blockName} · 승부 예측
           </div>
           <h2 className="text-lg font-extrabold">
             {formattedDate} ({dayOfWeek}) {formattedTime}
@@ -186,17 +143,19 @@ export const BetModal = (props: BetModalProps) => {
           </p>
         </div>
 
-        {/* 배팅 현황 그래프 */}
+        {/* 예측 현황 그래프 */}
         <div className="space-y-2">
           <div className="flex justify-between text-[11px] font-bold text-gray-500 px-1">
             <span>
               {matchData.teamACode} (
-              {matchData.totalBetAmount === 0 ? 50 : teamARatio.toFixed(1)}%)
+              {matchData.totalVoteCount === 0 ? 50 : teamARatio.toFixed(1)}%)
             </span>
-            <span>총 {matchData.totalBetAmount.toLocaleString()} </span>
+            <span>
+              총 투표수 : {matchData.totalVoteCount.toLocaleString()}{" "}
+            </span>
             <span>
               {matchData.teamBCode} (
-              {matchData.totalBetAmount === 0
+              {matchData.totalVoteCount === 0
                 ? 50
                 : (100 - teamARatio).toFixed(1)}
               %)
@@ -205,14 +164,14 @@ export const BetModal = (props: BetModalProps) => {
           <div className="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden flex">
             <div
               style={{
-                width: `${matchData.totalBetAmount === 0 ? 50 : teamARatio}%`,
+                width: `${matchData.totalVoteCount === 0 ? 50 : teamARatio}%`,
               }}
               className="h-full bg-blue-500 transition-all"
             />
             <div
               style={{
                 width: `${
-                  matchData.totalBetAmount === 0 ? 50 : 100 - teamARatio
+                  matchData.totalVoteCount === 0 ? 50 : 100 - teamARatio
                 }%`,
               }}
               className="h-full bg-purple-500 transition-all"
@@ -227,7 +186,7 @@ export const BetModal = (props: BetModalProps) => {
             teamName={matchData.teamAName}
             teamCode={matchData.teamACode}
             teamLogo={matchData.teamAImage}
-            odds={matchData.teamAOdds}
+            // odds={matchData.teamAOdds}
             isWinner={matchData.winnerTeamCode === matchData.teamACode}
           />
           <span className="text-xs font-black text-gray-400">VS</span>
@@ -236,59 +195,41 @@ export const BetModal = (props: BetModalProps) => {
             teamName={matchData.teamBName}
             teamCode={matchData.teamBCode}
             teamLogo={matchData.teamBImage}
-            odds={matchData.teamBOdds}
+            // odds={matchData.teamBOdds}
             isWinner={matchData.winnerTeamCode === matchData.teamBCode}
           />
         </div>
 
         {/* Balance & Input */}
-        {matchData.status === "upcoming" && isLoggedIn ? (
-          <div className="space-y-3">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-500 font-medium">내 보유 코인</span>
-              <span className="flex items-center gap-1 font-bold">
-                <Image
-                  src="/images/point.png"
-                  alt="포인트"
-                  width={15}
-                  height={15}
-                />
-                {myCoins?.toLocaleString()}
-              </span>
+        {matchData.status === "upcoming" ? (
+          isLoggedIn ? (
+            <div className="space-y-3">
+              {/* 여기에 팀 선택 및 예측 제출 버튼 컴포넌트가 들어갈 자리입니다 */}
+              <p className="text-xs text-center text-blue-500 font-medium animate-pulse">
+                승리 팀을 예측하고 아이템 포인트를 획득하세요!
+              </p>
             </div>
-
-            <div className="relative">
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                value={betAmount}
-                onChange={handleBetAmountChange}
-                placeholder="베팅 금액"
-                className="w-full rounded-xl bg-gray-50 dark:bg-gray-800 p-4 pr-16 text-base font-bold outline-none focus:ring-2 focus:ring-blue-500"
-              />
-
-              <button
-                onClick={() => {
-                  if (!myCoins) return;
-                  setBetAmount(myCoins.toString());
-                }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-blue-600"
-              >
-                MAX
-              </button>
+          ) : (
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl text-center border border-blue-100 dark:border-blue-800">
+              <p className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                승부 예측 이벤트 참여하기
+              </p>
+              <p className="text-[11px] text-gray-500 mt-1">
+                로그인 후 참여 시 보상 포인트 획득이 가능합니다.
+              </p>
             </div>
-          </div>
-        ) : matchData.status === "upcoming" && !isLoggedIn ? (
-          <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl text-center">
-            <p className="text-sm font-bold text-gray-500">
-              배팅하려면 로그인이 필요합니다.
-            </p>
-          </div>
+          )
         ) : (
-          <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl text-center">
-            <p className="text-sm font-bold text-gray-500">
-              배팅이 마감된 경기입니다.
+          <div className="bg-gray-100 dark:bg-gray-800/50 p-4 rounded-xl text-center">
+            <p className="text-sm font-bold text-gray-400">
+              {matchData.status === "live"
+                ? "경기가 진행 중입니다"
+                : "예측이 마감된 경기입니다"}
+            </p>
+            <p className="text-[11px] text-gray-400 mt-1">
+              {matchData.status === "live"
+                ? "경기 종료 후 결과가 발표됩니다."
+                : "다음 경기를 기대해 주세요!"}
             </p>
           </div>
         )}
@@ -316,10 +257,10 @@ export const BetModal = (props: BetModalProps) => {
                     ? matchData.teamACode
                     : matchData.teamBCode;
 
-                onSumbit(riotMatchId, teamCode, Number(betAmount));
+                onSumbit(riotMatchId, teamCode);
               }}
             >
-              배팅 완료
+              예측 완료
             </button>
           )}
 
@@ -336,8 +277,9 @@ export const BetModal = (props: BetModalProps) => {
         </div>
 
         <p className="text-[10px] text-gray-400 text-center leading-relaxed opacity-80">
-          본 시스템은 마진 10%를 제외한 총 배팅금을 승리 팀에게 배분합니다. 최종
-          배당률은 경기 종료 시점의 총 배팅 금액에 따라 결정됩니다.
+          본 이벤트는 팀 승부 예측 성공 시, 롤파이트 내 아이템을 구매할 수 있는
+          고정 포인트를 지급합니다. <br />
+          승리 팀을 맞히고 포인트 혜택을 받아보세요!
         </p>
       </motion.div>
     </div>

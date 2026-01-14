@@ -116,26 +116,24 @@ export default function ProfileInfoPage() {
         .then((response) => {
           const targetBet = bets.find((bet) => bet.id === betId);
           if (member && targetBet) {
-            updateMember({
-              memberWallet: {
-                ...member.memberWallet,
-                point: member.memberWallet.point + targetBet.betAmount,
-              },
-            });
             setBets((prevBets) => prevBets.filter((bet) => bet.id !== betId));
           }
         })
         .catch((error) => {
           const code = error.response.data.code;
           if (code === "COMMON-002") {
-            CustomAlert("warning", "배팅 취소", "취소할 수 없는 경기 입니다.");
+            CustomAlert(
+              "warning",
+              "예측취소",
+              "이미 경기가 진행중 이거나, 종료된 경기입니다."
+            );
           }
         });
     };
     ButtonAlert(
-      "배팅 취소",
-      "해당 경기의 배팅을 취소하시겠습니까? \n 진행중인 경기는 취소가 불가능합니다.",
-      "배팅 취소",
+      "예측취소",
+      "취소하시겠습니까? \n 진행중인 경기는 취소가 불가능합니다.",
+      "예측취소",
       "아니오",
       deleteBet
     );
@@ -635,7 +633,7 @@ export default function ProfileInfoPage() {
 
         <div className="w-full flex flex-col gap-[16px] p-[16px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder overflow-hidden">
           <p className="text-[14px] font-semibold text-gray-700 dark:text-gray-200">
-            배팅 내역
+            예측 내역
           </p>
           <div className="flex items-center gap-[8px]">
             <input

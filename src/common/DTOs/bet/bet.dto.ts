@@ -16,11 +16,9 @@ export interface ProMatchDto {
   teamBImage: string | null;
   status: ProMatchStatus;
   winnerTeamCode: string | null;
-  totalBetAmount: number;
-  teamABetAmount: number;
-  teamBBetAmount: number;
-  teamAOdds: number | null;
-  teamBOdds: number | null;
+  totalVoteCount: number;
+  teamAVoteCount: number;
+  teamBVoteCount: number;
   bestOf: number;
   blockName: string | null;
 }
@@ -30,17 +28,13 @@ export interface BetDto {
   proMatch: ProMatchDto;
   memberId: string;
   betTeamCode: string;
-  betAmount: number;
-  oddsAtBet: number;
-  expectedPayout: number;
-  actualPayout: number | null;
   status: BetStatus;
 }
 
 export interface CreateBetDto {
   proMatchId: string;
   betTeamCode: string;
-  betAmount: number;
+  // betAmount: number;
 }
 
 export interface ProMatchWithBetsDto extends ProMatchDto {

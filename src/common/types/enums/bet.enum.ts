@@ -6,7 +6,7 @@ export enum ProMatchStatus {
 }
 
 export enum BetStatus {
-  PENDING = "pending", // 베팅 대기 (경기 전)
+  PENDING = "pending", // 경기 전
   WON = "won", // 승리
   LOST = "lost", // 패배
   CANCELLED = "cancelled", // 취소됨 (경기 취소 등)
