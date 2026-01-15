@@ -8,7 +8,7 @@ export const GuildCreateIntro = () => {
 
   return (
     <div
-      className={`flex w-full py-[24px] gap-[24px] ${
+      className={`flex w-full px-[12px] py-[24px] gap-[24px] ${
         isMobile ? "flex-col" : "grid grid-cols-2"
       }`}
     >

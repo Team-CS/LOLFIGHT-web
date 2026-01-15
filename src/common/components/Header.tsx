@@ -139,7 +139,7 @@ export const Header = () => {
     <>
       {" "}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <header className="flex flex-col w-full gap-[12px] bg-white dark:bg-black">
+      <header className="flex flex-col w-full gap-[12px] bg-[#FCFCFC] dark:bg-black">
         <section
           className={`w-full bg-brandcolor dark:bg-dark px-[16px] py-[4px]`}
         >
