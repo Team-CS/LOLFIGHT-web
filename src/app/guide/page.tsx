@@ -35,7 +35,7 @@ const GUIDE_MAP = {
 type GuideKey = keyof typeof GUIDE_MAP;
 
 export default function GuidePage() {
-  const [currentGuide, setCurrentGuide] = useState<GuideKey>("guild");
+  const [currentGuide, setCurrentGuide] = useState<GuideKey>("profile");
   const isMobile = useIsMobile();
 
   const current = GUIDE_MAP[currentGuide];
