@@ -97,7 +97,7 @@ const MatchCard = (props: MatchCardProps) => {
               isFinished ? "text-gray-400" : "text-branddark dark:text-white"
             }`}
           >
-            {isFinished ? "✅ 최근 내전 결과" : "🔥 예정된 내전"}
+            {isFinished ? "✅ 최근 스크림 결과" : "🔥 예정된 스크림"}
           </p>
           {!isFinished && isLeader && (
             <div className="flex items-center gap-[8px]">
