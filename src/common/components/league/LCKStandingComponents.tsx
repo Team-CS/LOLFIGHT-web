@@ -20,6 +20,7 @@ const sacheon = localFont({
 const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
   const isMobile = useIsMobile();
   const standings = data?.data?.standings;
+  console.log(standings);
   if (!standings?.length) {
     return (
       <div className="flex flex-col justify-center w-full h-full bg-white dark:bg-dark rounded-[16px] p-[12px] shadow-lg gap-[8px]">
@@ -38,7 +39,7 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
     <div className="flex flex-col w-full gap-[24px]">
       {standings.map((stage) =>
         stage.stages
-          .filter((stageItem) => stageItem.slug === "groups")
+          .filter((stageItem) => stageItem.slug === "group_stage")
           .map((stageItem) => (
             <div key={stageItem.slug} className="flex flex-col gap-[12px]">
               {stageItem.sections.map((section) => (
@@ -54,9 +55,7 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
                       sacheon.className
                     } text-gray-800 dark:text-gray-100`}
                   >
-                    {section.name === "레전드 그룹"
-                      ? "LEGEND 그룹"
-                      : "RISE 그룹"}
+                    {section.name === "알파조" ? "알파조" : "오메가조"}
                   </h2>
 
                   {/* 섹션 헤더 */}
@@ -133,12 +132,12 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
                           {team.record?.losses ?? "-"}
                         </div>
                       </div>
-                    ))
+                    )),
                   )}
                 </div>
               ))}
             </div>
-          ))
+          )),
       )}
     </div>
   );
