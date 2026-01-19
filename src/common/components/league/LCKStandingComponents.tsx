@@ -20,7 +20,6 @@ const sacheon = localFont({
 const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
   const isMobile = useIsMobile();
   const standings = data?.data?.standings;
-  console.log(standings);
   if (!standings?.length) {
     return (
       <div className="flex flex-col justify-center w-full h-full bg-white dark:bg-dark rounded-[16px] p-[12px] shadow-lg gap-[8px]">

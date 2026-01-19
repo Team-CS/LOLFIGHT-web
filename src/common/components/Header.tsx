@@ -22,6 +22,7 @@ import ThemeToggler from "./ThemeToggler";
 import { toast } from "react-toastify";
 import { useAlarmStore } from "../zustand/alarm.zustand";
 import Image from "next/image";
+import { get } from "http";
 
 const rixi = localFont({
   src: "../../fonts/RixInooAriDuriRegular.ttf",
@@ -42,8 +43,8 @@ export const Header = () => {
   const [activeTabLeft, setActiveTabLeft] = useState("공지사항");
   const [activeTabRight, setActiveTabRight] = useState("자유게시판");
 
-  const rgmBoardId = 3;
   const freeBoardId = 1;
+  const rgmBoardId = 3;
   const noticeBoardId = 4;
   const eventBoardId = 5;
 
@@ -52,17 +53,19 @@ export const Header = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const [freeRes, rgmRes, noticeRes, eventRes] = await Promise.all([
-          getRecentPostList(freeBoardId),
-          getRecentPostList(rgmBoardId),
-          getRecentPostList(noticeBoardId),
-          getRecentPostList(eventBoardId),
+        const response = await getRecentPostList([
+          freeBoardId,
+          rgmBoardId,
+          noticeBoardId,
+          eventBoardId,
         ]);
 
-        setFreePostList(freeRes?.data?.data ?? []);
-        setJoinPostList(rgmRes?.data?.data ?? []);
-        setNoticePostList(noticeRes?.data?.data ?? []);
-        setEventPostList(eventRes?.data?.data ?? []);
+        const postData = response.data.data ?? {};
+
+        setFreePostList(postData[freeBoardId] ?? []);
+        setJoinPostList(postData[rgmBoardId] ?? []);
+        setNoticePostList(postData[noticeBoardId] ?? []);
+        setEventPostList(postData[eventBoardId] ?? []);
       } catch (error) {
         console.error("게시판 목록 로드 실패:", error);
       }
@@ -89,7 +92,7 @@ export const Header = () => {
         >
           <strong>{"새로운 소식이에요 🔔"}</strong>
           <p>{"알림이 도착했습니다"}</p>
-        </div>
+        </div>,
       );
     }
   }, [hasAlarm]);
