@@ -25,6 +25,12 @@ export const metadata: Metadata = {
     "리그오브레전드 내전",
     "롤 대회",
     "롤 유저 커뮤니티",
+    "LOL 길드",
+    "롤 판정",
+    "롤 배팅",
+    "롤 커뮤니티",
+    "리그오브레전드 커뮤니티",
+    "롤 팀 매칭",
   ],
   icons: {
     icon: "/LOLFIGHT_NONE_TEXT.ico",
@@ -60,6 +66,26 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://lolfight.kr",
+  },
+  category: "Gaming Community",
+  authors: [{ name: "롤파이트" }],
+  creator: "롤파이트",
+  publisher: "롤파이트",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
