@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev -p 4000",
     "dev:ssl": "node server.js",
-    "build": "next build && next-sitemap",
-    "sitemapbuild": "next-sitemap",
+    "build": "next build",
     "start:ssl": "NODE_ENV=production node server.js",
     "start": "next start -p 4000",
     "lint": "next lint"
@@ -29,7 +28,6 @@
     "gh-pages": "^6.1.1",
     "jwt-decode": "^4.0.0",
     "next": "14.0.3",
-    "next-sitemap": "^4.2.3",
     "next-themes": "^0.3.0",
     "react": "^18",
     "react-circular-progressbar": "^2.1.0",
