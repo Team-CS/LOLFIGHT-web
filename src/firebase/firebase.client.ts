@@ -1,5 +1,4 @@
-import { getMessaging, Messaging } from "firebase/messaging";
-import { initializeApp } from "firebase/app";
+import type { Messaging } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
@@ -10,28 +9,30 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
-const app = initializeApp(firebaseConfig);
+let messagingInstance: Messaging | null = null;
+let initPromise: Promise<Messaging | null> | null = null;
 
-// let messaging: Messaging | undefined = undefined;
-// if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
-//   try {
-//     messaging = getMessaging(app);
-//   } catch (e) {
-//     messaging = undefined;
-//   }
-// }
+export async function getFirebaseMessaging(): Promise<Messaging | null> {
+  if (typeof window === "undefined") return null;
 
-let messaging: Messaging | undefined;
+  if (messagingInstance) return messagingInstance;
 
-if (typeof window !== "undefined") {
-  import("firebase/messaging").then(() => {
-    try {
-      messaging = getMessaging(app);
-    } catch (e) {
-      console.error("FCM init failed", e);
-      messaging = undefined;
-    }
-  });
+  if (!initPromise) {
+    initPromise = (async () => {
+      try {
+        const [{ initializeApp }, { getMessaging }] = await Promise.all([
+          import("firebase/app"),
+          import("firebase/messaging"),
+        ]);
+        const app = initializeApp(firebaseConfig);
+        messagingInstance = getMessaging(app);
+        return messagingInstance;
+      } catch (e) {
+        console.error("FCM init failed", e);
+        return null;
+      }
+    })();
+  }
+
+  return initPromise;
 }
-
-export { messaging };

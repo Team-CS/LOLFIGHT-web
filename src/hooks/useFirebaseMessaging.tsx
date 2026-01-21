@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { messaging } from "@/src/firebase/firebase.client";
-import { getToken, Messaging, onMessage } from "firebase/messaging";
+import { getFirebaseMessaging } from "@/src/firebase/firebase.client";
 import { useFirebaseStore } from "@/src/common/zustand/firebase.zustand";
 import { updateMemberFCMToken } from "../api/member.api";
 import { useMemberStore } from "../common/zustand/member.zustand";
@@ -19,65 +18,63 @@ export default function useFirebaseMessaging() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!member || !messaging) {
-      return;
-    }
+    if (!member) return;
 
-    if (!isServiceWorkerRegistered && "serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/firebase-messaging-sw.js")
-        .then(() => {
+    const initFirebase = async () => {
+      const messaging = await getFirebaseMessaging();
+      if (!messaging) return;
+
+      if (!isServiceWorkerRegistered && "serviceWorker" in navigator) {
+        try {
+          await navigator.serviceWorker.register("/firebase-messaging-sw.js");
           setServiceWorkerRegistered(true);
-        })
-        .catch((error) => console.error("등록 실패 : ", error));
-    }
+        } catch (error) {
+          console.error("등록 실패 : ", error);
+        }
+      }
 
-    const token = getCookie("lf_rtk");
+      const token = getCookie("lf_rtk");
 
-    if (!fcmToken && token) {
-      if ("Notification" in window) {
-        Notification.requestPermission()
-          .then((permission) => {
+      if (!fcmToken && token) {
+        if ("Notification" in window) {
+          try {
+            const permission = await Notification.requestPermission();
             if (permission === "granted") {
-              return getToken(messaging as Messaging, {
+              const { getToken } = await import("firebase/messaging");
+              const currentToken = await getToken(messaging, {
                 vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY!,
               });
+              if (currentToken) {
+                setFcmToken(currentToken);
+                updateMemberFCMToken(currentToken);
+              }
             }
-          })
-          .then((currentToken) => {
-            if (currentToken) {
-              setFcmToken(currentToken);
-              updateMemberFCMToken(currentToken);
-            }
-          })
-          .catch((err) => {
+          } catch (err) {
             console.error("FCM 토큰 발급 실패:", err);
-          });
-      } else {
-        console.log("이 브라우저는 Notification API를 지원하지 않습니다.");
-      }
-    }
-
-    onMessage(messaging, (payload) => {
-      const { title, body } = payload.notification || {};
-      if (title && body && document.visibilityState === "visible") {
-        const toastId = toast.info(
-          <div
-            onClick={() => {
-              toast.dismiss(toastId);
-              router.push("/alarm");
-            }}
-            className="cursor-pointer"
-          >
-            <strong>{title}</strong>
-            <p>{body}</p>
-          </div>
-        );
+          }
+        }
       }
 
-      // if ("Notification" in window && title && body) {
-      //   new Notification(title, { body, icon: "/LOLFIGHT_NONE_TEXT.png" });
-      // }
-    });
+      const { onMessage } = await import("firebase/messaging");
+      onMessage(messaging, (payload) => {
+        const { title, body } = payload.notification || {};
+        if (title && body && document.visibilityState === "visible") {
+          const toastId = toast.info(
+            <div
+              onClick={() => {
+                toast.dismiss(toastId);
+                router.push("/alarm");
+              }}
+              className="cursor-pointer"
+            >
+              <strong>{title}</strong>
+              <p>{body}</p>
+            </div>
+          );
+        }
+      });
+    };
+
+    initFirebase();
   }, [member, fcmToken, isServiceWorkerRegistered]);
 }
