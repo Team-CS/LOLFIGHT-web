@@ -229,9 +229,10 @@ export default function LeagueScheduleComponent(
                               >
                                 <Image
                                   src={match.team1.image}
-                                  alt="match-team-name"
+                                  alt={match.team1.name}
                                   width={35}
                                   height={35}
+                                  sizes="36px"
                                   className="w-full h-full object-contain"
                                 />
                               </div>
@@ -292,9 +293,10 @@ export default function LeagueScheduleComponent(
                               >
                                 <Image
                                   src={match.team2.image}
-                                  alt="match-team-name"
+                                  alt={match.team2.name}
                                   width={35}
                                   height={35}
+                                  sizes="36px"
                                   className="w-full h-full object-contain"
                                 />
                               </div>

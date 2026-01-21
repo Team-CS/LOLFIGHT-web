@@ -99,9 +99,10 @@ const LCKStandingsComponent = ({ data }: LCKStandingsComponentProps) => {
                             >
                               <Image
                                 src={team.image}
-                                alt="team-name"
+                                alt={team.name || "team"}
                                 width={35}
                                 height={35}
+                                sizes="36px"
                                 className="w-full h-full object-contain"
                               />
                             </div>

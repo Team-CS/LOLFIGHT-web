@@ -61,8 +61,8 @@ const LineSelector = (props: Props) => {
       <button
         ref={buttonRef}
         onClick={toggleDropdown}
-        className={`flex items-center gap-[4px] font-medium rounded cursor-pointer ${
-          isMobile ? "text-[10px]" : "text-[14px]"
+        className={`flex items-center gap-[4px] font-medium rounded cursor-pointer border bg-blue-50 border-blue-200 hover:bg-blue-100 dark:bg-neutral-700 dark:border-neutral-600 dark:hover:bg-neutral-600 transition ${
+          isMobile ? "text-[10px] px-[6px] py-[4px]" : "text-[14px] px-[8px] py-[4px]"
         }`}
       >
         <Image
@@ -111,7 +111,7 @@ const LineSelector = (props: Props) => {
               </button>
             ))}
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );
