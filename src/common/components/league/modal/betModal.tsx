@@ -20,23 +20,81 @@ export const BetModal = (props: BetModalProps) => {
   const [selectedTeam, setSelectedTeam] = useState<"teamA" | "teamB" | null>(
     null
   );
+  const [loadingState, setLoadingState] = useState<
+    "loading" | "error" | "not_found" | "success"
+  >("loading");
   const accessToken = getCookie("lf_atk");
   const isLoggedIn = Boolean(accessToken);
 
   useEffect(() => {
-    getMatch(riotMatchId)
-      .then((res) => {
-        console.log(res);
-        setMatchData(res.data.data);
-      })
-      .catch((error) => console.error(error));
+    let isMounted = true;
+
+    const fetchMatch = async () => {
+      try {
+        const res = await getMatch(riotMatchId);
+        if (!isMounted) return;
+
+        if (res.data.data) {
+          setMatchData(res.data.data);
+          setLoadingState("success");
+        } else {
+          setLoadingState("not_found");
+        }
+      } catch (error) {
+        console.error(error);
+        if (isMounted) {
+          setLoadingState("error");
+        }
+      }
+    };
+
+    fetchMatch();
+
+    return () => {
+      isMounted = false;
+    };
   }, [riotMatchId]);
 
-  // Hooks 선언 이후에 Early Return
-  if (!matchData) {
+  // 로딩 중
+  if (loadingState === "loading") {
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  // 에러 또는 데이터 없음
+  if (loadingState === "error" || loadingState === "not_found" || !matchData) {
+    return (
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          onClick={(e) => e.stopPropagation()}
+          className="w-full max-w-sm rounded-3xl bg-white dark:bg-gray-900 shadow-2xl p-6 space-y-4 text-center"
+        >
+          <div className="text-4xl">😢</div>
+          <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">
+            {loadingState === "error"
+              ? "경기 정보를 불러올 수 없습니다"
+              : "아직 등록된 경기가 없습니다"}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {loadingState === "error"
+              ? "잠시 후 다시 시도해 주세요."
+              : "곧 새로운 경기가 등록될 예정입니다."}
+          </p>
+          <button
+            onClick={onClose}
+            className="w-full rounded-xl py-3 font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
+          >
+            닫기
+          </button>
+        </motion.div>
       </div>
     );
   }

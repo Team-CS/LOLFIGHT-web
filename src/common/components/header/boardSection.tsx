@@ -1,5 +1,6 @@
 // components/BoardSection.tsx
 
+import { memo } from "react";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 
 interface Post {
@@ -20,7 +21,7 @@ interface BoardSectionProps {
   containsImage: (content: string) => boolean;
 }
 
-export default function BoardSection({
+const BoardSection = memo(function BoardSection({
   tabTitles,
   activeTab,
   setActiveTab,
@@ -93,7 +94,9 @@ export default function BoardSection({
       </div>
     </div>
   );
-}
+});
+
+export default BoardSection;
 
 function ImageIcon() {
   const isMobile = useIsMobile();

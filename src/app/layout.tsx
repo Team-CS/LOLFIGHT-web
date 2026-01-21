@@ -27,7 +27,6 @@ export const metadata: Metadata = {
     "롤 유저 커뮤니티",
     "LOL 길드",
     "롤 판정",
-    "롤 배팅",
     "롤 커뮤니티",
     "리그오브레전드 커뮤니티",
     "롤 팀 매칭",
@@ -90,7 +89,7 @@ export const metadata: Metadata = {
 };
 
 const pretendard = localFont({
-  src: "../fonts/PretendardVariable.ttf",
+  src: "../fonts/PretendardVariable.woff2",
   display: "swap",
   variable: "--font-pretendard",
 });
