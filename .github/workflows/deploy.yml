@@ -40,6 +40,7 @@ jobs: # jobs
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /home/LOLFIGHT
             docker-compose down
-            docker-compose up -d --build
+            docker-compose build --no-cache
+            docker-compose up -d
             docker system prune -a --volumes -f
           EOF

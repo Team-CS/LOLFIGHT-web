@@ -1,11 +1,38 @@
-# *
+# 롤파이트(LOLFIGHT) 검색엔진 크롤링 규칙
 User-agent: *
 Allow: /
-Disallow: /profile
-Disallow: /policies
-Disallow: /login
-Disallow: /alarm
-Disallow: /members
+Disallow: /profile/
+Disallow: /policies/
+Disallow: /login/
+Disallow: /alarm/
+Disallow: /members/
+
+# 구글봇 최적화
+User-agent: Googlebot
+Allow: /
+Disallow: /profile/
+Disallow: /policies/
+Disallow: /login/
+Disallow: /alarm/
+Disallow: /members/
+
+# 네이버 검색봇
+User-agent: Yeti
+Allow: /
+Disallow: /profile/
+Disallow: /policies/
+Disallow: /login/
+Disallow: /alarm/
+Disallow: /members/
+
+# 다음 검색봇
+User-agent: Daumoa
+Allow: /
+Disallow: /profile/
+Disallow: /policies/
+Disallow: /login/
+Disallow: /alarm/
+Disallow: /members/
 
 # Host
 Host: https://lolfight.kr

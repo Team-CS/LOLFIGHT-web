@@ -66,6 +66,26 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://lolfight.kr",
   },
+  category: "Gaming Community",
+  authors: [{ name: "롤파이트" }],
+  creator: "롤파이트",
+  publisher: "롤파이트",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 const pretendard = localFont({

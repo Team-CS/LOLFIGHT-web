@@ -17,7 +17,7 @@ const baseUrl = `${constant.SERVER_URL}/post`;
  * @returns
  */
 export const writePost = async (
-  data: PostCreateDto
+  data: PostCreateDto,
 ): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}`;
 
@@ -34,7 +34,7 @@ export const getPostList = async (
   page: number,
   limit: number,
   keyword?: string | null,
-  searchType?: string | null
+  searchType?: string | null,
 ): Promise<AxiosResponse<ResponseDto<PostListResponseDto>>> => {
   let url = `${baseUrl}/list` + `?board=${board}&page=${page}&limit=${limit}`;
   if (keyword) {
@@ -52,9 +52,11 @@ export const getPostList = async (
  * @returns
  */
 export const getRecentPostList = async (
-  boardId: number
-): Promise<AxiosResponse<ResponseDto<PostDto[]>>> => {
-  let url = `${baseUrl}/recentlist` + `?boardId=${boardId}`;
+  boardIds: number[],
+): Promise<AxiosResponse<ResponseDto<Record<number, PostDto[]>>>> => {
+  // 쿼리 파라미터로 배열 전달
+  const queryString = boardIds.map((id) => `boardIds=${id}`).join("&");
+  const url = `${baseUrl}/recentlist?${queryString}`;
   return await getData(url);
 };
 
@@ -65,7 +67,7 @@ export const getRecentPostList = async (
  */
 export const getPostContent = async (
   board: string,
-  postId: string
+  postId: string,
 ): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}/?board=${board}&postId=${postId}`;
   return await getData(url);
@@ -78,7 +80,7 @@ export const getPostContent = async (
  */
 export const likePost = async (
   postDto: PostDto,
-  memberId: string
+  memberId: string,
 ): Promise<AxiosResponse<ResponseDto<LikeDTO>>> => {
   let url = `${baseUrl}/like`;
 
@@ -97,7 +99,7 @@ export const likePost = async (
  */
 export const getLike = async (
   postDto: PostDto,
-  memberId: string
+  memberId: string,
 ): Promise<AxiosResponse<ResponseDto<LikeDTO>>> => {
   let url = `${baseUrl}/getLike`;
 
@@ -115,7 +117,7 @@ export const getLike = async (
  * @returns
  */
 export const deletePost = async (
-  postDto: PostDto
+  postDto: PostDto,
 ): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}/delete`;
 
@@ -129,7 +131,7 @@ export const deletePost = async (
 export const getPopularPosts = async (
   page: number,
   limit: number,
-  keyword?: string | null
+  keyword?: string | null,
 ): Promise<AxiosResponse<ResponseDto<PostListResponseDto>>> => {
   let url = `${baseUrl}/popular-list` + `?page=${page}&limit=${limit}`;
 
@@ -140,7 +142,7 @@ export const getPopularPosts = async (
 };
 
 export const updatePost = async (
-  postDto: PostDto
+  postDto: PostDto,
 ): Promise<AxiosResponse<ResponseDto<PostDto>>> => {
   let url = `${baseUrl}`;
 
