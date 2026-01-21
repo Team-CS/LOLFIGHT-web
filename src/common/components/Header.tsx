@@ -167,6 +167,7 @@ export const Header = () => {
                   alt="logo"
                   width={50}
                   height={50}
+                  priority
                   className={`${
                     isMobile ? "w-[30px] h-[30px]" : "w-[40px] h-[40px]"
                   } cursor-pointer"`}

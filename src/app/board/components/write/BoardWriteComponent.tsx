@@ -1,5 +1,17 @@
-import WysiwygEditor from "@/src/common/components/WysiwygEditor";
+import dynamic from "next/dynamic";
 import { PostDto } from "@/src/common/DTOs/board/post.dto";
+
+const WysiwygEditor = dynamic(
+  () => import("@/src/common/components/WysiwygEditor"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[400px] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500"></div>
+      </div>
+    ),
+  }
+);
 
 interface BoardWriteComponentProps {
   post?: PostDto;

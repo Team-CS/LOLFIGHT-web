@@ -25,6 +25,11 @@ export const metadata: Metadata = {
     "리그오브레전드 내전",
     "롤 대회",
     "롤 유저 커뮤니티",
+    "LOL 길드",
+    "롤 판정",
+    "롤 커뮤니티",
+    "리그오브레전드 커뮤니티",
+    "롤 팀 매칭",
   ],
   icons: {
     icon: "/LOLFIGHT_NONE_TEXT.ico",

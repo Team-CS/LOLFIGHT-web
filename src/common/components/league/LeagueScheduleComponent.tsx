@@ -21,7 +21,7 @@ const sacheon = localFont({
 });
 
 export default function LeagueScheduleComponent(
-  props: LeagueScheduleComponentProps
+  props: LeagueScheduleComponentProps,
 ) {
   const { data } = props;
   const isMobile = useIsMobile();
@@ -43,7 +43,7 @@ export default function LeagueScheduleComponent(
 
       const d = new Date(event.startTime);
       const dateKey = `${String(d.getFullYear()).slice(2)}.${String(
-        d.getMonth() + 1
+        d.getMonth() + 1,
       ).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} ${
         ["일", "월", "화", "수", "목", "금", "토"][d.getDay()]
       }`;
@@ -57,7 +57,7 @@ export default function LeagueScheduleComponent(
       map[dateKey].push({
         id: event.match.id,
         time: `${String(d.getHours()).padStart(2, "0")}:${String(
-          d.getMinutes()
+          d.getMinutes(),
         ).padStart(2, "0")}`,
         team1: {
           name: t1.code ?? "TBD",
@@ -81,7 +81,7 @@ export default function LeagueScheduleComponent(
         matches: matches.sort(
           (a: any, b: any) =>
             parseInt(a.time.replace(":", ""), 10) -
-            parseInt(b.time.replace(":", ""), 10)
+            parseInt(b.time.replace(":", ""), 10),
         ),
         dateObj: matches[0]?.dateObj,
       }))
@@ -109,7 +109,7 @@ export default function LeagueScheduleComponent(
 
   const handleSumbitBet = async (
     riotMatchId: string,
-    teamCode: string
+    teamCode: string,
     // betAmount: number
   ) => {
     const accessToken = getCookie("lf_atk");
@@ -134,7 +134,7 @@ export default function LeagueScheduleComponent(
           CustomAlert(
             "warning",
             "승부예측",
-            "이미 예측한 경기입니다. \n 내정보에서 상세정보와 취소가 가능합니다."
+            "이미 예측한 경기입니다. \n 내정보에서 상세정보와 취소가 가능합니다.",
           );
         }
       });
@@ -187,7 +187,7 @@ export default function LeagueScheduleComponent(
                   {day.matches.map((match, j) => (
                     <div
                       key={j}
-                      className="flex justify-between items-center rounded-[8px] px-[12px] py-[8px] border border-brandborder dark:border-branddarkborder"
+                      className="flex justify-between items-center rounded-[8px] px-[12px] py-[8px] border border-brandborder dark:border-branddarkborder hover:bg-brandhover dark:hover:bg-branddarkborder cursor-pointer shadow-sm"
                       onClick={() => handleClickSchedule(match.id)}
                     >
                       <div className="flex justify-start">
@@ -339,7 +339,7 @@ export default function LeagueScheduleComponent(
         <BetModal
           riotMatchId={selectedMatch}
           onClose={() => {
-            setOpen(false), setSelectedMatch("");
+            (setOpen(false), setSelectedMatch(""));
           }}
           onSumbit={handleSumbitBet}
         />
