@@ -49,7 +49,7 @@ export default function Page({ params }: { params: PageProps }) {
             memberGame: response.data.data.memberGame,
           };
           setMember(updatedMember);
-        }
+        },
       );
     }
   };
@@ -95,13 +95,15 @@ export default function Page({ params }: { params: PageProps }) {
                   />
                 </div>
                 <div className="flex flex-col gap-[4px]">
-                  <p
-                    className={`font-bold text-gray-900 dark:text-gray-100 ${
-                      isMobile ? "text-[20px]" : "text-[26px]"
-                    } ${member.memberItem?.effect}`}
-                  >
-                    {member.memberName}
-                  </p>
+                  <div>
+                    <p
+                      className={`font-bold text-gray-900 dark:text-gray-100 ${
+                        isMobile ? "text-[20px]" : "text-[26px]"
+                      } ${member.memberItem?.effect}`}
+                    >
+                      {member.memberName}
+                    </p>
+                  </div>
                   <p
                     className={`text-gray-500 ${
                       isMobile ? "text-[10px]" : "text-[14px]"
@@ -152,7 +154,7 @@ export default function Page({ params }: { params: PageProps }) {
                 <div className="flex flex-col gap-[6px]">
                   <span
                     className={`${getTierStyle(
-                      member.memberGame.gameTier!.split(" ")[0]
+                      member.memberGame.gameTier!.split(" ")[0],
                     )} ${
                       isMobile ? "text-[14px]" : "text-[16px]"
                     } font-semibold`}

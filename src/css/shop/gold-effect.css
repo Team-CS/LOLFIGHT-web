@@ -1,0 +1,66 @@
+/* 골드/럭셔리 닉네임 이펙트 */
+@keyframes gold-glow {
+  0% {
+    text-shadow: 0 0 4px #ffd700, 0 0 8px #daa520, 0 0 12px #b8860b;
+    color: #ffd700;
+  }
+  50% {
+    text-shadow: 0 0 8px #ffec8b, 0 0 16px #ffd700, 0 0 24px #daa520;
+    color: #ffec8b;
+  }
+  100% {
+    text-shadow: 0 0 4px #ffd700, 0 0 8px #daa520, 0 0 12px #b8860b;
+    color: #ffd700;
+  }
+}
+
+@keyframes gold-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.gold-effect {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    #b8860b 0%,
+    #daa520 20%,
+    #ffd700 40%,
+    #ffec8b 50%,
+    #ffd700 60%,
+    #daa520 80%,
+    #b8860b 100%
+  );
+  background-size: 200% 100%;
+  color: #4a3000;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #daa520;
+  animation: gold-glow 2s ease-in-out infinite, gold-shimmer 3s linear infinite;
+  box-shadow: 0 0 10px #ffd700, 0 0 20px #daa520, 0 0 30px #b8860b,
+    inset 0 0 10px rgba(255, 236, 139, 0.4);
+}
+
+.gold-effect::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: gold-shimmer 3s linear infinite;
+}

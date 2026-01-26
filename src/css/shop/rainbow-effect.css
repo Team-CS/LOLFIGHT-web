@@ -1,0 +1,73 @@
+/* 무지개 닉네임 이펙트 */
+@keyframes rainbow-colors {
+  0% {
+    color: #ff0000;
+    text-shadow: 0 0 6px #ff0000, 0 0 12px #ff0000;
+  }
+  14% {
+    color: #ff7f00;
+    text-shadow: 0 0 6px #ff7f00, 0 0 12px #ff7f00;
+  }
+  28% {
+    color: #ffff00;
+    text-shadow: 0 0 6px #ffff00, 0 0 12px #ffff00;
+  }
+  42% {
+    color: #00ff00;
+    text-shadow: 0 0 6px #00ff00, 0 0 12px #00ff00;
+  }
+  57% {
+    color: #0000ff;
+    text-shadow: 0 0 6px #0000ff, 0 0 12px #0000ff;
+  }
+  71% {
+    color: #4b0082;
+    text-shadow: 0 0 6px #4b0082, 0 0 12px #4b0082;
+  }
+  85% {
+    color: #9400d3;
+    text-shadow: 0 0 6px #9400d3, 0 0 12px #9400d3;
+  }
+  100% {
+    color: #ff0000;
+    text-shadow: 0 0 6px #ff0000, 0 0 12px #ff0000;
+  }
+}
+
+@keyframes rainbow-bg {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.rainbow-effect {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    #ff0000,
+    #ff7f00,
+    #ffff00,
+    #00ff00,
+    #0000ff,
+    #4b0082,
+    #9400d3,
+    #ff0000
+  );
+  background-size: 400% 100%;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  animation: rainbow-colors 3s linear infinite, rainbow-bg 4s linear infinite;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.5),
+    0 0 30px rgba(0, 0, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3);
+}
