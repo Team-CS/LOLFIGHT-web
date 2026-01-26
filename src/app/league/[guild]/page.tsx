@@ -16,6 +16,11 @@ import constant from "@/src/common/constant/constant";
 import { getTierStyle } from "@/src/utils/string/string.util";
 import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import Image from "next/image";
+import {
+  getGuildChampionStats,
+  getMostGuildChampionStats,
+} from "@/src/api/guild_stats.api";
+import { GuildChampionStatsDto } from "@/src/common/DTOs/guild/guild_champion_stats.dto";
 
 export default function GuildPage() {
   const router = useRouter();
@@ -24,6 +29,9 @@ export default function GuildPage() {
   const [guild, setGuild] = useState<GuildDto>();
   const [currentTab, setCurrentTab] = useState("guildInfo");
   const [battleDataList, setBattleDataList] = useState<BattleDto[]>([]);
+  const [mostPlayedChampions, setMostPlayedChampions] = useState<
+    GuildChampionStatsDto[]
+  >([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(0);
   const battlesPerPage = 5;
@@ -51,6 +59,15 @@ export default function GuildPage() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (guild) {
+      getMostGuildChampionStats(guild.id, 6).then((response) => {
+        console.log(response);
+        setMostPlayedChampions(response.data.data);
+      });
+    }
+  }, [guild]);
 
   const changeTab = (tab: string) => {
     setCurrentTab(tab);
@@ -161,6 +178,7 @@ export default function GuildPage() {
                 <GuildSummeryRecord
                   guildVictory={guild?.guildRecord?.recordVictory}
                   guildDefeat={guild?.guildRecord?.recordDefeat}
+                  mostChampionStats={mostPlayedChampions}
                 />
                 <GuildDetail
                   guildVictory={guild?.guildRecord?.recordVictory}
@@ -244,7 +262,7 @@ export default function GuildPage() {
                           />
                           <span
                             className={getTierStyle(
-                              member.memberGame?.gameTier
+                              member.memberGame?.gameTier,
                             )}
                           >
                             {member.memberGame?.gameTier}
