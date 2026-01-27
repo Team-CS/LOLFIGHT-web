@@ -29,6 +29,13 @@ import { cancelBet, getMyBets } from "@/src/api/bet.api";
 import BetHistoryItem from "./BetHistoryItem";
 import ButtonAlert from "@/src/common/components/alert/ButtonAlert";
 import { Pagination } from "@mui/material";
+import localFont from "next/font/local";
+
+const rixi = localFont({
+  src: "../../../fonts/RixInooAriDuriRegular.ttf",
+  display: "swap",
+  variable: "--font-rixi",
+});
 
 export default function ProfileInfoPage() {
   const isMobile = useIsMobile();
@@ -110,6 +117,7 @@ export default function ProfileInfoPage() {
       setTotalPages(1);
     }
   };
+
   const handleCancelBet = (betId: string) => {
     const deleteBet = () => {
       cancelBet(betId)
@@ -125,7 +133,7 @@ export default function ProfileInfoPage() {
             CustomAlert(
               "warning",
               "예측취소",
-              "이미 경기가 진행중 이거나, 종료된 경기입니다."
+              "이미 경기가 진행중 이거나, 종료된 경기입니다.",
             );
           }
         });
@@ -135,13 +143,13 @@ export default function ProfileInfoPage() {
       "취소하시겠습니까? \n 진행중인 경기는 취소가 불가능합니다.",
       "예측취소",
       "아니오",
-      deleteBet
+      deleteBet,
     );
   };
 
   const handlePageClick = (
     event: React.ChangeEvent<unknown>,
-    pageNumber: number
+    pageNumber: number,
   ) => {
     setCurrentPage(pageNumber);
   };
@@ -157,7 +165,7 @@ export default function ProfileInfoPage() {
       return CustomAlert(
         "warning",
         "프로필 사진 변경",
-        "이미지를 등록해주세요"
+        "이미지를 등록해주세요",
       );
     updateMemberIcon(selectedImage)
       .then((res) => {
@@ -176,7 +184,7 @@ export default function ProfileInfoPage() {
         CustomAlert("success", "프로필 사진 삭제", "삭제되었습니다");
       })
       .catch(() =>
-        CustomAlert("error", "삭제 실패", "잠시 후 다시 시도해주세요")
+        CustomAlert("error", "삭제 실패", "잠시 후 다시 시도해주세요"),
       );
   };
 
@@ -211,7 +219,7 @@ export default function ProfileInfoPage() {
           CustomAlert(
             "error",
             "닉네임 변경",
-            "부적절한 단어가 포함되어 있습니다."
+            "부적절한 단어가 포함되어 있습니다.",
           );
         }
         setNickname(member!.memberName);
@@ -236,13 +244,13 @@ export default function ProfileInfoPage() {
           CustomAlert(
             "error",
             "Riot 계정 정보",
-            "존재하지 않는 소환사명 입니다."
+            "존재하지 않는 소환사명 입니다.",
           );
         } else if (code === "COMMON-005") {
           CustomAlert(
             "error",
             "Riot 계정 정보",
-            "이미 등록되어있는 소환사명 입니다."
+            "이미 등록되어있는 소환사명 입니다.",
           );
         }
       });
@@ -269,7 +277,7 @@ export default function ProfileInfoPage() {
         setMember(updatedMember);
       })
       .catch(() =>
-        CustomAlert("error", "소환사 정보", "새로고침에 실패했습니다.")
+        CustomAlert("error", "소환사 정보", "새로고침에 실패했습니다."),
       );
   };
 
@@ -285,7 +293,7 @@ export default function ProfileInfoPage() {
     checkAttendance()
       .then((res) => setMember({ ...member!, memberWallet: res.data.data }))
       .catch(() =>
-        CustomAlert("warning", "출석체크", "오늘 이미 완료했습니다.")
+        CustomAlert("warning", "출석체크", "오늘 이미 완료했습니다."),
       );
   };
 
@@ -318,14 +326,14 @@ export default function ProfileInfoPage() {
           "아이템 상태 변경",
           `${clickedItem.shop.name}이(가) ${
             isNowActive ? "활성화" : "비활성화"
-          }되었습니다!`
+          }되었습니다!`,
         );
       })
       .catch((error) => {
         CustomAlert(
           "error",
           "아이템 상태 변경 실패",
-          "잠시 후 다시 시도해주세요."
+          "잠시 후 다시 시도해주세요.",
         );
         setMyItems(myItems);
       });
@@ -487,7 +495,7 @@ export default function ProfileInfoPage() {
                 <div className="flex flex-col gap-[4px]">
                   <p
                     className={`${getTierStyle(
-                      member.memberGame.gameTier!.split(" ")[0]
+                      member.memberGame.gameTier!.split(" ")[0],
                     )} font-semibold`}
                   >
                     {member.memberGame.gameTier}
@@ -547,10 +555,34 @@ export default function ProfileInfoPage() {
         </div>
 
         {/* 배지 구역 */}
-        <div className="w-full flex flex-col items-center justify-center p-[16px] border border-dashed border-gray-300 dark:border-branddarkborder rounded-[12px] text-gray-500 dark:text-gray-400 bg-transparent">
-          <p className="text-center text-[14px]">
-            🏅 아직 획득한 배지가 없습니다.
-          </p>
+        <div className="w-full flex gap-[8px] p-[16px] overflow-x-auto border border-dashed border-gray-300 dark:border-branddarkborder rounded-[12px] text-gray-500 dark:text-gray-400 bg-transparent scrollbar-hide">
+          {member.memberBadge && member.memberBadge.length > 0 ? (
+            member.memberBadge.map((badge) => (
+              <div
+                key={badge.id}
+                className="relative group flex items-center flex-shrink-0"
+              >
+                <div
+                  className="flex items-center text-white px-[6px] py-[2px] rounded-[4px] text-[13px] font-semibold cursor-default whitespace-nowrap"
+                  style={{ background: badge.badge.color }}
+                >
+                  {badge.badge.name}
+                </div>
+
+                <div className="absolute left-full ml-2 hidden group-hover:flex items-center z-50 pointer-events-none">
+                  <div className="w-0 h-0 border-y-[4px] border-y-transparent border-r-[6px] border-r-gray-900/90"></div>
+
+                  <div className="bg-gray-900/90 backdrop-blur-sm text-white text-[11px] rounded-[4px] py-[2px] px-[6px] whitespace-nowrap shadow-xl border border-white/10">
+                    {badge.badge.description}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="w-full text-center text-[14px]">
+              🏅 아직 획득한 배지가 없습니다.
+            </p>
+          )}
         </div>
 
         <div className="w-full flex flex-col gap-[16px] p-[16px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder overflow-hidden">

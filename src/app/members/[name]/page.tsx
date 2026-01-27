@@ -33,7 +33,10 @@ export default function Page({ params }: { params: PageProps }) {
 
   useEffect(() => {
     findMemberByName(name)
-      .then((response) => setMember(response.data.data))
+      .then((response) => {
+        setMember(response.data.data);
+        console.log(response.data.data);
+      })
       .catch(console.error);
   }, [params]);
 
@@ -274,10 +277,34 @@ export default function Page({ params }: { params: PageProps }) {
         )}
 
         {/* [배지 섹션] */}
-        <div className="w-full py-[16px] border border-dashed border-gray-300 dark:border-branddarkborder rounded-[12px] bg-transparent mt-2">
-          <p className="text-center text-[14px] text-gray-400">
-            🏅 획득한 배지가 없습니다. (개발 중)
-          </p>
+        <div className="w-full flex gap-[8px] p-[16px] border border-dashed border-gray-300 dark:border-branddarkborder rounded-[12px] bg-transparent mt-2">
+          {member.memberBadge && member.memberBadge.length > 0 ? (
+            member.memberBadge.map((badge) => (
+              <div
+                key={badge.id}
+                className="relative group flex items-center flex-shrink-0"
+              >
+                <div
+                  className="flex items-center text-white px-[6px] py-[2px] rounded-[4px] text-[13px] font-semibold cursor-default whitespace-nowrap"
+                  style={{ background: badge.badge.color }}
+                >
+                  {badge.badge.name}
+                </div>
+
+                <div className="absolute left-full ml-2 hidden group-hover:flex items-center z-50 pointer-events-none">
+                  <div className="w-0 h-0 border-y-[4px] border-y-transparent border-r-[6px] border-r-gray-900/90"></div>
+
+                  <div className="bg-gray-900/90 backdrop-blur-sm text-white text-[11px] rounded-[4px] py-[2px] px-[6px] whitespace-nowrap shadow-xl border border-white/10">
+                    {badge.badge.description}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="w-full text-center text-[14px]">
+              🏅 아직 획득한 배지가 없습니다.
+            </p>
+          )}
         </div>
       </div>
     </div>
