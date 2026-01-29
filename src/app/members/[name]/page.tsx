@@ -35,7 +35,6 @@ export default function Page({ params }: { params: PageProps }) {
     findMemberByName(name)
       .then((response) => {
         setMember(response.data.data);
-        console.log(response.data.data);
       })
       .catch(console.error);
   }, [params]);
@@ -73,238 +72,279 @@ export default function Page({ params }: { params: PageProps }) {
   }
 
   return (
-    <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] px-4 gap-[24px]">
-      <div className="w-full flex flex-col items-center gap-[12px] p-[12px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder relative overflow-hidden">
-        {/* [배너 섹션] */}
-        <div className="w-full h-[280px] relative">
-          <Image
-            src={
-              member.memberItem?.banner
-                ? `${constant.SERVER_URL}/${member.memberItem.banner}`
-                : `${constant.SERVER_URL}/public/default-banner.png`
-            }
-            alt="member-banner"
-            width={1000}
-            height={1000}
-            className="w-full h-full object-cover rounded-[12px] opacity-80"
-          />
-        </div>
+    <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] px-[16px]">
+      <div className="w-full flex flex-col gap-[20px]">
+        {/* 프로필 상단 카드 */}
+        <div className="relative w-full rounded-[16px] overflow-hidden bg-white dark:bg-branddark border dark:border-branddarkborder shadow-lg">
+          {/* 배너 */}
+          <div className="w-full h-[200px] relative">
+            <Image
+              src={
+                member.memberItem?.banner
+                  ? `${constant.SERVER_URL}/${member.memberItem.banner}`
+                  : `${constant.SERVER_URL}/public/default-banner.png`
+              }
+              alt="member-banner"
+              width={1000}
+              height={1000}
+              className="w-full h-full object-cover"
+              priority
+            />
+          </div>
 
-        {/* [중단 메인 컨테이너] */}
-        <div className="flex flex-col md:flex-row w-full items-stretch justify-between gap-[12px] p-[12px] rounded-[12px] mt-[-60px] relative z-10 bg-white/90 dark:bg-dark shadow-md backdrop-blur-sm border dark:border-branddarkborder">
-          {/* 1. 프로필 정보 (좌측) */}
-          <div className="flex flex-col gap-[16px] flex-1">
-            <div className="flex items-center gap-[12px]">
-              {/* 이미지 사이즈 고정 (요청사항 반영) */}
-              <div className={`${member.memberItem?.border}`}>
-                <Image
-                  src={`${constant.SERVER_URL}/${member.memberIcon}`}
-                  alt={member.memberName}
-                  width={130}
-                  height={130}
-                  className={`${isMobile ? "w-[100px] h-[100px]" : "w-[130px] h-[130px]"} object-cover rounded-[12px]`}
-                />
-              </div>
-              <div className="flex flex-col gap-[4px]">
-                <p
-                  className={`font-bold text-gray-900 dark:text-gray-100 ${isMobile ? "text-[20px]" : "text-[26px]"} ${member.memberItem?.effect}`}
-                >
-                  {member.memberName}
-                </p>
-                <p
-                  className={`text-gray-500 ${isMobile ? "text-[10px]" : "text-[14px]"}`}
-                >
-                  가입일 : {member.createdAt?.toString().split("T")[0]}
-                </p>
-                {member.memberGame && (
-                  <button
-                    disabled={isDisabled}
-                    onClick={() => !isDisabled && handleRefreshSummonerInfo()}
-                    className={`rounded-[8px] font-medium transition-all ${
-                      isDisabled
-                        ? "bg-gray-400 text-white cursor-not-allowed"
-                        : "bg-brandcolor hover:bg-brandhover text-white shadow-md"
-                    } ${isMobile ? "text-[12px] px-[8px] py-[4px]" : "text-[14px] px-[12px] py-[4px]"}`}
+          {/* 프로필 정보 */}
+          <div className="relative p-[24px]">
+            <div className="flex flex-col md:flex-row gap-[24px]">
+              {/* 좌측: 프로필 이미지 + 유저 정보 */}
+              <div className="flex flex-col gap-[20px] flex-1">
+                <div className="flex items-start gap-[20px]">
+                  <div className={`${member.memberItem?.border} relative`}>
+                    <Image
+                      src={`${constant.SERVER_URL}/${member.memberIcon}`}
+                      alt={member.memberName}
+                      width={120}
+                      height={120}
+                      className="w-[120px] h-[120px] object-cover rounded-[12px] border-[4px] border-white dark:border-branddark shadow-lg"
+                      priority
+                    />
+                  </div>
+                  <div
+                    className="flex flex-col gap-[8px]"
+                    style={{ paddingTop: isMobile ? "0" : "10px" }}
                   >
-                    티어 갱신
-                  </button>
-                )}
-                <p className="text-[10px] text-gray-500">
-                  {updatedAt ? formatElapsedTime(updatedAt) : "-"}
-                </p>
-              </div>
-            </div>
-
-            {/* 인게임 정보 카드 */}
-            {member.memberGame && (
-              <div className="flex items-center gap-[12px] p-[12px] rounded-[12px] bg-gray-50 dark:bg-branddark border dark:border-branddarkborder shadow-sm">
-                <Image
-                  src={`${constant.SERVER_URL}/public/rank/${member.memberGame.gameTier!.split(" ")[0]}.png`}
-                  alt="Tier"
-                  width={80}
-                  height={80}
-                  className={`object-contain ${isMobile ? "w-[60px] h-[60px]" : "w-[80px] h-[80px]"}`}
-                />
-                <div className="flex flex-col gap-[6px]">
-                  <span
-                    className={`${getTierStyle(member.memberGame.gameTier!.split(" ")[0])} ${isMobile ? "text-[14px]" : "text-[16px]"} font-semibold`}
-                  >
-                    {member.memberGame.gameTier}
-                  </span>
-                  <div className="flex gap-[8px] text-[12px] md:text-[14px] text-gray-700 dark:text-gray-300">
-                    <span className="px-[8px] py-[2px] rounded-[8px] bg-gray-200 dark:bg-gray-700">
-                      {member.memberGame.gameName}
-                    </span>
-                    <span className="px-[8px] py-[2px] rounded-[8px] bg-gray-200 dark:bg-gray-700">
-                      {member.memberGame.line}
-                    </span>
+                    <p
+                      className={`w-fit font-bold text-gray-900 dark:text-white ${isMobile ? "text-[22px]" : "text-[28px]"} ${member.memberItem?.effect}`}
+                    >
+                      {member.memberName}
+                    </p>
+                    <p className="text-[13px] text-gray-400 dark:text-gray-500">
+                      가입일: {member.createdAt?.toString().split("T")[0]}
+                    </p>
+                    {member.memberGame && (
+                      <div className="flex items-center justify-center gap-[10px]">
+                        <button
+                          disabled={isDisabled}
+                          onClick={() =>
+                            !isDisabled && handleRefreshSummonerInfo()
+                          }
+                          className={`rounded-[8px] font-medium transition-colors ${
+                            isDisabled
+                              ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                              : "bg-brandcolor hover:bg-brandhover text-white"
+                          } px-[8px] py-[4px] text-[12px]`}
+                        >
+                          티어 갱신
+                        </button>
+                        <span className="text-[11px] text-gray-400">
+                          {updatedAt ? formatElapsedTime(updatedAt) : "-"}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
 
-          {/* 2. 챔피언 통계 (우측/스크롤 유지) */}
-          <div
-            className={`flex flex-col border-gray-200 dark:border-gray-700 ${isMobile ? "w-full border-t mt-4 pt-4" : "w-[410px] border-l pl-4"}`}
-          >
-            <p className="text-[14px] font-bold mb-2 flex items-center gap-2">
-              <span className="w-1 h-3 bg-brandcolor rounded-full"></span>
-              챔피언 통계
-            </p>
-            {/* 스크롤 강제 적용 (h-[230px] 고정 및 overflow-y-auto) */}
-            <div className="h-[210px] overflow-y-auto pr-2 custom-scrollbar flex flex-col gap-2">
-              {memberStats && memberStats.length > 0 ? (
-                memberStats.map((stat) => {
-                  const championName =
-                    (championsJson as any)[stat.championId.toString()] ||
-                    "챔피언";
-                  return (
-                    <div
-                      key={stat.id}
-                      className="flex items-center justify-between p-2 rounded-lg bg-gray-50/50 dark:bg-gray-800/40 border border-transparent hover:border-gray-200 transition-all"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Image
-                          src={`${constant.SERVER_URL}/public/champions/${stat.championId}.png`}
-                          alt={championName}
-                          width={34}
-                          height={34}
-                          className="rounded-md"
-                        />
-                        <div className="flex flex-col leading-tight">
-                          <span className="text-[12px] font-bold">
-                            {championName}
-                          </span>
-                          <span className="text-[10px] text-gray-400">
-                            {stat.gamesPlayed}판
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p
-                          className={`text-[12px] font-bold ${stat.winRate >= 60 ? "text-red-500" : stat.winRate >= 50 ? "text-blue-500" : ""}`}
-                        >
-                          {stat.winRate}%
-                        </p>
-                        <p className="text-[10px] text-gray-500">
-                          {stat.avgKDA.toFixed(2)} KDA
-                        </p>
+                {/* 인게임 정보 카드 */}
+                {member.memberGame && (
+                  <div className="flex items-center gap-[16px] p-[16px] rounded-[12px] bg-gray-50 dark:bg-gray-800/50 border dark:border-branddarkborder">
+                    <Image
+                      src={`${constant.SERVER_URL}/public/rank/${member.memberGame.gameTier!.split(" ")[0]}.png`}
+                      alt="Tier"
+                      width={80}
+                      height={80}
+                      className={`object-contain ${isMobile ? "w-[60px] h-[60px]" : "w-[80px] h-[80px]"}`}
+                    />
+                    <div className="flex flex-col gap-[8px]">
+                      <span
+                        className={`${getTierStyle(member.memberGame.gameTier!.split(" ")[0])} ${isMobile ? "text-[16px]" : "text-[18px]"} font-bold`}
+                      >
+                        {member.memberGame.gameTier}
+                      </span>
+                      <div className="flex gap-[8px]">
+                        <span className="px-[10px] py-[4px] rounded-[6px] bg-gray-200 dark:bg-gray-700 text-[13px] text-gray-700 dark:text-gray-300 font-medium">
+                          {member.memberGame.gameName}
+                        </span>
+                        <span className="px-[10px] py-[4px] rounded-[6px] bg-gray-200 dark:bg-gray-700 text-[13px] text-gray-700 dark:text-gray-300 font-medium">
+                          {member.memberGame.line}
+                        </span>
                       </div>
                     </div>
-                  );
-                })
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-400 text-[12px]">
-                  기록된 통계가 없습니다.
+                  </div>
+                )}
+              </div>
+
+              {/* 우측: 챔피언 통계 */}
+              <div
+                className={`flex flex-col ${isMobile ? "w-full border-t border-gray-200 dark:border-gray-700 pt-[20px]" : "w-[380px] border-l border-gray-200 dark:border-gray-700 pl-[24px]"}`}
+              >
+                <div className="flex items-center gap-[8px] pb-[12px]">
+                  <span className="w-[4px] h-[16px] bg-brandcolor rounded-full"></span>
+                  <span className="text-[15px] font-bold text-gray-800 dark:text-white">
+                    챔피언 통계
+                  </span>
                 </div>
-              )}
+                <div className="h-[220px] overflow-y-auto pr-[8px] flex flex-col gap-[8px]">
+                  {memberStats && memberStats.length > 0 ? (
+                    memberStats.map((stat) => {
+                      const championName =
+                        (championsJson as any)[stat.championId.toString()] ||
+                        "챔피언";
+                      return (
+                        <div
+                          key={stat.id}
+                          className="flex items-center justify-between p-[8px] rounded-[10px] bg-gray-50 dark:bg-gray-800/40 border border-transparent hover:border-gray-200 dark:hover:border-gray-600 transition-all"
+                        >
+                          <div className="flex items-center gap-[12px]">
+                            <Image
+                              src={`${constant.SERVER_URL}/public/champions/${stat.championId}.png`}
+                              alt={championName}
+                              width={35}
+                              height={35}
+                              className="rounded-[8px]"
+                            />
+                            <div className="flex flex-col">
+                              <span className="text-[13px] font-semibold text-gray-800 dark:text-gray-100">
+                                {championName}
+                              </span>
+                              <span className="text-[11px] text-gray-400">
+                                {stat.gamesPlayed}게임
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p
+                              className={`text-[14px] font-bold ${stat.winRate >= 60 ? "text-red-500" : stat.winRate >= 50 ? "text-blue-500" : "text-gray-600 dark:text-gray-300"}`}
+                            >
+                              {stat.winRate}%
+                            </p>
+                            <p className="text-[11px] text-gray-400">
+                              {stat.avgKDA.toFixed(2)} KDA
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-gray-400 text-[13px]">
+                      기록된 통계가 없습니다.
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* [하단 길드 섹션] */}
+        {/* 길드 정보 카드 */}
         {member.memberGuild && (
-          <div className="flex items-center w-full gap-[12px] p-[12px] rounded-[12px] dark:bg-dark border dark:border-branddarkborder shadow-lg mt-2">
-            <Image
-              src={`${constant.SERVER_URL}/${member.memberGuild.guildIcon}`}
-              alt="guild icon"
-              width={130}
-              height={130}
-              className={`${isMobile ? "w-[100px] h-[100px]" : "w-[130px] h-[130px]"} object-cover rounded-[12px]`}
-            />
-            <div className="flex flex-col justify-center flex-1 gap-[8px]">
-              <p
-                className={`font-bold text-gray-900 dark:text-gray-100 ${isMobile ? "text-[20px]" : "text-[22px]"}`}
-              >
-                <span className="text-xs text-gray-500 block">[길드]</span>
-                {member.memberGuild.guildName}
-              </p>
-              <div
-                className={`flex flex-wrap gap-[6px] ${isMobile ? "text-[10px]" : "text-[12px]"}`}
-              >
-                {/* 길드 스탯 칩들 */}
-                {[
-                  {
-                    label: "순위",
-                    value: `#${member.memberGuild.guildRecord?.recordRanking ?? "-"}`,
-                  },
-                  {
-                    label: "래더점수",
-                    value: `${member.memberGuild.guildRecord?.recordLadder ?? 0} 점`,
-                  },
-                  {
-                    label: "티어",
-                    value: member.memberGuild.guildTier,
-                    style: getTierStyle(member.memberGuild.guildTier),
-                  },
-                  {
-                    label: "전적",
-                    value: `${member.memberGuild.guildRecord?.recordVictory ?? 0}승 / ${member.memberGuild.guildRecord?.recordDefeat ?? 0}패`,
-                  },
-                ].map((item, idx) => (
+          <div className="w-full rounded-[16px] bg-white dark:bg-branddark border dark:border-branddarkborder shadow-lg overflow-hidden">
+            <div className="flex items-center gap-[8px] px-[20px] py-[14px] bg-gray-50 dark:bg-gray-800/50 border-b dark:border-branddarkborder">
+              <span className="text-[15px] font-bold text-gray-800 dark:text-white">
+                소속 길드
+              </span>
+            </div>
+
+            <div className="p-[20px]">
+              <div className="flex items-center gap-[20px]">
+                <Image
+                  src={`${constant.SERVER_URL}/${member.memberGuild.guildIcon}`}
+                  alt="guild icon"
+                  width={100}
+                  height={100}
+                  className={`${isMobile ? "w-[80px] h-[80px]" : "w-[100px] h-[100px]"} object-cover rounded-[12px] shadow-md`}
+                />
+                <div className="flex flex-col gap-[12px] flex-1">
                   <p
-                    key={idx}
-                    className="px-[8px] py-[2px] rounded-[8px] bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium"
+                    className={`font-bold text-gray-900 dark:text-white ${isMobile ? "text-[20px]" : "text-[24px]"}`}
                   >
-                    {item.label} :{" "}
-                    <span className={item.style}>{item.value}</span>
+                    {member.memberGuild.guildName}
                   </p>
-                ))}
+                  <div className="flex flex-wrap gap-[8px]">
+                    {[
+                      {
+                        label: "순위",
+                        value: `#${member.memberGuild.guildRecord?.recordRanking ?? "-"}`,
+                      },
+                      {
+                        label: "래더",
+                        value: `${member.memberGuild.guildRecord?.recordLadder ?? 0}점`,
+                      },
+                      {
+                        label: "티어",
+                        value: member.memberGuild.guildTier,
+                        style: getTierStyle(member.memberGuild.guildTier),
+                      },
+                      {
+                        label: "전적",
+                        value: `${member.memberGuild.guildRecord?.recordVictory ?? 0}승 ${member.memberGuild.guildRecord?.recordDefeat ?? 0}패`,
+                      },
+                    ].map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-[6px] px-[12px] py-[6px] rounded-[8px] bg-gray-100 dark:bg-gray-800"
+                      >
+                        <span className="text-[12px] text-gray-500 dark:text-gray-400">
+                          {item.label}
+                        </span>
+                        <span
+                          className={`text-[13px] font-semibold text-gray-800 dark:text-gray-100 ${item.style || ""}`}
+                        >
+                          {item.value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* [배지 섹션] */}
-        <div className="w-full flex gap-[8px] p-[16px] border border-dashed border-gray-300 dark:border-branddarkborder rounded-[12px] bg-transparent mt-2">
-          {member.memberBadge && member.memberBadge.length > 0 ? (
-            member.memberBadge.map((badge) => (
-              <div
-                key={badge.id}
-                className="relative group flex items-center flex-shrink-0"
-              >
-                <div
-                  className="flex items-center text-white px-[6px] py-[2px] rounded-[4px] text-[13px] font-semibold cursor-default whitespace-nowrap"
-                  style={{ background: badge.badge.color }}
-                >
-                  {badge.badge.name}
-                </div>
+        {/* 배지 섹션 */}
+        <div className="w-full rounded-[16px] bg-white dark:bg-branddark border dark:border-branddarkborder shadow-lg overflow-hidden">
+          <div className="flex items-center gap-[8px] px-[20px] py-[14px] bg-gray-50 dark:bg-gray-800/50 border-b dark:border-branddarkborder">
+            <span className="text-[15px] font-bold text-gray-800 dark:text-white">
+              획득한 배지
+            </span>
+            {member.memberBadge && member.memberBadge.length > 0 && (
+              <span className="text-[13px] text-gray-400 dark:text-gray-500">
+                {member.memberBadge.length}개
+              </span>
+            )}
+          </div>
 
-                <div className="absolute left-full ml-2 hidden group-hover:flex items-center z-50 pointer-events-none">
-                  <div className="w-0 h-0 border-y-[4px] border-y-transparent border-r-[6px] border-r-gray-900/90"></div>
+          <div className="p-[20px]">
+            {member.memberBadge && member.memberBadge.length > 0 ? (
+              <div className="flex flex-wrap gap-[10px]">
+                {member.memberBadge.map((badge) => (
+                  <div
+                    key={badge.id}
+                    className="relative group flex items-center"
+                  >
+                    <div
+                      className="flex items-center text-white px-[10px] py-[4px] rounded-[6px] text-[13px] font-semibold cursor-default whitespace-nowrap shadow-sm"
+                      style={{ background: badge.badge.color }}
+                    >
+                      {badge.badge.name}
+                    </div>
 
-                  <div className="bg-gray-900/90 backdrop-blur-sm text-white text-[11px] rounded-[4px] py-[2px] px-[6px] whitespace-nowrap shadow-xl border border-white/10">
-                    {badge.badge.description}
+                    <div
+                      className="absolute left-1/2 -translate-x-1/2 bottom-full hidden group-hover:flex flex-col items-center z-50 pointer-events-none"
+                      style={{ marginBottom: "8px" }}
+                    >
+                      <div className="bg-gray-900/95 backdrop-blur-sm text-white text-[12px] rounded-[8px] py-[6px] px-[12px] whitespace-nowrap shadow-xl">
+                        {badge.badge.description}
+                      </div>
+                      <div className="w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-gray-900/95"></div>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))
-          ) : (
-            <p className="w-full text-center text-[14px]">
-              🏅 아직 획득한 배지가 없습니다.
-            </p>
-          )}
+            ) : (
+              <div className="flex flex-col items-center justify-center py-[20px] text-gray-400 dark:text-gray-500">
+                <p className="text-[14px]">아직 획득한 배지가 없습니다.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

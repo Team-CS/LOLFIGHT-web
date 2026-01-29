@@ -26,8 +26,6 @@ export default function Page() {
       try {
         const response = await getMemberData();
         const memberData: MemberDto = response.data.data;
-        console.log(memberData);
-
         setMember(memberData);
       } catch (error) {
         console.error(error);

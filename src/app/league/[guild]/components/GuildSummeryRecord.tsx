@@ -19,31 +19,36 @@ const GuildSummeryRecord = (props: Props) => {
   const winRate = totalGames > 0 ? (props.guildVictory! / totalGames) * 100 : 0;
 
   return (
-    <div className="h-full w-full flex flex-col p-[12px] rounded bg-white dark:bg-dark border dark:border-gray-700">
-      <p className="font-extrabold text-[15px]">매치 통계</p>
+    <div className="h-full w-full flex flex-col rounded-[16px] bg-white dark:bg-branddark border dark:border-branddarkborder shadow-lg overflow-hidden">
+      <div className="flex items-center gap-[8px] px-[16px] py-[12px] bg-gray-50 dark:bg-gray-800/50 border-b dark:border-branddarkborder">
+        <span className="w-[4px] h-[16px] bg-brandcolor rounded-full"></span>
+        <span className={`font-bold text-gray-800 dark:text-white ${isMobile ? "text-[14px]" : "text-[15px]"}`}>
+          매치 통계
+        </span>
+      </div>
 
       <div
-        className={`flex ${isMobile ? "flex-col" : "flex-row"} py-[8px] px-[12px] items-center gap-[16px]`}
+        className={`flex ${isMobile ? "flex-col" : "flex-row"} p-[16px] items-center gap-[16px]`}
       >
         <div
-          className={`flex items-center gap-[24px] ${isMobile ? "w-full justify-center" : "min-w-[400px]"}`}
+          className={`flex items-center gap-[16px] shrink-0 ${isMobile ? "w-full justify-center" : ""}`}
         >
           <div
             style={{
-              width: isMobile ? "100px" : "140px",
-              height: isMobile ? "100px" : "140px",
+              width: isMobile ? "80px" : "100px",
+              height: isMobile ? "80px" : "100px",
             }}
           >
             <CircularProgressbar
               value={winRate}
               strokeWidth={8}
-              text={totalGames > 0 ? `${winRate.toFixed(2)}%` : "기록없음"}
+              text={totalGames > 0 ? `${winRate.toFixed(1)}%` : "기록없음"}
               styles={{
                 path: { stroke: "#007fff" },
                 trail: { stroke: "#eee" },
                 text: {
                   fill: "currentcolor",
-                  fontSize: "16px",
+                  fontSize: isMobile ? "14px" : "16px",
                   fontWeight: "600",
                 },
               }}
@@ -51,21 +56,21 @@ const GuildSummeryRecord = (props: Props) => {
           </div>
           <div className="flex flex-col items-center justify-center">
             <p
-              className={`font-bold ${isMobile ? "text-[14px]" : "text-[20px]"}`}
+              className={`font-bold ${isMobile ? "text-[13px]" : "text-[16px]"}`}
             >
               {totalGames}전 {props.guildVictory || 0}승{" "}
               {props.guildDefeat || 0}패
             </p>
             <p
-              className={`text-red-500 font-medium ${isMobile ? "text-[13px]" : "text-[18px]"}`}
+              className={`text-red-500 font-medium ${isMobile ? "text-[12px]" : "text-[14px]"}`}
             >
-              {totalGames > 0 ? `(${winRate.toFixed(2)}%)` : "기록없음"}
+              {totalGames > 0 ? `(${winRate.toFixed(1)}%)` : "기록없음"}
             </p>
           </div>
         </div>
 
         <div
-          className={`flex-1 ${isMobile ? "w-full mt-4 border-t pt-4" : "min-w-[400px] border-l dark:border-gray-700 pl-4"}`}
+          className={`flex-1 ${isMobile ? "w-full mt-[16px] border-t border-gray-200 dark:border-branddarkborder pt-[16px]" : "border-l border-gray-200 dark:border-branddarkborder pl-[16px]"}`}
         >
           <div className="grid grid-cols-2 gap-x-[16px] gap-y-[8px]">
             {props.mostChampionStats?.slice(0, 6).map((champion) => {

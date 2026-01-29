@@ -343,393 +343,459 @@ export default function ProfileInfoPage() {
 
   return (
     <>
-      <div className="w-full flex flex-col items-center gap-[16px] p-[16px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder relative overflow-hidden">
-        {/* 배너 */}
-        <div className="w-full h-[240px] relative">
-          <Image
-            src={`${
-              member.memberItem?.banner
-                ? `${constant.SERVER_URL}/${member.memberItem.banner}`
-                : `${constant.SERVER_URL}/public/default-banner.png`
-            }`}
-            alt="banner"
-            width={1000}
-            height={1000}
-            className="w-full h-full object-cover rounded-[12px] opacity-80"
-          />
-        </div>
-
-        {/* 프로필 카드 */}
-        <div className="flex flex-col sm:flex-row w-full items-center  justify-between gap-[16px] p-[16px] rounded-[12px] mt-[-60px] relative z-10 bg-white/90 dark:bg-dark shadow-md backdrop-blur-sm border dark:border-branddarkborder">
-          <div className="flex flex-col gap-[12px]">
-            <div className={member.memberItem?.border}>
-              <Image
-                src={`${constant.SERVER_URL}/${member.memberIcon}`}
-                alt="profile"
-                width={130}
-                height={130}
-                className="w-[130px] h-[130px] rounded-[12px] object-cover"
-              />
-            </div>
-            <div className="flex justify-center gap-[8px]">
-              <button
-                onClick={() => setOpenModal("profileIcon")}
-                className="bg-brandcolor hover:bg-brandhover text-white rounded-[8px] px-[10px] py-[6px] text-[12px]"
-              >
-                아이콘 변경
-              </button>
-              {member.memberIcon !== "public/default.png" && (
-                <button
-                  onClick={handleRemoveIcon}
-                  className="bg-red-500 hover:bg-red-600 text-white rounded-[8px] px-[10px] py-[6px] text-[12px]"
-                >
-                  삭제
-                </button>
-              )}
-            </div>
+      <div className="w-full flex flex-col gap-[20px] p-[20px]">
+        {/* 프로필 상단 카드 */}
+        <div className="relative w-full rounded-[16px] overflow-hidden bg-white dark:bg-branddark border dark:border-branddarkborder shadow-lg">
+          {/* 배너 */}
+          <div className="w-full h-[180px] relative">
+            <Image
+              src={`${
+                member.memberItem?.banner
+                  ? `${constant.SERVER_URL}/${member.memberItem.banner}`
+                  : `${constant.SERVER_URL}/public/default-banner.png`
+              }`}
+              alt="banner"
+              width={1000}
+              height={1000}
+              className="w-full h-full object-cover"
+              priority
+            />
           </div>
 
-          <div className="flex flex-col flex-1 gap-[8px]">
-            <div
-              className={`flex items-center gap-[6px] ${
-                isMobile && "flex-col"
-              }`}
-            >
-              <p
-                className={`text-[22px] font-bold text-gray-900 dark:text-gray-100 `}
-              >
-                <span className={`${member.memberItem?.effect}`}>
-                  {member.memberName}
-                </span>
-              </p>
-              <button
-                onClick={() => setIsEditingNickname(!isEditingNickname)}
-                className="bg-brandcolor hover:bg-brandhover text-white rounded-[8px] px-[10px] py-[6px] text-[12px]"
-              >
-                닉네임 변경
-              </button>
-            </div>
-            {isEditingNickname && (
-              <div className="flex gap-[8px]">
-                <input
-                  value={nickname}
-                  onChange={(e) => setNickname(e.target.value)}
-                  className={`${
-                    isMobile
-                      ? "min-w-[50px] p-[4px] text-[12px]"
-                      : "px-[8px] py-[6px] text-[14px]"
-                  } border rounded-[8px] dark:bg-brandgray dark:border-branddarkborder`}
-                />
-                <button
-                  onClick={() => {
-                    handleNicknameSubmit();
-                    setIsEditingNickname(false);
-                  }}
-                  className="bg-brandcolor hover:bg-brandhover text-white rounded-[8px] px-[10px] py-[6px] text-[12px]"
+          {/* 프로필 정보 */}
+          <div className="relative p-[20px]">
+            <div className="flex flex-col sm:flex-row gap-[20px]">
+              {/* 프로필 이미지 영역 */}
+              <div className="flex flex-col items-center gap-[12px] sm:items-start">
+                <div className={`${member.memberItem?.border} relative`}>
+                  <Image
+                    src={`${constant.SERVER_URL}/${member.memberIcon}`}
+                    alt="profile"
+                    width={120}
+                    height={120}
+                    className="w-[120px] h-[120px] rounded-[12px] object-cover border-[4px] border-white dark:border-branddark shadow-lg"
+                    priority
+                  />
+                </div>
+                <div className="flex w-full justify-center gap-[8px]">
+                  <button
+                    onClick={() => setOpenModal("profileIcon")}
+                    className="bg-brandcolor hover:bg-brandhover text-white rounded-[8px] px-[12px] py-[6px] text-[12px] font-medium transition-colors"
+                  >
+                    변경
+                  </button>
+                  {member.memberIcon !== "public/default.png" && (
+                    <button
+                      onClick={handleRemoveIcon}
+                      className="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-[8px] px-[12px] py-[6px] text-[12px] font-medium transition-colors"
+                    >
+                      삭제
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* 유저 정보 영역 */}
+              <div className="flex flex-col flex-1 gap-[12px]">
+                <div
+                  className={`flex items-center gap-[10px] ${isMobile ? "flex-col" : ""}`}
                 >
-                  저장
-                </button>
+                  <p className="text-[24px] font-bold text-gray-900 dark:text-white">
+                    <span className={`${member.memberItem?.effect}`}>
+                      {member.memberName}
+                    </span>
+                  </p>
+                  <button
+                    onClick={() => setIsEditingNickname(!isEditingNickname)}
+                    className="text-brandcolor hover:text-brandhover text-[13px] font-medium transition-colors"
+                  >
+                    닉네임 변경
+                  </button>
+                </div>
+
+                {isEditingNickname && (
+                  <div className="flex gap-[8px]">
+                    <input
+                      value={nickname}
+                      onChange={(e) => setNickname(e.target.value)}
+                      className="flex-1 max-w-[200px] px-[12px] py-[8px] text-[14px] border rounded-[8px] dark:bg-brandgray dark:border-branddarkborder focus:outline-none focus:ring-[2px] focus:ring-brandcolor/30"
+                    />
+                    <button
+                      onClick={() => {
+                        handleNicknameSubmit();
+                        setIsEditingNickname(false);
+                      }}
+                      className="bg-brandcolor hover:bg-brandhover text-white rounded-[8px] px-[16px] py-[8px] text-[13px] font-medium transition-colors"
+                    >
+                      저장
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-[6px] text-[14px] text-gray-500 dark:text-gray-400">
+                  <Image
+                    src={`${constant.SERVER_URL}/public/${imageName}.png`}
+                    alt={member?.type}
+                    width={18}
+                    height={18}
+                  />
+                  <span>{member!.memberId}</span>
+                </div>
+
+                <p className="text-[13px] text-gray-400 dark:text-gray-500">
+                  가입일: {member.createdAt?.toString().split("T")[0]}
+                </p>
+
+                <div className="flex items-center gap-[12px]">
+                  <div className="flex items-center gap-[6px] bg-gray-100 dark:bg-gray-800 px-[12px] py-[6px] rounded-[8px]">
+                    <span className="text-[14px] font-semibold text-gray-700 dark:text-gray-200">
+                      {member.memberWallet.point}P
+                    </span>
+                    <Image
+                      src="/images/point.png"
+                      alt="point"
+                      width={16}
+                      height={16}
+                      className="w-[16px] h-[16px]"
+                    />
+                  </div>
+                  <button
+                    disabled={hasCheckedToday}
+                    onClick={handleAttendanceCheck}
+                    className={`rounded-[8px] px-[14px] py-[6px] text-[13px] font-medium transition-colors ${
+                      hasCheckedToday
+                        ? "bg-gray-300 dark:bg-gray-700 cursor-not-allowed text-gray-500 dark:text-gray-400"
+                        : "bg-brandcolor text-white hover:bg-brandhover"
+                    }`}
+                  >
+                    {hasCheckedToday ? "출석완료" : "출석체크"}
+                  </button>
+                </div>
               </div>
-            )}
-
-            <div
-              className={`flex items-center gap-[4px] text-[14px] text-gray-500`}
-            >
-              <Image
-                src={`${constant.SERVER_URL}/public/${imageName}.png`}
-                alt={member?.type}
-                width={15}
-                height={15}
-              />
-              {member!.memberId}
-            </div>
-
-            <p className="text-[12px] text-gray-500">
-              가입일: {member.createdAt?.toString().split("T")[0]}
-            </p>
-
-            <div className="flex gap-[8px]">
-              <div className="text-[13px] text-gray-700 dark:text-gray-300 flex items-center gap-[4px]">
-                {member.memberWallet.point}P
-                <Image
-                  src="/images/point.png"
-                  alt="point"
-                  width={14}
-                  height={14}
-                  className="w-[14px] h-[14px]"
-                />
-              </div>
-              <button
-                disabled={hasCheckedToday}
-                onClick={handleAttendanceCheck}
-                className={`rounded-[8px] px-[10px] py-[6px] text-[12px] ${
-                  hasCheckedToday
-                    ? "bg-gray-400 cursor-not-allowed text-white"
-                    : "bg-brandcolor text-white hover:bg-brandhover"
-                }`}
-              >
-                출석체크
-              </button>
             </div>
           </div>
         </div>
 
         {/* Riot 계정 */}
-        <div className="w-full flex flex-col gap-[10px] p-[16px] rounded-[12px] bg-gray-50 dark:bg-branddark border dark:border-branddarkborder shadow-sm">
-          <p className="text-[14px] font-semibold text-gray-700 dark:text-gray-200">
-            Riot 계정
-          </p>
+        <div className="w-full rounded-[16px] bg-white dark:bg-branddark border dark:border-branddarkborder shadow-lg overflow-hidden">
+          <div className="flex items-center gap-[8px] px-[20px] py-[14px] bg-gray-50 dark:bg-gray-800/50 border-b dark:border-branddarkborder">
+            <span className="text-[15px] font-bold text-gray-800 dark:text-white">
+              Riot 계정
+            </span>
+          </div>
 
-          {member.memberGame ? (
-            <>
-              <div className="flex items-center gap-[12px]">
-                <Image
-                  src={`${constant.SERVER_URL}/public/rank/${
-                    member.memberGame.gameTier!.split(" ")[0]
-                  }.png`}
-                  alt="tier"
-                  width={70}
-                  height={70}
-                  className="w-[70px] h-[70px] object-contain"
-                />
-                <div className="flex flex-col gap-[4px]">
-                  <p
-                    className={`${getTierStyle(
-                      member.memberGame.gameTier!.split(" ")[0],
-                    )} font-semibold`}
-                  >
-                    {member.memberGame.gameTier}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-300 text-[13px]">
-                    {member.memberGame.gameName}
-                  </p>
-                  <LineSelector
-                    currentLine={member.memberGame.line}
-                    onChangeLine={handleChangeLine}
+          <div className="p-[20px]">
+            {member.memberGame ? (
+              <div className="flex flex-col gap-[16px]">
+                <div className="flex items-center gap-[16px]">
+                  <Image
+                    src={`${constant.SERVER_URL}/public/rank/${
+                      member.memberGame.gameTier!.split(" ")[0]
+                    }.png`}
+                    alt="tier"
+                    width={80}
+                    height={80}
+                    className="w-[80px] h-[80px] object-contain"
                   />
-                </div>
-              </div>
-
-              <div className="flex gap-[8px] mt-[6px]">
-                <button
-                  disabled={isDisabled}
-                  onClick={handleRefreshSummoner}
-                  className={`text-white rounded-[8px] px-[10px] py-[6px] text-[12px] ${
-                    isDisabled
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-brandcolor hover:bg-brandhover"
-                  }`}
-                >
-                  새로고침
-                </button>
-                <button
-                  onClick={handleDeleteSummoner}
-                  className="bg-red-500 hover:bg-red-600 text-white rounded-[8px] px-[10px] py-[6px] text-[12px]"
-                >
-                  등록 해제
-                </button>
-              </div>
-
-              <p className="text-[11px] text-gray-500">
-                {member.memberGame.updatedAt
-                  ? formatElapsedTime(member.memberGame.updatedAt)
-                  : "-"}
-              </p>
-            </>
-          ) : (
-            <div className="flex items-center gap-[8px]">
-              <input
-                value={summonerName}
-                onChange={(e) => setSummonerName(e.target.value)}
-                placeholder="LOLFIGHT#롤파이트"
-                className=" border rounded-[8px] px-[8px] py-[6px] text-[13px] dark:bg-brandgray dark:border-branddarkborder"
-              />
-              <button
-                onClick={handleCreateOrEditSummoner}
-                className={`bg-brandcolor hover:bg-brandhover text-white rounded-[8px]  px-[10px] py-[6px] text-[12px]`}
-              >
-                등록하기
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* 배지 구역 */}
-        <div className="w-full flex gap-[8px] p-[16px] overflow-x-auto border border-dashed border-gray-300 dark:border-branddarkborder rounded-[12px] text-gray-500 dark:text-gray-400 bg-transparent scrollbar-hide">
-          {member.memberBadge && member.memberBadge.length > 0 ? (
-            member.memberBadge.map((badge) => (
-              <div
-                key={badge.id}
-                className="relative group flex items-center flex-shrink-0"
-              >
-                <div
-                  className="flex items-center text-white px-[6px] py-[2px] rounded-[4px] text-[13px] font-semibold cursor-default whitespace-nowrap"
-                  style={{ background: badge.badge.color }}
-                >
-                  {badge.badge.name}
+                  <div className="flex flex-col gap-[6px]">
+                    <p
+                      className={`${getTierStyle(
+                        member.memberGame.gameTier!.split(" ")[0],
+                      )} font-bold text-[18px]`}
+                    >
+                      {member.memberGame.gameTier}
+                    </p>
+                    <p className="text-gray-600 dark:text-gray-300 text-[14px] font-medium">
+                      {member.memberGame.gameName}
+                    </p>
+                    <LineSelector
+                      currentLine={member.memberGame.line}
+                      onChangeLine={handleChangeLine}
+                    />
+                  </div>
                 </div>
 
-                <div className="absolute left-full ml-2 hidden group-hover:flex items-center z-50 pointer-events-none">
-                  <div className="w-0 h-0 border-y-[4px] border-y-transparent border-r-[6px] border-r-gray-900/90"></div>
-
-                  <div className="bg-gray-900/90 backdrop-blur-sm text-white text-[11px] rounded-[4px] py-[2px] px-[6px] whitespace-nowrap shadow-xl border border-white/10">
-                    {badge.badge.description}
+                <div className="flex items-center justify-between pt-[12px] border-t dark:border-branddarkborder">
+                  <p className="text-[12px] text-gray-400">
+                    {member.memberGame.updatedAt
+                      ? formatElapsedTime(member.memberGame.updatedAt)
+                      : "-"}
+                  </p>
+                  <div className="flex gap-[8px]">
+                    <button
+                      disabled={isDisabled}
+                      onClick={handleRefreshSummoner}
+                      className={`rounded-[8px] px-[14px] py-[8px] text-[13px] font-medium transition-colors ${
+                        isDisabled
+                          ? "bg-gray-200 dark:bg-gray-700 cursor-not-allowed text-gray-400"
+                          : "bg-brandcolor hover:bg-brandhover text-white"
+                      }`}
+                    >
+                      새로고침
+                    </button>
+                    <button
+                      onClick={handleDeleteSummoner}
+                      className="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-[8px] px-[14px] py-[8px] text-[13px] font-medium transition-colors"
+                    >
+                      등록 해제
+                    </button>
                   </div>
                 </div>
               </div>
-            ))
-          ) : (
-            <p className="w-full text-center text-[14px]">
-              🏅 아직 획득한 배지가 없습니다.
-            </p>
-          )}
-        </div>
-
-        <div className="w-full flex flex-col gap-[16px] p-[16px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder overflow-hidden">
-          <p className="text-[14px] font-semibold text-gray-700 dark:text-gray-200">
-            보유중인 아이템
-          </p>
-
-          {(!myItems || myItems.length === 0) && (
-            <p className="text-gray-500 text-sm">
-              아직 구매한 아이템이 없습니다.
-            </p>
-          )}
-
-          <div
-            className={`grid items-center justify-center ${
-              isMobile ? "grid-cols-2" : "grid-cols-6"
-            } gap-[12px]`}
-          >
-            {myItems?.map((item) => (
-              <div
-                key={item.id}
-                className={`flex flex-col w-full items-center justify-between p-[10px] aspect-square border rounded-[10px] bg-gray-50 dark:bg-branddark dark:border-branddarkborder transition-transform duration-200 hover:scale-[1.03] ${
-                  item.isActive ? "border-2 border-brandcolor" : ""
-                } ${isMobile ? "h-[150px]" : "h-[180px]"}`}
-                onClick={() => handleActivateItem(item)}
-              >
-                <div className="flex items-center justify-center w-full h-[70%]">
-                  {item.shop.category === "BORDER" && (
-                    <div
-                      className={`relative w-[60px] h-[60px] rounded-[12px] ${item.shop.cssClass}`}
-                    >
-                      <Image
-                        src={`${constant.SERVER_URL}/${member.memberIcon}`}
-                        alt={item.shop.name}
-                        width={50}
-                        height={50}
-                        className="object-cover w-full h-full rounded-[12px]"
-                      />
-                    </div>
-                  )}
-
-                  {item.shop.category === "EFFECT" && (
-                    <div className="flex items-center justify-center w-[60px] h-[60px]">
-                      <span
-                        className={`${item.shop.cssClass} text-xs font-bold`}
-                      >
-                        {member.memberName}
-                      </span>
-                    </div>
-                  )}
-
-                  {item.shop.category === "BANNER" && (
-                    <Image
-                      src={`${constant.SERVER_URL}/${item.shop.imageUrl}`}
-                      alt={item.shop.name}
-                      width={60}
-                      height={60}
-                      className="w-[60px] h-[60px] rounded-md object-cover"
-                    />
-                  )}
-                </div>
-
-                <p className="text-[12px] font-semibold text-center truncate w-full h-[18px] leading-[18px]">
-                  {item.shop.name}
+            ) : (
+              <div className="flex flex-col gap-[12px]">
+                <p className="text-[14px] text-gray-500 dark:text-gray-400">
+                  Riot 계정을 등록하고 티어와 라인 정보를 표시하세요.
                 </p>
-
-                <div className="h-[20px] flex items-end justify-center">
-                  {item.isActive ? (
-                    <span className="text-[12px] text-brandcolor font-medium">
-                      활성화됨
-                    </span>
-                  ) : (
-                    <span className="text-[12px] text-gray-400">비활성</span>
-                  )}
+                <div className="flex gap-[10px]">
+                  <input
+                    value={summonerName}
+                    onChange={(e) => setSummonerName(e.target.value)}
+                    placeholder="LOLFIGHT#롤파이트"
+                    className="flex-1 max-w-[280px] border rounded-[8px] px-[14px] py-[10px] text-[14px] dark:bg-brandgray dark:border-branddarkborder focus:outline-none focus:ring-[2px] focus:ring-brandcolor/30"
+                  />
+                  <button
+                    onClick={handleCreateOrEditSummoner}
+                    className="bg-brandcolor hover:bg-brandhover text-white rounded-[8px] px-[20px] py-[10px] text-[14px] font-medium transition-colors"
+                  >
+                    등록하기
+                  </button>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
-        <div className="w-full flex flex-col gap-[16px] p-[16px] border rounded-[12px] shadow-md bg-white dark:bg-dark dark:border-branddarkborder overflow-hidden">
-          <p className="text-[14px] font-semibold text-gray-700 dark:text-gray-200">
-            예측 내역
-          </p>
-          <div className="flex items-center gap-[8px]">
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleSearch();
-              }}
-              placeholder="팀 코드 검색 (예: KT)"
-              className="flex-1 px-[10px] py-[6px] text-[13px] border rounded-[8px] dark:bg-brandgray dark:border-branddarkborder"
-            />
-            <button
-              onClick={handleSearch}
-              className="bg-brandcolor hover:bg-brandhover text-white rounded-[8px] px-[12px] py-[6px] text-[12px]"
+        {/* 배지 구역 */}
+        <div className="w-full rounded-[16px] bg-white dark:bg-branddark border dark:border-branddarkborder shadow-lg overflow-hidden">
+          <div className="flex items-center gap-[8px] px-[20px] py-[14px] bg-gray-50 dark:bg-gray-800/50 border-b dark:border-branddarkborder">
+            <span className="text-[15px] font-bold text-gray-800 dark:text-white">
+              획득한 배지
+            </span>
+            {member.memberBadge && member.memberBadge.length > 0 && (
+              <span className="text-[13px] text-gray-400 dark:text-gray-500">
+                {member.memberBadge.length}개
+              </span>
+            )}
+          </div>
+
+          <div className="p-[20px]">
+            {member.memberBadge && member.memberBadge.length > 0 ? (
+              <div className="flex flex-wrap gap-[10px]">
+                {member.memberBadge.map((badge) => (
+                  <div
+                    key={badge.id}
+                    className="relative group flex items-center"
+                  >
+                    <div
+                      className="flex items-center text-white px-[10px] py-[4px] rounded-[6px] text-[13px] font-semibold cursor-default whitespace-nowrap shadow-sm"
+                      style={{ background: badge.badge.color }}
+                    >
+                      {badge.badge.name}
+                    </div>
+
+                    <div
+                      className="absolute left-1/2 -translate-x-1/2 bottom-full hidden group-hover:flex flex-col items-center z-50 pointer-events-none"
+                      style={{ marginBottom: "8px" }}
+                    >
+                      <div className="bg-gray-900/95 backdrop-blur-sm text-white text-[12px] rounded-[8px] py-[6px] px-[12px] whitespace-nowrap shadow-xl">
+                        {badge.badge.description}
+                      </div>
+                      <div className="w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-gray-900/95"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-[20px] text-gray-400 dark:text-gray-500">
+                <p className="text-[14px]">아직 획득한 배지가 없습니다.</p>
+                <p className="text-[12px]">활동을 통해 배지를 획득해보세요!</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 보유 아이템 */}
+        <div className="w-full rounded-[16px] bg-white dark:bg-branddark border dark:border-branddarkborder shadow-lg overflow-hidden">
+          <div className="flex items-center gap-[8px] px-[20px] py-[14px] bg-gray-50 dark:bg-gray-800/50 border-b dark:border-branddarkborder">
+            <span className="text-[15px] font-bold text-gray-800 dark:text-white">
+              보유 아이템
+            </span>
+            {myItems && myItems.length > 0 && (
+              <span className="text-[13px] text-gray-400 dark:text-gray-500">
+                {myItems.length}개
+              </span>
+            )}
+          </div>
+
+          <div className="p-[20px]">
+            {!myItems || myItems.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-[20px] text-gray-400 dark:text-gray-500">
+                <p className="text-[14px]">아직 구매한 아이템이 없습니다.</p>
+                <p className="text-[12px]">상점에서 아이템을 구매해보세요!</p>
+              </div>
+            ) : (
+              <div
+                className={`grid ${
+                  isMobile ? "grid-cols-2" : "grid-cols-4 lg:grid-cols-6"
+                } gap-[16px]`}
+              >
+                {myItems?.map((item) => (
+                  <div
+                    key={item.id}
+                    className={`flex flex-col items-center justify-between p-[16px] gap-[4px] rounded-[12px] bg-gray-50 dark:bg-gray-800/50 border-[2px] cursor-pointer transition-all duration-200 hover:shadow-md ${
+                      item.isActive
+                        ? "border-brandcolor shadow-sm"
+                        : "border-transparent hover:border-gray-200 dark:hover:border-gray-600"
+                    }`}
+                    onClick={() => handleActivateItem(item)}
+                  >
+                    <div className="flex items-center justify-center w-full h-[70px]">
+                      {item.shop.category === "BORDER" && (
+                        <div
+                          className={`relative w-[60px] h-[60px] rounded-[12px] ${item.shop.cssClass}`}
+                        >
+                          <Image
+                            src={`${constant.SERVER_URL}/${member.memberIcon}`}
+                            alt={item.shop.name}
+                            width={50}
+                            height={50}
+                            className="object-cover w-full h-full rounded-[12px]"
+                          />
+                        </div>
+                      )}
+
+                      {item.shop.category === "EFFECT" && (
+                        <div className="flex items-center justify-center">
+                          <span
+                            className={`${item.shop.cssClass} text-[13px] font-bold`}
+                          >
+                            {member.memberName}
+                          </span>
+                        </div>
+                      )}
+
+                      {item.shop.category === "BANNER" && (
+                        <img
+                          src={`${constant.SERVER_URL}/${item.shop.imageUrl}`}
+                          alt={item.shop.name}
+                          className="w-[60px] h-[60px] rounded-[8px] object-contain"
+                          onError={(e) => {
+                            e.currentTarget.src = `${constant.SERVER_URL}/public/default-banner.png`;
+                          }}
+                        />
+                      )}
+                    </div>
+
+                    <p className="text-[13px] font-medium text-center truncate w-full text-gray-700 dark:text-gray-200">
+                      {item.shop.name}
+                    </p>
+
+                    <div className="flex items-center justify-center">
+                      {item.isActive ? (
+                        <span className="text-[12px] text-brandcolor font-semibold bg-brandcolor/10 px-[10px] py-[2px] rounded-[4px]">
+                          사용 중
+                        </span>
+                      ) : (
+                        <span className="text-[12px] text-gray-400">
+                          클릭하여 적용
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 예측 내역 */}
+        <div className="w-full rounded-[16px] bg-white dark:bg-branddark border dark:border-branddarkborder shadow-lg overflow-hidden">
+          <div className="flex items-center justify-between px-[20px] py-[14px] bg-gray-50 dark:bg-gray-800/50 border-b dark:border-branddarkborder">
+            <span className="text-[15px] font-bold text-gray-800 dark:text-white">
+              예측 내역
+            </span>
+          </div>
+
+          <div className="flex flex-col p-[20px] gap-[16px]">
+            {/* 검색 영역 */}
+            <div
+              className={`flex w-full gap-[10px] ${isMobile ? "flex-col" : "flex-row"}`}
             >
-              검색
-            </button>
-          </div>
+              <div className="flex flex-1 gap-[10px]">
+                <input
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSearch();
+                  }}
+                  placeholder="팀 코드 검색 (예: KT)"
+                  className={`w-full border rounded-[8px] dark:bg-brandgray dark:border-branddarkborder focus:outline-none focus:ring-[2px] focus:ring-brandcolor/30 ${
+                    isMobile
+                      ? "px-[8px] py-[10px] text-[13px]"
+                      : "px-[12px] py-[10px] text-[14px] max-w-[300px]"
+                  }`}
+                />
+                <button
+                  onClick={handleSearch}
+                  className={`bg-brandcolor hover:bg-brandhover text-white rounded-[8px] font-medium transition-colors shrink-0 ${
+                    isMobile
+                      ? "px-[16px] py-[10px] text-[13px]"
+                      : "px-[20px] py-[10px] text-[14px]"
+                  }`}
+                >
+                  검색
+                </button>
+              </div>
+            </div>
 
-          {bets.length === 0 && (
-            <p className="text-sm text-gray-500">내역이 없습니다.</p>
-          )}
+            {bets.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-[30px] text-gray-400 dark:text-gray-500">
+                <p className="text-[14px]">예측 내역이 없습니다.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[16px]">
+                {bets.map((bet) => (
+                  <BetHistoryItem
+                    key={bet.id}
+                    bet={bet}
+                    onCancel={handleCancelBet}
+                  />
+                ))}
+              </div>
+            )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[12px]">
-            {bets.map((bet) => (
-              <BetHistoryItem
-                key={bet.id}
-                bet={bet}
-                onCancel={handleCancelBet}
+            {/* 페이지네이션 */}
+            <div className="flex justify-center pt-[12px]">
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                shape="rounded"
+                boundaryCount={2}
+                onChange={(event, page) => handlePageClick(event, page)}
+                sx={{
+                  ".dark & .Mui-selected": {
+                    backgroundColor: "#4C4C4C",
+                    color: "#CACACA",
+                    "&:hover": {
+                      backgroundColor: "#707070",
+                    },
+                  },
+                  ".dark & .MuiPaginationItem-root": {
+                    color: "#EEEEEE",
+                  },
+                  ".dark & .MuiPaginationItem-icon": {
+                    color: "#EEEEEE",
+                  },
+                  "& .MuiPaginationItem-root": {
+                    fontSize: isMobile ? "10px" : "14px",
+                    minWidth: isMobile ? "24px" : "36px",
+                    height: isMobile ? "24px" : "36px",
+                  },
+                }}
               />
-            ))}
+            </div>
           </div>
-        </div>
-        <div className="w-full flex justify-center mt-1 p-3">
-          <Pagination
-            count={totalPages}
-            page={currentPage}
-            shape="rounded"
-            boundaryCount={2}
-            onChange={(event, page) => handlePageClick(event, page)}
-            sx={{
-              // 다크 모드 선택된 아이템
-              ".dark & .Mui-selected": {
-                backgroundColor: "#4C4C4C",
-                color: "#CACACA",
-                "&:hover": {
-                  backgroundColor: "#707070",
-                },
-              },
-              // 다크 모드 일반 아이템
-              ".dark & .MuiPaginationItem-root": {
-                color: "#EEEEEE",
-              },
-              ".dark & .MuiPaginationItem-icon": {
-                color: "#EEEEEE",
-              },
-              // 모바일 / PC 반응형
-              "& .MuiPaginationItem-root": {
-                fontSize: isMobile ? "10px" : "14px", // 폰트 크기
-                minWidth: isMobile ? "24px" : "36px", // 버튼 최소 너비
-                height: isMobile ? "24px" : "36px", // 버튼 높이
-              },
-            }}
-          />
         </div>
       </div>
 
