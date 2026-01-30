@@ -42,20 +42,29 @@ const BoardPostCommentComponent = (props: BoardPostCommentComponentProps) => {
   };
 
   return (
-    <div className="flex flex-col p-[24px] gap-[12px]">
-      <div className="w-full rounded-md border dark:border-gray-700 dark:bg-black">
+    <div className="flex flex-col px-[16px] md:px-[24px] py-[16px] gap-[16px]">
+      {/* 댓글 헤더 */}
+      <div className="flex items-center gap-[10px]">
+        <div className="w-[4px] h-[20px] bg-gradient-to-b from-brandcolor to-blue-400 rounded-full" />
+        <h3 className={`font-bold ${isMobile ? "text-[14px]" : "text-[16px]"}`}>
+          댓글
+        </h3>
+      </div>
+
+      {/* 댓글 입력창 */}
+      <div className="w-full rounded-[12px] border border-gray-200 dark:border-branddarkborder bg-gray-50 dark:bg-branddark overflow-hidden">
         <textarea
-          className={`w-full p-[12px] rounded-[12px] focus:outline-none dark:bg-black ${
-            isMobile ? "text-[12px] h-[50px]" : "text-[14px] h-[100px]"
+          className={`w-full p-[14px] bg-transparent focus:outline-none resize-none placeholder:text-gray-400 ${
+            isMobile ? "text-[12px] h-[60px]" : "text-[14px] h-[100px]"
           }`}
           placeholder="댓글을 입력하세요."
           value={commentContent}
           onChange={(e) => setCommentContent(e.target.value)}
         />
-        <div className="flex justify-end py-[4px] px-[8px]">
+        <div className="flex justify-end py-[10px] px-[12px] border-t border-gray-200 dark:border-branddarkborder">
           <button
-            className={`border rounded-md bg-brandcolor text-white px-[12px] py-[4px] dark:border-gray-700 ${
-              isMobile ? "text-[12px]" : "text-[14px]"
+            className={`bg-gradient-to-r from-brandcolor to-blue-500 text-white rounded-[8px] font-medium hover:opacity-90 transition-opacity shadow-sm ${
+              isMobile ? "text-[12px] px-[14px] py-[6px]" : "text-[14px] px-[16px] py-[8px]"
             }`}
             onClick={handleSaveCommentClick}
           >
@@ -63,10 +72,12 @@ const BoardPostCommentComponent = (props: BoardPostCommentComponentProps) => {
           </button>
         </div>
       </div>
+
+      {/* 댓글 목록 */}
       <CommentBoxComponent
         key={commentBoxKey}
         data={props.data}
-      ></CommentBoxComponent>
+      />
     </div>
   );
 };

@@ -373,7 +373,7 @@ export default function ProfileInfoPage() {
                     alt="profile"
                     width={120}
                     height={120}
-                    className="w-[120px] h-[120px] rounded-[12px] object-cover border-[4px] border-white dark:border-branddark shadow-lg"
+                    className="w-[120px] h-[120px] rounded-[12px] object-cover"
                     priority
                   />
                 </div>

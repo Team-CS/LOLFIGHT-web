@@ -52,7 +52,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
       "게시글을 삭제하시겠습니까?",
       "삭제",
       "닫기",
-      onConfirmDelete
+      onConfirmDelete,
     );
   };
 
@@ -76,7 +76,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
         CustomAlert(
           "success",
           "신고",
-          "신고가 완료되었습니다. \n 빠른 검토 후 조치 취하도록 하겠습니다. \n 감사합니다."
+          "신고가 완료되었습니다. \n 빠른 검토 후 조치 취하도록 하겠습니다. \n 감사합니다.",
         );
       } else {
         CustomAlert("error", "신고", "에러");
@@ -86,7 +86,7 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
 
   const handleEditClick = () => {
     router.push(
-      `/board/${convertBoardNameToCode(post.postBoard)}/${post.id}/edit`
+      `/board/${convertBoardNameToCode(post.postBoard)}/${post.id}/edit`,
     );
   };
 
@@ -95,35 +95,44 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
   };
 
   return (
-    <div className="flex flex-col p-[24px] gap-[12px]">
-      <p className={`font-bold ${isMobile ? "text-[20px]" : "text-[24px]"}`}>
-        {post?.postTitle}
-      </p>
+    <div className="flex flex-col px-[16px] md:px-[24px] py-[16px] gap-[14px]">
+      {/* 제목 */}
+      <div className="flex items-center gap-[10px]">
+        <div className="w-[4px] h-[26px] bg-gradient-to-b from-brandcolor to-blue-400 rounded-full" />
+        <p className={`font-bold ${isMobile ? "text-[18px]" : "text-[24px]"}`}>
+          {post?.postTitle}
+        </p>
+      </div>
 
-      <div className="flex justify-between pb-[12px] border-b dark:border-gray-700">
-        <div className="flex items-center gap-[8px]">
-          <div
-            className="flex items-center gap-[8px] cursor-pointer hover:underline"
-            onClick={() => handleMemberClick(post.postWriter.memberName)}
-          >
-            <div className={`${post?.postWriter?.memberItem?.border}`}>
-              <Image
-                src={`${constant.SERVER_URL}/${
-                  post?.postWriter.memberIcon || "public/default.png"
-                }`}
-                alt="memberIcon"
-                width={30}
-                height={30}
-                className={`object-cover rounded-[12px] ${
-                  isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
-                }`}
-              />
-            </div>
-            <div className="flex gap-[4px]">
+      {/* 작성자 정보 및 액션 버튼 */}
+      <div
+        className={`flex pb-[14px] border-b border-gray-100 dark:border-branddarkborder ${
+          isMobile ? "flex-col gap-[10px]" : "justify-between items-center"
+        }`}
+      >
+        <div className={`flex items-center gap-[4px]`}>
+          <div className="flex items-center gap-[4px]">
+            <div
+              className="flex items-center gap-[8px] cursor-pointer group"
+              onClick={() => handleMemberClick(post.postWriter.memberName)}
+            >
+              <div className={`${post?.postWriter?.memberItem?.border}`}>
+                <Image
+                  src={`${constant.SERVER_URL}/${
+                    post?.postWriter.memberIcon || "public/default.png"
+                  }`}
+                  alt="memberIcon"
+                  width={32}
+                  height={32}
+                  className={`object-cover rounded-[10px] shadow-sm ${
+                    isMobile ? "w-[28px] h-[28px]" : "w-[32px] h-[32px]"
+                  }`}
+                />
+              </div>
               <p
-                className={`font-bold ${
-                  isMobile ? "text-[14px]" : "text-[16px]"
-                } ${post?.postWriter?.memberItem?.effect} `}
+                className={`font-semibold group-hover:text-brandcolor transition-colors ${
+                  isMobile ? "text-[13px]" : "text-[15px]"
+                } ${post?.postWriter?.memberItem?.effect}`}
               >
                 {post?.postWriter.memberName}
               </p>
@@ -131,40 +140,44 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
                 <Image
                   src="/icon_verificated.svg"
                   alt="verificated icon"
-                  width={15}
-                  height={15}
+                  width={14}
+                  height={14}
                   draggable={false}
                 />
               )}
             </div>
+
+            <span className="text-gray-300 dark:text-gray-600">|</span>
+            <p className="text-gray-400 text-[11px]">{`${year}.${month}.${day}`}</p>
           </div>
-          <p
-            className={`text-gray-400 ${
-              isMobile ? "text-[10px]" : "text-[12px]"
-            }`}
-          >{`${year}.${month}.${day}`}</p>
-          <p
-            className={`text-gray-400 ${
-              isMobile ? "text-[10px]" : "text-[12px]"
-            }`}
-          >
-            조회수 : {post?.postViews}
-          </p>
-          {post?.isEdited && (
-            <span
-              className={`px-2 py-0.5 rounded-full bg-gray-200 text-gray-600 
-      dark:bg-gray-700 dark:text-gray-300 
-      ${isMobile ? "text-[10px]" : "text-[12px]"}`}
+
+          <div className="flex items-center gap-[4px]">
+            <div
+              className={`flex items-center gap-[4px] px-[8px] py-[2px] rounded-full bg-gray-100 dark:bg-branddark ${isMobile ? "text-[10px]" : "text-[11px]"}`}
             >
-              수정됨
-            </span>
-          )}
+              <span className="text-gray-500 dark:text-gray-400">조회</span>
+              <span className="font-medium text-gray-600 dark:text-gray-300">
+                {post?.postViews}
+              </span>
+            </div>
+
+            {post?.isEdited && (
+              <span
+                className={`px-[8px] py-[2px] rounded-full bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 ${isMobile ? "text-[10px]" : "text-[11px]"}`}
+              >
+                수정됨
+              </span>
+            )}
+          </div>
         </div>
-        <div className="flex gap-[8px] content-center">
+
+        <div
+          className={`flex items-center ${isMobile ? "justify-end gap-[16px]" : "gap-[12px]"}`}
+        >
           {(!isMine || isAdmin) && (
             <button
-              className={`text-gray-400 ${
-                isMobile ? "text-[10px]" : "text-[12px]"
+              className={`text-gray-400 hover:text-red-500 transition-colors ${
+                isMobile ? "text-[11px]" : "text-[13px]"
               }`}
               onClick={() => setReportModalOpen(!reportModalOpen)}
             >
@@ -173,8 +186,8 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
           )}
           {(isMine || isAdmin) && (
             <button
-              className={`text-gray-400 ${
-                isMobile ? "text-[10px]" : "text-[12px]"
+              className={`text-gray-400 hover:text-brandcolor transition-colors ${
+                isMobile ? "text-[11px]" : "text-[13px]"
               }`}
               onClick={handleEditClick}
             >
@@ -183,8 +196,8 @@ const BoardPostHeadComponent = (props: BoardPostHeadComponentProps) => {
           )}
           {(isMine || isAdmin) && (
             <button
-              className={`text-gray-400 ${
-                isMobile ? "text-[10px]" : "text-[12px]"
+              className={`text-gray-400 hover:text-red-500 transition-colors ${
+                isMobile ? "text-[11px]" : "text-[13px]"
               }`}
               onClick={handleDeleteButtonClick}
             >

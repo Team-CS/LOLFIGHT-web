@@ -93,53 +93,59 @@ export default function Page() {
   };
 
   return (
-    <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px] px-[12px] md:px-0 flex-col md:flex-row">
+    <div className="flex max-w-[1200px] h-full mx-auto w-full py-[32px] gap-[20px] px-[12px] md:px-0 flex-col md:flex-row">
       <ShopNavComponent
         selectedCategory={selectedCategory}
         onSetCategory={setSelectedCategory}
       />
 
-      <div className="flex flex-col gap-[12px] w-full bg-white dark:bg-dark rounded-[12px] shadow-md p-[24px]">
+      <div className="flex flex-col gap-[16px] w-full bg-white dark:bg-dark rounded-[16px] shadow-lg border border-gray-100 dark:border-branddarkborder p-[20px] md:p-[24px]">
         {/* 상점 헤드 + 검색 */}
-        <div className="flex justify-between items-center w-full">
-          <p
-            className={`flex font-bold ${
-              isMobile ? "text-[12px]" : "text-[18px]"
-            }`}
-          >
-            상점
-          </p>
+        <div className="flex justify-between items-center w-full pb-[12px] border-b border-gray-100 dark:border-branddarkborder">
+          <div className="flex items-center gap-[10px]">
+            <div className="w-[4px] h-[20px] bg-gradient-to-b from-brandcolor to-blue-400 rounded-full" />
+            <p
+              className={`font-bold ${
+                isMobile ? "text-[14px]" : "text-[20px]"
+              }`}
+            >
+              상점
+            </p>
+            <span className={`text-gray-400 font-medium ${isMobile ? "text-[11px]" : "text-[13px]"}`}>
+              {shopItems.length}개 아이템
+            </span>
+          </div>
 
           {/* 검색 UI */}
           {isMobile ? (
             <>
               <div
                 onClick={() => setIsSearchOpen(true)}
-                className="cursor-pointer"
+                className="cursor-pointer p-[8px] rounded-[8px] bg-gray-100 dark:bg-branddark hover:bg-gray-200 dark:hover:bg-branddarkborder transition-colors"
               >
-                <FaSearch />
+                <FaSearch className="text-gray-500 dark:text-gray-300" />
               </div>
               {isSearchOpen && (
                 <div
-                  className="fixed inset-0 z-50 flex items-start justify-center bg-black/30"
+                  className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 pt-[20px]"
                   onClick={() => setIsSearchOpen(false)}
                 >
                   <div
-                    className="w-[90%]border border-gray-300 bg-white dark:bg-black dark:border-gray-700 p-[12px]"
+                    className="w-[90%] bg-white dark:bg-dark rounded-[12px] shadow-xl p-[16px]"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <div className="flex flex-1 border border-gray-200 rounded-md px-[8px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
+                    <div className="flex items-center border border-gray-200 dark:border-branddarkborder rounded-[10px] px-[12px] gap-[8px] bg-gray-50 dark:bg-branddark">
                       <div
-                        className="flex flex-wrap justify-center content-center cursor-pointer"
+                        className="flex items-center justify-center cursor-pointer p-[8px]"
                         onClick={handleSearch}
                       >
-                        <FaSearch />
+                        <FaSearch className="text-gray-400" />
                       </div>
                       <input
                         autoFocus
-                        className="w-full rounded-md bg-gray-100 px-[8px] py-[4px] text-[12px] focus:outline-none dark:bg-black font-normal"
+                        className="w-full bg-transparent py-[12px] text-[14px] focus:outline-none font-normal placeholder:text-gray-400"
                         type="text"
-                        placeholder="검색어 입력 (2자 이상)"
+                        placeholder="아이템 검색 (2자 이상)"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         onKeyDown={handleKeyDown}
@@ -150,17 +156,17 @@ export default function Page() {
               )}
             </>
           ) : (
-            <div className="flex w-[200px] border border-gray-200 rounded-md px-[12px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
+            <div className="flex w-[220px] items-center border border-gray-200 dark:border-branddarkborder rounded-[10px] px-[12px] gap-[8px] bg-gray-50 dark:bg-branddark hover:border-brandcolor dark:hover:border-brandcolor transition-colors">
               <div
-                className="flex flex-wrap justify-center content-center cursor-pointer"
+                className="flex items-center justify-center cursor-pointer"
                 onClick={handleSearch}
               >
-                <FaSearch />
+                <FaSearch className="text-gray-400" />
               </div>
               <input
-                className="w-full rounded-md bg-gray-100 px-[12px] py-[4px] text-[14px] focus:outline-none dark:bg-black font-normal"
+                className="w-full bg-transparent py-[10px] text-[14px] focus:outline-none font-normal placeholder:text-gray-400"
                 type="text"
-                placeholder="검색어 입력 (2자 이상)"
+                placeholder="아이템 검색 (2자 이상)"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -173,8 +179,8 @@ export default function Page() {
         <div className="w-full">
           {shopItems.length > 0 ? (
             <div
-              className={`grid gap-[16px] ${
-                isMobile ? "grid-cols-2" : "grid-cols-5"
+              className={`grid gap-[14px] ${
+                isMobile ? "grid-cols-2" : "grid-cols-4"
               }`}
             >
               {shopItems.map((item, index) => (
@@ -191,17 +197,17 @@ export default function Page() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center h-[400px] bg-white dark:bg-branddark rounded-[12px] shadow-md">
-              <p className="text-[18px] font-semibold text-gray-400">
-                😓 검색 결과가 없습니다
+            <div className="flex flex-col items-center justify-center h-[400px] bg-gradient-to-br from-gray-50 to-gray-100 dark:from-branddark dark:to-dark rounded-[14px]">
+              <p className="text-[16px] font-semibold text-gray-400">
+                검색 결과가 없습니다
               </p>
-              <p className="text-[14px] text-gray-500 dark:text-gray-400 mt-[8px]">
+              <p className="text-[13px] text-gray-400 dark:text-gray-500 mt-[6px]">
                 다른 검색어나 카테고리를 선택해주세요
               </p>
             </div>
           )}
         </div>
-        <div className="w-full flex justify-center py-[12px] border-t border-brandborder dark:border-branddarkborder">
+        <div className="w-full flex justify-center pt-[16px] border-t border-gray-100 dark:border-branddarkborder">
           <Pagination
             count={totalPages}
             page={currentPage}

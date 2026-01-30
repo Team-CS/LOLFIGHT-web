@@ -104,7 +104,7 @@ export default function Page({ params }: { params: PageProps }) {
                       alt={member.memberName}
                       width={120}
                       height={120}
-                      className="w-[120px] h-[120px] object-cover rounded-[12px] border-[4px] border-white dark:border-branddark shadow-lg"
+                      className="w-[120px] h-[120px] object-cover rounded-[12px]"
                       priority
                     />
                   </div>
