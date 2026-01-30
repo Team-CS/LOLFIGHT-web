@@ -58,19 +58,31 @@ export const BattleTeamCard = (props: BattleTeamCardProps) => {
           <>
             <div className="flex justify-between items-center text-[11px]">
               <span className="text-gray-500 dark:text-gray-400">래더</span>
-              <span className="font-semibold text-brandcolor">{guild.guildRecord?.recordLadder || 0}점</span>
+              <span className="font-semibold text-brandcolor">
+                {guild.guildRecord?.recordLadder || 0}점
+              </span>
             </div>
             <div className="flex justify-between items-center text-[11px]">
               <span className="text-gray-500 dark:text-gray-400">순위</span>
-              <span className="font-medium">{guild.guildRecord?.recordRanking || "-"}위</span>
+              <span className="font-medium">
+                {guild.guildRecord?.recordRanking || "-"}위
+              </span>
             </div>
             <div className="flex justify-between items-center text-[11px]">
               <span className="text-gray-500 dark:text-gray-400">티어</span>
-              <span className={`font-semibold ${getTierStyle(guildTier)}`}>{guildTier}</span>
+              <span className={`font-semibold ${getTierStyle(guildTier)}`}>
+                {guildTier}
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-[11px]">
+              <span className="text-gray-500 dark:text-gray-400">판수</span>
+              <span className={`font-medium `}>{scrimSlot.totalGameCount}</span>
             </div>
           </>
         ) : (
-          <p className="text-gray-400 text-[11px] text-center">길드 정보 없음</p>
+          <p className="text-gray-400 text-[11px] text-center">
+            길드 정보 없음
+          </p>
         )}
       </div>
 
