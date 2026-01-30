@@ -28,17 +28,20 @@ const Search = () => {
   };
 
   return (
-    <div className="flex h-[46px] border border-brandborder mt-1 dark:bg-dark dark:border-branddarkborder">
+    <div className="flex h-[46px] mt-[6px] rounded-b-[12px] border border-gray-100 dark:border-branddarkborder overflow-hidden shadow-sm">
       <input
-        className="w-full px-2 bg-gray-100 focus:outline-none dark:bg-dark"
+        className="w-full px-[14px] bg-gray-50 dark:bg-dark focus:outline-none text-[14px] placeholder:text-gray-400"
         type="text"
-        placeholder="LOLFIGHT#롤파이트"
+        placeholder="소환사명#태그 검색"
         onKeyDown={handleKeyPress}
         onChange={handleInputText}
       />
-      <div className="bg-gray-100 w-[44px] h-[44px] flex flex-wrap justify-center content-center dark:bg-dark">
-        <FaSearch onClick={handleClick} />
-      </div>
+      <button
+        className="bg-gradient-to-r from-brandcolor to-blue-500 w-[50px] flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
+        onClick={handleClick}
+      >
+        <FaSearch className="text-white w-[16px] h-[16px]" />
+      </button>
     </div>
   );
 };

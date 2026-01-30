@@ -27,7 +27,7 @@ const GuildBanner = (props: Props) => {
         CustomAlert(
           "error",
           "길드가입",
-          "가입하려는 길드의 정원 수가 초과되었습니다."
+          "가입하려는 길드의 정원 수가 초과되었습니다.",
         );
         return;
       }
@@ -39,7 +39,7 @@ const GuildBanner = (props: Props) => {
           CustomAlert(
             "warning",
             "길드가입",
-            "이미 신청한 길드이거나, 이미 가입된 길드가 있습니다."
+            "이미 신청한 길드이거나, 이미 가입된 길드가 있습니다.",
           );
         });
     } else {
@@ -48,7 +48,7 @@ const GuildBanner = (props: Props) => {
   };
 
   return (
-    <div className="w-full bg-brandcolor dark:bg-branddark">
+    <div className="w-full bg-gradient-to-r from-brandcolor via-blue-500 to-brandcolor dark:from-dark dark:via-branddark dark:to-dark">
       <div
         className={`max-w-[1200px] mx-auto py-[24px] flex justify-between items-center ${
           isMobile && "px-[12px]"

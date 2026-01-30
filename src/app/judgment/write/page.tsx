@@ -220,19 +220,27 @@ export default function Page() {
   };
 
   return (
-    <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px]">
-      <div className="w-full bg-white rounded-[12px] p-[24px] shadow-md dark:bg-dark">
-        <div className="flex flex-col h-full px-[20px] py-[24px] gap-[24px]">
-          <p className="text-[24px] font-extrabold">롤로세움</p>
-          <input
-            className="w-full h-[40px] px-[12px] border border-brandborder rounded-md text-[14px] bg-brandbgcolor dark:bg-branddark dark:border-branddarkborder dark:text-white"
-            type="text"
-            placeholder="제목을 입력하세요"
-            onChange={handleTitleChange}
-          />
+    <div className="flex max-w-[1200px] h-full mx-auto w-full py-[32px] px-[12px] md:px-0">
+      <div className="w-full bg-white rounded-[16px] p-[16px] md:p-[24px] shadow-lg border border-gray-100 dark:border-branddarkborder dark:bg-dark">
+        <div className="flex flex-col h-full px-[12px] md:px-[20px] py-[20px] gap-[20px]">
+          <div className="flex items-center gap-[10px]">
+            <div className="w-[4px] h-[28px] bg-gradient-to-b from-red-500 to-orange-400 rounded-full" />
+            <p className={`font-bold ${isMobile ? "text-[20px]" : "text-[26px]"}`}>롤로세움 글쓰기</p>
+          </div>
+
+          <div className="flex flex-col gap-[8px]">
+            <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">제목</label>
+            <input
+              className="w-full h-[46px] px-[14px] border border-gray-200 dark:border-branddarkborder rounded-[10px] text-[14px] bg-gray-50 dark:bg-branddark dark:text-white focus:outline-none focus:border-red-400 transition-colors"
+              type="text"
+              placeholder="제목을 입력하세요"
+              onChange={handleTitleChange}
+            />
+          </div>
+
           <div
             className={`flex w-full items-center justify-between ${
-              isMobile ? "gap-[12px]" : ""
+              isMobile ? "gap-[8px]" : "gap-[16px]"
             }`}
           >
             {/* left */}
@@ -245,7 +253,7 @@ export default function Page() {
               }
             />
             {/* center */}
-            <div className="text-[14px] font-bold">VS</div>
+            <div className={`font-extrabold bg-gradient-to-r from-blue-500 to-red-500 bg-clip-text text-transparent ${isMobile ? "text-[16px]" : "text-[22px]"}`}>VS</div>
 
             {/* right */}
             <SummonerInputBox
@@ -260,67 +268,69 @@ export default function Page() {
 
           {/* 이미지 선택창 */}
           {(leftShowImages || rightShowImages) && (
-            <div className="flex flex-col w-full h-auto p-[12px] bg-white dark:bg-gray-900 border rounded-md gap-[12px]">
+            <div className="flex flex-col w-full h-auto p-[14px] bg-white dark:bg-branddark border border-gray-200 dark:border-branddarkborder rounded-[14px] gap-[14px] shadow-md">
               <input
-                className="w-full h-[40px] border rounded-md px-2 bg-gray-100 dark:bg-black dark:border-gray-700"
+                className="w-full h-[42px] border border-gray-200 dark:border-branddarkborder rounded-[10px] px-[12px] bg-gray-50 dark:bg-dark focus:outline-none focus:border-red-400"
                 type="text"
                 placeholder="챔피언 검색"
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <div
-                className={`grid gap-[4px] ${
-                  isMobile ? "grid-cols-5" : "grid-cols-12"
+                className={`grid gap-[8px] max-h-[300px] overflow-y-auto ${
+                  isMobile ? "grid-cols-5" : "grid-cols-10"
                 }`}
               >
                 {filteredChampions.map(([id, name]) => (
                   <div
                     key={id}
-                    className="flex flex-col justify-center items-center"
+                    className="flex flex-col justify-center items-center gap-[4px] cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => handleChampionSelect(id, leftShowImages)}
                   >
                     <Image
-                      key={id}
                       src={`${constant.SERVER_URL}/public/champions/${id}.png`}
                       alt={name}
-                      width={70}
-                      height={70}
+                      width={60}
+                      height={60}
                       className={`${
-                        isMobile ? "w-[50px] h-[50px]" : "w-[70px] h-[70px]"
-                      } cursor-pointer rounded-[12px]`}
-                      onClick={() => handleChampionSelect(id, leftShowImages)}
+                        isMobile ? "w-[45px] h-[45px]" : "w-[60px] h-[60px]"
+                      } rounded-[10px] border-2 border-transparent hover:border-red-400 transition-colors`}
                     />
-                    <p className="font-light text-[10px]">{name}</p>
+                    <p className={`font-medium text-center truncate w-full ${isMobile ? "text-[9px]" : "text-[11px]"}`}>{name}</p>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          <textarea
-            className="w-full h-[100px] border rounded-md p-[12px] text-[14px] bg-brandbgcolor dark:bg-branddark dark:border-gray-700"
-            placeholder="상황에 대한 설명을 작성해주세요"
-            onChange={handleDescChange}
-          />
+          <div className="flex flex-col gap-[8px]">
+            <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">상황 설명</label>
+            <textarea
+              className="w-full h-[120px] border border-gray-200 dark:border-branddarkborder rounded-[10px] p-[14px] text-[14px] bg-gray-50 dark:bg-branddark focus:outline-none focus:border-red-400 transition-colors resize-none"
+              placeholder="상황에 대한 설명을 작성해주세요"
+              onChange={handleDescChange}
+            />
+          </div>
 
           {/* 영상 업로드 부분 */}
-          <div className="flex flex-col w-full gap-[4px] ">
-            <label className="font-medium text-[14px]">영상 업로드</label>
+          <div className="flex flex-col w-full gap-[8px]">
+            <label className="text-[13px] font-medium text-gray-600 dark:text-gray-400">영상 업로드</label>
             <input
               ref={fileInputRef}
               type="file"
               accept="video/*"
               onChange={handleVideoChange}
-              className="border rounded-md px-[8px] py-[4px] bg-brandbgcolor dark:bg-branddark dark:border-gray-700"
+              className="border border-gray-200 dark:border-branddarkborder rounded-[10px] px-[12px] py-[10px] bg-gray-50 dark:bg-branddark text-[14px] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-red-50 file:text-red-600 hover:file:bg-red-100 dark:file:bg-red-900/30 dark:file:text-red-400"
             />
             {videoPreview && (
-              <div className="relative w-full h-full">
+              <div className="relative w-full h-full mt-[8px]">
                 <video
                   src={videoPreview}
                   controls
-                  className="w-full h-full rounded-md"
+                  className="w-full h-full rounded-[12px] shadow-md"
                 />
                 <button
                   onClick={handleVideoRemove}
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-md px-2"
+                  className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white rounded-[8px] px-[12px] py-[6px] text-[12px] font-medium shadow-md transition-colors"
                 >
                   제거
                 </button>
@@ -328,15 +338,15 @@ export default function Page() {
             )}
           </div>
 
-          <div className="w-full flex justify-between">
+          <div className="w-full flex justify-between pt-[12px] border-t border-gray-100 dark:border-branddarkborder">
             <button
-              className="w-[60px] h-[40px] flex font-medium border items-center justify-center rounded-md cursor-pointer dark:border-gray-700"
+              className="px-[20px] h-[44px] flex font-medium border border-gray-300 dark:border-branddarkborder items-center justify-center rounded-[10px] cursor-pointer hover:bg-gray-100 dark:hover:bg-branddark transition-colors text-[14px]"
               onClick={handleCancelClick}
             >
               취소
             </button>
             <button
-              className="w-[120px] h-[40px] flex font-medium bg-brandcolor text-white items-center justify-center rounded-md cursor-pointer"
+              className="px-[24px] h-[44px] flex font-semibold bg-gradient-to-r from-red-500 to-orange-500 text-white items-center justify-center rounded-[10px] cursor-pointer hover:opacity-90 transition-opacity shadow-md text-[14px]"
               onClick={handleSaveClick}
             >
               작성하기

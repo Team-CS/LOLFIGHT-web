@@ -170,36 +170,39 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-[8px]">
+    <div className="flex flex-col gap-[4px]">
       {commentList.map((comment) => (
         <div
-          className="flex p-[8px] border-b dark:border-gray-700"
+          className={`flex p-[12px] rounded-[10px] transition-colors ${
+            comment.depth > 0
+              ? "bg-gray-50 dark:bg-branddark/50 ml-[20px]"
+              : "hover:bg-gray-50 dark:hover:bg-branddark/30 border-b border-gray-100 dark:border-branddarkborder"
+          }`}
           key={comment.id}
-          style={getMargin(comment.depth)}
         >
           {comment.depth > 0 && (
-            <div className="w-[8px] h-[8px] mr-[12px] border-b-[1px] border-l-[1px] border-brandcolor dark:border-white rounded-bl-[2px]" />
+            <div className="w-[10px] h-[10px] mr-[12px] mt-[6px] border-b-2 border-l-2 border-brandcolor rounded-bl-[4px]" />
           )}
           <div className="flex flex-col w-full gap-[8px]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[8px]">
                 <div
-                  className="flex items-center gap-[8px] cursor-pointer hover:underline"
+                  className="flex items-center gap-[8px] cursor-pointer group"
                   onClick={() => handleMemberClick(comment.writer.memberName)}
                 >
                   <div className={`${comment.writer.memberItem?.border}`}>
                     <Image
                       src={`${constant.SERVER_URL}/${comment.writer.memberIcon}`}
                       alt="memberIcon"
-                      width={30}
-                      height={30}
-                      className={`object-cover rounded-[12px] ${
-                        isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+                      width={28}
+                      height={28}
+                      className={`object-cover rounded-[8px] shadow-sm ${
+                        isMobile ? "w-[24px] h-[24px]" : "w-[28px] h-[28px]"
                       }`}
                     />
                   </div>
                   <p
-                    className={`font-bold ${
+                    className={`font-semibold group-hover:text-brandcolor transition-colors ${
                       isMobile ? "text-[12px]" : "text-[14px]"
                     } ${comment.writer.memberItem?.effect}`}
                   >
@@ -209,12 +212,13 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                     <Image
                       src="/icon_verificated.svg"
                       alt="verificated icon"
-                      width={15}
-                      height={15}
+                      width={14}
+                      height={14}
                       draggable={false}
                     />
                   )}
                 </div>
+                <span className="text-gray-300 dark:text-gray-600">·</span>
                 <p
                   className={`text-gray-400 font-normal ${
                     isMobile ? "text-[10px]" : "text-[12px]"
@@ -223,10 +227,10 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                   {getDate(comment.commentDate)}
                 </p>
               </div>
-              <div className="flex gap-[8px]">
+              <div className="flex gap-[10px]">
                 {(!(comment.writer.id === member?.id) || isAdmin) && (
                   <button
-                    className={`text-gray-400 ${
+                    className={`text-gray-400 hover:text-red-500 transition-colors ${
                       isMobile ? "text-[10px]" : "text-[12px]"
                     }`}
                     onClick={() => {
@@ -234,57 +238,60 @@ const CommentBoxComponent = (props: CommentBoxComponentProps) => {
                         setReportModalOpen(!reportModalOpen);
                     }}
                   >
-                    신고하기
+                    신고
                   </button>
                 )}
                 {(comment.writer.id === member?.id || isAdmin) && (
-                  <p
-                    className={`text-gray-400 font-normal cursor-pointer hover:text-gray-500 ${
+                  <button
+                    className={`text-gray-400 hover:text-red-500 transition-colors ${
                       isMobile ? "text-[10px]" : "text-[12px]"
                     }`}
                     onClick={() => handleDeleteComment(comment.id!)}
                   >
-                    삭제하기
-                  </p>
+                    삭제
+                  </button>
                 )}
               </div>
             </div>
             <p
-              className={`${isMobile ? "text-[12px]" : "text-[14px]"} ${
-                comment.writer.role === "ADMIN" && "font-bold"
-              }  whitespace-pre-wrap`}
+              className={`leading-relaxed ${isMobile ? "text-[12px]" : "text-[14px]"} ${
+                comment.writer.role === "ADMIN" && "font-semibold text-brandcolor"
+              } whitespace-pre-wrap`}
             >
               {comment.commentContent}
             </p>
             {comment.depth == 0 && (
               <div>
                 <button
-                  className={`${
-                    isMobile ? "text-[12px]" : "text-[14px]"
-                  } text-gray-400`}
+                  className={`flex items-center gap-[4px] text-gray-400 hover:text-brandcolor transition-colors ${
+                    isMobile ? "text-[11px]" : "text-[13px]"
+                  }`}
                   onClick={() => handleReplyButtonClick(comment)}
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-[14px] h-[14px]">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                  </svg>
                   답글 쓰기
                 </button>
               </div>
             )}
 
             {isOpen && comment.id == openCommentId && (
-              <div className="flex flex-col p-[24px] gap-[12px]">
-                <div className="w-full rounded-md border dark:border-gray-700 dark:bg-black">
+              <div className="flex flex-col pt-[12px] gap-[12px]">
+                <div className="w-full rounded-[10px] border border-gray-200 dark:border-branddarkborder bg-white dark:bg-dark overflow-hidden">
                   <textarea
-                    className={`w-full p-[12px] rounded-[12px] focus:outline-none dark:bg-black ${
+                    className={`w-full p-[12px] bg-transparent focus:outline-none resize-none placeholder:text-gray-400 ${
                       isMobile
-                        ? "text-[12px] h-[50px]"
-                        : "text-[14px] h-[100px]"
+                        ? "text-[12px] h-[60px]"
+                        : "text-[14px] h-[80px]"
                     }`}
-                    placeholder="댓글을 입력하세요."
+                    placeholder="답글을 입력하세요."
                     onChange={(e) => setReplyCommentContent(e.target.value)}
                   />
-                  <div className="flex justify-end p-[12px]">
+                  <div className="flex justify-end py-[8px] px-[10px] border-t border-gray-200 dark:border-branddarkborder">
                     <button
-                      className={`border rounded-md bg-brandcolor text-white px-[12px] py-[4px] dark:border-gray-700 ${
-                        isMobile ? "text-[12px]" : "text-[14px]"
+                      className={`bg-gradient-to-r from-brandcolor to-blue-500 text-white rounded-[6px] font-medium hover:opacity-90 transition-opacity shadow-sm ${
+                        isMobile ? "text-[11px] px-[12px] py-[5px]" : "text-[13px] px-[14px] py-[6px]"
                       }`}
                       onClick={handleSaveReplyButtonClick}
                     >

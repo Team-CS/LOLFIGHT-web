@@ -6,16 +6,15 @@ import { PostDto } from "@/src/common/DTOs/board/post.dto";
 import { getPostContent } from "@/src/api/post.api";
 import { getTitleFromSlug } from "@/src/utils/string/string.util";
 import BoardWriteComponent from "../../../components/write/BoardWriteComponent";
-import { useIsMobile } from "@/src/hooks/useMediaQuery";
 import { useMemberStore } from "@/src/common/zustand/member.zustand";
 import CustomAlert from "@/src/common/components/alert/CustomAlert";
+import BoardNavComponent from "../../../components/BoardNavComponent";
 
 const BoardEditPage = () => {
   const params = useParams();
   const { slug, id } = params;
   const { member } = useMemberStore();
   const [post, setPost] = useState<PostDto | null>(null);
-  const isMobile = useIsMobile();
   const router = useRouter();
 
   useEffect(() => {
@@ -33,14 +32,19 @@ const BoardEditPage = () => {
     }
   }, [id]);
 
-  if (!post) return <p>Loading...</p>;
+  if (!post)
+    return (
+      <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px] px-[12px] md:px-0 flex-col md:flex-row">
+        <BoardNavComponent />
+        <div className="w-full flex items-center justify-center py-[60px]">
+          <div className="w-[32px] h-[32px] border-[3px] border-brandcolor border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    );
 
   return (
-    <div
-      className={`flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px] ${
-        isMobile && "flex-col px-[12px]"
-      }`}
-    >
+    <div className="flex max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px] px-[12px] md:px-0 flex-col md:flex-row">
+      <BoardNavComponent />
       <BoardWriteComponent post={post} isEdit={true} />
     </div>
   );

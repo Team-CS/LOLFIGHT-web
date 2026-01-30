@@ -32,14 +32,14 @@ const JudgmentDataCard = ({ judgment }: Props) => {
 
   return (
     <div
-      className="w-full flex flex-col gap-[16px] p-[20px] rounded-[16px] shadow-md border border-brandborder dark:border-branddarkborder"
+      className="w-full flex flex-col gap-[16px] p-[14px] md:p-[20px] rounded-[14px] border border-gray-100 dark:border-branddarkborder bg-gradient-to-br from-white to-gray-50 dark:from-dark dark:to-branddark"
       style={backgroundStyle}
     >
       {/* 게이지 바 */}
-      <div className="relative h-[18px] w-full rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 mb-[12px]">
+      <div className="relative h-[22px] w-full rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 shadow-inner">
         {/* 왼쪽 막대 */}
         <div
-          className="absolute top-0 left-0 h-full bg-blue-500 transition-all duration-500"
+          className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-600 to-blue-400 transition-all duration-500"
           style={{
             width: `${leftPercent}%`,
             borderTopLeftRadius: "9999px",
@@ -48,7 +48,7 @@ const JudgmentDataCard = ({ judgment }: Props) => {
         />
         {/* 오른쪽 막대 */}
         <div
-          className="absolute top-0 right-0 h-full bg-red-500 transition-all duration-500"
+          className="absolute top-0 right-0 h-full bg-gradient-to-l from-red-600 to-red-400 transition-all duration-500"
           style={{
             width: `${rightPercent}%`,
             borderTopRightRadius: "9999px",
@@ -56,7 +56,7 @@ const JudgmentDataCard = ({ judgment }: Props) => {
           }}
         />
         {/* 퍼센트 텍스트 */}
-        <div className="absolute inset-0 flex justify-between items-center px-[12px] text-white font-bold text-[14px] drop-shadow">
+        <div className={`absolute inset-0 flex justify-between items-center px-[12px] text-white font-bold drop-shadow-md ${isMobile ? "text-[12px]" : "text-[14px]"}`}>
           <span>{leftPercent.toFixed(0)}%</span>
           <span>{rightPercent.toFixed(0)}%</span>
         </div>
@@ -72,8 +72,8 @@ const JudgmentDataCard = ({ judgment }: Props) => {
           align="right"
         />
         <div
-          className={`font-bold text-brandgray dark:text-brandhover ${
-            isMobile ? "text-[14px]" : "text-[18px]"
+          className={`font-extrabold bg-gradient-to-r from-blue-500 to-red-500 bg-clip-text text-transparent ${
+            isMobile ? "text-[16px]" : "text-[22px]"
           }`}
         >
           VS

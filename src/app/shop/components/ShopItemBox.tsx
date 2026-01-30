@@ -17,8 +17,9 @@ interface ShopItemBoxProps {
 
 export const ShopItemBox = (props: ShopItemBoxProps) => {
   const { item, hasItems, onPurchase } = props;
-  const { member, setMember } = useMemberStore();
+  const { member } = useMemberStore();
   const isMobile = useIsMobile();
+  const isBanner = item.category === "BANNER";
 
   const renderContent = () => {
     switch (item.category) {
@@ -26,14 +27,14 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
         return (
           <div
             className={`relative rounded-[12px] ${
-              isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+              isMobile ? "w-[32px] h-[32px]" : "w-[40px] h-[40px]"
             } ${item.cssClass}`}
           >
             <Image
               src={`${constant.SERVER_URL}/public/default.png`}
               alt={item.name}
-              width={30}
-              height={30}
+              width={40}
+              height={40}
               className="object-cover w-full h-full rounded-[12px]"
             />
           </div>
@@ -41,18 +42,18 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
       case "EFFECT":
         return (
           <div className={`flex items-center justify-center w-full h-full`}>
-            <p className={`${item.cssClass} text-center`}>LOLFIGHT</p>
+            <p className={`${item.cssClass} text-center ${isMobile ? "text-[14px]" : "text-[18px]"}`}>LOLFIGHT</p>
           </div>
         );
       case "BANNER":
         return (
-          <div className="w-full h-full rounded-[8px] overflow-hidden">
+          <div className="w-full h-full rounded-[8px] overflow-hidden flex items-center justify-center p-[12px]">
             <Image
               src={`${constant.SERVER_URL}/${item.imageUrl}`}
               alt={item.name}
-              width={30}
-              height={30}
-              className="object-cover w-full h-full"
+              width={300}
+              height={80}
+              className="object-contain w-full h-auto max-h-full"
             />
           </div>
         );
@@ -72,7 +73,7 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
           CustomAlert(
             "success",
             "아이템 구매",
-            `구매가 완료되었습니다! <br/> 내정보에서 구매한 아이템을 활성화 시켜주세요!`
+            `구매가 완료되었습니다! <br/> 내정보에서 구매한 아이템을 활성화 시켜주세요!`,
           );
           onPurchase(response.data.data);
         })
@@ -82,7 +83,7 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
             CustomAlert(
               "warning",
               "아이템 구매",
-              "이미 보유하고 있는 아이템 입니다"
+              "이미 보유하고 있는 아이템 입니다",
             );
           } else if (code === "COMMON-009") {
             CustomAlert("warning", "아이템 구매", "보유한 포인트가 부족합니다");
@@ -104,24 +105,23 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
   return (
     <div
       key={item.id}
-      className="bg-white dark:bg-branddark rounded-[12px] shadow-md overflow-hidden group
-             transform transition-transform duration-200 ease-in-out
-             hover:scale-105"
+      className={`bg-white dark:bg-branddark rounded-[14px] shadow-md overflow-hidden group
+             transform transition-all duration-300 ease-in-out border border-transparent
+             hover:scale-[1.03] hover:shadow-lg hover:border-blue-100 dark:hover:border-branddarkborder
+             ${isBanner ? (isMobile ? "col-span-2" : "col-span-2") : ""}`}
     >
       <div
-        className={`relative w-full aspect-square overflow-hidden flex items-center justify-center ${
-          hasPurchased(item)
-            ? "bg-gray-100 dark:bg-brandgray opacity-60"
-            : "bg-gray-100 dark:bg-brandgray"
-        }`}
+        className={`relative w-full overflow-hidden flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-brandgray dark:to-branddark ${
+          isBanner ? "aspect-[3/1]" : "aspect-square"
+        } ${hasPurchased(item) ? "opacity-70" : ""}`}
       >
         {renderContent()}
 
         {hasPurchased(item) && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/40 text-white">
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/50 text-white backdrop-blur-[1px]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-10 h-10 mb-1 text-green-400 drop-shadow-md"
+              className={`${isBanner ? "w-8 h-8" : "w-10 h-10"} mb-1 text-green-400 drop-shadow-md`}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -133,42 +133,51 @@ export const ShopItemBox = (props: ShopItemBoxProps) => {
                 d="M5 13l4 4L19 7"
               />
             </svg>
-            <span className="font-semibold text-sm tracking-wide">
+            <span className={`font-semibold tracking-wide ${isBanner ? "text-xs" : "text-sm"}`}>
               구매 완료
             </span>
           </div>
         )}
+
+        {/* 카테고리 뱃지 */}
+        <div className={`absolute top-[8px] left-[8px] px-[8px] py-[2px] rounded-full text-[10px] font-bold text-white shadow-sm ${
+          item.category === "BANNER" ? "bg-gradient-to-r from-purple-500 to-pink-500" :
+          item.category === "BORDER" ? "bg-gradient-to-r from-blue-500 to-cyan-500" :
+          "bg-gradient-to-r from-orange-500 to-yellow-500"
+        }`}>
+          {item.category === "BANNER" ? "배너" : item.category === "BORDER" ? "테두리" : "효과"}
+        </div>
       </div>
 
-      <div className="flex flex-col gap-[4px] p-[16px]">
+      <div className={`flex flex-col gap-[6px] ${isBanner ? "p-[12px]" : "p-[14px]"}`}>
         <p
-          className={`font-semibold ${
-            isMobile ? "text-[14px]" : "text-[16px]"
+          className={`font-bold truncate ${
+            isMobile ? "text-[13px]" : "text-[15px]"
           }`}
         >
           {item.name}
         </p>
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-[4px]">
+          <div className="flex items-center gap-[6px]">
+            <Image
+              src="/images/point.png"
+              alt="포인트"
+              width={16}
+              height={16}
+              className="w-[16px] h-[16px] object-cover"
+            />
             <span
               className={`text-brandcolor font-bold ${
-                isMobile ? "text-[12px]" : "text-[14px]"
+                isMobile ? "text-[13px]" : "text-[15px]"
               }`}
             >
               {item.price.toLocaleString()}
             </span>
-            <Image
-              src="/images/point.png"
-              alt="포인트"
-              width={15}
-              height={15}
-              className="w-[15px] h-[15px] object-cover"
-            />
           </div>
           {!hasPurchased(item) && (
             <button
-              className={`bg-brandcolor text-white rounded-md hover:opacity-90 transition text-[12px] ${
-                isMobile ? "px-[8px] py-[2px]" : "px-[12px] py-[2px]"
+              className={`bg-gradient-to-r from-brandcolor to-blue-500 text-white rounded-[6px] hover:opacity-90 transition-opacity font-medium ${
+                isMobile ? "px-[10px] py-[4px] text-[11px]" : "px-[14px] py-[5px] text-[12px]"
               }`}
               onClick={() => handlePurchase(item)}
             >
