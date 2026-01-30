@@ -21,55 +21,45 @@ export default function SummonerInputBox({
 }: SummonerInputBoxProps) {
   const isMobile = useIsMobile();
 
-  return (
+  const championImageSection = (bgColor: string) => (
     <div
-      className={`flex rounded-[16px] border border-brandborder dark:border-branddarkborder bg-brandbgcolor dark:bg-branddark shadow-md overflow-hidden ${
-        isMobile ? "flex-col" : "w-[460px]"
+      className={`flex items-center justify-center ${bgColor} ${
+        isMobile ? "py-[14px]" : "min-w-[110px]"
       }`}
     >
-      {side === "left" && (
-        <div
-          className={`flex items-center justify-center bg-blue-300 ${
-            isMobile ? "py-[12px]" : "min-w-[100px]"
-          }`}
-        >
-          <Image
-            src={`${constant.SERVER_URL}/public/champions/${selectedChampionId}.png`}
-            alt="Champion Icon"
-            width={72}
-            height={72}
-            className={`${
-              isMobile ? "w-[52px] h-[52px]" : "w-[72px] h-[72px]"
-            } rounded-full cursor-pointer hover:ring-[2px] hover:ring-brandcolor`}
-            onClick={onChampionClick}
-          />
+      <div className="relative">
+        <Image
+          src={`${constant.SERVER_URL}/public/champions/${selectedChampionId}.png`}
+          alt="Champion Icon"
+          width={72}
+          height={72}
+          className={`${
+            isMobile ? "w-[56px] h-[56px]" : "w-[76px] h-[76px]"
+          } rounded-[14px] cursor-pointer border-2 border-white/50 shadow-md hover:scale-105 transition-transform`}
+          onClick={onChampionClick}
+        />
+        <div className="absolute -bottom-1 -right-1 w-[22px] h-[22px] bg-white dark:bg-dark rounded-full flex items-center justify-center shadow-sm">
+          <span className="text-[10px]">+</span>
         </div>
-      )}
+      </div>
+    </div>
+  );
 
-      {side === "right" && isMobile && (
-        <div
-          className={`flex items-center justify-center bg-red-300 ${
-            isMobile ? "py-[12px]" : "min-w-[100px]"
-          }`}
-        >
-          <Image
-            src={`${constant.SERVER_URL}/public/champions/${selectedChampionId}.png`}
-            alt="Champion Icon"
-            width={72}
-            height={72}
-            className={`${
-              isMobile ? "w-[52px] h-[52px]" : "w-[72px] h-[72px]"
-            } rounded-full cursor-pointer hover:ring-[2px] hover:ring-brandcolor`}
-            onClick={onChampionClick}
-          />
-        </div>
-      )}
+  return (
+    <div
+      className={`flex rounded-[14px] border border-gray-200 dark:border-branddarkborder bg-white dark:bg-dark shadow-md overflow-hidden ${
+        isMobile ? "flex-col w-full" : "w-[440px]"
+      }`}
+    >
+      {side === "left" && championImageSection("bg-gradient-to-br from-blue-400 to-blue-500")}
 
-      <div className="flex flex-col justify-center gap-[10px] px-[16px] py-[12px] w-full">
-        <div className="flex flex-col gap-[6px]">
+      {side === "right" && isMobile && championImageSection("bg-gradient-to-br from-red-400 to-red-500")}
+
+      <div className="flex flex-col justify-center gap-[10px] px-[14px] py-[14px] w-full bg-gray-50 dark:bg-branddark">
+        <div className="flex flex-col gap-[4px]">
           <label
-            className={`text-brandgray dark:text-brandhover font-medium ${
-              isMobile ? "text-[12px]" : "text-[14px]"
+            className={`text-gray-500 dark:text-gray-400 font-medium ${
+              isMobile ? "text-[11px]" : "text-[12px]"
             }`}
           >
             소환사명
@@ -77,25 +67,25 @@ export default function SummonerInputBox({
           <input
             type="text"
             placeholder="LOLFIGHT#KR1"
-            className={`w-full px-[8px] py-[6px] rounded-[8px] border border-brandborder dark:border-branddarkborder bg-white dark:bg-brandgray text-brandgray dark:text-white focus:outline-none focus:ring-[2px] focus:ring-brandcolor ${
-              isMobile ? "text-[12px]" : "text-[14px]"
+            className={`w-full px-[10px] py-[8px] rounded-[8px] border border-gray-200 dark:border-branddarkborder bg-white dark:bg-dark focus:outline-none focus:border-red-400 transition-colors ${
+              isMobile ? "text-[12px]" : "text-[13px]"
             }`}
             onChange={(e) => onChange("name", e.target.value)}
           />
         </div>
 
         <div className={`flex gap-[8px] ${isMobile && "flex-col"}`}>
-          <div className={`flex flex-col ${isMobile ? "w-full" : "w-[50%]"}`}>
+          <div className={`flex flex-col gap-[4px] ${isMobile ? "w-full" : "w-[50%]"}`}>
             <label
-              className={`text-brandgray dark:text-brandhover font-medium ${
-                isMobile ? "text-[12px]" : "text-[14px]"
+              className={`text-gray-500 dark:text-gray-400 font-medium ${
+                isMobile ? "text-[11px]" : "text-[12px]"
               }`}
             >
               라인
             </label>
             <select
-              className={`px-[8px] py-[6px] rounded-[8px] border border-brandborder dark:border-branddarkborder bg-white dark:bg-brandgray text-brandgray dark:text-white focus:outline-none focus:ring-[2px] focus:ring-brandcolor ${
-                isMobile ? "text-[12px]" : "text-[14px]"
+              className={`px-[10px] py-[8px] rounded-[8px] border border-gray-200 dark:border-branddarkborder bg-white dark:bg-dark focus:outline-none focus:border-red-400 transition-colors ${
+                isMobile ? "text-[12px]" : "text-[13px]"
               }`}
               defaultValue=""
               onChange={(e) => onChange("line", e.target.value)}
@@ -111,17 +101,17 @@ export default function SummonerInputBox({
             </select>
           </div>
 
-          <div className={`flex flex-col ${isMobile ? "w-full" : "w-[50%]"}`}>
+          <div className={`flex flex-col gap-[4px] ${isMobile ? "w-full" : "w-[50%]"}`}>
             <label
-              className={`text-brandgray dark:text-brandhover font-medium ${
-                isMobile ? "text-[12px]" : "text-[14px]"
+              className={`text-gray-500 dark:text-gray-400 font-medium ${
+                isMobile ? "text-[11px]" : "text-[12px]"
               }`}
             >
               티어
             </label>
             <select
-              className={`px-[8px] py-[6px] rounded-[8px] border border-brandborder dark:border-branddarkborder bg-white dark:bg-brandgray text-brandgray dark:text-white focus:outline-none focus:ring-[2px] focus:ring-brandcolor ${
-                isMobile ? "text-[12px]" : "text-[14px]"
+              className={`px-[10px] py-[8px] rounded-[8px] border border-gray-200 dark:border-branddarkborder bg-white dark:bg-dark focus:outline-none focus:border-red-400 transition-colors ${
+                isMobile ? "text-[12px]" : "text-[13px]"
               }`}
               defaultValue=""
               onChange={(e) => onChange("tier", e.target.value)}
@@ -153,18 +143,7 @@ export default function SummonerInputBox({
         </div>
       </div>
 
-      {side === "right" && !isMobile && (
-        <div className="flex items-center justify-center w-[130px] bg-red-300">
-          <Image
-            src={`${constant.SERVER_URL}/public/champions/${selectedChampionId}.png`}
-            alt="Champion Icon"
-            width={72}
-            height={72}
-            className="rounded-full cursor-pointer w-[72px] h-[72px] hover:ring-[2px] hover:ring-brandcolor"
-            onClick={onChampionClick}
-          />
-        </div>
-      )}
+      {side === "right" && !isMobile && championImageSection("bg-gradient-to-br from-red-400 to-red-500")}
     </div>
   );
 }

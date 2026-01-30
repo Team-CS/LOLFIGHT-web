@@ -1,0 +1,75 @@
+/* 번개/전기 닉네임 이펙트 */
+@keyframes electric-zap {
+  0% {
+    text-shadow: 0 0 4px #ffff00, 0 0 8px #00ffff, 0 0 12px #ffff00;
+    color: #4a6a3a;
+  }
+  25% {
+    text-shadow: 0 0 8px #00ffff, 0 0 16px #ffff00, 0 0 24px #00ffff;
+    color: #2a5a5a;
+  }
+  50% {
+    text-shadow: 0 0 6px #ffff00, 0 0 12px #00ffff, 0 0 18px #ffffff;
+    color: #5a7a4a;
+  }
+  75% {
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #ffff00, 0 0 30px #00ffff;
+    color: #3a6a6a;
+  }
+  100% {
+    text-shadow: 0 0 4px #ffff00, 0 0 8px #00ffff, 0 0 12px #ffff00;
+    color: #4a6a3a;
+  }
+}
+
+@keyframes electric-shake {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-1px, 1px);
+  }
+  20% {
+    transform: translate(1px, -1px);
+  }
+  30% {
+    transform: translate(-1px, -1px);
+  }
+  40% {
+    transform: translate(1px, 1px);
+  }
+  50% {
+    transform: translate(0, 0);
+  }
+  60% {
+    transform: translate(-1px, 1px);
+  }
+  70% {
+    transform: translate(1px, -1px);
+  }
+  80% {
+    transform: translate(-1px, 0);
+  }
+  90% {
+    transform: translate(1px, 0);
+  }
+}
+
+.electric-effect {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffff00 0%, #00ffff 50%, #ffff00 100%);
+  background-size: 300% 300%;
+  color: #000;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 0, 0.8);
+  animation: electric-zap 0.8s linear infinite,
+    electric-shake 0.3s ease-in-out infinite;
+  box-shadow: 0 0 10px #ffff00, 0 0 20px #00ffff, 0 0 30px #ffff00,
+    inset 0 0 10px rgba(255, 255, 255, 0.4);
+}

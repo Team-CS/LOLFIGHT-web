@@ -140,31 +140,26 @@ export const Header = () => {
   };
   return (
     <>
-      {" "}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <header className="flex flex-col w-full gap-[12px] bg-[#FCFCFC] dark:bg-black">
-        <section
-          className={`w-full bg-brandcolor dark:bg-dark px-[16px] py-[4px]`}
-        >
-          <div
-            className={`max-w-[1200px] mx-auto flex items-center gap-[32px] ${
-              isMobile ? "justify-between" : "justify-between"
-            }`}
-          >
+        {/* 상단 네비게이션 바 */}
+        <section className="w-full bg-gradient-to-r from-brandcolor via-blue-500 to-brandcolor dark:from-dark dark:via-branddark dark:to-dark px-[16px] py-[8px] shadow-md">
+          <div className="max-w-[1200px] mx-auto flex items-center justify-between">
             {isMobile && (
               <Image
                 src={"/textalign.svg"}
                 alt="menu"
                 width={30}
                 height={30}
-                className={`${
-                  isMobile ? "w-[20px] h-[20px]" : "w-[30px] h-[30px]"
-                } hoverable`}
+                className="w-[22px] h-[22px] cursor-pointer hover:opacity-80 transition-opacity"
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               />
             )}
-            <div className={`flex items-center gap-[32px]`}>
-              <div className="flex gap-[4px] items-center">
+            <div className="flex items-center gap-[32px]">
+              <div
+                className="flex gap-[6px] items-center group cursor-pointer"
+                onClick={() => router.push("/")}
+              >
                 <Image
                   src="/LOLFIGHT_NONE_TEXT.png"
                   alt="logo"
@@ -172,14 +167,13 @@ export const Header = () => {
                   height={50}
                   priority
                   className={`${
-                    isMobile ? "w-[30px] h-[30px]" : "w-[40px] h-[40px]"
-                  } cursor-pointer"`}
-                  onClick={() => router.push("/")}
+                    isMobile ? "w-[32px] h-[32px]" : "w-[42px] h-[42px]"
+                  } group-hover:scale-105 transition-transform`}
                 />
                 <p
                   className={`text-white ${
-                    isMobile ? "text-[20px]" : "text-[20px]"
-                  } tracking-[1px] leading-none  ${rixi.className}`}
+                    isMobile ? "text-[18px]" : "text-[22px]"
+                  } tracking-[2px] leading-none drop-shadow-sm ${rixi.className}`}
                 >
                   <Link key="home" href="/">
                     LOLFIGHT
@@ -193,11 +187,12 @@ export const Header = () => {
           </div>
         </section>
 
+        {/* 게시판 섹션 */}
         {!(
           pathname.startsWith("/profile") || pathname.startsWith("/league/")
         ) && (
           <section className="w-full px-[16px] py-[4px]">
-            <div className="max-w-[1200px] mx-auto flex gap-[4px]">
+            <div className="max-w-[1200px] mx-auto flex gap-[8px]">
               <BoardSection
                 tabTitles={["공지사항", "이벤트"]}
                 activeTab={activeTabLeft}
@@ -224,77 +219,96 @@ export const Header = () => {
 
               {!isMobile && (
                 <div className="flex-col w-full">
-                  <div className="bg-brandbgcolor dark:bg-branddark h-[150px] border dark:border-branddarkborder">
+                  {/* 프로필/로그인 섹션 */}
+                  <div className="bg-white dark:bg-dark h-[150px] rounded-t-[12px] border border-gray-100 dark:border-branddarkborder overflow-hidden shadow-sm">
                     {member ? (
                       <div className="flex flex-col h-full">
-                        <div
-                          className={`flex items-center p-[12px] gap-[14px] relative`}
-                        >
+                        <div className="flex items-center p-[14px] gap-[14px] relative bg-gradient-to-r from-gray-50 to-white dark:from-branddark dark:to-dark">
                           <div className={`${member.memberItem?.border}`}>
                             <Image
                               src={`${constant.SERVER_URL}/${member.memberIcon}`}
                               alt="member-icon"
                               width={70}
                               height={70}
-                              className="object-cover rounded-[12px] w-[70px] h-[70px]"
+                              className="object-cover rounded-[12px] w-[65px] h-[65px] shadow-md"
                             />
                           </div>
-                          <div className="flex flex-col">
-                            <p className={`font-extrabold text-[18px] `}>
+                          <div className="flex flex-col gap-[2px]">
+                            <p className="font-bold text-[17px]">
                               <span className={`${member.memberItem?.effect}`}>
                                 {member.memberName}
                               </span>{" "}
-                              님
+                              <span className="text-gray-500 font-normal text-[14px]">
+                                님
+                              </span>
                             </p>
-                            <p className="font-light text-base">
+                            <p className="text-gray-400 text-[13px]">
                               {member.memberId}
                             </p>
-                            <div className="flex items-center gap-[4px]">
-                              <p className="font-light text-[12px]">
-                                {member.memberWallet.point}
-                              </p>
-                              <Image
-                                src={`/images/point.png`}
-                                alt="포인트"
-                                width={15}
-                                height={15}
-                                className="object-cover w-[15px] h-[15px]"
-                              />
+                            <div className="flex items-center gap-[6px] mt-[2px]">
+                              <div className="flex items-center gap-[4px] px-[8px] py-[2px] rounded-full bg-amber-50 dark:bg-amber-900/20">
+                                <Image
+                                  src={`/images/point.png`}
+                                  alt="포인트"
+                                  width={14}
+                                  height={14}
+                                  className="object-cover"
+                                />
+                                <p className="font-semibold text-[12px] text-amber-600 dark:text-amber-400">
+                                  {member.memberWallet.point.toLocaleString()}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                          <CiBellOn
-                            className="w-[30px] h-[30px] absolute top-[5px] right-[5px] cursor-pointer"
+                          <div
+                            className="absolute top-[10px] right-[10px] p-[6px] rounded-full hover:bg-gray-100 dark:hover:bg-branddarkborder transition-colors cursor-pointer"
                             onClick={() => router.push("/alarm")}
-                          />
-                          {hasAlarm && (
-                            <span className="absolute top-[5px] right-[5px] block w-[12px] h-[12px] bg-red-500 rounded-full border-[2px] border-white" />
-                          )}
+                          >
+                            <CiBellOn className="w-[24px] h-[24px] text-gray-500" />
+                            {hasAlarm && (
+                              <span className="absolute top-[6px] right-[6px] block w-[10px] h-[10px] bg-red-500 rounded-full border-[2px] border-white animate-pulse" />
+                            )}
+                          </div>
                         </div>
 
-                        <div className="flex grid grid-cols-2 w-full h-full items-center justify-center dark:border-gray-800">
+                        <div className="grid grid-cols-2 w-full h-full border-t border-gray-100 dark:border-branddarkborder">
                           <button
-                            className="flex w-full h-full items-center justify-center cursor-pointer hover:bg-brandhover dark:hover:bg-gray-800 transition"
+                            className="flex w-full h-full items-center justify-center cursor-pointer text-[14px] font-medium text-gray-600 dark:text-gray-300 hover:bg-brandcolor hover:text-white transition-all"
                             onClick={handleProfileClick}
                           >
                             내정보
                           </button>
                           <button
-                            className="flex w-full h-full items-center justify-center cursor-pointer hover:bg-brandhover dark:hover:bg-gray-800 transition"
+                            className="flex w-full h-full items-center justify-center cursor-pointer text-[14px] font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-branddarkborder transition-all border-l border-gray-100 dark:border-branddarkborder"
                             onClick={handleLogoutClick}
                           >
-                            <span>로그아웃</span>
+                            로그아웃
                           </button>
                         </div>
                       </div>
                     ) : (
-                      <div className="flex flex-col gap-[24px] justify-center items-center p-[16px]">
-                        <p className="text-center text-[16px]">
+                      <div className="flex flex-col gap-[20px] justify-center items-center p-[20px] h-full">
+                        <p className="text-center text-[15px] text-gray-600 dark:text-gray-300">
                           롤파이트의 서비스를 편리하게 이용하세요
                         </p>
                         <button
-                          className="flex items-center justify-center gap-[12px] w-full bg-brandcolor text-white text-[20px] font-bold py-[8px] rounded border border-brandborder hover:bg-brandhover"
+                          className="flex items-center justify-center gap-[8px] w-full bg-gradient-to-r from-brandcolor to-blue-500 text-white text-[16px] font-bold py-[10px] rounded-[10px] hover:opacity-90 transition-opacity shadow-md"
                           onClick={() => router.push("/login")}
                         >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                            className="w-[18px] h-[18px]"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                            />
+                          </svg>
                           롤파이트 로그인
                         </button>
                       </div>

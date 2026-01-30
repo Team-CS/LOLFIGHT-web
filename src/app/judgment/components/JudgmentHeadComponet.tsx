@@ -94,51 +94,53 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
   };
 
   return (
-    <div className="flex flex-col px-[24px] py-[12px] gap-[12px]">
-      <span className={`font-bold ${isMobile ? "text-[20px]" : "text-[24px]"}`}>
-        {judgment?.judgmentTitle}
-      </span>
-      <div className=" flex justify-between">
-        <div className="flex gap-[8px] items-center">
+    <div className="flex flex-col px-[16px] md:px-[24px] py-[16px] gap-[14px]">
+      <div className="flex items-center gap-[10px]">
+        <div className="w-[4px] h-[26px] bg-gradient-to-b from-red-500 to-orange-400 rounded-full" />
+        <span className={`font-bold ${isMobile ? "text-[18px]" : "text-[24px]"}`}>
+          {judgment?.judgmentTitle}
+        </span>
+      </div>
+      <div className="flex justify-between items-center">
+        <div className="flex gap-[10px] items-center">
           <div className={`${judgment.member.memberItem?.border}`}>
             <Image
               src={`${constant.SERVER_URL}/${judgment.member.memberIcon}`}
               alt="memberIcon"
-              width={30}
-              height={30}
-              className={`object-cover rounded-[12px] ${
-                isMobile ? "w-[25px] h-[25px]" : "w-[30px] h-[30px]"
+              width={32}
+              height={32}
+              className={`object-cover rounded-[10px] shadow-sm ${
+                isMobile ? "w-[28px] h-[28px]" : "w-[32px] h-[32px]"
               }`}
             />
           </div>
           <p
-            className={`font-bold dark:text-gray-400 cursor-pointer hover:underline ${
-              isMobile ? "text-[14px]" : "text-[16px]"
+            className={`font-semibold cursor-pointer hover:text-brandcolor transition-colors ${
+              isMobile ? "text-[13px]" : "text-[15px]"
             } ${judgment.member.memberItem?.effect}`}
             onClick={() => handleMemberClick(judgment.member.memberName)}
           >
             {judgment?.member.memberName}
           </p>
 
-          <p
-            className={`text-gray-400 ${
-              isMobile ? "text-[10px]" : "text-[12px]"
-            }`}
-          >{`${year}.${month}.${day}`}</p>
+          <span className="text-gray-300 dark:text-gray-600">|</span>
 
           <p
             className={`text-gray-400 ${
-              isMobile ? "text-[10px]" : "text-[12px]"
+              isMobile ? "text-[11px]" : "text-[13px]"
             }`}
-          >
-            조회수 : {judgment?.judgmentView}
-          </p>
+          >{`${year}.${month}.${day}`}</p>
+
+          <div className={`flex items-center gap-[4px] px-[8px] py-[2px] rounded-full bg-gray-100 dark:bg-branddark ${isMobile ? "text-[10px]" : "text-[12px]"}`}>
+            <span className="text-gray-500 dark:text-gray-400">조회</span>
+            <span className="font-medium text-gray-600 dark:text-gray-300">{judgment?.judgmentView}</span>
+          </div>
         </div>
-        <div className="flex gap-[8px] justify-center">
+        <div className="flex gap-[12px] items-center">
           {(!isMine || isAdmin) && (
             <button
-              className={`text-gray-400 ${
-                isMobile ? "text-[10px]" : "text-[12px]"
+              className={`text-gray-400 hover:text-red-500 transition-colors ${
+                isMobile ? "text-[11px]" : "text-[13px]"
               }`}
               onClick={() => setReportModalOpen(!reportModalOpen)}
             >
@@ -147,8 +149,8 @@ const JudgmentHeadComponet = (props: JudgmentHeadComponetProps) => {
           )}
           {(isMine || isAdmin) && (
             <button
-              className={`text-gray-400 ${
-                isMobile ? "text-[10px]" : "text-[12px]"
+              className={`text-gray-400 hover:text-red-500 transition-colors ${
+                isMobile ? "text-[11px]" : "text-[13px]"
               }`}
               onClick={handleDeleteButtonClick}
             >

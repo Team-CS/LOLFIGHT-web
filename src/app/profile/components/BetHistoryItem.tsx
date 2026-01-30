@@ -12,6 +12,7 @@ export default function BetHistoryItem(props: BetHistoryItemProps) {
   const { proMatch } = bet;
 
   const isWin = bet.status === BetStatus.WON;
+  const isLost = bet.status === BetStatus.LOST;
   const isPending = bet.status === BetStatus.PENDING;
 
   const isBetOnTeamA = bet.betTeamCode === proMatch.teamACode;
@@ -43,8 +44,10 @@ export default function BetHistoryItem(props: BetHistoryItemProps) {
       className={`relative flex flex-col gap-[12px] p-[16px] border rounded-[12px] transition-all shadow-sm
       ${
         isWin
-          ? "bg-green-50/50 border-green-200"
-          : "bg-white dark:bg-branddark dark:border-branddarkborder"
+          ? "bg-green-50/50 border-green-200 dark:bg-green-900/20 dark:border-green-800"
+          : isLost
+            ? "bg-red-50/50 border-red-200 dark:bg-red-900/20 dark:border-red-800"
+            : "bg-white dark:bg-branddark dark:border-branddarkborder"
       }`}
     >
       {/* 상단 */}
@@ -67,7 +70,7 @@ export default function BetHistoryItem(props: BetHistoryItemProps) {
           <span
             className={`px-[8px] py-[2px] rounded-[4px] text-[11px] font-bold ${
               statusBadgeStyle[bet.status]
-            }`}
+            } `}
           >
             {statusLabel[bet.status]}
           </span>

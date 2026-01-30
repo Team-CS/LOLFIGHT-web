@@ -86,10 +86,10 @@ export default function Page() {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto flex flex-col gap-[12px] py-[28px]">
+    <div className="max-w-[1200px] mx-auto flex flex-col gap-[16px] py-[32px]">
       {topGuilds.length === 0 ? (
-        <div className="w-full text-center text-gray-400 py-[20px] text-[14px]">
-          순위 기록이 없습니다 😅
+        <div className="w-full text-center text-gray-400 py-[24px] text-[14px]">
+          순위 기록이 없습니다
         </div>
       ) : (
         <LeaguePodium
@@ -99,10 +99,10 @@ export default function Page() {
         />
       )}
 
-      <div className={`flex flex-col ${isMobile ? "p-[12px]" : "py-[12px]"}`}>
+      <div className={`flex flex-col ${isMobile ? "p-[12px]" : "py-[16px]"}`}>
         <div
-          className={` shadow-md rounded-[12px] bg-white dark:bg-dark ${
-            isMobile ? "py-[12px]" : "p-[12px]"
+          className={`shadow-lg rounded-[16px] bg-white dark:bg-dark border border-gray-100 dark:border-branddarkborder ${
+            isMobile ? "py-[14px]" : "p-[16px]"
           }`}
         >
           <LeagueHeaderComponent
@@ -113,69 +113,69 @@ export default function Page() {
             onKeyDown={handleKeyDown}
           />
 
-          <div className="flex w-full whitespace-nowrap py-[8px] bg-[#f4f7ff] dark:bg-branddark border-t border-b border-brandborder dark:border-branddarkborder text-brandcolor font-semibold">
+          <div className="flex w-full whitespace-nowrap py-[10px] bg-gradient-to-r from-[#f0f4ff] to-[#f4f7ff] dark:from-branddark dark:to-branddark border-t border-b border-blue-100 dark:border-branddarkborder text-brandcolor font-bold">
             <div
               className={`flex-[0.25] text-center ${
-                isMobile ? "px-[8px] text-[12px]" : "px-[8px] text-[14px]"
+                isMobile ? "px-[8px] text-[11px]" : "px-[8px] text-[13px]"
               }`}
             >
               순위
             </div>
             <div
               className={`flex-[1] text-center ${
-                isMobile ? "px-[8px] text-[12px]" : "px-[8px] text-[14px]"
+                isMobile ? "px-[8px] text-[11px]" : "px-[8px] text-[13px]"
               }`}
             >
               길드명
             </div>
             {!isMobile && (
               <>
-                <div className={`flex-[2] text-center px-[8px] text-[14px]`}>
+                <div className={`flex-[2] text-center px-[8px] text-[13px]`}>
                   길드소개
                 </div>
 
-                <div className={`flex-[0.25] text-center px-[8px] text-[14px]`}>
+                <div className={`flex-[0.25] text-center px-[8px] text-[13px]`}>
                   길드원
                 </div>
               </>
             )}
             <div
               className={`flex-[0.25] text-center ${
-                isMobile ? "px-[8px] text-[12px]" : "px-[8px] text-[14px]"
+                isMobile ? "px-[8px] text-[11px]" : "px-[8px] text-[13px]"
               }`}
             >
               승
             </div>
             <div
               className={`flex-[0.25] text-center ${
-                isMobile ? "px-[8px] text-[12px]" : "px-[8px] text-[14px]"
+                isMobile ? "px-[8px] text-[11px]" : "px-[8px] text-[13px]"
               }`}
             >
               패
             </div>
             <div
               className={`flex-[0.5] text-center ${
-                isMobile ? "px-[8px] text-[12px]" : "px-[8px] text-[14px]"
+                isMobile ? "px-[8px] text-[11px]" : "px-[8px] text-[13px]"
               }`}
             >
               티어
             </div>
             <div
               className={`flex-[0.5] text-center ${
-                isMobile ? "px-[8px] text-[12px]" : "px-[8px] text-[14px]"
+                isMobile ? "px-[8px] text-[11px]" : "px-[8px] text-[13px]"
               }`}
             >
               래더점수
             </div>
           </div>
-          <div className="flex flex-col gap-[4px] pt-[8px]">
+          <div className="flex flex-col gap-[6px] pt-[10px]">
             {guilds.map((guild) => (
               <GuildInfoComponent key={guild.id} guild={guild} />
             ))}
           </div>
         </div>
       </div>
-      <div className="w-full flex justify-center mt-1 p-3">
+      <div className="w-full flex justify-center mt-2 p-4">
         <Pagination
           count={totalPages}
           page={currentPage}

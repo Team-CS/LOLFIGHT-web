@@ -29,7 +29,7 @@ export default function Page() {
 
   const handlePageClick = (
     event: React.ChangeEvent<unknown>,
-    pageNumber: number
+    pageNumber: number,
   ) => {
     setCurrentPage(pageNumber);
   };
@@ -83,50 +83,51 @@ export default function Page() {
   };
 
   return (
-    <div className="flex flex-col max-w-[1200px] h-full mx-auto w-full py-[28px] gap-[24px]">
-      <div className="w-full bg-white dark:bg-dark rounded-[12px] shadow-md">
+    <div className="flex flex-col max-w-[1200px] h-full mx-auto w-full py-[32px] gap-[20px] px-[12px] md:px-0">
+      <div className="w-full bg-white dark:bg-dark rounded-[16px] shadow-lg border border-gray-100 dark:border-branddarkborder">
         {/* Header */}
-        <div className="flex gap-[12px] py-[12px] px-[24px] items-center justify-between">
-          <p
-            className={`flex font-bold text-center justify-center items-center ${
-              isMobile ? "text-[14px]" : "text-[18px]"
-            }`}
-          >
-            롤로세움
-          </p>
-          <div className="flex gap-[12px] items-center">
+        <div className="flex gap-[12px] py-[16px] px-[16px] md:px-[24px] items-center justify-between">
+          <div className="flex items-center gap-[10px]">
+            <div className="w-[4px] h-[24px] bg-gradient-to-b from-red-500 to-orange-400 rounded-full" />
+            <p
+              className={`font-bold ${
+                isMobile ? "text-[16px]" : "text-[20px]"
+              }`}
+            >
+              롤로세움
+            </p>
+          </div>
+          <div className="flex gap-[10px] items-center">
             <div
-              className={`flex rounded-md px-[12px] gap-[4px] bg-gray-100 dark:bg-black ${
-                isMobile ? "w-[150px]" : "min-w-[200px]"
+              className={`flex items-center rounded-[10px] px-[12px] gap-[8px] bg-gray-50 dark:bg-branddark border border-gray-200 dark:border-branddarkborder hover:border-brandcolor dark:hover:border-brandcolor transition-colors ${
+                isMobile ? "w-[120px]" : "w-[200px]"
               }`}
             >
               <div
-                className="flex flex-wrap justify-center content-center dark:bg-black"
+                className="flex items-center justify-center cursor-pointer"
                 onClick={handleSearch}
               >
                 <FaSearch
-                  className={`${
-                    isMobile ? "w-[10px] h-[10px]" : "w-[15px] h-[15px]"
+                  className={`text-gray-400 ${
+                    isMobile ? "w-[12px] h-[12px]" : "w-[14px] h-[14px]"
                   }`}
                 />
               </div>
               <input
-                className={`min-w-[100px] bg-gray-100 focus:outline-none dark:bg-black font-normal rounded-r-md ${
-                  isMobile
-                    ? "px-[12px] py-[4px] text-[12px]"
-                    : "px-[12px] py-[8px] text-[14px]"
+                className={`w-full bg-transparent focus:outline-none font-normal placeholder:text-gray-400 ${
+                  isMobile ? "py-[8px] text-[12px]" : "py-[10px] text-[14px]"
                 }`}
                 type="text"
-                placeholder="검색"
+                placeholder="재판 검색"
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={handleKeyDown}
               />
             </div>
             <button
-              className={`border border-brandcolor bg-brandcolor text-white rounded-[8px] ${
+              className={`bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-[8px] font-medium hover:opacity-90 transition-opacity shadow-sm ${
                 isMobile
-                  ? "h-[25px] w-[50px] text-[12px]"
-                  : "h-[30px] w-[60px] text-[14px]"
+                  ? "h-[34px] px-[12px] text-[12px]"
+                  : "h-[42px] px-[16px] text-[14px]"
               }`}
               onClick={handleWriteClick}
             >
@@ -135,24 +136,24 @@ export default function Page() {
           </div>
         </div>
 
-        {/* Divier */}
-        <div className="w-full flex justify-center border-t border-brandborder dark:border-branddarkborder" />
+        {/* Divider */}
+        <div className="w-full border-t border-gray-100 dark:border-branddarkborder" />
 
         {/* Body */}
-        <div className="flex flex-col w-full h-full p-[20px] gap-[12px]">
+        <div className="flex flex-col w-full h-full p-[16px] md:p-[20px] gap-[14px]">
           {judgments.length > 0 ? (
             judgments.map((judgment) => (
               <JudgmentBox key={judgment.id} judgment={judgment} />
             ))
           ) : (
-            <div className="w-full text-center text-gray-400 py-[20px] text-[14px]">
-              해당 글이 존재하지 않습니다 😅
+            <div className="w-full text-center text-gray-400 py-[40px] text-[14px]">
+              해당 글이 존재하지 않습니다
             </div>
           )}
         </div>
 
         {/* Pagination */}
-        <div className="w-full flex justify-center py-[12px] border-t border-brandborder dark:border-branddarkborder">
+        <div className="w-full flex justify-center py-[16px] border-t border-gray-100 dark:border-branddarkborder">
           <Pagination
             count={totalPages}
             page={currentPage}

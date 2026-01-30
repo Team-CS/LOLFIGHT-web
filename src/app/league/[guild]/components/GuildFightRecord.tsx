@@ -72,11 +72,11 @@ const GuildFightRecord = (props: Props) => {
   return (
     <div>
       <div
-        className={`w-full h-[130px] flex border shadow rounded-[12px] p-[4px] ${
+        className={`w-full flex border shadow rounded-[12px] p-[4px] ${
           result === "win"
             ? "border-winLightBorder bg-winLightColor dark:border-winDarkBorder dark:bg-winDarkColor"
             : "border-loseLightBorder bg-loseLightColor dark:border-loseDarkBorder dark:bg-loseDarkColor"
-        } ${isMobile && "flex-col"}`}
+        } ${isMobile ? "flex-col" : "h-[110px]"}`}
       >
         {/* 1 */}
         {isMobile ? (
@@ -99,21 +99,21 @@ const GuildFightRecord = (props: Props) => {
               <p className="font-light text-[10px]">{getTimeDifference()}</p>
               <button
                 aria-label="상세보기"
-                className=" items-center justify-center text-[12px] gap-[12px]"
+                className="flex items-center justify-center p-[6px] rounded-[4px] hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
                 onClick={clickDetailFight}
               >
-                <SlArrowDown />
+                <SlArrowDown
+                  className={`text-[12px] transition-transform ${showDetails ? "rotate-180" : ""}`}
+                />
               </button>
             </div>
           </div>
         ) : (
-          <div
-            className={`min-w-[130px] flex flex-col justify-center items-center p-[12px]`}
-          >
-            <p className="font-extrabold text-[16px]">소환사의 협곡</p>
-            <p className="font-light text-[12px]">{getPlayTime()}</p>
+          <div className="w-[120px] shrink-0 flex flex-col justify-center items-center p-[10px]">
+            <p className="font-extrabold text-[14px]">소환사의 협곡</p>
+            <p className="font-light text-[11px]">{getPlayTime()}</p>
             <p
-              className={`font-extrabold text-[18px] ${
+              className={`font-extrabold text-[16px] ${
                 result === "win"
                   ? "text-winLightText dark:text-winDarkText"
                   : "text-loseLightText dark:text-loseDarkText"
@@ -121,14 +121,16 @@ const GuildFightRecord = (props: Props) => {
             >
               {result === "win" ? "승리" : "패배"}
             </p>
-            <p className="font-light text-[12px]">{getTimeDifference()}</p>
+            <p className="font-light text-[11px]">{getTimeDifference()}</p>
           </div>
         )}
 
         {/* 2 */}
-        <div className="flex h-full">
-          <div className="flex w-[400px] justify-between items-center gap-[12px] p-[12px]">
-            <div className="flex flex-col w-full items-center gap-[8px]">
+        <div className={`flex ${isMobile ? " w-full" : "flex-1 h-full"}`}>
+          <div
+            className={`flex justify-between items-center gap-[12px] p-[12px] ${isMobile ? "w-full" : "flex-[3] min-w-0"}`}
+          >
+            <div className="flex flex-col flex-1 items-center gap-[8px] min-w-0">
               <div className="flex items-center gap-[8px]">
                 {myTeamData.guild?.guildIcon ? (
                   <Image
@@ -147,20 +149,24 @@ const GuildFightRecord = (props: Props) => {
                   className={`font-bold truncate ${
                     isMobile
                       ? "text-[12px] max-w-[60px]"
-                      : "text-[16px] max-w-[120px]"
+                      : "text-[14px] max-w-[100px]"
                   }`}
                 >
                   {myTeamData.guild?.guildName || "해체된 길드"}
                 </p>
               </div>
-              <p className="font-light text-gray-600 text-[12px]">
-                1부리그 {homeGuild?.guildRecord?.recordLadder || myTeamData.guild?.guildRecord?.recordLadder || 0}점
+              <p className="font-light text-gray-600 dark:text-gray-400 text-[11px]">
+                1부리그{" "}
+                {homeGuild?.guildRecord?.recordLadder ||
+                  myTeamData.guild?.guildRecord?.recordLadder ||
+                  0}
+                점
               </p>
             </div>
 
-            <p className="font-normal text-[12px]">VS</p>
+            <p className="font-normal text-[12px] shrink-0">VS</p>
 
-            <div className="flex flex-col w-full items-center gap-[8px]">
+            <div className="flex flex-col flex-1 items-center gap-[8px] min-w-0">
               <div className="flex items-center gap-[8px]">
                 {enemyTeamData.guild?.guildIcon ? (
                   <Image
@@ -179,23 +185,33 @@ const GuildFightRecord = (props: Props) => {
                   className={`font-bold truncate ${
                     isMobile
                       ? "text-[12px] max-w-[60px]"
-                      : "text-[16px] max-w-[120px]"
+                      : "text-[14px] max-w-[100px]"
                   }`}
                 >
                   {enemyTeamData.guild?.guildName || "해체된 길드"}
                 </p>
               </div>
-              <p className="font-light text-gray-600 text-[12px]">
-                1부리그 {awayGuild?.guildRecord?.recordLadder || enemyTeamData.guild?.guildRecord?.recordLadder || 0}점
+              <p className="font-light text-gray-600 dark:text-gray-400 text-[11px]">
+                1부리그{" "}
+                {awayGuild?.guildRecord?.recordLadder ||
+                  enemyTeamData.guild?.guildRecord?.recordLadder ||
+                  0}
+                점
               </p>
             </div>
           </div>
 
           {/* 3 */}
-          <div className="w-[120px] flex flex-col items-center justify-center">
-            <p className="font-bold">래더</p>
+          <div
+            className={`flex flex-col items-center justify-center ${isMobile ? "w-full py-[8px] gap-[8px]" : "w-[100px] flex-col"}`}
+          >
             <p
-              className={`font-extrabold text-20px ${
+              className={`font-bold ${isMobile ? "text-[12px]" : "text-[14px]"}`}
+            >
+              래더
+            </p>
+            <p
+              className={`font-extrabold ${isMobile ? "text-[14px]" : "text-[16px]"} ${
                 result === "win"
                   ? "text-winLightText dark:text-winDarkText"
                   : "text-loseLightText dark:text-loseDarkText"
@@ -209,7 +225,7 @@ const GuildFightRecord = (props: Props) => {
 
           {/* 4 */}
           {!isMobile && (
-            <div className="flex justify-center items-center w-[500px]">
+            <div className="flex justify-center items-center flex-[4] min-w-0">
               <GuildFightMember battleData={props.battleData} />
             </div>
           )}
@@ -217,14 +233,16 @@ const GuildFightRecord = (props: Props) => {
           {/* 5 */}
           {!isMobile && (
             <div
-              className={`flex min-w-[45px] border-l justify-center items-center cursor-pointer text-[12px] ${
+              className={`flex w-[40px] shrink-0 border-l justify-center items-center cursor-pointer text-[12px] dark:hover:bg-white/5 ${
                 result === "win"
                   ? "border-winLightBorder dark:border-winDarkBorder"
                   : "border-loseLightBorder dark:border-loseDarkBorder"
               }`}
               onClick={clickDetailFight}
             >
-              <SlArrowDown />
+              <SlArrowDown
+                className={`transition-transform ${showDetails ? "rotate-180" : ""}`}
+              />
             </div>
           )}
         </div>

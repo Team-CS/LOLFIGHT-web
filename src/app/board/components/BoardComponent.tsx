@@ -79,7 +79,7 @@ const BoardComponent = (props: BoardComponentProps) => {
   };
 
   return (
-    <div className="w-full bg-white dark:bg-dark rounded-[12px] shadow-md">
+    <div className="w-full bg-white dark:bg-dark rounded-[16px] shadow-lg border border-gray-100 dark:border-branddarkborder">
       <BoardHeadComponent
         head={{
           slug: props.slug,
@@ -90,7 +90,7 @@ const BoardComponent = (props: BoardComponentProps) => {
         searchTarget={searchTarget}
         setSearchTarget={setSearchTarget}
       ></BoardHeadComponent>
-      <div className="flex flex-col gap-[2px] py-[8px]">
+      <div className="flex flex-col gap-[2px] py-[10px]">
         {posts.length > 0 ? (
           posts.map((post) => (
             <BoardInfoComponent
@@ -101,15 +101,15 @@ const BoardComponent = (props: BoardComponentProps) => {
           ))
         ) : (
           <div
-            className={`w-full text-center text-gray-400 py-[20px] ${
+            className={`w-full text-center text-gray-400 py-[40px] ${
               isMobile ? "text-[12px]" : "text-[14px]"
             }`}
           >
-            해당 글이 존재하지 않습니다 😅
+            해당 글이 존재하지 않습니다
           </div>
         )}
       </div>
-      <div className="w-full flex justify-center py-[12px] border-t border-brandborder dark:border-branddarkborder">
+      <div className="w-full flex justify-center py-[16px] border-t border-gray-100 dark:border-branddarkborder">
         <Pagination
           count={totalPages}
           page={currentPage}

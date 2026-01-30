@@ -440,57 +440,61 @@ export default function Page() {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto flex flex-col gap-[24px] py-[28px]">
+    <div className={`max-w-[1200px] mx-auto flex flex-col gap-[24px] ${
+      isMobile ? "px-[16px] py-[20px]" : "py-[28px]"
+    }`}>
       {guildTeam && member ? (
         // ✅ 팀이 있을 때
         <div
-          className={`flex p-[32px] shadow-md rounded-[12px] gap-[24px] dark:bg-dark ${
-            isMobile ? "flex-col h-[940px]" : "h-[470px]"
+          className={`flex bg-white dark:bg-dark rounded-[16px] shadow-lg border border-gray-100 dark:border-branddarkborder gap-[24px] overflow-hidden ${
+            isMobile ? "flex-col p-[20px]" : "p-[28px]"
           }`}
         >
           <div
-            className={`flex flex-col w-[50%] gap-[12px] ${
+            className={`flex flex-col gap-[16px] ${
               isMobile ? "w-full" : "w-[50%]"
             }`}
           >
             {/* Header */}
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-[16px]">
-                {guildTeam.guild?.guildIcon ? (
-                  <Image
-                    src={`${constant.SERVER_URL}/${guildTeam.guild.guildIcon}`}
-                    alt="logo"
-                    width={60}
-                    height={60}
-                    className={`rounded-[12px] object-corver ${
-                      isMobile ? "w-[50px] h-[50px]" : "w-[60px] h-[60px]"
-                    }`}
-                    quality={100}
-                  />
-                ) : (
-                  <div
-                    className={`rounded-[12px] bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-[30px] ${
-                      isMobile ? "w-[50px] h-[50px]" : "w-[60px] h-[60px]"
-                    }`}
-                  >
-                    🏛️
-                  </div>
-                )}
-                <div className="flex flex-col">
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-[14px]">
+                <div className="relative">
+                  {guildTeam.guild?.guildIcon ? (
+                    <Image
+                      src={`${constant.SERVER_URL}/${guildTeam.guild.guildIcon}`}
+                      alt="logo"
+                      width={60}
+                      height={60}
+                      className={`rounded-[14px] object-cover shadow-md ${
+                        isMobile ? "w-[50px] h-[50px]" : "w-[60px] h-[60px]"
+                      }`}
+                      quality={100}
+                    />
+                  ) : (
+                    <div
+                      className={`rounded-[14px] bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center text-[28px] shadow-md ${
+                        isMobile ? "w-[50px] h-[50px]" : "w-[60px] h-[60px]"
+                      }`}
+                    >
+                      🏛️
+                    </div>
+                  )}
+                  <div className="absolute -bottom-[4px] -right-[4px] w-[18px] h-[18px] bg-green-500 rounded-full border-[3px] border-white dark:border-dark" />
+                </div>
+                <div className="flex flex-col gap-[2px]">
                   <p
-                    className={`font-semibold ${
-                      isMobile ? "text-[16px]" : "text-[22px]"
+                    className={`font-bold ${
+                      isMobile ? "text-[16px]" : "text-[20px]"
                     }`}
                   >
                     {guildTeam.leader.memberName}팀
                   </p>
                   <p
                     className={`text-gray-400 ${
-                      isMobile ? "text-[12px]" : "text-[14px]"
+                      isMobile ? "text-[11px]" : "text-[13px]"
                     }`}
                   >
-                    리더: {guildTeam.leader.memberName} -{" "}
-                    {guildTeam.leader.memberGame?.gameName}
+                    리더: {guildTeam.leader.memberName} · {guildTeam.leader.memberGame?.gameName}
                   </p>
                 </div>
               </div>
@@ -499,36 +503,36 @@ export default function Page() {
                 myTeamSlot ? (
                   <button
                     onClick={handledeleteSlotClick}
-                    className={`bg-brandcolor text-white rounded-md hover:opacity-90 ${
+                    className={`bg-gradient-to-r from-red-500 to-red-600 text-white rounded-[8px] hover:opacity-90 transition-opacity shadow-sm font-medium ${
                       isMobile
-                        ? "min-w-[100px] px-[8px] py-[4px] text-[12px]"
-                        : "px-[12px] py-[4px] text-[14px]"
+                        ? "px-[10px] py-[6px] text-[11px]"
+                        : "px-[14px] py-[6px] text-[13px]"
                     }`}
                   >
-                    스크림 등록 취소
+                    등록 취소
                   </button>
                 ) : (
                   <div
-                    className={`flex  ${
-                      isMobile ? "flex-col gap-[8px]" : "gap-[12px]"
+                    className={`flex ${
+                      isMobile ? "flex-col gap-[6px]" : "gap-[8px]"
                     }`}
                   >
                     <button
                       onClick={handleUpdateClick}
-                      className={`bg-brandcolor text-white rounded-md hover:opacity-90 ${
+                      className={`bg-gradient-to-r from-brandcolor to-blue-500 text-white rounded-[8px] hover:opacity-90 transition-opacity shadow-sm font-medium ${
                         isMobile
-                          ? "min-w-[60px] px-[8px] py-[4px] text-[12px]"
-                          : "px-[12px] py-[4px] text-[14px]"
+                          ? "px-[10px] py-[6px] text-[11px]"
+                          : "px-[14px] py-[6px] text-[13px]"
                       }`}
                     >
                       팀 수정
                     </button>
                     <button
                       onClick={handledeleteClick}
-                      className={`bg-brandcolor text-white rounded-md hover:opacity-90 ${
+                      className={`border border-gray-200 dark:border-branddarkborder text-gray-600 dark:text-gray-300 rounded-[8px] hover:bg-gray-50 dark:hover:bg-branddarkborder transition-colors font-medium ${
                         isMobile
-                          ? "min-w-[60px] px-[8px] py-[4px] text-[12px]"
-                          : "px-[12px] py-[4px] text-[14px]"
+                          ? "px-[10px] py-[6px] text-[11px]"
+                          : "px-[14px] py-[6px] text-[13px]"
                       }`}
                     >
                       팀 삭제
@@ -538,10 +542,10 @@ export default function Page() {
               ) : (
                 <button
                   onClick={handleLeaveClick}
-                  className={`bg-brandcolor text-white rounded-md hover:opacity-90 ${
+                  className={`border border-gray-200 dark:border-branddarkborder text-gray-600 dark:text-gray-300 rounded-[8px] hover:bg-gray-50 dark:hover:bg-branddarkborder transition-colors font-medium ${
                     isMobile
-                      ? "min-w-[60px] px-[8px] py-[4px] text-[12px]"
-                      : "px-[12px] py-[4px] text-[14px]"
+                      ? "px-[10px] py-[6px] text-[11px]"
+                      : "px-[14px] py-[6px] text-[13px]"
                   }`}
                 >
                   팀 탈퇴
@@ -549,7 +553,7 @@ export default function Page() {
               )}
             </div>
 
-            <div className="border-t border-gray-600/30" />
+            <div className="border-t border-gray-100 dark:border-branddarkborder" />
 
             {/* Member list */}
             <div className="flex flex-col gap-[6px]">
@@ -579,16 +583,19 @@ export default function Page() {
 
           {/* 내전 대기 또는 진행중 */}
           <div
-            className={`flex flex-col gap-[12px] ${
+            className={`flex flex-col gap-[14px] ${
               isMobile ? "w-full" : "w-[50%]"
             }`}
           >
-            <p className="text-[18px] font-semibold ">
-              📜 스크림 일정 및 최근 기록
-            </p>
+            <div className="flex items-center gap-[10px]">
+              <div className="w-[4px] h-[20px] bg-gradient-to-b from-brandcolor to-blue-400 rounded-full" />
+              <p className={`font-bold ${isMobile ? "text-[15px]" : "text-[17px]"}`}>
+                스크림 일정 및 최근 기록
+              </p>
+            </div>
             <div
-              className={`flex flex-col gap-[12px] overflow-y-auto ${
-                isMobile ? "h-[470px]" : "h-full"
+              className={`flex flex-col gap-[10px] overflow-y-auto pr-[4px] ${
+                isMobile ? "max-h-[400px]" : "max-h-[350px]"
               }`}
             >
               {applications
@@ -616,102 +623,122 @@ export default function Page() {
         </div>
       ) : member?.memberGuild ? (
         // member.memberGuild는 있지만 guildTeam이 없을 때
-        <div className="flex flex-col items-center justify-center h-[470px] gap-[16px] py-[60px] rounded-[12px] dark:bg-dark shadow-md">
-          <p className="text-[14px] text-gray-400">
-            😓 아직 팀에 가입하지 않았습니다
+        <div className="flex flex-col items-center justify-center min-h-[300px] gap-[20px] py-[60px] bg-white dark:bg-dark rounded-[16px] shadow-lg border border-gray-100 dark:border-branddarkborder">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-[48px] h-[48px] text-gray-300 dark:text-gray-600"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
+            />
+          </svg>
+          <p className={`text-gray-400 ${isMobile ? "text-[13px]" : "text-[15px]"}`}>
+            아직 팀에 가입하지 않았습니다
           </p>
-          <div className="flex gap-[12px]">
-            <button
-              className="px-[16px] py-[8px] rounded-[8px] bg-primary text-white text-[14px] font-medium hover:opacity-90"
-              onClick={() => setIsCreateTeamOpen(!isCreateTeamOpen)}
-            >
-              팀 생성
-            </button>
-          </div>
+          <button
+            className={`bg-gradient-to-r from-brandcolor to-blue-500 text-white rounded-[10px] hover:opacity-90 transition-opacity shadow-md font-medium ${
+              isMobile ? "px-[20px] py-[10px] text-[13px]" : "px-[24px] py-[12px] text-[14px]"
+            }`}
+            onClick={() => setIsCreateTeamOpen(!isCreateTeamOpen)}
+          >
+            팀 생성하기
+          </button>
         </div>
       ) : (
         // member.memberGuild도 없을 때 (완전 없는 상태)
-        <div className="flex flex-col items-center justify-center h-[470px] gap-[16px] py-[60px] rounded-[12px] dark:bg-dark shadow-md">
-          <p className="text-[14px] text-gray-400">
-            ❌ 아직 속한 길드가 없습니다.
+        <div className="flex flex-col items-center justify-center min-h-[300px] gap-[20px] py-[60px] bg-white dark:bg-dark rounded-[16px] shadow-lg border border-gray-100 dark:border-branddarkborder">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-[48px] h-[48px] text-gray-300 dark:text-gray-600"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+            />
+          </svg>
+          <p className={`text-gray-400 ${isMobile ? "text-[13px]" : "text-[15px]"}`}>
+            아직 속한 길드가 없습니다
+          </p>
+          <p className={`text-gray-300 dark:text-gray-500 ${isMobile ? "text-[11px]" : "text-[13px]"}`}>
+            길드에 가입하면 스크림에 참여할 수 있습니다
           </p>
         </div>
       )}
 
       {/* Battle Team List */}
-      <div className="flex flex-col w-full p-[32px] gap-[24px] shadow-md rounded-[12px] dark:bg-dark">
-        <div className="flex justify-between">
-          <p
-            className={`${
-              isMobile ? "text-[14px]" : "text-[18px]"
-            } font-semibold`}
-          >
-            🔥 스크림 대기 팀 목록
-          </p>
-          <div className="flex items-center gap-[12px]">
+      <div className={`flex flex-col w-full gap-[20px] bg-white dark:bg-dark rounded-[16px] shadow-lg border border-gray-100 dark:border-branddarkborder ${
+        isMobile ? "p-[20px]" : "p-[28px]"
+      }`}>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-[10px]">
+            <div className="w-[4px] h-[20px] bg-gradient-to-b from-brandcolor to-blue-400 rounded-full" />
+            <p className={`font-bold ${isMobile ? "text-[15px]" : "text-[18px]"}`}>
+              스크림 대기 팀 목록
+            </p>
+          </div>
+          <div className="flex items-center gap-[10px]">
             {isMobile ? (
               <>
                 {/* 검색 아이콘 */}
                 <div
                   onClick={() => setIsSearchOpen(true)}
-                  className="cursor-pointer"
+                  className="p-[8px] rounded-[8px] bg-gray-100 dark:bg-branddark cursor-pointer hover:bg-gray-200 dark:hover:bg-branddarkborder transition-colors"
                 >
-                  <FaSearch />
+                  <FaSearch className="w-[14px] h-[14px] text-gray-500" />
                 </div>
 
                 {/* 검색 팝업 */}
                 {isSearchOpen && (
                   <div
-                    className="fixed inset-0 z-50 flex items-start justify-center bg-black/30"
-                    onClick={() => setIsSearchOpen(false)} // overlay 클릭 닫기
+                    className="fixed inset-0 z-50 flex items-start justify-center bg-black/40"
+                    onClick={() => setIsSearchOpen(false)}
                   >
-                    {/* 팝업 박스 */}
                     <div
-                      className="mt-[40px] w-[90%] max-w-md rounded-xl border border-gray-300 bg-white dark:bg-black dark:border-gray-700 shadow-lg p-[12px]"
-                      onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫히지 않게
+                      className="mt-[60px] w-[90%] max-w-md rounded-[16px] bg-white dark:bg-dark border border-gray-100 dark:border-branddarkborder shadow-xl p-[16px]"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <div className="flex items-center gap-[8px]">
-                        <div className="flex flex-1 border border-gray-200 rounded-md px-[8px] gap-[4px] bg-gray-100 dark:bg-black dark:border-black">
-                          <div
-                            className="flex flex-wrap justify-center content-center cursor-pointer"
-                            onClick={handleSearch}
-                          >
-                            <FaSearch />
-                          </div>
+                      <div className="flex items-center gap-[10px]">
+                        <div className="flex flex-1 items-center gap-[8px] bg-gray-50 dark:bg-branddark rounded-[10px] px-[12px] py-[10px] border border-gray-100 dark:border-branddarkborder">
+                          <FaSearch className="w-[14px] h-[14px] text-gray-400" />
                           <input
                             autoFocus
-                            className="w-full rounded-md bg-gray-100 px-[8px] py-[4px] text-[12px] focus:outline-none dark:bg-black font-normal"
+                            className="w-full bg-transparent text-[13px] focus:outline-none"
                             type="text"
                             placeholder="길드명 입력 (2자 이상)"
                             onChange={(e) => setSearchTerm(e.target.value)}
                             onKeyDown={handleKeyDown}
                           />
                         </div>
+                        <button
+                          onClick={handleSearch}
+                          className="px-[16px] py-[10px] bg-gradient-to-r from-brandcolor to-blue-500 text-white text-[13px] font-medium rounded-[10px] hover:opacity-90 transition-opacity"
+                        >
+                          검색
+                        </button>
                       </div>
                     </div>
                   </div>
                 )}
               </>
             ) : (
-              <div
-                className={`flex border border-gray-200 rounded-md px-[12px] gap-[12px] bg-gray-100 dark:bg-black dark:border-black`}
-              >
-                <div
-                  className="flex flex-wrap justify-center content-center dark:bg-black"
+              <div className="flex items-center gap-[8px] bg-gray-50 dark:bg-branddark rounded-[10px] px-[14px] py-[8px] border border-gray-100 dark:border-branddarkborder">
+                <FaSearch
+                  className="w-[14px] h-[14px] text-gray-400 cursor-pointer"
                   onClick={handleSearch}
-                >
-                  <FaSearch
-                    className={`${
-                      isMobile ? "w-[10px] h-[10px]" : "w-[15px] h-[15px]"
-                    }`}
-                  />
-                </div>
+                />
                 <input
-                  className={`"w-full rounded-md bg-gray-100 focus:outline-none dark:bg-black font-normal ${
-                    isMobile
-                      ? "px-[12px] py-[4px] text-[12px] w-[100px]"
-                      : "px-[12px] py-[8px] text-[14px] w-[200px]"
-                  }`}
+                  className="w-[180px] bg-transparent text-[13px] focus:outline-none placeholder:text-gray-400"
                   type="text"
                   placeholder="길드명 입력 (2자 이상)"
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -723,7 +750,9 @@ export default function Page() {
             {guildTeam && guildTeam.leader.id === member?.id && (
               <button
                 onClick={handleRegisterScrim}
-                className="px-[12px] py-[4px] bg-brandcolor text-[14px] text-white rounded-md hover:opacity-90"
+                className={`bg-gradient-to-r from-brandcolor to-blue-500 text-white rounded-[8px] hover:opacity-90 transition-opacity shadow-sm font-medium ${
+                  isMobile ? "px-[12px] py-[8px] text-[12px]" : "px-[16px] py-[8px] text-[13px]"
+                }`}
               >
                 등록
               </button>
@@ -736,7 +765,7 @@ export default function Page() {
             className={`gap-[16px] ${
               isMobile
                 ? "flex flex-col items-center"
-                : "grid grid-cols-5 place-items-center "
+                : "grid grid-cols-5 place-items-center"
             }`}
           >
             {scrimSlots.map((team, i) =>
@@ -756,16 +785,26 @@ export default function Page() {
             )}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center gap-[16px] py-[60px] rounded-[12px] dark:bg-branddark shadow-md text-gray-400">
-            <p className={`${isMobile ? "text-[14px]" : "text-[18px]"}`}>
-              😓 스크림 대기 팀이 없습니다.
-            </p>
-            <p
-              className={`${
-                isMobile ? "text-[12px]" : "text-[14px]"
-              } text-center`}
+          <div className="flex flex-col items-center justify-center gap-[16px] py-[50px] rounded-[12px] bg-gray-50 dark:bg-branddark border border-gray-100 dark:border-branddarkborder">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-[40px] h-[40px] text-gray-300 dark:text-gray-600"
             >
-              새로운 팀들이 스크림을 등록하면 여기서 확인할 수 있습니다.
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
+              />
+            </svg>
+            <p className={`text-gray-400 ${isMobile ? "text-[13px]" : "text-[15px]"}`}>
+              스크림 대기 팀이 없습니다
+            </p>
+            <p className={`text-gray-300 dark:text-gray-500 text-center ${isMobile ? "text-[11px]" : "text-[13px]"}`}>
+              새로운 팀들이 스크림을 등록하면 여기서 확인할 수 있습니다
             </p>
           </div>
         )}

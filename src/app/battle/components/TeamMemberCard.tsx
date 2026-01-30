@@ -34,31 +34,43 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
 
     return (
       <div
-        className="flex w-full items-center justify-center border border-orange-300 rounded-[8px] bg-no-repeat bg-orange-50 dark:border-orange-600 dark:bg-orange-900/20"
+        className="relative flex w-full items-center justify-center border border-amber-300 dark:border-amber-600 rounded-[10px] overflow-hidden bg-no-repeat"
         style={{
           backgroundImage: `url(${rankImageUrl})`,
-          backgroundColor: "#f0f6fd",
-          backgroundSize: "50%",
+          backgroundSize: "50px",
           backgroundPosition: "center",
         }}
       >
-        <div className="flex w-full items-center justify-between bg-orange-100/80 rounded-md px-[12px] py-[8px] gap-[8px] shadow-sm dark:bg-orange-800/30">
-          <div className="flex items-center gap-[8px] min-w-0">
-            <Image
-              src={profileImgUrl}
-              alt="profile"
-              width={34}
-              height={34}
-              className={`${
-                isMobile ? "w-[28px] h-[28px]" : "w-[34px] h-[34px]"
-              } rounded-full object-cover`}
-            />
+        {/* 배경 흐리게 하는 오버레이 */}
+        <div className="absolute inset-0 bg-amber-50/90 dark:bg-amber-900/80" />
+        <div
+          className={`relative z-10 flex w-full items-center justify-between px-[14px] gap-[8px] ${
+            isMobile ? "py-[8px]" : "py-[10px]"
+          }`}
+        >
+          <div className="flex items-center gap-[10px] min-w-0">
+            <div className="relative">
+              <Image
+                src={profileImgUrl}
+                alt="profile"
+                width={34}
+                height={34}
+                className={`${
+                  isMobile ? "w-[30px] h-[30px]" : "w-[36px] h-[36px]"
+                } rounded-[8px] object-cover shadow-sm`}
+              />
+              <div className="absolute -bottom-[2px] -right-[2px] w-[12px] h-[12px] bg-amber-500 rounded-full border-2 border-white dark:border-dark animate-pulse" />
+            </div>
             <div className="truncate min-w-0">
-              <p className="text-[14px] font-medium dark:text-white truncate">
+              <p
+                className={`font-semibold dark:text-white truncate ${isMobile ? "text-[12px]" : "text-[13px]"}`}
+              >
                 {summonerName}
               </p>
-              <p className="text-[12px] text-orange-600 dark:text-orange-300">
-                초대 중...
+              <p
+                className={`text-amber-600 dark:text-amber-400 ${isMobile ? "text-[10px]" : "text-[11px]"}`}
+              >
+                초대 대기중
               </p>
             </div>
           </div>
@@ -68,20 +80,22 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
               alt={tier}
               width={24}
               height={24}
-              style={{ width: isMobile ? 22 : 24, height: isMobile ? 22 : 24 }}
+              className={isMobile ? "w-[20px] h-[20px]" : "w-[22px] h-[22px]"}
             />
-            <p className={`${isMobile ? "text-[12px]" : "text-[14px]"}`}>
+            <p
+              className={`font-medium ${isMobile ? "text-[11px]" : "text-[12px]"}`}
+            >
               <span className={getTierStyle(tier)}>{tier}</span>
             </p>
             {isMobile ? (
               <Image
                 src={`${constant.SERVER_URL}/public/ranked-positions/${roleTag}.png`}
                 alt="roleTag"
-                width={18}
-                height={18}
+                width={16}
+                height={16}
               />
             ) : (
-              <div className="text-[14px] px-[6px] py-[2px] rounded-md bg-orange-200 text-orange-800 font-medium select-none dark:bg-orange-700 dark:text-orange-200">
+              <div className="text-[11px] px-[8px] py-[3px] rounded-[6px] bg-amber-100 text-amber-700 font-semibold select-none dark:bg-amber-800/50 dark:text-amber-300">
                 {roleTag}
               </div>
             )}
@@ -95,11 +109,30 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
     return (
       <div
         onClick={onAddClick}
-        className="cursor-pointer flex items-center justify-center h-[60px] px-[8px] py-[12px] border border-dashed border-brandborder dark:border-branddarkborder rounded-[8px] bg-white/60 dark:bg-brandgray text-branddark dark:text-white hover:bg-brandhover transition"
+        className={`cursor-pointer flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-branddarkborder rounded-[10px] bg-gray-50/50 dark:bg-branddark/50 text-gray-400 hover:border-brandcolor hover:text-brandcolor hover:bg-brandcolor/5 transition-all ${
+          isMobile ? "h-[50px]" : "h-[56px]"
+        }`}
       >
-        <div className="flex items-center gap-[4px]">
-          <span className="text-[14px]">+</span>
-          <span className="text-[14px] font-medium">{roleTag} 자리 추가</span>
+        <div className="flex items-center gap-[6px]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className={isMobile ? "w-[14px] h-[14px]" : "w-[16px] h-[16px]"}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          <span
+            className={`font-medium ${isMobile ? "text-[11px]" : "text-[13px]"}`}
+          >
+            {roleTag} 추가
+          </span>
         </div>
       </div>
     );
@@ -115,27 +148,34 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
 
   return (
     <div
-      className="flex w-full items-center justify-center border border-brandborder rounded-lg bg-no-repeat bg-center dark:border-branddark"
+      className="relative flex w-full items-center justify-center border border-gray-100 dark:border-branddarkborder rounded-[10px] overflow-hidden bg-no-repeat"
       style={{
         backgroundImage: `url(${rankImageUrl})`,
-        backgroundColor: "#f0f6fd",
         backgroundSize: "50%",
         backgroundPosition: "center",
       }}
     >
-      <div className="flex w-full items-center justify-between bg-white/70 rounded-md px-[12px] py-[8px] gap-[8px] shadow-sm dark:bg-black/70">
-        <div className="flex items-center gap-[8px] min-w-0">
+      {/* 배경 흐리게 하는 오버레이 */}
+      <div className="absolute inset-0 bg-gray-50/70 dark:bg-branddark/70" />
+      <div
+        className={`relative z-10 flex w-full items-center justify-between px-[14px] gap-[8px] ${
+          isMobile ? "py-[8px]" : "py-[10px]"
+        }`}
+      >
+        <div className="flex items-center gap-[10px] min-w-0">
           <Image
             src={profileImgUrl}
             alt="profile"
             width={34}
             height={34}
-            className={`object-cover rounded-full ${
-              isMobile ? "w-[28px] h-[28px]" : "w-[34px] h-[34px]"
+            className={`object-cover rounded-[8px] shadow-sm ${
+              isMobile ? "w-[30px] h-[30px]" : "w-[36px] h-[36px]"
             }`}
           />
           <div className="truncate min-w-0">
-            <p className="text-[14px] font-medium dark:text-white truncate">
+            <p
+              className={`font-semibold dark:text-white truncate ${isMobile ? "text-[12px]" : "text-[13px]"}`}
+            >
               {summonerName}
             </p>
           </div>
@@ -146,22 +186,22 @@ const TeamMemberCard = (props: TeamMemberCardProps) => {
             alt={tier}
             width={24}
             height={24}
-            className={`${
-              isMobile ? "w-[22px] h-[22px]" : "w-[24px] h-[24px]"
-            }`}
+            className={isMobile ? "w-[20px] h-[20px]" : "w-[22px] h-[22px]"}
           />
-          <p className={`${isMobile ? "text-[12px]" : "text-[14px]"}`}>
+          <p
+            className={`font-medium ${isMobile ? "text-[11px]" : "text-[12px]"}`}
+          >
             <span className={getTierStyle(tier)}>{tier}</span>
           </p>
           {isMobile ? (
             <Image
               src={`${constant.SERVER_URL}/public/ranked-positions/${roleTag}.png`}
               alt="roleTag"
-              width={18}
-              height={18}
+              width={16}
+              height={16}
             />
           ) : (
-            <div className="text-[14px] px-[6px] py-[2px] rounded-md bg-brandhover text-branddark font-medium select-none">
+            <div className="text-[11px] px-[8px] py-[3px] rounded-[6px] bg-brandcolor/10 text-brandcolor font-semibold select-none">
               {roleTag}
             </div>
           )}

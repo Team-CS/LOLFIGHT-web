@@ -21,7 +21,7 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
 
   return (
     <div
-      className="flex items-center py-[6px] rounded-[12px] bg-white dark:border-dark dark:bg-dark hover:bg-brandhover dark:hover:bg-branddarkborder cursor-pointer"
+      className="flex items-center py-[8px] rounded-[10px] bg-white dark:bg-dark hover:bg-blue-50 dark:hover:bg-branddarkborder cursor-pointer transition-all duration-200 hover:shadow-sm border border-transparent hover:border-blue-100 dark:hover:border-branddarkborder"
       onClick={handleGuildInfo}
     >
       <div className="flex flex-[0.25] px-[8px] items-center justify-center">
@@ -39,7 +39,7 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
             } rounded-[12px] object-cover`}
           />
         ) : props.guild.guildRecord?.recordRanking === "기록없음" ? null : (
-          <div className="text-[14px] font-bold">
+          <div className={`${isMobile ? "text-[12px]" : "text-[15px]"} font-bold text-gray-600 dark:text-gray-300`}>
             {props.guild.guildRecord?.recordRanking}
           </div>
         )}
@@ -53,13 +53,13 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
           height={35}
           quality={100}
           className={`${
-            isMobile ? "w-[25px] h-[25px]" : "w-[35px] h-[35px]"
-          } rounded-[4px] object-cover`}
+            isMobile ? "w-[28px] h-[28px]" : "w-[38px] h-[38px]"
+          } rounded-[6px] object-cover shadow-sm`}
         />
 
         <div
           className={`font-semibold truncate ${
-            isMobile ? "text-[10px] max-w-[100px]" : "text-[16px]"
+            isMobile ? "text-[11px] max-w-[100px]" : "text-[15px]"
           }`}
         >
           {props.guild.guildName}
@@ -69,49 +69,49 @@ const GuildInfoComponent = (props: GuildInfoComponentProps) => {
         <>
           <div className="flex flex-[2] px-[8px] h-[60px]">
             <div className="flex items-center justify-center w-full h-full">
-              <div className="line-clamp-3 overflow-hidden text-center text-[14px] break-words">
+              <div className="line-clamp-3 overflow-hidden text-center text-[13px] text-gray-600 dark:text-gray-400 break-words">
                 {props.guild.guildDescription}
               </div>
             </div>
           </div>
 
-          <div className={`flex-[0.25] px-[8px] text-center`}>
-            {props.guild.guildMembers.length}{" "}
-            <span className={"text-[14px]"}> 명</span>
+          <div className={`flex-[0.25] px-[8px] text-center font-medium`}>
+            {props.guild.guildMembers.length}
+            <span className={"text-[13px] text-gray-500 dark:text-gray-400"}> 명</span>
           </div>
         </>
       )}
       <div
-        className={`flex-[0.25] text-center ${
-          isMobile ? "px-[4px] text-[10px]" : "px-[8px] text-[16px]"
+        className={`flex-[0.25] text-center font-semibold text-blue-600 dark:text-blue-400 ${
+          isMobile ? "px-[4px] text-[11px]" : "px-[8px] text-[15px]"
         }`}
       >
         {props.guild.guildRecord!.recordVictory}
-        {!isMobile && <span className={"text-[14px]"}> 승</span>}
+        {!isMobile && <span className={"text-[13px] font-normal"}> 승</span>}
       </div>
       <div
-        className={`flex-[0.25] text-center ${
-          isMobile ? "px-[4px] text-[10px]" : "px-[8px] text-[16px]"
+        className={`flex-[0.25] text-center font-semibold text-red-500 dark:text-red-400 ${
+          isMobile ? "px-[4px] text-[11px]" : "px-[8px] text-[15px]"
         }`}
       >
         {props.guild.guildRecord!.recordDefeat}
-        {!isMobile && <span className={"text-[14px]"}> 패</span>}
+        {!isMobile && <span className={"text-[13px] font-normal"}> 패</span>}
       </div>
       <div
-        className={`flex-[0.5] px-[8px] text-center ${
+        className={`flex-[0.5] px-[8px] text-center font-bold ${
           isMobile ? "text-[10px]" : "text-[14px]"
         } ${getTierStyle(props.guild.guildTier)}`}
       >
         {props.guild.guildTier}
       </div>
       <div
-        className={`flex-[0.5] px-[8px] text-center font-medium ${
+        className={`flex-[0.5] px-[8px] text-center font-bold ${
           isMobile ? "text-[12px]" : "text-[16px]"
         }`}
       >
-        {props.guild.guildRecord?.recordLadder}{" "}
-        <span className={`${isMobile ? "text-[10px]" : "text-[14px]"}`}>
-          점
+        {props.guild.guildRecord?.recordLadder}
+        <span className={`font-normal text-gray-500 dark:text-gray-400 ${isMobile ? "text-[10px]" : "text-[13px]"}`}>
+          {" "}점
         </span>
       </div>
     </div>
